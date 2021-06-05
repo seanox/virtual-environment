@@ -28,6 +28,9 @@ programs, tools and services are not included but for many there are
 ready-made configurations and automated helpers so that they can be
 easily loaded from the Internet and integrated.
 
-Complete environments can be several giga-bytes in size and not all
+Complete environments can be several gigabytes in size and not all
 tools, programs and services are always needed and so everyone can
 decide for themselves and customize the environment.
+
+From my own experience from large companies with strict use of
+BitLocker, this is also supported :-)
