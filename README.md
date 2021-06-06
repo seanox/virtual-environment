@@ -14,7 +14,7 @@
 # Description
 
 Since about 2010, the project exists for a modular platform for Windows to
-create portable development environments. Based on a virtual hard disk, the
+create portable development environments. Based on a virtual drive, the
 environment can be started easily and provides developers with a completely
 preconfigured development environment with numerous tools, services and
 programs and standardizes the toolset in a development team. Short setup times,
