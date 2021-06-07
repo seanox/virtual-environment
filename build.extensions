@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<project>
+  <macrodef name="properties-normalize"
+      description="Normalizes properties files as follows:
+          - Removes keys without values in properties files
+          - Replaces the values on/yes/true with true
+          - Replaces the values off/no/false with false">
+    <attribute name="file"/>
+    <sequential>
+      <replaceregexp file="@{file}" byline="true"
+          match="^\s*[\w\.]+\s*[=:]?\s*$" replace=""/>
+      <replaceregexp file="@{file}" byline="true"
+          match="^(\s*[\w\.]+\s*[=:]?\s*)(?i)(on|yes|true)\s*$" replace="\1true"/>
+      <replaceregexp file="@{file}" byline="true"
+          match="^(\s*[\w\.]+\s*[=:]?\s*)(?i)(off|no|false)\s*$" replace="\1false"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="dependencies-resolve">
+    <attribute name="dependencies"/>
+    <sequential>
+      <!-- TODO: -->
+    </sequential>
+  </macrodef>
+
+  <macrodef name="module-integration">
+    <attribute name="module"/>
+    <sequential>
+      <echo message="Integration of @{module}"/>
+      <!-- TODO: -->
+    </sequential>
+  </macrodef>
+</project>
