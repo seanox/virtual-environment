@@ -10,6 +10,9 @@
   <target name="install">
     <!-- TODO: read properties -->
     <!-- TODO: create drive -->
+    <!-- TODO: format drive -->
+    <!-- TODO: label drive -->
+    <!-- TODO: mount drive -->
     <!-- TODO: add start scripts -->
 
     <copy file="build.properties" tofile="build.properties-temp" overwrite="true"/>
@@ -42,6 +45,7 @@
     </for>
 
     <!-- TODO: defrag drive -->
+    <!-- TODO: eject drive -->
     <!-- TODO: compact drive -->
     <!-- TODO: add readme -->
     <!-- TODO: create 7z -->
