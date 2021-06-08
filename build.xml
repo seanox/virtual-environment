@@ -1,53 +1,29 @@
 <?xml version="1.0" ?>
-<project default="install" basedir=".">
+<project default="build" basedir=".">
   <import file="build.extensions"/>
+
   <taskdef resource="net/sf/antcontrib/antlib.xml">
     <classpath>
       <pathelement location="./tools/ant-contrib-1.0B3.zip"/>
     </classpath>
   </taskdef>
 
-  <target name="install">
-    <!-- TODO: read properties -->
-    <!-- TODO: create drive -->
-    <!-- TODO: format drive -->
-    <!-- TODO: label drive -->
-    <!-- TODO: mount drive -->
-    <!-- TODO: add start scripts -->
+  <target name="build">
+    <!-- Loading properties -->
+    <loadproperties srcfile="build.properties"/>
 
-    <copy file="build.properties" tofile="build.properties-temp" overwrite="true"/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="^(?!module\.).*$" replace=""/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="^module\." replace=""/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="^(\s*[\w\.]+\s*[=:]?\s*)(?i)(off|no|false)\s*$" replace=""/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="^(\s*[\w\.]+)\s*[=:]?\s*(?i)(on|yes|true)\s*$" replace="\1"/>
-    <replaceregexp file="build.properties-temp" flags="g" byline="false"
-        match="(?s)[\s\r\n]+" replace=" "/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="(^\s+)|(\s+$)" replace=""/>
-    <replaceregexp file="build.properties-temp" byline="true"
-        match="^(.*)" replace="release.module.set \1"/>
-    <loadproperties srcfile="build.properties-temp"/>
-    <delete file="build.properties-temp"/>
-    <echo message="Modules for integration:"/>
-    <for list="${release.module.set}" delimiter=" " param="module">
-      <sequential>
-        <echo message="  - @{module}"/>
-      </sequential>
-    </for>
-    <for list="${release.module.set}" delimiter=" " param="module">
-      <sequential>
-        <module-integration module="@{module}"/>
-      </sequential>
-    </for>
+    <!-- Create and deploy from virtual drive. -->
+    <ant antfile="./drive/build.xml"/>
+
+    <!-- TODO: mount drive -->
+    <!-- TODO: change drive letter -->
+
+    <!-- Create and assemble the platform and modules. -->
+    <ant antfile="./platform/build.xml"/>
 
     <!-- TODO: defrag drive -->
     <!-- TODO: eject drive -->
     <!-- TODO: compact drive -->
-    <!-- TODO: add readme -->
     <!-- TODO: create 7z -->
   </target>
 </project>
