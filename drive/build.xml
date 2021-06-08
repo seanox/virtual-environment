@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<project default="build">
+  <target name="build">
+
+    <!--
+      Create workspace
+      Define build.drive.file
+      Fill Placeholders
+     -->
+    <copy file="build.cmd" tofile="build-temp.cmd" overwrite="true"/>
+    <copy file="build.diskpart" tofile="build-temp.diskpart" overwrite="true"/>
+    <property name="build.drive.file" location=".\${release.name}.vhdx"/>
+    <placeholder-resolve file="build-temp.cmd"/>
+    <placeholder-resolve file="build-temp.diskpart"/>
+
+    <!-- TODO: create drive -->
+    <!-- TODO: format drive -->
+    <!-- TODO: label drive -->
+    <!-- TODO: mount drive -->
+    <!-- TODO: add start scripts -->
+    <!-- TODO: rename startup.cmd (release.name) -->
+    <!-- TODO: add readme -->
+    <!-- TODO: eject drive -->
+
+    <delete file="build-temp.cmd"/>
+    <delete file="build-temp.diskpart"/>
+  </target>
+</project>
