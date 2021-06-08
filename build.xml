@@ -9,17 +9,18 @@
   </taskdef>
 
   <target name="build">
+
     <!-- Loading properties -->
     <loadproperties srcfile="build.properties"/>
 
     <!-- Create and deploy from virtual drive. -->
-    <ant antfile="./drive/build.xml"/>
+    <ant antfile="./drive/build.xml" inheritall="true" inheritrefs="true" usenativebasedir="true"/>
 
     <!-- TODO: mount drive -->
     <!-- TODO: change drive letter -->
 
     <!-- Create and assemble the platform and modules. -->
-    <ant antfile="./platform/build.xml"/>
+    <ant antfile="./platform/build.xml" inheritall="true" inheritrefs="true" usenativebasedir="true"/>
 
     <!-- TODO: defrag drive -->
     <!-- TODO: eject drive -->

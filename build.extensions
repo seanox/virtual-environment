@@ -16,6 +16,20 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="placeholder-resolve">
+    <attribute name="file"/>
+    <sequential>
+      <propertyselector property="properties" match="^(.{7}(?&lt;!module\.).*)$" select="\1"/>
+      <for list="${properties}" param="placeholder">
+        <sequential>
+          <replace file="@{file}">
+            <replacefilter token="#[@{placeholder}]" value="${@{placeholder}}"/>
+          </replace>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
   <macrodef name="dependencies-resolve">
     <attribute name="dependencies"/>
     <sequential>
