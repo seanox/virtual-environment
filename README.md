@@ -35,3 +35,5 @@ themselves and customize the environment.
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
+
+__Project is in development.__
