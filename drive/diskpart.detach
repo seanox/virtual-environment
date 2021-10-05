@@ -1,0 +1,3 @@
+select vdisk file="#[build.drive.file]"
+detach vdisk 
+exit 
