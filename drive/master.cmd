@@ -4,15 +4,15 @@
 
     IF NOT DEFINED VT_LETTER GOTO:EOF
 
-    net session >nul 2>&1
+    net session > NUL 2>&1
     IF NOT %errorLevel% == 0 (
-        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('This program must be executed as administrator!', 10, 'Warning', 48); close();"
+        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('This program must be executed as administrator!', 10, 'Warning', 48 +4096); close();"
         GOTO:EOF
     )
     GOTO MAIN
 
 :INIT
-    SET VT_LETTER=B
+    SET VT_LETTER=#[release.drive.letter]
     SET VT_NAME=%~n0
     SET VT_SCRIPT=%cd%\%~n0%~x0
     SET VT_HOME=%cd%
@@ -25,7 +25,7 @@
     IF EXIST "%VT_HOME%\%VT_NAME%.vhdx" SET DISK=%VT_HOME%\%VT_NAME%.vhdx
   
     IF NOT EXIST "%DISK%" (
-        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('No corresponding virtual disk found!', 10, 'Warning', 48); close();"
+        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('No corresponding virtual disk found!', 10, 'Warning', 48 +4096); close();"
         GOTO:EOF
     )
   
@@ -68,7 +68,7 @@
     IF "%number%" == "X" (
         DiskPart /s %VT_NAME%.detach >> "%VT_OUTPUT%"
         CALL :CLEAN
-        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('Volume for \'%VT_NAME%\' was not found in:\r\n\tDiskPart /s %VT_NAME%.list\r\nPlease check the virtual disk, it must exist and use the name of the environment!', 10, 'Warning', 48); close();"
+        mshta "javascript:new ActiveXObject('WScript.Shell').Popup('Volume for \'%VT_NAME%\' was not found in:\r\n\tDiskPart /s %VT_NAME%.list\r\nPlease check the virtual disk, it must exist and use the name of the environment!', 10, 'Warning', 48 +4096); close();"
         GOTO:EOF
     )
   
