@@ -1,0 +1,5 @@
+select vdisk file="#[build.drive.file]"
+attach vdisk readonly
+compact vdisk
+detach vdisk
+exit
