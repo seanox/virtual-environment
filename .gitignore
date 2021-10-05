@@ -1,3 +1,5 @@
-/drive/build-temp.*
-/platform/build-temp.*
-/platform/Install/build-temp.*
+/.idea/
+/drive/*.*_temp
+/drive/*.vhdx
+/platform/*.*_temp
+/platform/Install/*.*_temp
