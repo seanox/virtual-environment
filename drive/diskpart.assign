@@ -1,3 +1,0 @@
-select volume #[build.drive.number]
-assign letter=#[build.drive.letter]
-exit
