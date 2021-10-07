@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
-<project default="build">
+<project default="drive-build">
 
-  <property name="build.drive.file" location=".\${release.name}.vhdx"/>
+  <property name="workspace.drive.file" location=".\${release.name}.vhdx"/>
+  <property name="workspace.drive.letter" value="${build.drive.letter}"/>
 
   <macrodef name="workfile-prepare">
     <attribute name="file"/>
@@ -37,7 +38,7 @@
     <diskpart-exec file="diskpart.detach"/>
   </target>
 
-  <target name="release">
+  <target name="drive-release">
 
     <!--
       Compacting virtual disk
@@ -54,11 +55,11 @@
     <move file="master.vhdx" tofile="${assembly}/${release.name}.vhdx"/>
   </target>
 
-  <target name="build">
+  <target name="drive-build">
 
     <!--
       Create workspace
-        - Define build.drive.file
+        - Define workspace.drive.file
         - Fill Placeholders and create temporary work files
         - Drive: create, format, label, mount
      -->
@@ -78,7 +79,7 @@
         - Virtual drive can be ejected
      -->
     <exec executable="Defrag" failonerror="on" failifexecutionfails="on">
-      <arg value="${build.drive.letter}:"/>
+      <arg value="${workspace.drive.letter}:"/>
     </exec>
     <antcall target="diskpart-detach"/>
 

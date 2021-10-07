@@ -1,6 +1,6 @@
 @ECHO OFF
 
-    IF EXIST "#[build.drive.file]" del "#[build.drive.file]"
+    IF EXIST "#[workspace.drive.file]" del "#[workspace.drive.file]"
 
     DiskPart /s diskpart.create
     IF NOT %errorLevel% == 0 (
@@ -37,7 +37,7 @@
     ECHO Volume number %number% found for '#[release.name]'.
 
     ECHO select volume %number% > diskpart.assign
-    ECHO assign letter=#[build.drive.letter] >> diskpart.assign
+    ECHO assign letter=#[workspace.drive.letter] >> diskpart.assign
     ECHO exit >> diskpart.assign
 
     DiskPart /s diskpart.assign

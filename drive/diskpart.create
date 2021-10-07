@@ -1,5 +1,5 @@
-create vdisk file="#[build.drive.file]" type=#[release.drive.type] maximum=#[release.drive.size]
-select vdisk file="#[build.drive.file]"
+create vdisk file="#[workspace.drive.file]" type=#[release.drive.type] maximum=#[release.drive.size]
+select vdisk file="#[workspace.drive.file]"
 attach vdisk
 convert #[release.drive.style]
 create partition primary
