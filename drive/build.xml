@@ -16,9 +16,10 @@
 
   <macrodef name="diskpart-exec">
     <attribute name="file"/>
+    <attribute name="failure"/>
     <sequential>
       <workfile-prepare file="@{file}"/>
-      <exec executable="DiskPart" failonerror="on" failifexecutionfails="on" outputproperty="ignore">
+      <exec executable="DiskPart" failonerror="@{failure}" failifexecutionfails="@{failure}" outputproperty="ignore">
         <arg value="/s"/>
         <arg value="___@{file}"/>
       </exec>
@@ -26,16 +27,20 @@
     </sequential>
   </macrodef>
 
-  <target name="diskpart-attach">
-    <diskpart-exec file="diskpart.attach"/>
+  <target name="drive-attach">
+    <diskpart-exec file="diskpart.attach" failure="on"/>
   </target>
 
-  <target name="diskpart-compact">
-    <diskpart-exec file="diskpart.compact"/>
+  <target name="drive-compact">
+    <diskpart-exec file="diskpart.compact" failure="on"/>
   </target>
 
-  <target name="diskpart-detach">
-    <diskpart-exec file="diskpart.detach"/>
+  <target name="drive-detach">
+    <diskpart-exec file="diskpart.detach" failure="on"/>
+  </target>
+
+  <target name="drive-detach-force">
+    <diskpart-exec file="diskpart.detach" failure="off"/>
   </target>
 
   <target name="drive-release">
@@ -46,8 +51,8 @@
           During the first pass, the data area is optimized, which is
           effectively used only during the second pass.
      -->
-    <antcall target="diskpart-compact"/>
-    <antcall target="diskpart-compact"/>
+    <antcall target="drive-compact"/>
+    <antcall target="drive-compact"/>
 
     <!-- Scripts necessary for the launch are deployed -->
     <copy file="master.cmd" tofile="${assembly}/${release.name}.cmd"/>
@@ -83,7 +88,7 @@
     <exec executable="Defrag" failonerror="on" failifexecutionfails="on" outputproperty="ignore">
       <arg value="${workspace.drive.letter}:"/>
     </exec>
-    <antcall target="diskpart-detach"/>
+    <antcall target="drive-detach"/>
 
     <!-- Clean up work files -->
     <delete>
