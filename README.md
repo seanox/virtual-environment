@@ -36,6 +36,8 @@ themselves and customize the environment.
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
 
+List of available modules: https://github.com/seanox/portable-development-environment/tree/main/modules
+
 __Project is in development.__
 
 
