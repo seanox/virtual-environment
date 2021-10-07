@@ -2,23 +2,26 @@
 
     IF EXIST "#[workspace.drive.file]" del "#[workspace.drive.file]"
 
-    DiskPart /s diskpart.create
+    ECHO DiskPart /s diskpart.create
+    DiskPart /s diskpart.create > NUL
     IF NOT %errorLevel% == 0 (
-        ECHO DiskPart /s diskpart.create ^(failed^)
-        DiskPart /s diskpart.detach
+        ECHO An unexpected error has occurred
+        DiskPart /s diskpart.detach > NUL
         EXIT /B 1
     )
 
-    DiskPart /s diskpart.attach
+    ECHO DiskPart /s diskpart.attach
+    DiskPart /s diskpart.attach > NUL
     IF NOT %errorLevel% == 0 (
-        ECHO DiskPart /s diskpart.attach ^(failed^)
-        DiskPart /s diskpart.detach
+        ECHO An unexpected error has occurred
+        DiskPart /s diskpart.detach > NUL
         EXIT /B 1
     )
 
     ECHO list volume > diskpart.list
     ECHO exit >> diskpart.list
 
+    ECHO DiskPart /s diskpart.list
     DiskPart /s diskpart.list > diskpart.volumes
 
     SET number=X
@@ -27,23 +30,22 @@
     )
 
     IF "%number%" == "X" (
-        DiskPart /s diskpart.detach
+        DiskPart /s diskpart.detach > NUL
         ECHO Volume for '#[release.name]' was not found in:
         ECHO      diskpart.list
         ECHO Please check the virtual disk, it must exist and use the name of the environment!
         EXIT /B 1
     )
 
-    ECHO Volume number %number% found for '#[release.name]'.
-
     ECHO select volume %number% > diskpart.assign
     ECHO assign letter=#[workspace.drive.letter] >> diskpart.assign
     ECHO exit >> diskpart.assign
 
-    DiskPart /s diskpart.assign
+    ECHO DiskPart /s diskpart.assign
+    DiskPart /s diskpart.assign > NUL
     IF NOT %errorLevel% == 0 (
-        ECHO DiskPart /s diskpart.assign ^(failed^)
-        DiskPart /s diskpart.detach
+        ECHO An unexpected error has occurred
+        DiskPart /s diskpart.detach > NUL
         EXIT /B 1
     )
 

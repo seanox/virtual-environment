@@ -18,7 +18,7 @@
     <attribute name="file"/>
     <sequential>
       <workfile-prepare file="@{file}"/>
-      <exec executable="DiskPart" failonerror="on" failifexecutionfails="on">
+      <exec executable="DiskPart" failonerror="on" failifexecutionfails="on" outputproperty="ignore">
         <arg value="/s"/>
         <arg value="___@{file}"/>
       </exec>
@@ -68,6 +68,8 @@
     <workfile-prepare file="diskpart.detach"/>
     <workfile-prepare file="build.cmd"/>
 
+    <delete file="master.vhdx" failonerror="true"/>
+
     <exec executable="cmd" failonerror="on" failifexecutionfails="on">
       <arg value="/C"/>
       <arg value="___build.cmd"/>
@@ -78,7 +80,7 @@
         - Virtual drive can be defragmented
         - Virtual drive can be ejected
      -->
-    <exec executable="Defrag" failonerror="on" failifexecutionfails="on">
+    <exec executable="Defrag" failonerror="on" failifexecutionfails="on" outputproperty="ignore">
       <arg value="${workspace.drive.letter}:"/>
     </exec>
     <antcall target="diskpart-detach"/>
