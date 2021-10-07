@@ -61,8 +61,7 @@ specific language governing permissions and limitations under the License.
 
 # System Requirement
  
-- Java 11 or higher
-- Apache Ant 1.10.x or higher
+- Apache Ant 1.10.x or higher (including Java)
 
 
 # Downloads
