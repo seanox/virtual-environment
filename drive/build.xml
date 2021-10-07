@@ -1,28 +1,90 @@
 <?xml version="1.0" ?>
 <project default="build">
+
+  <property name="build.drive.file" location=".\${release.name}.vhdx"/>
+
+  <macrodef name="workfile-prepare">
+    <attribute name="file"/>
+    <sequential>
+      <copy file="@{file}" tofile="___@{file}" overwrite="true"/>
+      <placeholder-resolve file="___@{file}"/>
+      <replaceregexp file="___@{file}" byline="false" flags="g"
+          match="(diskpart\.\w+)" replace="___\1"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="diskpart-exec">
+    <attribute name="file"/>
+    <sequential>
+      <workfile-prepare file="@{file}"/>
+      <exec executable="DiskPart" failonerror="on" failifexecutionfails="on">
+        <arg value="/s"/>
+        <arg value="___@{file}"/>
+      </exec>
+      <delete file="___@{file}"/>
+    </sequential>
+  </macrodef>
+
+  <target name="diskpart-attach">
+    <diskpart-exec file="diskpart.attach"/>
+  </target>
+
+  <target name="diskpart-compact">
+    <diskpart-exec file="diskpart.compact"/>
+  </target>
+
+  <target name="diskpart-detach">
+    <diskpart-exec file="diskpart.detach"/>
+  </target>
+
+  <target name="release">
+
+    <!--
+      Compacting virtual disk
+        - double optimize is effective for virtual drive
+          During the first pass, the data area is optimized, which is
+          effectively used only during the second pass.
+     -->
+    <antcall target="diskpart-compact"/>
+    <antcall target="diskpart-compact"/>
+
+    <!-- Scripts necessary for the launch are deployed -->
+    <copy file="master.cmd" tofile="${assembly}/${release.name}.cmd"/>
+    <copy file="${startup}/startup.exe" tofile="${assembly}/${release.name}.exe"/>
+    <move file="master.vhdx" tofile="${assembly}/${release.name}.vhdx"/>
+  </target>
+
   <target name="build">
 
     <!--
       Create workspace
-      Define build.drive.file
-      Fill Placeholders
+        - Define build.drive.file
+        - Fill Placeholders and create temporary work files
+        - Drive: create, format, label, mount
      -->
-    <copy file="build.cmd" tofile="build-temp.cmd" overwrite="true"/>
-    <copy file="build.diskpart" tofile="build-temp.diskpart" overwrite="true"/>
-    <property name="build.drive.file" location=".\${release.name}.vhdx"/>
-    <placeholder-resolve file="build-temp.cmd"/>
-    <placeholder-resolve file="build-temp.diskpart"/>
+    <workfile-prepare file="diskpart.create"/>
+    <workfile-prepare file="diskpart.attach"/>
+    <workfile-prepare file="diskpart.detach"/>
+    <workfile-prepare file="build.cmd"/>
 
-    <!-- TODO: create drive -->
-    <!-- TODO: format drive -->
-    <!-- TODO: label drive -->
-    <!-- TODO: mount drive -->
-    <!-- TODO: add start scripts -->
-    <!-- TODO: rename startup.cmd (release.name) -->
-    <!-- TODO: add readme -->
-    <!-- TODO: eject drive -->
+    <exec executable="cmd" failonerror="on" failifexecutionfails="on">
+      <arg value="/C"/>
+      <arg value="___build.cmd"/>
+    </exec>
 
-    <delete file="build-temp.cmd"/>
-    <delete file="build-temp.diskpart"/>
+    <!--
+      Assembly is complete
+        - Virtual drive can be defragmented
+        - Virtual drive can be ejected
+     -->
+    <exec executable="Defrag" failonerror="on" failifexecutionfails="on">
+      <arg value="${build.drive.letter}:"/>
+    </exec>
+    <antcall target="diskpart-detach"/>
+
+    <!-- Clean up work files -->
+    <delete>
+      <fileset dir="." includes="___*"/>
+    </delete>
   </target>
 </project>
