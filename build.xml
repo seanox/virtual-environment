@@ -1,30 +1,76 @@
 <?xml version="1.0" ?>
 <project default="build" basedir=".">
+
+  <!-- Loading properties -->
+  <loadproperties srcfile="build.properties"/>
+
+  <property name="assembly" value="${basedir}/assembly"/>
+  <property name="drive" value="${basedir}/drive"/>
+  <property name="platform" value="${basedir}/platform"/>
+  <property name="modules" value="${basedir}/modules"/>
+  <property name="startup" value="${basedir}/startup"/>
+  <property name="temp" value="${basedir}/temp"/>
+  <property name="tools" value="${basedir}/tools"/>
+
   <import file="build.extensions"/>
 
   <taskdef resource="net/sf/antcontrib/antlib.xml">
     <classpath>
-      <pathelement location="./tools/ant-contrib-1.0B3.zip"/>
+      <pathelement location="${tools}/ant-contrib-1.0B3.zip"/>
     </classpath>
   </taskdef>
 
+  <macrodef name="drive-attach">
+    <sequential>
+      <ant antfile="${drive}/build.xml" target="drive-attach"
+          inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="drive-detach">
+    <sequential>
+      <ant antfile="${drive}/build.xml" target="drive-detach"
+          inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="drive-release">
+    <sequential>
+      <ant antfile="${drive}/build.xml" target="drive-release"
+          inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+    </sequential>
+  </macrodef>
+
   <target name="build">
 
-    <!-- Loading properties -->
-    <loadproperties srcfile="build.properties"/>
+    <delete dir="${assembly}"/>
+    <mkdir dir="${assembly}"/>
 
-    <!-- Create and deploy from virtual drive. -->
-    <ant antfile="./drive/build.xml" inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+    <ant antfile="${drive}/build.xml" target="drive-detach-force"
+        inheritall="true" inheritrefs="true" usenativebasedir="true"/>
 
-    <!-- TODO: mount drive -->
-    <!-- TODO: change drive letter -->
+    <!-- Create the virtual disk as workspace -->
+    <ant antfile="${drive}/build.xml" target="drive-build"
+        inheritall="true" inheritrefs="true" usenativebasedir="true"/>
 
-    <!-- Create and assemble the platform and modules. -->
-    <ant antfile="./platform/build.xml" inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+    <!-- Copying the static structure of the environment -->
+    <drive-attach/>
+    <copy todir="${build.drive.letter}:/">
+      <fileset dir="${platform}" defaultexcludes="no"/>
+    </copy>
+    <placeholder-resolve file="${build.drive.letter}:/AutoRun.inf"/>
+    <drive-detach/>
 
-    <!-- TODO: defrag drive -->
-    <!-- TODO: eject drive -->
-    <!-- TODO: compact drive -->
-    <!-- TODO: create 7z -->
+    <!-- Integrates all modules which which are enabled -->
+    <ant antfile="${modules}/build.xml" target="modules-integration"
+        inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+
+    <!--
+      Finalization and deployment of the virtual disk in assembly
+        - Defragemntation of the virtual disk
+        - Compacting virtual disk
+        - Deploy virtual hard disk with all scripts in assembly
+     -->
+    <drive-release/>
   </target>
 </project>

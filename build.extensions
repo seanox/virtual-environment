@@ -27,6 +27,12 @@
           </replace>
         </sequential>
       </for>
+      <replace file="@{file}">
+        <replacefilter token="#[workspace.drive.file]" value="${workspace.drive.file}"/>
+        <replacefilter token="#[workspace.drive.letter]" value="${workspace.drive.letter}"/>
+        <replacefilter token="#[workspace.modules]" value="${workspace.modules}"/>
+        <replacefilter token="#[workspace.modules.launcher]" value="${workspace.modules.launcher}"/>
+      </replace>
     </sequential>
   </macrodef>
 
