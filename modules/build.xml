@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<project default="modules-integration">
+
+  <property name="workspace.modules" value="${build.drive.letter}:/Modules"/>
+  <property name="workspace.modules.launcher" value="${workspace.modules}/MaxLauncher"/>
+
+  <target name="modules-integration">
+    <drive-attach/>
+    <mkdir dir="workspace.modules"/>
+    <mkdir dir="workspace.modules.launcher"/>
+
+    <propertyselector property="assemblies" override="true" match="^module\.(.*)$" select="\1"/>
+    <for list="${assemblies}" param="module">
+      <sequential>
+        <ant antfile="${modules}/@{module}/build.xml" target="module-assembly"
+            inheritall="true" inheritrefs="true" usenativebasedir="true"/>
+      </sequential>
+    </for>
+
+    <!-- TODO Build MaxLauncher mld -->
+
+    <drive-detach/>
+  </target>
+</project>

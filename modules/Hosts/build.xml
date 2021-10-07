@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<project default="module-assembly">
+  <target name="module-assembly">
+    <!-- TODO -->
+  </target>
+</project>
