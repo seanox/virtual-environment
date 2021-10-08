@@ -36,7 +36,18 @@ themselves and customize the environment.
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
 
-List of available modules: https://github.com/seanox/portable-development-environment/tree/main/modules
+## Advantages
+- A virtual drive is used, which contains all data in one file.
+- The drives can also be used over the network.
+- The drives can also be supplied and used via the network.
+- Only one large file can be copied faster and also shared.
+- Snapshots and versioning are possible.
+- Multiple drives with different environments can be used in parallel on one computer. 
+- Fast switching between different drives and environments is possible.
+- Fixed drive letters and paths are used.
+
+## List of available modules 
+https://github.com/seanox/portable-development-environment/tree/main/modules
 
 __Project is in development.__
 
