@@ -43,7 +43,6 @@
   <macrodef name="workfile-prepare">
     <attribute name="file"/>
     <sequential>
-    <echo>${xxx}</echo>
       <copy file="@{file}" tofile="___@{file}" overwrite="true"/>
       <placeholder-resolve file="___@{file}"/>
       <replaceregexp file="___@{file}" byline="false" flags="g"
