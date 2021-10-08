@@ -3,8 +3,8 @@
   <macrodef name="properties-normalize"
       description="Normalizes properties files as follows:
           - Removes keys without values in properties files
-          - Replaces the values on/yes/true with true
-          - Replaces the values off/no/false with false">
+          - Replaces the values on/true/yes with true
+          - Replaces the values off/false/no with false">
     <attribute name="file"/>
     <sequential>
       <replaceregexp file="@{file}" byline="true"
@@ -31,23 +31,31 @@
         <replacefilter token="#[workspace.drive.file]" value="${workspace.drive.file}"/>
         <replacefilter token="#[workspace.drive.letter]" value="${workspace.drive.letter}"/>
         <replacefilter token="#[workspace.modules]" value="${workspace.modules}"/>
-        <replacefilter token="#[workspace.modules.launcher]" value="${workspace.modules.launcher}"/>
+        <replacefilter token="#[workspace.modules.commons]" value="${workspace.modules.commons}"/>
+        <replacefilter token="#[workspace.modules.startup]" value="${workspace.modules.startup}"/>
+        <replacefilter token="#[workspace.modules.control]" value="${workspace.modules.control}"/>
+        <replacefilter token="#[workspace.module.name]" value="${workspace.module.name}"/>
+        <replacefilter token="#[release.modules]" value="${release.modules}"/>
       </replace>
     </sequential>
   </macrodef>
 
-  <macrodef name="dependencies-resolve">
-    <attribute name="dependencies"/>
+  <macrodef name="workfile-prepare">
+    <attribute name="file"/>
     <sequential>
-      <!-- TODO: -->
+    <echo>${xxx}</echo>
+      <copy file="@{file}" tofile="___@{file}" overwrite="true"/>
+      <placeholder-resolve file="___@{file}"/>
+      <replaceregexp file="___@{file}" byline="false" flags="g"
+          match="(diskpart\.\w+)" replace="___\1"/>
     </sequential>
   </macrodef>
 
-  <macrodef name="module-integration">
-    <attribute name="module"/>
+  <macrodef name="mkdir-x">
+    <attribute name="dir"/>
     <sequential>
-      <echo message="Integration of @{module}"/>
-      <!-- TODO: -->
+      <delete dir="@{dir}"/>
+      <mkdir dir="@{dir}"/>
     </sequential>
   </macrodef>
 </project>

@@ -43,8 +43,8 @@
 
   <target name="build">
 
-    <delete dir="${assembly}"/>
-    <mkdir dir="${assembly}"/>
+    <mkdir-x dir="${assembly}"/>
+    <mkdir-x dir="${temp}"/>
 
     <ant antfile="${drive}/build.xml" target="drive-detach-force"
         inheritall="true" inheritrefs="true" usenativebasedir="true"/>
