@@ -36,6 +36,10 @@ themselves and customize the environment.
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
 
+__The project provides a tool for initial creation of a pre-configured
+environment with some tools and programs. Afterwards, the environment can be
+maintained, configured and extended independently without this tool.__
+
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
 - The drives can also be used over the network.
