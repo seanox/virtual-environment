@@ -4,16 +4,6 @@
   <property name="workspace.drive.file" location=".\${release.name}.vhdx"/>
   <property name="workspace.drive.letter" value="${build.drive.letter}"/>
 
-  <macrodef name="workfile-prepare">
-    <attribute name="file"/>
-    <sequential>
-      <copy file="@{file}" tofile="___@{file}" overwrite="true"/>
-      <placeholder-resolve file="___@{file}"/>
-      <replaceregexp file="___@{file}" byline="false" flags="g"
-          match="(diskpart\.\w+)" replace="___\1"/>
-    </sequential>
-  </macrodef>
-
   <macrodef name="diskpart-exec">
     <attribute name="file"/>
     <attribute name="failure"/>
