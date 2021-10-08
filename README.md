@@ -45,6 +45,9 @@ is also supported :-)
 - Multiple drives with different environments can be used in parallel on one computer. 
 - Fast switching between different drives and environments is possible.
 - Fixed drive letters and paths are used.
+- The use of the file system and registry from the host is avoided.
+- Environments can be maintained and distributed centrally.
+- Users all use the same environment with the same paths and configurations, which makes automation easier.
 
 ## List of available modules 
 https://github.com/seanox/portable-development-environment/tree/main/modules
