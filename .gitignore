@@ -1,5 +1,5 @@
 /.idea/
-/drive/*.*_temp
+/assembly/
 /drive/*.vhdx
-/platform/*.*_temp
-/platform/Install/*.*_temp
+/temp/
+/**/___*
