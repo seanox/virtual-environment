@@ -30,10 +30,10 @@ import Modules from "../modules/modules.js"
 
 export default class Assembler {
 
-    static assemble(yaml) {
+    static assemble(yamlFile) {
 
         // Workspace enable
-        Workspace.initialize(yaml)
+        Workspace.initialize(yamlFile)
         process.on("exit", Workspace.cleanUp.bind(null))
 
         // Detach workspace drives if necessary
