@@ -26,6 +26,7 @@
  * @version 1.0.0 20211014
  */
 import Workspace from "./workspace.js"
+import Modules from "../modules/modules.js"
 
 export default class Assembler {
 
@@ -36,16 +37,23 @@ export default class Assembler {
         process.on("exit", Workspace.cleanUp.bind(null))
 
         // Detach workspace drives if necessary
+        Workspace.detachDrive()
 
         // Create a new virtual disk as workspace-drive
+        Workspace.createDrive()
 
         // Copying the static structure of the environment
+        Workspace.attachDrive();
+        Workspace.copyDirectoryInto("./platform", Workspace.getDrivePath())
+        Workspace.detachDrive();
 
         // Integrates all modules which which are enabled
+        Modules.integrate()
 
         // Finalization and deployment of the virtual disk in assembly
         // - Defragemntation of the virtual disk
         // - Compacting virtual disk
         // - Deploy virtual hard disk with all scripts in assembly
+        Workspace.finalize()
     }
 }
