@@ -37,7 +37,6 @@ export default class Assembler {
         Workspace.initialize(yamlFile)
 
         // Detach workspace drives if necessary
-        console.log("Drive: Detach workspace drive when available")
         Workspace.detachDrive()
 
         // Create a new virtual disk as workspace-drive
@@ -60,5 +59,9 @@ export default class Assembler {
         // - Deploy virtual hard disk with all scripts in assembly
         console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
+
+        console.log()
+        console.log("The Portable Development Environment is completed in:")
+        console.log(Workspace.getDirectory())
     }
 }
