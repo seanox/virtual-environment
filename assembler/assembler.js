@@ -25,6 +25,8 @@
  * @author  Seanox Software Solutions
  * @version 1.0.0 20211014
  */
+import fs from "fs"
+
 import Workspace from "./workspace.js"
 import Modules from "./modules.js"
 
@@ -46,7 +48,7 @@ export default class Assembler {
         // Copying the static structure of the environment
         console.log("Platform: Deployment of static components")
         Workspace.attachDrive();
-        Workspace.copyDirectoryInto("./platform", Workspace.getDrivePath())
+        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDrivePath())
         Workspace.detachDrive();
 
         // Integrates all modules which which are enabled
@@ -59,6 +61,10 @@ export default class Assembler {
         // - Deploy virtual hard disk with all scripts in assembly
         console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
+
+        const releaseName = Workspace.getVariable("release.name")
+        fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")
+        fs.copyFileSync(Workspace.getDriveDirectory() + "/startup.cmd", Workspace.getDirectory() + "/" + releaseName + ".cmd")
 
         console.log()
         console.log("The Portable Development Environment is completed in:")
