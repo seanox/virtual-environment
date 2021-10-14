@@ -47,20 +47,24 @@ export default class Assembler {
 
         // Copying the static structure of the environment
         console.log("Platform: Deployment of static components")
-        Workspace.attachDrive();
-        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDrivePath())
-        Workspace.detachDrive();
+        Workspace.assignDrive()
+        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDriveRootDirectory())
+        Workspace.detachDrive()
 
         // Integrates all modules which which are enabled
         console.log("Modules: Integration of the selected modules")
+        Workspace.assignDrive()
         Modules.integrate()
+        Workspace.detachDrive()
 
         // Finalization and deployment of the virtual disk in assembly
         // - Defragemntation of the virtual disk
         // - Compacting virtual disk
         // - Deploy virtual hard disk with all scripts in assembly
         console.log("Drive: Finalizing the workspace drive")
+        Workspace.assignDrive()
         Workspace.finalize()
+        Workspace.detachDrive()
 
         const releaseName = Workspace.getVariable("release.name")
         fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")

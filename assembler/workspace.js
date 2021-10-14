@@ -32,8 +32,6 @@ import yaml from "yaml"
 
 import Diskpart from "./diskpart.js"
 
-const SIGNATURE = new Date().getTime().toString(36).toUpperCase()
-
 const VARIABLES = new Map()
 
 export default class Workspace {
@@ -71,7 +69,7 @@ export default class Workspace {
             const value = yamlObjectFlat[key]
             if (typeof value === "function"
                     || typeof value === "object")
-                continue;
+                continue
             Workspace.setVariable(key, value)
         }
 
@@ -136,6 +134,11 @@ export default class Workspace {
         return Diskpart.diskpartExec("diskpart.attach")
     }
 
+    static assignDrive() {
+        Workspace.attachDrive();
+        // TODO:
+    }
+
     static detachDrive() {
         return Diskpart.diskpartExec("diskpart.detach")
     }
@@ -150,10 +153,14 @@ export default class Workspace {
     }
 
     static createWorkfile(sourceFile) {
+
+        if (sourceFile === undefined)
+            return Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase()
+
         let workFileContent = fs.readFileSync(sourceFile).toString()
         for (const key of Workspace.listVariables())
             workFileContent = workFileContent.replace("#[" + key + "]", Workspace.getVariable(key))
-        const workFile = Workspace.getTempDirectory() + "/" + SIGNATURE + "_" + path.basename(sourceFile)
+        const workFile = Workspace.getTempDirectory() + "/" + path.basename(sourceFile)
         fs.writeFileSync(workFile, workFileContent)
         return workFile
     }
