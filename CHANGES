@@ -1,0 +1,13 @@
+3.0.0 2021XXXX
+  CR: Change from assemble to Node.JS
+
+2.1.0 20XXXXXX
+  CR: Added support for VHDX and BitLocker
+  NT: More details have been lost
+
+2.0.0 20XXXXXX
+  CR: Change from SUBST to virtual disks VHD
+  NT: More details have been lost
+  
+1.0.0 20XXXXXX
+  NT: Release is available
