@@ -26,34 +26,39 @@
  * @version 1.0.0 20211014
  */
 import Workspace from "./workspace.js"
-import Modules from "../modules/modules.js"
+import Modules from "./modules.js"
 
 export default class Assembler {
 
     static assemble(yamlFile) {
 
         // Workspace enable
+        console.log("Workspace: Initialization")
         Workspace.initialize(yamlFile)
-        process.on("exit", Workspace.cleanUp.bind(null))
 
         // Detach workspace drives if necessary
+        console.log("Drive: Detach workspace drive when available")
         Workspace.detachDrive()
 
         // Create a new virtual disk as workspace-drive
+        console.log("Drive: Creation and initialization of a new workspace drive")
         Workspace.createDrive()
 
         // Copying the static structure of the environment
+        console.log("Platform: Deployment of static components")
         Workspace.attachDrive();
         Workspace.copyDirectoryInto("./platform", Workspace.getDrivePath())
         Workspace.detachDrive();
 
         // Integrates all modules which which are enabled
+        console.log("Modules: Integration of the selected modules")
         Modules.integrate()
 
         // Finalization and deployment of the virtual disk in assembly
         // - Defragemntation of the virtual disk
         // - Compacting virtual disk
         // - Deploy virtual hard disk with all scripts in assembly
+        console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
     }
 }
