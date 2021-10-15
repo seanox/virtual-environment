@@ -18,13 +18,14 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 1.0.0 20211014
+ * Workspace 1.0.0 20211015
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211014
+ * @version 1.0.0 20211015
  */
+import child from "child_process"
 import flat from "flat"
 import fs from "fs"
 import path from "path"
@@ -75,13 +76,9 @@ export default class Workspace {
 
         const tempDirectory = path.normalize(path.dirname(yamlFile) + "/temp")
         Workspace.setVariable("workspace.temp.directory", tempDirectory)
-        fs.rmdirSync(tempDirectory, {recursive: true})
-        fs.mkdirSync(tempDirectory, {recursive: true})
 
         const workspaceDirectory = path.normalize(path.dirname(yamlFile) + "/workspace")
         Workspace.setVariable("workspace.directory", workspaceDirectory)
-        fs.rmdirSync(workspaceDirectory, {recursive: true})
-        fs.mkdirSync(workspaceDirectory, {recursive: true})
 
         const workspaceDriveFile = path.normalize(workspaceDirectory + "/" + Workspace.getVariable("release.name") + ".vhdx")
         Workspace.setVariable("workspace.drive.file", workspaceDriveFile)
@@ -100,6 +97,15 @@ export default class Workspace {
 
         const workspaceDriveRootDirectory = path.normalize(Workspace.getVariable("workspace.drive") + ":/")
         Workspace.setVariable("workspace.drive.root.directory", workspaceDriveRootDirectory)
+
+        // Detach workspace drives if necessary
+        Workspace.detachDrive(false)
+
+        fs.rmdirSync(tempDirectory, {recursive: true})
+        fs.mkdirSync(tempDirectory, {recursive: true})
+
+        fs.rmdirSync(workspaceDirectory, {recursive: true})
+        fs.mkdirSync(workspaceDirectory, {recursive: true})
     }
 
     static setVariable(key, value) {
@@ -126,24 +132,42 @@ export default class Workspace {
         return Workspace.getVariable("workspace.drive.root.directory")
     }
 
-    static createDrive() {
-        return Diskpart.diskpartExec("diskpart.create")
+    static createDrive(failure = true) {
+        return Diskpart.diskpartExec("diskpart.create", failure)
     }
 
-    static attachDrive() {
-        return Diskpart.diskpartExec("diskpart.attach")
+    static attachDrive(failure = true) {
+        return Diskpart.diskpartExec("diskpart.attach", failure)
     }
 
-    static assignDrive() {
-        Workspace.attachDrive();
-        // TODO:
+    static assignDrive(failure = true) {
+        Workspace.attachDrive(failure)
+        const listDrivesResult = Diskpart.diskpartExec("diskpart.list", failure)
+        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("release.display") + "\\s", "im")
+        const listDrivesMatch = listDrivesResult.stdout.toString().match(listDrivesFilter)
+        if (!listDrivesMatch) {
+            console.log(listDrivesResult.stdout.toString())
+            throw new Error("Volume for '" + Workspace.getVariable("release.display") + "' was not found in diskpart.list")
+        }
+        Workspace.setVariable("workspace.drive.number", listDrivesMatch[1])
+        return Diskpart.diskpartExec("diskpart.assign", false)
     }
 
-    static detachDrive() {
-        return Diskpart.diskpartExec("diskpart.detach")
+    static detachDrive(failure = true) {
+        return Diskpart.diskpartExec("diskpart.detach", failure)
     }
 
     static finalize() {
+
+        Workspace.assignDrive()
+        const defragResult = child.spawnSync("defrag", [Workspace.getVariable("workspace.drive") + ":"])
+        if (defragResult instanceof Error)
+            throw defragResult
+        if (defragResult.status !== 0) {
+            console.log(defragResult.stdout)
+            throw new Error("An unexpected error occurred during defrag")
+        }
+        Workspace.detachDrive()
 
         // Compacting, double optimize is effective for virtual drive
         // During the first pass, the data area is optimized, which is
@@ -159,7 +183,11 @@ export default class Workspace {
 
         let workFileContent = fs.readFileSync(sourceFile).toString()
         for (const key of Workspace.listVariables())
-            workFileContent = workFileContent.replace("#[" + key + "]", Workspace.getVariable(key))
+            workFileContent = workFileContent.replace(/(#\[)\s*([^\]]*)\s*(\])/g, (...match) => {
+                if (Workspace.listVariables().includes(match[2]))
+                    return Workspace.getVariable(match[2])
+                return match[0]
+            })
         const workFile = Workspace.getTempDirectory() + "/" + path.basename(sourceFile)
         fs.writeFileSync(workFile, workFileContent)
         return workFile
