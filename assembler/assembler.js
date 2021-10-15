@@ -38,9 +38,6 @@ export default class Assembler {
         console.log("Workspace: Initialization")
         Workspace.initialize(yamlFile)
 
-        // Detach workspace drives if necessary
-        Workspace.detachDrive(false)
-
         // Create a new virtual disk as workspace-drive
         console.log("Drive: Creation and initialization of a new workspace drive")
         Workspace.createDrive()

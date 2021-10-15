@@ -28,7 +28,7 @@ workspace:
 release:
     name:             master
     display:          Master
-    version:          10.0.0
+    version:          3.0.0
 
     drive:
         letter:       B
