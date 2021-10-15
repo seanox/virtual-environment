@@ -26,7 +26,6 @@
  * @version 1.0.0 20211015
  */
 import child from "child_process"
-import fs from "fs"
 
 import Workspace from "./workspace.js"
 
