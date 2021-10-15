@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Workspace 1.0.0 20211014
+ * Workspace 1.0.0 20211015
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211014
+ * @version 1.0.0 20211015
  */
 import fs from "fs"
 
@@ -39,7 +39,7 @@ export default class Assembler {
         Workspace.initialize(yamlFile)
 
         // Detach workspace drives if necessary
-        Workspace.detachDrive()
+        Workspace.detachDrive(false)
 
         // Create a new virtual disk as workspace-drive
         console.log("Drive: Creation and initialization of a new workspace drive")
@@ -62,9 +62,7 @@ export default class Assembler {
         // - Compacting virtual disk
         // - Deploy virtual hard disk with all scripts in assembly
         console.log("Drive: Finalizing the workspace drive")
-        Workspace.assignDrive()
         Workspace.finalize()
-        Workspace.detachDrive()
 
         const releaseName = Workspace.getVariable("release.name")
         fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")
