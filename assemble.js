@@ -29,11 +29,11 @@ import path from "path"
 
 import Assembler from "./assembler/assembler.js"
 
+const scriptFile = path.normalize(process.argv.slice(1)[0]);
+const yamlFile = scriptFile.replace(/[^\.]*$/, "yaml")
+
 process.on("uncaughtException", function(error) {
     console.error(error.stack || error)
 })
-
-const scriptFile = path.normalize(process.argv.slice(1)[0]);
-const yamlFile = scriptFile.replace(/[^\.]*$/, "yaml")
 
 Assembler.assemble(yamlFile)
