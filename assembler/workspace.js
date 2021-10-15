@@ -125,7 +125,33 @@ export default class Workspace {
     }
 
     static copyDirectoryInto(sourceDir, destinationDir) {
-        // TODO:
+
+        const copy = (copySource, copyDestination) => {
+
+            const stat = fs.statSync(copySource)
+            if (!stat || !stat.isDirectory()) {
+                if (stat && stat.isFile())
+                    fs.copyFileSync(copySource, copyDestination)
+                return
+            }
+
+            const directory = fs.readdirSync(copySource)
+            directory.forEach((file) => {
+                const source = copySource + "/" + file
+                const destination = destinationDir + "/" + file
+                const stat = fs.statSync(source)
+                if (stat && stat.isDirectory())
+                    fs.mkdirSync(destination)
+                copy(source, destination)
+            })
+        }
+
+        const directory = fs.readdirSync(sourceDir)
+        directory.forEach((file) => {
+            const source = sourceDir + "/" + file
+            const destination = destinationDir + "/" + file
+            copy(source, destination)
+        })
     }
 
     static getDriveRootDirectory() {
