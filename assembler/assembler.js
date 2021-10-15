@@ -63,7 +63,7 @@ export default class Assembler {
 
         const releaseName = Workspace.getVariable("release.name")
         fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")
-        fs.copyFileSync(Workspace.getDriveDirectory() + "/startup.cmd", Workspace.getDirectory() + "/" + releaseName + ".cmd")
+        Workspace.createWorkfile(Workspace.getDriveDirectory() + "/startup.cmd", Workspace.getDirectory() + "/" + releaseName + ".cmd")
 
         console.log()
         console.log("The Portable Development Environment is completed in:")

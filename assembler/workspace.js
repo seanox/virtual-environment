@@ -176,7 +176,7 @@ export default class Workspace {
         Diskpart.diskpartExec("diskpart.compact")
     }
 
-    static createWorkfile(sourceFile) {
+    static createWorkfile(sourceFile, targetFile) {
 
         if (sourceFile === undefined)
             return Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase()
@@ -188,7 +188,7 @@ export default class Workspace {
                     return Workspace.getVariable(match[2])
                 return match[0]
             })
-        const workFile = Workspace.getTempDirectory() + "/" + path.basename(sourceFile)
+        const workFile = !targetFile ? Workspace.getTempDirectory() + "/" + path.basename(sourceFile) : targetFile
         fs.writeFileSync(workFile, workFileContent)
         return workFile
     }
