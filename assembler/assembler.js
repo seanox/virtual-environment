@@ -27,8 +27,8 @@
  */
 import fs from "fs"
 
-import Workspace from "./workspace.js"
 import Modules from "./modules.js"
+import Workspace from "./workspace.js"
 
 export default class Assembler {
 
