@@ -89,10 +89,11 @@ specific language governing permissions and limitations under the License.
 # Usage
 
 - Download the release
-- Configure the target environment in `build.properties`
+- Configure the target environment in `creator.yaml`
 - Use the command line and go to the root directory of the project
-- Call `ant`
-- Target environment is created in the directory `./assembly`
+- Call `npm install` to initialize the runtime environment
+- Call `node creator.js` to create the Portable Development Environment
+- Target environment is created in the directory `./workspace`
 
 # Changes (Change Log)
 
