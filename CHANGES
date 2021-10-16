@@ -1,14 +1,14 @@
 3.0.0 2021XXXX
   CR: License: Changed to Apache License Version 2.0
-  CR: Change from Ant to Node.js
+  CR: Project: Change from Ant to Node.js
 
-2.1.0 20XXXXXX
+2.1.0 201XXXXX
   CR: Added support for VHDX and BitLocker
   NT: More details have been lost
 
-2.0.0 20XXXXXX
+2.0.0 201XXXXX
   CR: Change from SUBST to virtual disks VHD
   NT: More details have been lost
   
-1.0.0 20XXXXXX
+1.0.0 2010XXXX
   NT: Release is available
