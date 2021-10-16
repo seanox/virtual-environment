@@ -45,7 +45,7 @@ export default class Creator {
         // Copying the static structure of the environment
         console.log("Platform: Deployment of static components")
         Workspace.assignDrive()
-        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDriveRootDirectory())
+        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getTargetDirectory())
         Workspace.detachDrive()
 
         // Integrates all modules which which are enabled

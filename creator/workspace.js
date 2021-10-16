@@ -96,7 +96,7 @@ export default class Workspace {
         Workspace.setVariable("workspace.drive.directory", workspaceDriveDirectory)
 
         const workspaceDriveRootDirectory = path.normalize(Workspace.getVariable("workspace.drive") + ":/")
-        Workspace.setVariable("workspace.drive.root.directory", workspaceDriveRootDirectory)
+        Workspace.setVariable("workspace.target.directory", workspaceDriveRootDirectory)
 
         // Detach workspace drives if necessary
         Workspace.detachDrive(false)
@@ -114,6 +114,10 @@ export default class Workspace {
 
     static getVariable(key) {
         return VARIABLES.get(key)
+    }
+
+    static removeVariable(key) {
+        return VARIABLES.delete(key)
     }
 
     static listVariables() {
@@ -154,8 +158,12 @@ export default class Workspace {
         })
     }
 
-    static getDriveRootDirectory() {
-        return Workspace.getVariable("workspace.drive.root.directory")
+    static getTargetDirectory() {
+        return Workspace.getVariable("workspace.target.directory")
+    }
+
+    static getTargetModulesDirectory() {
+        return Workspace.getTargetDirectory + "/Modules"
     }
 
     static createDrive(failure = true) {
