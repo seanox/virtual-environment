@@ -25,9 +25,27 @@
  * @author  Seanox Software Solutions
  * @version 3.0.0 20211016
  */
+import fs from "fs";
+
+import Workspace from "./workspace.js";
+
 export default class Modules {
 
     static integrate() {
-        // TODO:
+        const modules = Workspace.listVariables()
+            .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
+            .map(key => key.substr(8))
+        modules.forEach(module => {
+            const moduleFile = Workspace.getModulesDirectory() + "/" + module + "/module.js"
+            if (!fs.existsSync(Workspace.getModulesDirectory())
+                    || !fs.existsSync(moduleFile))
+                return
+            console.log("Modules: Integration of " + module)
+            // Unfortunately, synchronous dynamic loading of modules does not
+            // work, so eval is used here.
+            const moduleInstruction = fs.readFileSync(moduleFile).toString()
+            const moduleIntegration = eval(moduleInstruction)
+            moduleIntegration.apply(this)
+        })
     }
 }
