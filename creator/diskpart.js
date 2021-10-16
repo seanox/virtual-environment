@@ -18,16 +18,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Modules 1.0.0 20211015
+ * Diskpart 3.0.0 20211016
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211015
+ * @version 3.0.0 20211016
  */
-export default class Modules {
+import child from "child_process"
 
-    static integrate() {
-        // TODO:
+import Workspace from "./workspace.js"
+
+export default class Diskpart {
+
+    static diskpartExec(diskpart, failure = true) {
+        const diskpartWorkFile = Workspace.createWorkfile("./creator/" + diskpart)
+        const diskpartResult = child.spawnSync("diskpart", ["/s", diskpartWorkFile])
+        if (!failure)
+            return diskpartResult
+        if (diskpartResult instanceof Error)
+            throw diskpartResult
+        if (diskpartResult.status === 0)
+            return diskpartResult
+        if (diskpartResult.output)
+            console.log(diskpartResult.stdout.toString())
+        throw new Error("An unexpected error occurred during " + diskpart)
     }
 }

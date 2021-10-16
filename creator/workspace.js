@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 1.0.0 20211015
+ * Workspace 3.0.0 20211016
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211015
+ * @version 3.0.0 20211016
  */
 import child from "child_process"
 import flat from "flat"

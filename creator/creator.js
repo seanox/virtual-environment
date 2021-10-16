@@ -18,19 +18,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Workspace 1.0.0 20211015
+ * Creator 3.0.0 20211016
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211015
+ * @version 3.0.0 20211016
  */
 import fs from "fs"
 
 import Modules from "./modules.js"
 import Workspace from "./workspace.js"
 
-export default class Assembler {
+export default class Creator {
 
     static assemble(yamlFile) {
 
@@ -54,10 +54,10 @@ export default class Assembler {
         Modules.integrate()
         Workspace.detachDrive()
 
-        // Finalization and deployment of the virtual disk in assembly
+        // Finalization and deployment of the virtual disk in workspace
         // - Defragemntation of the virtual disk
         // - Compacting virtual disk
-        // - Deploy virtual hard disk with all scripts in assembly
+        // - Deploy virtual hard disk with all scripts in workspace
         console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
 
