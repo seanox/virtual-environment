@@ -1,9 +1,9 @@
 # Explanation of the properties
 #
 #     boolean values
-# Supports: true/false on/off yes/no (case insensitive)
+# Supports: true/false on/off yes/no (case-insensitive)
 # The values are normalized to true/false before use and used only as
-# true/false (case sensitive) in the scripts.
+# true/false (case-sensitive) in the scripts.
 #
 #     Syntax of the placeholders in the scripts
 # All properties can be used as placeholders with fully qualified name in the
