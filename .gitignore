@@ -1,5 +1,4 @@
 /.idea/
-/assembly/
-/drive/*.vhdx
+/node_modules/
 /temp/
-/**/___*
+/workspace/
