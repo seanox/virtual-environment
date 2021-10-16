@@ -18,16 +18,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Workspace 1.0.0 20211014
+ * Creator 3.0.0 20211016
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 1.0.0 20211014
+ * @version 3.0.0 20211016
  */
 import path from "path"
 
-import Assembler from "./assembler/assembler.js"
+import Creator from "./creator/creator.js"
 
 const scriptFile = path.normalize(process.argv.slice(1)[0]);
 const yamlFile = scriptFile.replace(/[^\.]*$/, "yaml")
@@ -36,4 +36,4 @@ process.on("uncaughtException", function(error) {
     console.error(error.stack || error)
 })
 
-Assembler.assemble(yamlFile)
+Creator.assemble(yamlFile)

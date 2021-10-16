@@ -7,7 +7,7 @@
 #
 #     Syntax of the placeholders in the scripts
 # All properties can be used as placeholders with fully qualified name in the
-# assemble-scripts. Own/additional properties can be added here. The following
+# creator-scripts. Own/additional properties can be added here. The following
 # case-insensitive syntax is used in the scripts: #[key]
 # Unknown placeholders are not cleaned up.
 #
