@@ -80,8 +80,8 @@ specific language governing permissions and limitations under the License.
 
 
 # System Requirement
- 
-- Apache Ant 1.10.x or higher (requires Java)
+- Windows 7 or higher as operating system
+- Node.js 14.x or higher
 
 
 # Downloads
