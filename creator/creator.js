@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Creator 3.0.0 20211016
+ * Creator 3.0.0 20211017
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211016
+ * @version 3.0.0 20211017
  */
 import fs from "fs"
 
@@ -45,7 +45,7 @@ export default class Creator {
         // Copying the static structure of the environment
         console.log("Platform: Deployment of static components")
         Workspace.assignDrive()
-        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getTargetDirectory())
+        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDestinationDirectory())
         Workspace.detachDrive()
 
         // Integrates all modules which which are enabled

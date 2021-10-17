@@ -28,9 +28,9 @@
 import child from "child_process"
 import flat from "flat"
 import fs from "fs"
+import os from "os"
 import path from "path"
 import yaml from "yaml"
-import os from "os"
 
 import Diskpart from "./diskpart.js"
 
