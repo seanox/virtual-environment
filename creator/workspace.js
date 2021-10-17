@@ -18,18 +18,19 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 3.0.0 20211016
+ * Workspace 3.0.0 20211017
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211016
+ * @version 3.0.0 20211017
  */
 import child from "child_process"
 import flat from "flat"
 import fs from "fs"
 import path from "path"
 import yaml from "yaml"
+import os from "os"
 
 import Diskpart from "./diskpart.js"
 
@@ -37,28 +38,28 @@ const VARIABLES = new Map()
 
 export default class Workspace {
 
-    static getTempDirectory() {
-        return Workspace.getVariable("workspace.temp.directory")
+    static getDriveDirectory() {
+        return Workspace.getVariable("workspace.drive.directory")
     }
 
-    static getPlatformDirectory() {
-        return Workspace.getVariable("workspace.platform.directory")
+    static getDriveFile() {
+        return Workspace.getVariable("workspace.drive.file")
     }
 
     static getModulesDirectory() {
         return Workspace.getVariable("workspace.modules.directory")
     }
 
-    static getDriveDirectory() {
-        return Workspace.getVariable("workspace.drive.directory")
+    static getPlatformDirectory() {
+        return Workspace.getVariable("workspace.platform.directory")
     }
 
     static getStartupDirectory() {
         return Workspace.getVariable("workspace.startup.directory")
     }
 
-    static getDriveFile() {
-        return Workspace.getVariable("workspace.drive.file")
+    static getTempDirectory() {
+        return Workspace.getVariable("workspace.temp.directory")
     }
 
     static initialize(yamlFile) {
@@ -96,15 +97,15 @@ export default class Workspace {
         Workspace.setVariable("workspace.drive.directory", workspaceDriveDirectory)
 
         const workspaceDriveRootDirectory = path.normalize(Workspace.getVariable("workspace.drive") + ":/")
-        Workspace.setVariable("workspace.target.directory", workspaceDriveRootDirectory)
+        Workspace.setVariable("workspace.destination.directory", workspaceDriveRootDirectory)
 
         // Detach workspace drives if necessary
         Workspace.detachDrive(false)
 
-        fs.rmdirSync(tempDirectory, {recursive: true})
+        fs.rmSync(tempDirectory, {recursive: true})
         fs.mkdirSync(tempDirectory, {recursive: true})
 
-        fs.rmdirSync(workspaceDirectory, {recursive: true})
+        fs.rmSync(workspaceDirectory, {recursive: true})
         fs.mkdirSync(workspaceDirectory, {recursive: true})
     }
 
@@ -139,31 +140,49 @@ export default class Workspace {
                 return
             }
 
+            fs.mkdirSync(copyDestination)
             const directory = fs.readdirSync(copySource)
             directory.forEach((file) => {
-                const source = copySource + "/" + file
-                const destination = destinationDir + "/" + file
-                const stat = fs.statSync(source)
-                if (stat && stat.isDirectory())
-                    fs.mkdirSync(destination)
+                const source = path.normalize(copySource + "/" + file)
+                const destination = path.normalize(copyDestination + "/" + file)
                 copy(source, destination)
             })
         }
 
+        console.log("- copy content from " + sourceDir)
+        console.log("  to " + destinationDir)
+
+        if (!fs.existsSync(destinationDir))
+            fs.mkdirSync(destinationDir, {recursive: true})
         const directory = fs.readdirSync(sourceDir)
         directory.forEach((file) => {
-            const source = sourceDir + "/" + file
-            const destination = destinationDir + "/" + file
+            const source = path.normalize(sourceDir + "/" + file)
+            const destination = path.normalize(destinationDir + "/" + file)
             copy(source, destination)
         })
     }
 
-    static getTargetDirectory() {
-        return Workspace.getVariable("workspace.target.directory")
+    static getDestinationDirectory() {
+        return Workspace.getVariable("workspace.destination.directory")
     }
 
-    static getTargetModulesDirectory() {
-        return Workspace.getTargetDirectory + "/Modules"
+    static getDestinationModulesDirectory() {
+        return path.normalize(Workspace.getDestinationDirectory() + "/Modules")
+    }
+
+    static getDestinationDocumentsDirectory() {
+        return path.normalize(Workspace.getDestinationDirectory() + "/Documents")
+    }
+
+    static getDestinationDocumentsProfileDirectory() {
+        return path.normalize(Workspace.getDestinationDocumentsDirectory() + "/Profile")
+    }
+
+    static getProxy() {
+        const workspaceProxy = Workspace.getVariable("workspace.proxy")
+        if (workspaceProxy.match(/^(off|false|no)$/i))
+            return false
+        return workspaceProxy
     }
 
     static createDrive(failure = true) {
@@ -210,10 +229,10 @@ export default class Workspace {
         Diskpart.diskpartExec("diskpart.compact")
     }
 
-    static createWorkfile(sourceFile, targetFile) {
+    static createWorkfile(sourceFile, destinationFile) {
 
         if (sourceFile === undefined)
-            return Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase()
+            return path.normalize(Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase())
 
         let workFileContent = fs.readFileSync(sourceFile).toString()
         for (const key of Workspace.listVariables())
@@ -222,8 +241,53 @@ export default class Workspace {
                     return Workspace.getVariable(match[2])
                 return match[0]
             })
-        const workFile = !targetFile ? Workspace.getTempDirectory() + "/" + path.basename(sourceFile) : targetFile
+        const workFile = path.normalize(destinationFile || Workspace.getTempDirectory() + "/" + path.basename(sourceFile))
         fs.writeFileSync(workFile, workFileContent)
         return workFile
+    }
+
+    static download(url, destinationFile) {
+
+        destinationFile = path.normalize(destinationFile || Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase() + path.extname(url))
+
+        console.log("- download " + url)
+        console.log("  to " + destinationFile)
+
+        // Everything synchronous -- then it doesn't work with the network
+        // functions. Because cURL belongs to the Windows board means therefore
+        // the workaround.
+
+        // Options for cURL
+        // -f Fail silently on HTTP errors (with a exit code)
+        // -L Follow redirects
+        // -o Path of the output file
+        // -x URL of the proxy, with empty the option is ignored
+
+        const curlResult = child.spawnSync("curl", [url, "-f", "-L", "-o", destinationFile, "-x", Workspace.getProxy() || ""])
+        if (curlResult instanceof Error)
+            throw curlResult
+        if (curlResult.status === 0)
+            return destinationFile
+        const errorMessage = curlResult.stderr.toString().match(/curl:\s*\(\s*\d+\s*\)\s*(.*)\s*$/i)
+        if (errorMessage)
+            throw new Error("An unexpected error occurred during download: " + errorMessage[1])
+        console.log(curlResult.stderr.toString())
+        throw new Error("An unexpected error occurred during download:" + os.EOL + "\t" + url)
+    }
+
+    static unpackDirectory(archiveFile, destinationDirectory) {
+
+        destinationDirectory = path.normalize(destinationDirectory || Workspace.getTempDirectory() + "/" + path.basename(archiveFile).replace(/\..*$/, ""))
+
+        console.log("- unpack " + archiveFile)
+        console.log("  to " + destinationDirectory)
+
+        const unpackResult = child.spawnSync(path.normalize(Workspace.getPlatformDirectory() + "/Resources/7zip/7za"), ["x", archiveFile, "-o" + destinationDirectory ])
+        if (unpackResult instanceof Error)
+            throw unpackResult
+        if (unpackResult.status === 0)
+            return destinationDirectory
+        console.log(unpackResult.stderr.toString())
+        throw new Error("An unexpected error occurred during unpack:" + os.EOL + "\t" + archiveFile)
     }
 }
