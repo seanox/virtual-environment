@@ -44,6 +44,7 @@ release:
 
 modules:
     Ant:              off
+    Apache:           off
     Brave:            off
     Certificates:     on
     Console:          on
@@ -61,6 +62,7 @@ modules:
     Maven:            off
     MaxLauncher:      on
     Mercurial:        off
+    Nginx:            off
     Node:             off
     Notepad:          off
     Postgres:         off
