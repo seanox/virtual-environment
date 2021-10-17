@@ -6,7 +6,7 @@ module:
     attach:
     detach:
 
-    control: >
+    control: |
         <Button>
           <Tab_ID>1</Tab_ID>
           <ID>48</ID>
