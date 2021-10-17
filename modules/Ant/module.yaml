@@ -1,0 +1,16 @@
+module:
+    download:       https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.zip
+    source:         #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
+    destination:    #[module.destination]
+
+    commons: |
+        SET ANT_OPTS=-Xms512M -Xmx512M
+        SET PATH=#[release.drive.letter]:\Modules\Ant\bin;%PATH%
+
+    attach:
+    detach:
+    control:
+
+watcher:
+    url:        https://ant.apache.org/index.html
+    pattern:
