@@ -86,7 +86,7 @@ export default class Modules {
             if (moduleMeta.detach)
                 fs.appendFileSync(profileDetachFile, os.EOL + moduleMeta.detach.trim())
 
-            const profileControlFile = Workspace.getDestinationDocumentsProfileDirectory() + "/.control"
+            const profileControlFile = Workspace.getDestinationDocumentsProfileDirectory() + "/control"
             if (moduleMeta.control)
                 fs.appendFileSync(profileControlFile, os.EOL + moduleMeta.control.trim())
 
