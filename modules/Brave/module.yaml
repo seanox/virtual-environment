@@ -1,6 +1,14 @@
 module:
+    description: >
+        Brave is a free and open source Chromium-based privacy-focused web
+        browser that automatically blocks online ads and website trackers with
+        its default settings, and optionally allows users to collect small
+        amounts of Basic Attention Tokens (BAT) cryptocurrency with
+        individually approved ads and posts.
+
     download:       https://github.com/portapps/brave-portable/releases/download/1.28.106-76/brave-portable-win64-1.28.106-76.7z
     destination:    #[module.destination]
+    prepare:
 
     commons:
     attach:
