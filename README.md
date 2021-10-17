@@ -89,11 +89,11 @@ specific language governing permissions and limitations under the License.
 # Usage
 
 - Download the release
-- Configure the target environment in `creator.yaml`
+- Configure the environment in `creator.yaml`
 - Use the command line and go to the root directory of the project
 - Call `npm install` to initialize the runtime environment
-- Call `node creator.js` to create a Portable Development Environment
-- Target environment is created in the directory `./workspace`
+- Call `npm start` or `node creator.js` to create a Portable Development Environment
+- Environment is created in the directory `./workspace`
 
 # Changes (Change Log)
 
