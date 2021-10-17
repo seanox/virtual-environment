@@ -1,0 +1,24 @@
+module:
+    description: >
+        Command line for the Portable Development Environment. It uses the
+        environment variables from the virtual environment, including the PATH,
+        and is therefore different from the Windows command line because it
+        does not know the variables and path.
+        In the module directory further extensions, scripts and tools can be
+        added, which can then be used directly via the PATH.
+
+    source:         #[module.directory]\module
+    destination:    #[module.destination]
+    prepare:
+        - #[module.destination]\console.cmd
+
+    commons: |
+        SET PATH=#[release.drive.letter]:\Modules\Console;%PATH%
+
+    attach:
+    detach:
+    control:
+
+watcher:
+    url:
+    pattern:
