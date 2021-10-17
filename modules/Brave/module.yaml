@@ -3,7 +3,9 @@ module:
     destination:    #[module.destination]
 
     commons:
-    startup:
+    attach:
+    detach:
+
     control: >
         <Button>
           <Tab_ID>1</Tab_ID>
