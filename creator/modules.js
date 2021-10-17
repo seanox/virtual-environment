@@ -71,8 +71,18 @@ export default class Modules {
             if (moduleMeta.download) {
                 const moduleDownloadFile = Modules.download(moduleMeta)
                 const moduleDownloadDirectory = Workspace.unpackDirectory(moduleDownloadFile)
-                Workspace.copyDirectoryInto(moduleDownloadDirectory, moduleMeta.destinationDirectory)
+                Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destinationDirectory)
+            } else if (moduleMeta.source
+                    && moduleMeta.destination) {
+                const moduleSourceDirectory = path.normalize(moduleMeta.source)
+                const moduleDestinationDirectory = path.normalize(moduleMeta.destination)
+                Workspace.copyDirectoryInto(moduleSourceDirectory, moduleDestinationDirectory)
             }
+
+            if (Array.isArray(moduleMeta.prepare))
+                moduleMeta.prepare.forEach(prepareFile => {
+                    Workspace.createWorkfile(prepareFile, prepareFile)
+                })
 
             const profileCommonsFile = Workspace.getDestinationDocumentsProfileDirectory() + "/commons"
             if (moduleMeta.commons)

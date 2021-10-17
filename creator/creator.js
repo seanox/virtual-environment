@@ -46,10 +46,10 @@ export default class Creator {
         console.log("Platform: Deployment of static components")
         Workspace.assignDrive()
         Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDestinationDirectory())
-        const updateFiles = ["/AutoRun.inf", "/Startup.cmd"]
-        updateFiles.forEach(updateFile => {
-            updateFile = Workspace.getDestinationDirectory() + updateFile
-            Workspace.createWorkfile(updateFile, updateFile)
+        const prepareFiles = ["/AutoRun.inf", "/Startup.cmd"]
+        prepareFiles.forEach(prepareFile => {
+            prepareFile = Workspace.getDestinationDirectory() + prepareFile
+            Workspace.createWorkfile(prepareFile, prepareFile)
         })
         Workspace.detachDrive()
 
