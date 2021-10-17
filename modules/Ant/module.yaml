@@ -1,7 +1,15 @@
-module:
+:module:
+    description: >
+        Apache Ant is a command line tool for automating processes and tasks
+        described in build files. It is capable of building Java applications
+        and provides a set of built-in tasks that allow compiling, assembling,
+        testing and executing. However, Ant can also be used effectively for
+        non-Java applications.
+
     download:       https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.zip
     source:         #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
     destination:    #[module.destination]
+    prepare:
 
     commons: |
         SET ANT_OPTS=-Xms512M -Xmx512M
