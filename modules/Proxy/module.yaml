@@ -6,8 +6,10 @@ module:
         configured directly if they cannot use HTTP_PROXY / HTTPS_PROXY /
         NO_PROXY automatically.
 
+    depends:
     source:
     destination:
+    script:
     prepare:
 
     commons: |
