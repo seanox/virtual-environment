@@ -24,21 +24,18 @@ benefits. The platform is easily customizable, can be quickly switched to use
 for different projects, and the environment can be easily transferred to other
 machines where work started can be easily continued.
 
-This project provides the environment with the necessary tools. The programs,
-tools and services are not included but for many there are ready-made
-configurations and automated helpers so that they can be easily loaded from the
-Internet and integrated.
+__The project provides a tool for initial creation of a pre-configured
+environment with some tools and programs, which are automatically downloaded
+from the Internet and integrated as required. Afterwards, the environment can
+be maintained, configured and extended independently without this tool.__
 
-Complete environments can be several gigabytes in size and not all  tools,
+Complete environments can be several gigabytes in size and not all tools,
 programs and services are always needed and so everyone can decide for
 themselves and customize the environment.
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
 
-__The project provides a tool for initial creation of a pre-configured
-environment with some tools and programs. Afterwards, the environment can be
-maintained, configured and extended independently without this tool.__
 
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
