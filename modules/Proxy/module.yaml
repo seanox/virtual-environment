@@ -1,0 +1,24 @@
+module:
+    description: >
+        Proxy is not a visible module. The task is to pre-configure the
+        Portable Development Environment to use an HTTP/HTTPS proxy based on
+        environment variables.
+
+    source:
+    destination:
+    prepare:
+
+    commons: |
+        SET HTTP_PROXY_HOST=proxy.local
+        SET HTTP_PROXY_PORT=3128
+        SET HTTP_PROXY=http://%HTTP_PROXY_HOST%:%HTTP_PROXY_PORT%
+        SET HTTPS_PROXY=%HTTP_PROXY%
+        SET NO_PROXY=127.0.0.1,localhost
+
+    attach:
+    detach:
+    control:
+
+watcher:
+    url:
+    pattern:
