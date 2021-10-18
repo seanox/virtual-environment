@@ -2,7 +2,9 @@ module:
     description: >
         Proxy is not a visible module. The task is to pre-configure the
         Portable Development Environment to use an HTTP/HTTPS proxy based on
-        environment variables.
+        environment variables. The applications themselves may need to be
+        configured directly if they cannot use HTTP_PROXY / HTTPS_PROXY /
+        NO_PROXY automatically.
 
     source:
     destination:
