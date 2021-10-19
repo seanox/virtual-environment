@@ -10,11 +10,23 @@ Modules have a defined directory structure. The `module.yaml` file is required,
 everything else is optional.
 
 ```
-- Module
-    + Install
-    + Module
-    - module.yaml      
+- <module>
+    + install            Optional file structure to be copied to the install directory
+    + module             Optional file structure to be copied to the destination directory
+    - module.yaml        Description of the assembly of the module                 
 ```
+
+A central _Install_ directory with sub-directories for the different modules is
+the idea that configurations, scripts and templates for a program, services and
+tools have a defined place outside the application directory. This makes it
+easier to remove the application directory, e.g. for an update, and simply add
+the contents of the _Install_ directory to a new version.
+
+The module directory is an optional addition to the download or can replace it.
+Complete modules or only specific files and file structures can be stored here,
+which are copied to the destination directory after the download. This step is
+executed after the download, but is independent of whether a download has been
+defined.
 
 The `module.yaml` file describes how a module is assembled, the required
 dependencies, where the data comes from, how it is configured and integrated
@@ -41,3 +53,19 @@ monitoring:       # Configuration of version monitoring
     url:          # URL of the website where the version should be checked
     pattern:      # RegExp to check the version
 ```
+
+The module integration uses the following automations and assumptions:
+- If a module has already been integrated, it will be ignored when requested
+  again. This can happen due to dependencies.
+- If dependencies have been defined, they will be processed first.
+- If there is a _module_ directory, the content will be copied to the
+  destination directory after the download.
+- If there is an _install_ directory it will be copied to /Install/<Module>.
+
+The integration has a defined sequence:
+- Integration of dependencies
+- Downloading the program files
+- Copying files from the download directory to the destination directory
+- Copying additional files from the _module_ directory to the destination directory
+- Filling the placeholders in the files specified as _prepare_   
+If steps are not present or not configured, they are skipped.

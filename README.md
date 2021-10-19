@@ -12,7 +12,6 @@
 
 
 # Description
-
 Since about 2010, the project exists for a modular platform for Windows to
 create portable development environments. Based on a virtual drive, the
 environment can be started easily and provides developers with a completely
@@ -82,18 +81,40 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
+Coming soon
+
 
 # Usage
-
 - Download the release
 - Configure the environment in `creator.yaml`
+  Learn more [about the modules](/modules/README.md).
 - Use the command line and go to the root directory of the project
 - Call `npm install` to initialize the runtime environment
 - Call `npm start` or `node creator.js` to create a Portable Development Environment
 - Environment is created in the directory `./workspace`
 
+
 # Changes (Change Log)
 
+
 # Contact
+[Issues](https://github.com/seanox/portable-development-environment/issues)  
+[Requests](https://github.com/seanox/portable-development-environment/pulls)  
+[Mail](http://seanox.de/contact)
+
 
 # Thanks!
+<img src="https://raw.githubusercontent.com/seanox/seanox/master/sources/resources/images/thanks.png">
+
+[cantaa GmbH](https://cantaa.de/)
+[JetBrains](https://www.jetbrains.com/?from=seanox)  
+Sven Lorenz  
+Andreas Mitterhofer  
+[novaObjects GmbH](https://www.novaobjects.de)  
+Leo Pelillo  
+Gunter Pfannm&uuml;ller  
+Annette und Steffen Pokel  
+Edgar R&ouml;stle  
+Michael S&auml;mann  
+Markus Schlosneck  
+[T-Systems International GmbH](https://www.t-systems.com)
