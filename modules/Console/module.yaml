@@ -7,16 +7,12 @@ module:
         In the module directory further extensions, scripts and tools can be
         added, which can then be used directly via the PATH.
 
-    source:         #[module.directory]\module
-    destination:    #[module.destination]
     prepare:
         - #[module.destination]\console.cmd
 
     commons: |
         SET PATH=#[release.drive.letter]:\Modules\Console;%PATH%
 
-    attach:
-    detach:
     control: |
         <Button>
           <Tab_ID>1</Tab_ID>
@@ -35,7 +31,3 @@ module:
           <WindowRect>0,0,0,0</WindowRect>
           <GroupID/>
         </Button>
-
-watcher:
-    url:
-    pattern:

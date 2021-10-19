@@ -6,15 +6,7 @@ module:
         amounts of Basic Attention Tokens (BAT) cryptocurrency with
         individually approved ads and posts.
 
-    depends:
-    download:       https://github.com/portapps/brave-portable/releases/download/1.28.106-76/brave-portable-win64-1.28.106-76.7z
-    destination:    #[module.destination]
-    script:
-    prepare:
-
-    commons:
-    attach:
-    detach:
+    download: https://github.com/portapps/brave-portable/releases/download/1.28.106-76/brave-portable-win64-1.28.106-76.7z
 
     control: |
         <Button>

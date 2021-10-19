@@ -6,20 +6,12 @@ module:
         testing and executing. However, Ant can also be used effectively for
         non-Java applications.
 
-    depends:
-    download:       https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.zip
-    source:         #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
-    destination:    #[module.destination]
-    script:
-    prepare:
+    download:   https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.zip
+    source:     #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
 
     commons: |
         SET ANT_OPTS=-Xms512M -Xmx512M
         SET PATH=#[release.drive.letter]:\Modules\Ant\bin;%PATH%
-
-    attach:
-    detach:
-    control:
 
 monitoring:
     url:        https://ant.apache.org/index.html
