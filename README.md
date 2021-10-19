@@ -86,7 +86,7 @@ Coming soon
 
 # Usage
 - Download the release
-- Configure the environment in `creator.yaml`
+- Configure the environment in `creator.yaml`  
   Learn more [about the modules](/modules/README.md).
 - Use the command line and go to the root directory of the project
 - Call `npm install` to initialize the runtime environment
