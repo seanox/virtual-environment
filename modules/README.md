@@ -10,7 +10,7 @@ Modules have a defined directory structure. The `module.yaml` file is required,
 everything else is optional.
 
 ```
-- <module>
++ <module>
     + install            Optional file structure to be copied to the install directory
     + module             Optional file structure to be copied to the destination directory
     - module.yaml        Description of the assembly of the module                 
@@ -39,7 +39,7 @@ module:           # Configuration of the module
     depends:      # Value or list of dependent modules which are loaded before
     download:     # URL for download 
     source:       # Directory different from the download, whose content is copied to the destination
-    destination:  # Destination directory of the module
+    destination:  # Destination directory of the module, default is /Modules/<module>
     script:       # JavaScript that is executed after downloading and copying
     prepare:      # Path or list of paths of destination files where placeholders are replaced
 
