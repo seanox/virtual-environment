@@ -28,5 +28,5 @@ module:
         </Button>
 
 monitoring:
-    url:        https://github.com/portapps/brave-portable
+    url:     https://github.com/portapps/brave-portable
     pattern:
