@@ -24,7 +24,6 @@ module:
           <WindowRect>0,0,0,0</WindowRect>
           <GroupID />
         </Button>
-    
 
 monitoring:
     url:        http://steffengerlach.de/freeware/index.html
