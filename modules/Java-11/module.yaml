@@ -5,5 +5,5 @@ module:
         possible Java 11 LTS should be used here, but the download requires a
         logon.
 
-    download:   https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip
-    source:     #[workspace.temp.directory]\#[module.name]\jdk-11.0.2
+    download: https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip
+    source:    #[workspace.temp.directory]\#[module.name]\jdk-11.0.2
