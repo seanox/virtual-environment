@@ -13,9 +13,9 @@ module:
           <Text>Scanner</Text>
           <IconFile>C:\Windows\System32\Defrag.exe</IconFile>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.destination]\Scanner.exe</Filename>
+          <Filename>#[module.release.destination]\Scanner.exe</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

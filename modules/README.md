@@ -72,31 +72,35 @@ If steps are not present or not configured, they are skipped.
 
 The following placeholders are supported and replaced if the files are declared in _prepare_:
 
-| Placeholder                          | Description                                                                |
-| ------------------------------------ | -------------------------------------------------------------------------- |
-| `#[workspace.destination.directory]` | Temporary root path of the final environment during creation               |
-| `#[workspace.directory]`             | Root path of the workspace                                                 |
-| `#[workspace.drive]`                 | Drive letter of the workspace                                              |
-| `#[workspace.drive.file]`            | Path of the virtual disk from the workspace                                |
-| `#[workspace.drive.number]`          | Number of the workspace drive in the drive list                            |
-| `#[workspace.drive.directory]`       | drive-directory of the workspace                                           |
-| `#[workspace.modules.directory]`     | modules-directory of the workspace                                         |
-| `#[workspace.platform.directory]`    | platform-directory of the workspace                                        |
-| `#[workspace.startup.directory]`     | startup-directory of the workspace                                         |
-| `#[workspace.temp.directory]`        | temp-directory of the workspace                                            |
-| `#[workspace.proxy]`                 | Proxy, if one has been defined                                             |
-|  &nbsp;                              | &nbsp;                                                                     |
-| `#[release.name]`                    | Name of final environment, is also used as the label from the drive        |
-| `#[release.version]`                 | Version of final environment, is used as the label from the drive          |
-| `#[release.drive.bitlocker]`         | Virtual Disk: Flag for using BitLocker                                     |
-| `#[release.drive.compress]`          | Virtual Disk: Flag for file system compression                             |
-| `#[release.drive.size]`              | Virtual Disk: Size in megabytes                                            |
-| `#[release.drive.style]`             | Virtual Disk: Partition style `MBR` or `GPT`                                   |
-| `#[release.drive.type]`              | Virtual Disk: Type `expandable` or `fixed`                                     |
-| `#[release.drive.letter]`            | Drive letter of the final environment                                      |
-|  &nbsp;                              | &nbsp;                                                                     |
-| `#[module.name]`                     | Name of the module                                                         |
-| `#[module.directory]`                | Directory of the module                                                    |
-| `#[module.destination]`              | Destination directory of the module with the drive letter of the workspace |
+| Placeholder                          | Description                                                                        |
+| ------------------------------------ | ---------------------------------------------------------------------------------- |
+| `#[workspace.destination.directory]` | Temporary root path of the final environment during creation                       |
+| `#[workspace.directory]`             | Root path of the workspace                                                         |
+| `#[workspace.drive]`                 | Drive letter of the workspace                                                      |
+| `#[workspace.drive.file]`            | Path of the virtual disk from the workspace                                        |
+| `#[workspace.drive.number]`          | Number of the workspace drive in the drive list                                    |
+| `#[workspace.drive.directory]`       | drive-directory of the workspace                                                   |
+| `#[workspace.modules.directory]`     | modules-directory of the workspace                                                 |
+| `#[workspace.platform.directory]`    | platform-directory of the workspace                                                |
+| `#[workspace.startup.directory]`     | startup-directory of the workspace                                                 |
+| `#[workspace.temp.directory]`        | temp-directory of the workspace                                                    |
+| `#[workspace.proxy]`                 | Proxy, if one has been defined                                                     |
+|  &nbsp;                              | &nbsp;                                                                             |
+| `#[release.name]`                    | Name of final environment, is also used as the label from the drive                |
+| `#[release.version]`                 | Version of final environment, is used as the label from the drive                  |
+| `#[release.drive.bitlocker]`         | Virtual Disk: Flag for using BitLocker                                             |
+| `#[release.drive.compress]`          | Virtual Disk: Flag for file system compression                                     |
+| `#[release.drive.size]`              | Virtual Disk: Size in megabytes                                                    |
+| `#[release.drive.style]`             | Virtual Disk: Partition style `MBR` or `GPT`                                       |
+| `#[release.drive.type]`              | Virtual Disk: Type `expandable` or `fixed`                                         |
+| `#[release.drive.letter]`            | Drive letter of the final environment                                              |
+|  &nbsp;                              | &nbsp;                                                                             |
+| `#[module.name]`                     | Name of the module                                                                 |
+| `#[module.directory]`                | Directory of the module                                                            |
+| `#[module.destination]`              | Destination directory of the module with the drive letter of the workspace         |
+| `#[module.release.destination]`      | Destination directory of the module with the drive letter of the final environment |
+
+            Workspace.removeVariable("module.directory")
+
 
 More can be added in `creator.yaml`.

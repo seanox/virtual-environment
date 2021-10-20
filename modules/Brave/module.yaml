@@ -15,9 +15,9 @@ module:
           <Text>Brave</Text>
           <IconFile/>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.destination]\brave-portable.exe</Filename>
+          <Filename>#[module.release.destination]\brave-portable.exe</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

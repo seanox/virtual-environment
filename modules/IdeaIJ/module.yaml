@@ -18,9 +18,9 @@ module:
           <Text>IntelliJ IDEA</Text>
           <IconFile/>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.destination]\bin\idea64.exe</Filename>
+          <Filename>#[module.release.destination]\bin\idea64.exe</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.destination]\bin</WorkingDirectory>
+          <WorkingDirectory>#[module.release.destination]\bin</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

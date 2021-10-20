@@ -20,9 +20,9 @@ module:
           <Text>Console</Text>
           <IconFile>C:\Windows\System32\cmd.exe</IconFile>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.destination]\console.cmd</Filename>
+          <Filename>#[module.release.destination]\console.cmd</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>
