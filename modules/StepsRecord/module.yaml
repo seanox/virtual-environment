@@ -1,0 +1,24 @@
+module:
+    description: >
+        Steps Recorder combines keylogger, screen recorder and comment tool for
+        Windows. It documents user interactions with the computer quickly,
+        easily and traceably.
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>22</ID>
+          <Text>hosts</Text>
+          <IconFile>C:\Windows\System32\netcenter.dll</IconFile>
+          <IconIndex>0</IconIndex>
+          <Filename>C:\Windows\System32\notepad.exe</Filename>
+          <Arguments>C:\Windows\System32\drivers\etc\hosts</Arguments>
+          <WorkingDirectory>C:\Windows\System32\drivers\etc\hosts</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
