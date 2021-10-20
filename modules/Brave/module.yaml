@@ -27,6 +27,6 @@ module:
           <GroupID/>
         </Button>
 
-watcher:
+monitoring:
     url:        https://github.com/portapps/brave-portable
     pattern:
