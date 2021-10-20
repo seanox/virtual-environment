@@ -14,9 +14,9 @@ module:
           <Text>Detach</Text>
           <IconFile>C:\Windows\System32\shell32.dll</IconFile>
           <IconIndex>27</IconIndex>
-          <Filename>\PortableApps\Exit\exit.exe</Filename>
+          <Filename>#[module.release.destination]\exit.exe</Filename>
           <Arguments />
-          <WorkingDirectory>\PortableApps\Exit</WorkingDirectory>
+          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>
