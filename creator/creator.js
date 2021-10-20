@@ -66,7 +66,7 @@ export default class Creator {
         console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
 
-        const releaseName = Workspace.getVariable("release.name")
+        const releaseName = Workspace.getVariable("release.name").toLowerCase()
         fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")
         Workspace.createWorkfile(Workspace.getDriveDirectory() + "/startup.cmd", Workspace.getDirectory() + "/" + releaseName + ".cmd")
 
