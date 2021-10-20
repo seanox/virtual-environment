@@ -11,7 +11,7 @@ module:
           <Tab_ID>1</Tab_ID>
           <ID>16</ID>
           <Text>Scanner</Text>
-          <IconFile>C:\Windows\System32\Defrag.exe</IconFile>
+          <IconFile>%windir%\System32\Defrag.exe</IconFile>
           <IconIndex>0</IconIndex>
           <Filename>#[module.release.destination]\Scanner.exe</Filename>
           <Arguments/>

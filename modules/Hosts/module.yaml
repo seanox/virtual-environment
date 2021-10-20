@@ -8,11 +8,11 @@ module:
           <Tab_ID>1</Tab_ID>
           <ID>22</ID>
           <Text>hosts</Text>
-          <IconFile>C:\Windows\System32\netcenter.dll</IconFile>
+          <IconFile>%windir%\System32\netcenter.dll</IconFile>
           <IconIndex>0</IconIndex>
-          <Filename>C:\Windows\System32\notepad.exe</Filename>
-          <Arguments>C:\Windows\System32\drivers\etc\hosts</Arguments>
-          <WorkingDirectory>C:\Windows\System32\drivers\etc\hosts</WorkingDirectory>
+          <Filename>%windir%\System32\notepad.exe</Filename>
+          <Arguments>%windir%\System32\drivers\etc\hosts</Arguments>
+          <WorkingDirectory>%windir%\System32\drivers\etc\hosts</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

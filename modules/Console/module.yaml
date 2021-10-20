@@ -18,7 +18,7 @@ module:
           <Tab_ID>1</Tab_ID>
           <ID>44</ID>
           <Text>Console</Text>
-          <IconFile>C:\Windows\System32\cmd.exe</IconFile>
+          <IconFile>%windir%\System32\cmd.exe</IconFile>
           <IconIndex>0</IconIndex>
           <Filename>#[module.release.destination]\console.cmd</Filename>
           <Arguments/>

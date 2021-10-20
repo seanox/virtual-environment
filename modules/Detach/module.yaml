@@ -12,7 +12,7 @@ module:
           <Tab_ID>1</Tab_ID>
           <ID>53</ID>
           <Text>Detach</Text>
-          <IconFile>C:\Windows\System32\shell32.dll</IconFile>
+          <IconFile>%windir%\System32\shell32.dll</IconFile>
           <IconIndex>27</IconIndex>
           <Filename>#[module.release.destination]\exit.exe</Filename>
           <Arguments/>
