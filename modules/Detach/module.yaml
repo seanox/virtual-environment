@@ -15,13 +15,13 @@ module:
           <IconFile>C:\Windows\System32\shell32.dll</IconFile>
           <IconIndex>27</IconIndex>
           <Filename>#[module.release.destination]\exit.exe</Filename>
-          <Arguments />
+          <Arguments/>
           <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle />
-          <WindowProcessName />
+          <WindowTitle/>
+          <WindowProcessName/>
           <WindowRect>0,0,0,0</WindowRect>
-          <GroupID />
+          <GroupID/>
         </Button>
