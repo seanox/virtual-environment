@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 3.0.0 20211017
+ * Workspace 3.0.0 20211019
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211017
+ * @version 3.0.0 20211019
  */
 import child from "child_process"
 import flat from "flat"
@@ -164,6 +164,10 @@ export default class Workspace {
 
     static getDestinationDirectory() {
         return Workspace.getVariable("workspace.destination.directory")
+    }
+
+    static getDestinationInstallDirectory() {
+        return path.normalize(Workspace.getDestinationDirectory() + "/Install")
     }
 
     static getDestinationModulesDirectory() {

@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Modules 3.0.0 20211017
+ * Modules 3.0.0 20211019
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211017
+ * @version 3.0.0 20211019
  */
 import fs from "fs"
 import os from "os"
@@ -32,13 +32,24 @@ import yaml from "yaml"
 
 import Workspace from "./workspace.js"
 
+const REGISTRY = []
+
 export default class Modules {
 
     static integrate() {
+
         const modules = Workspace.listVariables()
             .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
             .map(key => key.substr(8))
-        modules.forEach(module => {
+
+        const integrateModule = (module) => {
+
+            const moduleRegitryName = (module || "").toLowerCase().trim()
+            if (!moduleRegitryName
+                    || REGISTRY.includes(moduleRegitryName))
+                return
+            REGISTRY.push(moduleRegitryName)
+
             const moduleDirectory = path.normalize(Workspace.getModulesDirectory() + "/" + module)
             const moduleMetaFile = path.normalize(moduleDirectory + "/module.yaml")
             const moduleScriptFile = path.normalize(moduleDirectory + "/module.js")
@@ -48,6 +59,7 @@ export default class Modules {
             console.log("Modules: Integration of " + module)
 
             const moduleDestinationDirectory = path.normalize(Workspace.getDestinationModulesDirectory() + "/" + module)
+            const moduleDestinationInstallDirectory = path.normalize(Workspace.getDestinationInstallDirectory() + "/" + module)
 
             Workspace.setVariable("module.name", module)
             Workspace.setVariable("module.directory", moduleDirectory)
@@ -65,24 +77,44 @@ export default class Modules {
                 throw new Error("Invalid module meta file: " + moduleMetaFile)
             const moduleMeta = moduleMetaComplete["module"]
             moduleMeta.name = module
-            moduleMeta.sourceDirectory = moduleDirectory
-            moduleMeta.destinationDirectory = moduleMeta.destination || moduleDestinationDirectory
+            moduleMeta.sourceDirectory = path.normalize(moduleDirectory)
+            moduleMeta.destinationDirectory = path.normalize(moduleMeta.destination || moduleDestinationDirectory)
+
+            if (moduleMeta.depends) {
+                if (!Array.isArray(moduleMeta.depends))
+                    moduleMeta.depends = [moduleMeta.depends]
+                moduleMeta.depends = moduleMeta.depends
+                    .filter(dependence => !dependence && !dependence.trim())
+                    .map(dependence => dependence.trim())
+                moduleMeta.depends.forEach(dependence => {
+                    integrateModule(dependence)
+                })
+            }
 
             if (moduleMeta.download) {
                 const moduleDownloadFile = Modules.download(moduleMeta)
                 const moduleDownloadDirectory = Workspace.unpackDirectory(moduleDownloadFile)
                 Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destinationDirectory)
-            } else if (moduleMeta.source
-                    && moduleMeta.destination) {
-                const moduleSourceDirectory = path.normalize(moduleMeta.source)
-                const moduleDestinationDirectory = path.normalize(moduleMeta.destination)
-                Workspace.copyDirectoryInto(moduleSourceDirectory, moduleDestinationDirectory)
             }
 
-            if (Array.isArray(moduleMeta.prepare))
+            if (fs.existsSync(moduleDirectory + "/module")
+                    && fs.statSync(moduleDirectory + "/module").isDirectory())
+                Workspace.copyDirectoryInto(moduleDirectory + "/module", moduleMeta.destinationDirectory)
+
+            if (fs.existsSync(moduleDirectory + "/install")
+                    && fs.statSync(moduleDirectory + "/install").isDirectory())
+                Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleDestinationInstallDirectory)
+
+            if (moduleMeta.prepare) {
+                if (!Array.isArray(moduleMeta.prepare))
+                    moduleMeta.prepare = [moduleMeta.prepare]
+                moduleMeta.prepare = moduleMeta.prepare
+                    .filter(prepare => !prepare && !prepare.trim())
+                    .map(prepare => prepare.trim())
                 moduleMeta.prepare.forEach(prepareFile => {
                     Workspace.createWorkfile(prepareFile, prepareFile)
                 })
+            }
 
             const profileCommonsFile = Workspace.getDestinationDocumentsProfileDirectory() + "/commons"
             if (moduleMeta.commons)
@@ -107,6 +139,10 @@ export default class Modules {
                 const moduleIntegration = eval(moduleInstruction)
                 moduleIntegration.call(this, moduleMeta)
             }
+        }
+
+        modules.forEach(module => {
+            integrateModule(module)
         })
     }
 
