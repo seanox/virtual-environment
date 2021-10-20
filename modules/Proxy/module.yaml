@@ -6,23 +6,9 @@ module:
         configured directly if they cannot use HTTP_PROXY / HTTPS_PROXY /
         NO_PROXY automatically.
 
-    depends:
-    source:
-    destination:
-    script:
-    prepare:
-
     commons: |
         SET HTTP_PROXY_HOST=proxy.local
         SET HTTP_PROXY_PORT=3128
         SET HTTP_PROXY=http://%HTTP_PROXY_HOST%:%HTTP_PROXY_PORT%
         SET HTTPS_PROXY=%HTTP_PROXY%
         SET NO_PROXY=127.0.0.1,localhost
-
-    attach:
-    detach:
-    control:
-
-watcher:
-    url:
-    pattern:
