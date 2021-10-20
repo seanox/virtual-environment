@@ -1,0 +1,35 @@
+module:
+    description: >
+        IntelliJ IDEA is a Java-based integrated development environment (IDE)
+        for developing software that supports various languages. JetBrains
+        offers a community edition and also a commercial edition. Pre-selected
+        here is the community edition and the commercial edition is prepared.
+
+   #download: "https://download.jetbrains.com/idea/ideaIU-2021.2.3.win.zip"
+   #download: "https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip"
+    download: "https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip"
+    prepare:
+        - #[module.destination]\bin\idea64.exe.vmoptions
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>23</ID>
+          <Text>IntelliJ IDEA</Text>
+          <IconFile/>
+          <IconIndex>0</IconIndex>
+          <Filename>#[module.destination]\bin\idea64.exe</Filename>
+          <Arguments/>
+          <WorkingDirectory>#[module.destination]\bin</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
+
+monitoring:
+    url:     https://www.jetbrains.com/idea/download/download-thanks.html?platform=windowsZip
+    pattern:
