@@ -3,6 +3,6 @@ select vdisk file="#[workspace.drive.file]"
 attach vdisk
 convert #[release.drive.style]
 create partition primary
-format FS=NTFS LABEL="#[release.display]" QUICK
+format FS=NTFS LABEL="#[release.name]" QUICK
 detach vdisk
 exit
