@@ -26,5 +26,5 @@ module:
         </Button>
 
 monitoring:
-    url:        http://steffengerlach.de/freeware/index.html
+    url:     http://steffengerlach.de/freeware/index.html
     pattern:
