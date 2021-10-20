@@ -56,7 +56,6 @@ export default class Modules {
             if (!fs.existsSync(Workspace.getModulesDirectory())
                     || !fs.existsSync(moduleMetaFile))
                 return
-            console.log("Modules: Integration of " + module)
 
             const moduleDestinationDirectory = path.normalize(Workspace.getDestinationModulesDirectory() + "/" + module)
             const moduleDestinationInstallDirectory = path.normalize(Workspace.getDestinationInstallDirectory() + "/" + module)
@@ -71,10 +70,22 @@ export default class Modules {
             Workspace.removeVariable("module.directory")
             Workspace.removeVariable("module.destination")
 
-            const moduleMetaComplete = yaml.parse(fs.readFileSync(moduleMetaWorkFile).toString())
-            if (!moduleMetaComplete
-                    || !moduleMetaComplete.module)
-                throw new Error("Invalid module meta file: " + moduleMetaFile)
+            const parseYaml = (file) => {
+                try {return yaml.parse(fs.readFileSync(file).toString())
+                } catch (exception) {
+                    return exception
+                }
+            }
+
+            const moduleMetaComplete = parseYaml(moduleMetaWorkFile)
+            if (moduleMetaComplete instanceof Error
+                    || !moduleMetaComplete
+                    || !moduleMetaComplete.module) {
+                console.log("Modules: Integration of " + module)
+                if (moduleMetaComplete instanceof Error)
+                    throw moduleMetaComplete
+                throw new Error("Invalid module meta file: " + moduleMetaFile, "hallo")
+            }
             const moduleMeta = moduleMetaComplete["module"]
             moduleMeta.name = module
             moduleMeta.sourceDirectory = path.normalize(moduleDirectory)
@@ -84,12 +95,14 @@ export default class Modules {
                 if (!Array.isArray(moduleMeta.depends))
                     moduleMeta.depends = [moduleMeta.depends]
                 moduleMeta.depends = moduleMeta.depends
-                    .filter(dependence => !dependence && !dependence.trim())
+                    .filter(dependence => dependence && dependence.trim())
                     .map(dependence => dependence.trim())
                 moduleMeta.depends.forEach(dependence => {
                     integrateModule(dependence)
                 })
             }
+
+            console.log("Modules: Integration of " + module)
 
             if (moduleMeta.download) {
                 const moduleDownloadFile = Modules.download(moduleMeta)
@@ -109,7 +122,7 @@ export default class Modules {
                 if (!Array.isArray(moduleMeta.prepare))
                     moduleMeta.prepare = [moduleMeta.prepare]
                 moduleMeta.prepare = moduleMeta.prepare
-                    .filter(prepare => !prepare && !prepare.trim())
+                    .filter(prepare => prepare && prepare.trim())
                     .map(prepare => prepare.trim())
                 moduleMeta.prepare.forEach(prepareFile => {
                     Workspace.createWorkfile(prepareFile, prepareFile)

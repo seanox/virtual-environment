@@ -81,7 +81,7 @@ export default class Workspace {
         const workspaceDirectory = path.normalize(path.dirname(yamlFile) + "/workspace")
         Workspace.setVariable("workspace.directory", workspaceDirectory)
 
-        const workspaceDriveFile = path.normalize(workspaceDirectory + "/" + Workspace.getVariable("release.name") + ".vhdx")
+        const workspaceDriveFile = path.normalize(workspaceDirectory + "/" + Workspace.getVariable("release.name").toLowerCase() + ".vhdx")
         Workspace.setVariable("workspace.drive.file", workspaceDriveFile)
 
         const workspaceStartupDirectory = path.normalize(path.dirname(yamlFile) + "/startup")
@@ -140,7 +140,8 @@ export default class Workspace {
                 return
             }
 
-            fs.mkdirSync(copyDestination)
+            if (!fs.existsSync(copyDestination))
+                fs.mkdirSync(copyDestination, {recursive: true})
             const directory = fs.readdirSync(copySource)
             directory.forEach((file) => {
                 const source = path.normalize(copySource + "/" + file)
@@ -200,11 +201,11 @@ export default class Workspace {
     static assignDrive(failure = true) {
         Workspace.attachDrive(failure)
         const listDrivesResult = Diskpart.diskpartExec("diskpart.list", failure)
-        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("release.display") + "\\s", "im")
+        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("release.name") + "\\s", "im")
         const listDrivesMatch = listDrivesResult.stdout.toString().match(listDrivesFilter)
         if (!listDrivesMatch) {
             console.log(listDrivesResult.stdout.toString())
-            throw new Error("Volume for '" + Workspace.getVariable("release.display") + "' was not found in diskpart.list")
+            throw new Error("Volume for '" + Workspace.getVariable("release.name") + "' was not found in diskpart.list")
         }
         Workspace.setVariable("workspace.drive.number", listDrivesMatch[1])
         return Diskpart.diskpartExec("diskpart.assign", false)
