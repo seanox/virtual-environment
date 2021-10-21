@@ -1,0 +1,23 @@
+module:
+    description: >
+        The quick function opens the Documents directory of the virtual
+        environment.
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>52</ID>
+          <Text>Documents</Text>
+          <IconFile>%windir%\system32\shell32.dll</IconFile>
+          <IconIndex>126</IconIndex>
+          <Filename>%windir%\explorer.exe</Filename>
+          <Arguments>#[release.drive.letter]:\Documents</Arguments>
+          <WorkingDirectory/>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
