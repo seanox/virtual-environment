@@ -3,8 +3,8 @@
 #     Workspace Environment vs. Environment
 #     ----
 # Workspace environment was needed if the project itself is already used in a
-# virtual development environment. Then environment-drive is already used. That
-# is why another virtual drive is used as the workspace. During creation, it is
+# virtual environment. Then environment-drive is already used. That is why
+# another virtual drive is used as the workspace. During creation, it is
 # important to understand that the scripts for creation use the drive and paths
 # from the workspace environment and the configurations and scripts of the
 # programs use the environment.
@@ -61,7 +61,6 @@ modules:
     Ant:              off
     Apache:           off
     Brave:            off
-    Certificates:     on
     Console:          on
     DataGrid:         off
     DbVisualizer:     off

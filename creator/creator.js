@@ -3,7 +3,7 @@
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
- * Virtual Development Environment
+ * Virtual Environment Creator
  * Copyright (C) 2021 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -71,7 +71,7 @@ export default class Creator {
         Workspace.createWorkfile(Workspace.getDriveDirectory("/startup.cmd"), Workspace.getWorkspaceDirectory("/" + environmentName + ".cmd"))
 
         console.log()
-        console.log("The Virtual Development Environment is completed in:")
+        console.log("The virtual environment is completed in:")
         console.log(Workspace.getWorkspaceDirectory())
     }
 }

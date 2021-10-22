@@ -4,7 +4,40 @@ module:
         -- object-relational, reliable, robust and powerful.
 
     download: https://get.enterprisedb.com/postgresql/postgresql-14.0-1-windows-x64-binaries.zip
-    destination: #[]
+    source:   #[workspace.temp.directory]\#[module.name]\pgsql
+
+    prepare:
+        - #[workspace.environment.install.directory]\Postgres\readme.txt
+
+    script: |
+        fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
+        Workspace.copyDirectoryInto(Workspace.getVariable("module.directory") + "/install",
+            Workspace.getVariable("workspace.environment.install.directory") + "/Postgres")
+
+    commons: |
+        SET PGHOME=#[module.environment]
+        SET PGDATA=#[environment.drive]:\Database\Data
+        SET PGNAME=%VT_VOLUME_NAME% PostgreSQL
+        SET PGDATABASE=postgres
+        SET PGUSER=dba
+        SET PGPASSWORD=none
+        SET PGPORT=5432
+        SET PGLOCALEDIR=%PGHOME%\share\locale
+        SET PGLOG=%PGDATA%\pg.log
+        SET PATH=%PGHOME%\bin;%PATH%
+
+    attach: |
+        net stop "%PGNAME%"
+        ping -n 3 127.0.0.1 > NUL
+        sc delete "%PGNAME%"
+        %PGHOME%\bin\pg_ctl register -D "%PGDATA%" -N "%PGNAME%" -p "%PGHOME%\bin\pg_ctl.exe" -S demand -s
+        ping -n 3 127.0.0.1 > NUL
+        net start "%PGNAME%"
+
+    detach:  |
+        net stop "%PGNAME%"
+        ping -n 3 127.0.0.1 > NUL
+        sc delete "%PGNAME%"
 
     control: |
         <Button>
