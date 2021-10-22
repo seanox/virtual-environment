@@ -3,7 +3,7 @@
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
- * Portable Development Environment
+ * Virtual Development Environment
  * Copyright (C) 2021 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -50,46 +50,47 @@ export default class Modules {
                 return
             REGISTRY.push(moduleRegitryName)
 
-            const moduleDirectory = path.normalize(Workspace.getModulesDirectory() + "/" + module)
+            const moduleDirectory = Workspace.getModulesDirectory("/" + module)
             const moduleMetaFile = path.normalize(moduleDirectory + "/module.yaml")
-            const moduleScriptFile = path.normalize(moduleDirectory + "/module.js")
             if (!fs.existsSync(Workspace.getModulesDirectory())
                     || !fs.existsSync(moduleMetaFile))
                 return
 
-            const moduleDestinationDirectory = path.normalize(Workspace.getDestinationModulesDirectory() + "/" + module)
-            const moduleDestinationInstallDirectory = path.normalize(Workspace.getDestinationInstallDirectory() + "/" + module)
+            const moduleProgramDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/" + module)
+            const moduleInstallDirectory = Workspace.getWorkspaceEnvironmentInstallDirectory("/" + module)
+            const moduleEnvironmentProgramDirectory = Workspace.getEnvironmentDirectory(moduleProgramDirectory.substr(3))
 
             Workspace.setVariable("module.name", module)
             Workspace.setVariable("module.directory", moduleDirectory)
-            Workspace.setVariable("module.destination", moduleDestinationDirectory)
+            Workspace.setVariable("module.destination", moduleProgramDirectory)
+            Workspace.setVariable("module.environment", moduleEnvironmentProgramDirectory)
 
             const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
 
-            Workspace.removeVariable("module.name")
-            Workspace.removeVariable("module.directory")
-            Workspace.removeVariable("module.destination")
-
             const parseYaml = (file) => {
                 try {return yaml.parse(fs.readFileSync(file).toString())
-                } catch (exception) {
-                    return exception
+                } catch (error) {
+                    return error
                 }
             }
 
-            const moduleMetaComplete = parseYaml(moduleMetaWorkFile)
-            if (moduleMetaComplete instanceof Error
-                    || !moduleMetaComplete
-                    || !moduleMetaComplete.module) {
+            let moduleMeta = parseYaml(moduleMetaWorkFile)
+            if (moduleMeta instanceof Error
+                    || !moduleMeta
+                    || !moduleMeta.module) {
                 console.log("Modules: Integration of " + module)
-                if (moduleMetaComplete instanceof Error)
-                    throw moduleMetaComplete
-                throw new Error("Invalid module meta file: " + moduleMetaFile, "hallo")
+                if (moduleMeta instanceof Error)
+                    throw moduleMeta
+                throw new Error("Invalid module meta file: " + moduleMetaFile)
             }
-            const moduleMeta = moduleMetaComplete["module"]
+
+            moduleMeta = moduleMeta["module"]
             moduleMeta.name = module
-            moduleMeta.sourceDirectory = path.normalize(moduleDirectory)
-            moduleMeta.destinationDirectory = path.normalize(moduleMeta.destination || moduleDestinationDirectory)
+            moduleMeta.directory = moduleDirectory
+            if (moduleMeta.destination)
+                moduleMeta.destination = path.normalize(moduleMeta.destination)
+            else moduleMeta.destination = moduleProgramDirectory
+            moduleMeta.environment = moduleEnvironmentProgramDirectory
 
             if (moduleMeta.depends) {
                 if (!Array.isArray(moduleMeta.depends))
@@ -107,16 +108,16 @@ export default class Modules {
             if (moduleMeta.download) {
                 const moduleDownloadFile = Modules.download(moduleMeta)
                 const moduleDownloadDirectory = Workspace.unpackDirectory(moduleDownloadFile)
-                Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destinationDirectory)
+                Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destination)
             }
 
-            if (fs.existsSync(moduleDirectory + "/module")
-                    && fs.statSync(moduleDirectory + "/module").isDirectory())
-                Workspace.copyDirectoryInto(moduleDirectory + "/module", moduleMeta.destinationDirectory)
+            if (fs.existsSync(moduleDirectory + "/data")
+                    && fs.statSync(moduleDirectory + "/data").isDirectory())
+                Workspace.copyDirectoryInto(moduleDirectory + "/data", moduleMeta.destination)
 
             if (fs.existsSync(moduleDirectory + "/install")
                     && fs.statSync(moduleDirectory + "/install").isDirectory())
-                Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleDestinationInstallDirectory)
+                Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleInstallDirectory)
 
             if (moduleMeta.prepare) {
                 if (!Array.isArray(moduleMeta.prepare))
@@ -129,29 +130,35 @@ export default class Modules {
                 })
             }
 
-            const profileCommonsFile = Workspace.getDestinationDocumentsProfileDirectory() + "/commons"
+            const profileCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/commons")
             if (moduleMeta.commons)
                 fs.appendFileSync(profileCommonsFile, os.EOL + moduleMeta.commons.trim())
 
-            const profileAttachFile = Workspace.getDestinationDocumentsProfileDirectory() + "/attach"
+            const profileAttachFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/attach")
             if (moduleMeta.attach)
                 fs.appendFileSync(profileAttachFile, os.EOL + moduleMeta.attach.trim())
 
-            const profileDetachFile = Workspace.getDestinationDocumentsProfileDirectory() + "/detach"
+            const profileDetachFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/detach")
             if (moduleMeta.detach)
                 fs.appendFileSync(profileDetachFile, os.EOL + moduleMeta.detach.trim())
 
-            const profileControlFile = Workspace.getDestinationDocumentsProfileDirectory() + "/control"
+            const profileControlFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/control")
             if (moduleMeta.control)
                 fs.appendFileSync(profileControlFile, os.EOL + moduleMeta.control.trim())
 
-            if (fs.existsSync(moduleScriptFile)) {
-                // Unfortunately, synchronous dynamic loading of modules does not
-                // work, so eval is used here.
-                const moduleInstruction = fs.readFileSync(moduleScriptFile).toString()
-                const moduleIntegration = eval(moduleInstruction)
-                moduleIntegration.call(this, moduleMeta)
+            // Unfortunately, synchronous dynamic loading of modules does not
+            // work, therefore the script from the yaml file is used with eval.
+            if (moduleMeta.script
+                    && moduleMeta.script.trim()) {
+                const moduleIntegration = eval(moduleMeta.script)
+                if (typeof moduleIntegration === "function")
+                    moduleIntegration.call(this, moduleMeta)
             }
+
+            Workspace.removeVariable("module.name")
+            Workspace.removeVariable("module.directory")
+            Workspace.removeVariable("module.destination")
+            Workspace.removeVariable("module.environment")
         }
 
         modules.forEach(module => {
@@ -161,10 +168,9 @@ export default class Modules {
 
     static download(moduleMeta) {
 
-        // Everything synchronous -- then it doesn't work with the network
-        // functions. Because cURL belongs to the Windows board means therefore
-        // the workaround.
-        const downloadFile = path.normalize(Workspace.getTempDirectory() + "/" + moduleMeta.name + path.extname(moduleMeta.download))
+        // Everything synchronous - this reduces the network functions,
+        // therefore the workaround with cURL as Windows function.
+        const downloadFile = Workspace.getTempDirectory("/" + moduleMeta.name + path.extname(moduleMeta.download))
         return Workspace.download(moduleMeta.download, downloadFile)
     }
 }
