@@ -2,4 +2,4 @@
 ;Open   = Startup.exe
 ;Action = Startup.exe
 Icon    = .\Resources\Icons\Platform.ico
-Label   = #[release.name] #[release.version]
+Label   = #[environment.name] #[environment.version]
