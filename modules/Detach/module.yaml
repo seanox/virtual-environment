@@ -5,7 +5,7 @@ module:
         essential things of the virtual environment.
 
     prepare:
-        - #[module.destination]\exit.cmd
+        - #[module.destination]\detach.cmd
 
     control: |
         <Button>
