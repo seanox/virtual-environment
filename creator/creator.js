@@ -3,7 +3,7 @@
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
- * Portable Development Environment
+ * Virtual Development Environment
  * Copyright (C) 2021 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -45,10 +45,10 @@ export default class Creator {
         // Copying the static structure of the environment
         console.log("Platform: Deployment of static components")
         Workspace.assignDrive()
-        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getDestinationDirectory())
+        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getWorkspaceEnvironmentDirectory())
         const prepareFiles = ["/AutoRun.inf", "/Startup.cmd"]
         prepareFiles.forEach(prepareFile => {
-            prepareFile = Workspace.getDestinationDirectory() + prepareFile
+            prepareFile = Workspace.getWorkspaceEnvironmentDirectory(prepareFile)
             Workspace.createWorkfile(prepareFile, prepareFile)
         })
         Workspace.detachDrive()
@@ -60,18 +60,18 @@ export default class Creator {
         Workspace.detachDrive()
 
         // Finalization and deployment of the virtual disk in workspace
-        // - Defragemntation of the virtual disk
+        // - Defragmentation of the virtual disk
         // - Compacting virtual disk
         // - Deploy virtual hard disk with all scripts in workspace
         console.log("Drive: Finalizing the workspace drive")
         Workspace.finalize()
 
-        const releaseName = Workspace.getVariable("release.name").toLowerCase()
-        fs.copyFileSync(Workspace.getStartupDirectory() + "/startup.exe", Workspace.getDirectory() + "/" + releaseName + ".exe")
-        Workspace.createWorkfile(Workspace.getDriveDirectory() + "/startup.cmd", Workspace.getDirectory() + "/" + releaseName + ".cmd")
+        const environmentName = Workspace.getVariable("environment.name").toLowerCase()
+        fs.copyFileSync(Workspace.getStartupDirectory("/startup.exe"), Workspace.getWorkspaceDirectory("/" + environmentName + ".exe"))
+        Workspace.createWorkfile(Workspace.getDriveDirectory("/startup.cmd"), Workspace.getWorkspaceDirectory("/" + environmentName + ".cmd"))
 
         console.log()
-        console.log("The Portable Development Environment is completed in:")
-        console.log(Workspace.getDirectory())
+        console.log("The Virtual Development Environment is completed in:")
+        console.log(Workspace.getWorkspaceDirectory())
     }
 }

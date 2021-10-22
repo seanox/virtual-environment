@@ -3,7 +3,7 @@
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
- * Portable Development Environment
+ * Virtual Development Environment
  * Copyright (C) 2021 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -32,7 +32,7 @@ import Creator from "./creator/creator.js"
 const scriptFile = path.normalize(process.argv.slice(1)[0]);
 const yamlFile = scriptFile.replace(/[^\.]*$/, "yaml")
 
-process.on("uncaughtException", function(error) {
+process.on("uncaughtException", (error) => {
     console.error(error.stack || error)
 })
 
