@@ -11,7 +11,7 @@ module:
           <IconFile>%windir%\system32\shell32.dll</IconFile>
           <IconIndex>126</IconIndex>
           <Filename>%windir%\explorer.exe</Filename>
-          <Arguments>#[release.drive.letter]:\Documents</Arguments>
+          <Arguments>#[module.environment]</Arguments>
           <WorkingDirectory/>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>

@@ -1,6 +1,6 @@
 module:
     description: >
-        Command line for the Portable Development Environment. It uses the
+        Command line for the Virtual Development Environment. It uses the
         environment variables from the virtual environment, including the PATH,
         and is therefore different from the Windows command line because it
         does not know the variables and path.
@@ -11,7 +11,7 @@ module:
         - #[module.destination]\console.cmd
 
     commons: |
-        SET PATH=#[release.drive.letter]:\Modules\Console;%PATH%
+        SET PATH=#[module.environment];%PATH%
 
     control: |
         <Button>
@@ -20,9 +20,9 @@ module:
           <Text>Console</Text>
           <IconFile>%windir%\System32\cmd.exe</IconFile>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.release.destination]\console.cmd</Filename>
+          <Filename>#[module.environment]\console.cmd</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

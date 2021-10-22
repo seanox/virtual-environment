@@ -15,9 +15,9 @@ module:
           <Text>ScreenToGif</Text>
           <IconFile/>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.release.destination]\ScreenToGif.exe</Filename>
+          <Filename>#[module.environment]\ScreenToGif.exe</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.release.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

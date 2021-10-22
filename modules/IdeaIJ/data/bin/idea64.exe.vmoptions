@@ -13,4 +13,4 @@
 -Djdk.module.illegalAccess.silent=true
 -Dkotlinx.coroutines.debug=off
 -Dsplash=true
--Duser.home=#[release.drive.letter]:\Documents\Local
+-Duser.home=#[environment.documents.directory]\Local

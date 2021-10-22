@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL #[release.drive.letter]:\Startup.cmd exit
+CALL #[environment.drive]:\Startup.cmd exit
 
 IF NOT DEFINED VT_LETTER (
     IF NOT DEFINED VT_SCRIPT (

@@ -11,7 +11,7 @@ module:
 
     commons: |
         SET ANT_OPTS=-Xms512M -Xmx512M
-        SET PATH=#[release.drive.letter]:\Modules\Ant\bin;%PATH%
+        SET PATH=#[module.environment]\bin;%PATH%
 
 monitoring:
     url:     https://ant.apache.org/index.html
