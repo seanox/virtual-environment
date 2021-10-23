@@ -123,21 +123,21 @@ export default class Modules {
                     && fs.statSync(moduleDirectory + "/install").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleInstallDirectory)
 
-            const profileCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/commons")
+            const settingsCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/commons.cmd")
             if (moduleMeta.commons)
-                fs.appendFileSync(profileCommonsFile, os.EOL + moduleMeta.commons.trim())
+                fs.appendFileSync(settingsCommonsFile, os.EOL + moduleMeta.commons.trim())
 
-            const profileAttachFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/attach")
+            const settingsAttachFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/attach.cmd.cmd")
             if (moduleMeta.attach)
-                fs.appendFileSync(profileAttachFile, os.EOL + moduleMeta.attach.trim())
+                fs.appendFileSync(settingsAttachFile, os.EOL + moduleMeta.attach.trim())
 
-            const profileDetachFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/detach")
+            const settingsDetachFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/detach.cmd")
             if (moduleMeta.detach)
-                fs.appendFileSync(profileDetachFile, os.EOL + moduleMeta.detach.trim())
+                fs.appendFileSync(settingsDetachFile, os.EOL + moduleMeta.detach.trim())
 
-            const profileControlFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/control")
+            const settingsControlFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/control.data")
             if (moduleMeta.control)
-                fs.appendFileSync(profileControlFile, os.EOL + moduleMeta.control.trim())
+                fs.appendFileSync(settingsControlFile, os.EOL + moduleMeta.control.trim())
 
             // Unfortunately, synchronous dynamic loading of modules does not
             // work, therefore the script from the yaml file is used with eval.
