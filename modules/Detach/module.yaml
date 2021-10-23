@@ -4,6 +4,7 @@ module:
         environment and mounts the virtual drive. The tool is one of the
         essential things of the virtual environment.
 
+    depends: Platform
     prepare:
         - #[module.destination]\detach.cmd
 

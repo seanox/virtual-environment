@@ -6,6 +6,7 @@ module:
         testing and executing. However, Ant can also be used effectively for
         non-Java applications.
 
+    depends:  Platform
     download: https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.zip
     source:   #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
 

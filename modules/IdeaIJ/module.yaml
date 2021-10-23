@@ -5,6 +5,7 @@ module:
         offers a community edition and also a commercial edition. Pre-selected
         here is the community edition and the commercial edition is prepared.
 
+    depends:  Platform
    #download: https://download.jetbrains.com/idea/ideaIU-2021.2.3.win.zip
    #download: https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip
     download: https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip

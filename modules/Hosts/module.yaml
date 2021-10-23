@@ -3,6 +3,8 @@ module:
         The quick function opens the hosts file of Windows for administrative
         purposes.
 
+    depends: Platform
+
     control: |
         <Button>
           <Tab_ID>1</Tab_ID>

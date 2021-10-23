@@ -3,6 +3,8 @@ module:
         The quick function opens the Documents directory of the virtual
         environment.
 
+    depends: Platform
+
     control: |
         <Button>
           <Tab_ID>1</Tab_ID>

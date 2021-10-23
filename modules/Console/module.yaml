@@ -7,6 +7,7 @@ module:
         In the module directory further extensions, scripts and tools can be
         added, which can then be used directly via the PATH.
 
+    depends: Platform
     prepare:
         - #[module.destination]\console.cmd
 
