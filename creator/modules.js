@@ -111,6 +111,10 @@ export default class Modules {
                 Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destination)
             }
 
+            if (!moduleMeta.download
+                    && moduleMeta.source)
+                Workspace.copyDirectoryInto(moduleMeta.source, moduleMeta.destination)
+
             if (fs.existsSync(moduleDirectory + "/data")
                     && fs.statSync(moduleDirectory + "/data").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/data", moduleMeta.destination)

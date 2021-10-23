@@ -1,0 +1,10 @@
+module:
+    description: >
+        Platform provides the required file structure for the virtual
+        environment.
+
+    source:      #[workspace.platform.directory]
+    destination: #[workspace.environment.directory]
+    prepare:
+        - #[workspace.environment.directory]/AutoRun.inf
+        - #[workspace.environment.directory]/Startup.cmd

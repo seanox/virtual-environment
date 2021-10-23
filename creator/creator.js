@@ -43,15 +43,7 @@ export default class Creator {
         Workspace.createDrive()
 
         // Copying the static structure of the environment
-        console.log("Platform: Deployment of static components")
-        Workspace.assignDrive()
-        Workspace.copyDirectoryInto(Workspace.getPlatformDirectory(), Workspace.getWorkspaceEnvironmentDirectory())
-        const prepareFiles = ["/AutoRun.inf", "/Startup.cmd"]
-        prepareFiles.forEach(prepareFile => {
-            prepareFile = Workspace.getWorkspaceEnvironmentDirectory(prepareFile)
-            Workspace.createWorkfile(prepareFile, prepareFile)
-        })
-        Workspace.detachDrive()
+        // This is done via the Platform module.
 
         // Integrates all modules which which are enabled
         console.log("Modules: Integration of the selected modules")
