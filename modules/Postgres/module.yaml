@@ -3,6 +3,7 @@ module:
         PostgreSQL is one of the most widely used open source database systems
         -- object-relational, reliable, robust and powerful.
 
+    depends:  Platform
     download: https://get.enterprisedb.com/postgresql/postgresql-14.0-1-windows-x64-binaries.zip
     source:   #[workspace.temp.directory]\#[module.name]\pgsql
 
@@ -11,12 +12,12 @@ module:
 
     script: |
         fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
-        Workspace.copyDirectoryInto(Workspace.getVariable("module.directory") + "/install",
-            Workspace.getVariable("workspace.environment.install.directory") + "/Postgres")
+        Workspace.unpackDirectory(Workspace.getVariable("module.directory") + "/install/database.7z",
+            Workspace.getVariable("workspace.environment.database.directory"))
 
     commons: |
         SET PGHOME=#[module.environment]
-        SET PGDATA=#[environment.drive]:\Database\Data
+        SET PGDATA=#[environment.database.directory]
         SET PGNAME=%VT_VOLUME_NAME% PostgreSQL
         SET PGDATABASE=postgres
         SET PGUSER=dba
