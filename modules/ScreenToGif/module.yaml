@@ -6,6 +6,7 @@ module:
         with high compression, as only the changes to the following image are
         used.
 
+    depends:  Platform
     download: https://github.com/NickeManarin/ScreenToGif/releases/download/2.34/ScreenToGif.2.34.Portable.zip
 
     control: |

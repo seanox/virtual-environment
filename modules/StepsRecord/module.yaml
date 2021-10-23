@@ -4,6 +4,8 @@ module:
         Windows. It documents user interactions with the computer quickly,
         easily and traceably.
 
+    depends: Platform
+
     control: |
         <Button>
           <Tab_ID>1</Tab_ID>

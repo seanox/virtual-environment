@@ -4,6 +4,7 @@ module:
         or other media. The chart shows all major files and folders from all
         directory levels at once.
 
+    depends:  Platform
     download: http://steffengerlach.de/freeware/scn2.zip
 
     control: |

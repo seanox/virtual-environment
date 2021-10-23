@@ -6,6 +6,8 @@ module:
         directly if they cannot use HTTP_PROXY / HTTPS_PROXY / NO_PROXY
         automatically.
 
+    depends: Platform
+
     commons: |
         SET HTTP_PROXY_HOST=proxy.local
         SET HTTP_PROXY_PORT=3128
