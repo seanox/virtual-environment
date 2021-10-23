@@ -119,17 +119,6 @@ export default class Modules {
                     && fs.statSync(moduleDirectory + "/install").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleInstallDirectory)
 
-            if (moduleMeta.prepare) {
-                if (!Array.isArray(moduleMeta.prepare))
-                    moduleMeta.prepare = [moduleMeta.prepare]
-                moduleMeta.prepare = moduleMeta.prepare
-                    .filter(prepare => prepare && prepare.trim())
-                    .map(prepare => prepare.trim())
-                moduleMeta.prepare.forEach(prepareFile => {
-                    Workspace.createWorkfile(prepareFile, prepareFile)
-                })
-            }
-
             const profileCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsProfileDirectory("/commons")
             if (moduleMeta.commons)
                 fs.appendFileSync(profileCommonsFile, os.EOL + moduleMeta.commons.trim())
@@ -153,6 +142,17 @@ export default class Modules {
                 const moduleIntegration = eval(moduleMeta.script)
                 if (typeof moduleIntegration === "function")
                     moduleIntegration.call(this, moduleMeta)
+            }
+
+            if (moduleMeta.prepare) {
+                if (!Array.isArray(moduleMeta.prepare))
+                    moduleMeta.prepare = [moduleMeta.prepare]
+                moduleMeta.prepare = moduleMeta.prepare
+                    .filter(prepare => prepare && prepare.trim())
+                    .map(prepare => prepare.trim())
+                moduleMeta.prepare.forEach(prepareFile => {
+                    Workspace.createWorkfile(prepareFile, prepareFile)
+                })
             }
 
             Workspace.removeVariable("module.name")
