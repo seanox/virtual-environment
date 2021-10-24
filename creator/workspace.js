@@ -85,12 +85,20 @@ export default class Workspace {
         return workspaceLocateDirectory("workspace.environment.install.directory", subPath)
     }
 
+    static getWorkspaceEnvironmentDatabaseDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.database.directory", subPath)
+    }
+
     static getWorkspaceEnvironmentDocumentsDirectory(subPath = false) {
         return workspaceLocateDirectory("workspace.environment.documents.directory", subPath)
     }
 
     static getWorkspaceEnvironmentDocumentsSettingsDirectory(subPath = false) {
         return Workspace.getWorkspaceEnvironmentDocumentsDirectory("/Settings" + (subPath ? "/" + subPath :  ""))
+    }
+
+    static getWorkspaceEnvironmentResourcesDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.resources.directory", subPath)
     }
 
     static getEnvironmentDirectory(subPath = false) {
@@ -277,6 +285,10 @@ export default class Workspace {
         if (destinationFile)
             destinationFile = path.normalize(destinationFile)
         else destinationFile = Workspace.getTempDirectory("/" + new Date().getTime().toString(36).toUpperCase() + path.extname(url))
+
+        const destinationDirectory = path.dirname(destinationFile)
+        if (!fs.existsSync(destinationDirectory))
+            fs.mkdirSync(destinationDirectory, {recursive:true})
 
         console.log("- download " + url)
         console.log("  to " + destinationFile)
