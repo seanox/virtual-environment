@@ -7,7 +7,7 @@ module:
     download: https://get.enterprisedb.com/postgresql/postgresql-14.0-1-windows-x64-binaries.zip
     source:   #[workspace.temp.directory]\#[module.name]\pgsql
 
-    prepare:
+    configure:
         - #[workspace.environment.install.directory]\Postgres\readme.txt
 
     script: |
