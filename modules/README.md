@@ -41,10 +41,9 @@ module:           # Configuration of the module
     source:       # Directory different from the download, whose content is copied to the destination
     destination:  # Destination directory of the module, default is /Program Portable/<module>
     script:       # JavaScript that is executed after downloading and copying
-                  # Script can be further classified: initial (before all), before (before module),
-                  # immediate (with module), after (after module), final (after all).
-                  # Script can be a code or a function. Functions in combination with script and
-                  # immediate will pass a meta-object to the module.
+                  # Script can be further classified:
+                  #     initial (before all), immediate (with module), final (after all)
+                  # Script can be code or function that is passed a meta-object of the module.
     configure:    # Path or list of paths of destination files where placeholders are replaced
 
     commons:      # Batch script with common commands 
