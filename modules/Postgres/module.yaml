@@ -13,7 +13,7 @@ module:
     script: |
         fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
         Workspace.unpackDirectory(Workspace.getVariable("module.directory") + "/install/database.7z",
-            Workspace.getVariable("workspace.environment.database.directory"))
+                Workspace.getWorkspaceEnvironmentDatabaseDirectory())
 
     commons: |
         SET PGHOME=#[module.environment]
