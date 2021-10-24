@@ -42,6 +42,42 @@ export default class Modules {
             .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
             .map(key => key.substr(8))
 
+        const parseModuleMetaFile = (module) => {
+
+            const parseModuleMetaWorkFile = (moduleMetaFile) => {
+                const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
+                try {return yaml.parse(fs.readFileSync(moduleMetaWorkFile).toString())
+                } catch (error) {
+                    return error
+                }
+            }
+
+            const moduleMetaFile = Workspace.getModulesDirectory("/" + module + "/module.yaml")
+            const moduleMeta = parseModuleMetaWorkFile(moduleMetaFile)
+            if (moduleMeta instanceof Error
+                    || !moduleMeta
+                    || !moduleMeta.module
+                    || typeof moduleMeta.module !== "object") {
+                console.log("Modules: Integration of " + module)
+                if (moduleMeta instanceof Error)
+                    throw moduleMeta
+                throw new Error("Invalid module meta file: " + moduleMetaFile)
+            }
+
+            return moduleMeta.module
+        }
+
+        modules.forEach(module => {
+            const moduleMeta = parseModuleMetaFile(module)
+            if (!moduleMeta.source
+                    || !moduleMeta.source.initial
+                    || typeof moduleMeta.source.initial !== "string")
+                return
+            const moduleInitialization = eval(moduleMeta.source.initial)
+            if (typeof moduleInitialization === "function")
+                moduleInitialization.call(this, moduleMeta)
+        })
+
         const integrateModule = (module) => {
 
             const moduleRegitryName = (module || "").toLowerCase().trim()
@@ -65,26 +101,7 @@ export default class Modules {
             Workspace.setVariable("module.destination", moduleProgramDirectory)
             Workspace.setVariable("module.environment", moduleEnvironmentProgramDirectory)
 
-            const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
-
-            const parseYaml = (file) => {
-                try {return yaml.parse(fs.readFileSync(file).toString())
-                } catch (error) {
-                    return error
-                }
-            }
-
-            let moduleMeta = parseYaml(moduleMetaWorkFile)
-            if (moduleMeta instanceof Error
-                    || !moduleMeta
-                    || !moduleMeta.module) {
-                console.log("Modules: Integration of " + module)
-                if (moduleMeta instanceof Error)
-                    throw moduleMeta
-                throw new Error("Invalid module meta file: " + moduleMetaFile)
-            }
-
-            moduleMeta = moduleMeta["module"]
+            const moduleMeta = parseModuleMetaFile(module)
             moduleMeta.name = module
             moduleMeta.directory = moduleDirectory
             if (moduleMeta.destination)
@@ -141,21 +158,28 @@ export default class Modules {
 
             // Unfortunately, synchronous dynamic loading of modules does not
             // work, therefore the script from the yaml file is used with eval.
-            if (moduleMeta.script
-                    && moduleMeta.script.trim()) {
-                const moduleIntegration = eval(moduleMeta.script)
-                if (typeof moduleIntegration === "function")
-                    moduleIntegration.call(this, moduleMeta)
+            if (moduleMeta.script) {
+                if (typeof moduleMeta.script === "string"
+                        && moduleMeta.script.trim()) {
+                    const moduleIntegration = eval(moduleMeta.script)
+                    if (typeof moduleIntegration === "function")
+                        moduleIntegration.call(this, moduleMeta)
+                } else if (typeof moduleMeta.script === "object"
+                        && typeof moduleMeta.script.immediate === "string") {
+                    const moduleIntegration = eval(moduleMeta.script.immediate)
+                    if (typeof moduleIntegration === "function")
+                        moduleIntegration.call(this, moduleMeta)
+                }
             }
 
-            if (moduleMeta.prepare) {
-                if (!Array.isArray(moduleMeta.prepare))
-                    moduleMeta.prepare = [moduleMeta.prepare]
-                moduleMeta.prepare = moduleMeta.prepare
-                    .filter(prepare => prepare && prepare.trim())
-                    .map(prepare => prepare.trim())
-                moduleMeta.prepare.forEach(prepareFile => {
-                    Workspace.createWorkfile(prepareFile, prepareFile)
+            if (moduleMeta.configure) {
+                if (!Array.isArray(moduleMeta.configure))
+                    moduleMeta.configure = [moduleMeta.configure]
+                moduleMeta.configure = moduleMeta.configure
+                    .filter(configure => configure && configure.trim())
+                    .map(configure => configure.trim())
+                moduleMeta.configure.forEach(configureFile => {
+                    Workspace.createWorkfile(configureFile, configureFile)
                 })
             }
 
@@ -167,6 +191,17 @@ export default class Modules {
 
         modules.forEach(module => {
             integrateModule(module)
+        })
+
+        modules.forEach(module => {
+            const moduleMeta = parseModuleMetaFile(module)
+            if (!moduleMeta.source
+                    || !moduleMeta.source.final
+                    || typeof moduleMeta.source.final !== "string")
+                return
+            const moduleFinalization = eval(moduleMeta.source.final)
+            if (typeof moduleFinalization === "function")
+                moduleFinalization.call(this, moduleMeta)
         })
     }
 
