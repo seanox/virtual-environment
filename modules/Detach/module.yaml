@@ -5,7 +5,8 @@ module:
         essential things of the virtual environment.
 
     depends: Platform
-    prepare:
+
+    configure:
         - #[module.destination]\detach.cmd
 
     control: |

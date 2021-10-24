@@ -9,7 +9,8 @@ module:
    #download: https://download.jetbrains.com/idea/ideaIU-2021.2.3.win.zip
    #download: https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip
     download: https://download.jetbrains.com/idea/ideaIC-2021.2.3.win.zip
-    prepare:
+
+    configure:
         - #[module.destination]\bin\idea64.exe.vmoptions
 
     control: |

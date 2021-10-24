@@ -8,7 +8,8 @@ module:
         added, which can then be used directly via the PATH.
 
     depends: Platform
-    prepare:
+
+    configure:
         - #[module.destination]\console.cmd
 
     commons: |
