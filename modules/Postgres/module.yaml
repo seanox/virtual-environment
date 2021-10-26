@@ -1,0 +1,64 @@
+module:
+    description: >
+        PostgreSQL is one of the most widely used open source database systems
+        -- object-relational, reliable, robust and powerful.
+
+    depends:  Platform
+    download: https://get.enterprisedb.com/postgresql/postgresql-14.0-1-windows-x64-binaries.zip
+    source:   #[workspace.temp.directory]\#[module.name]\pgsql
+
+    configure:
+        - #[workspace.environment.install.directory]\Postgres\readme.txt
+
+    script: |
+        fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
+        Workspace.unpackDirectory(Workspace.getVariable("module.directory") + "/install/database.7z",
+                Workspace.getWorkspaceEnvironmentDatabaseDirectory())
+
+    commons: |
+        SET PGHOME=#[module.environment]
+        SET PGDATA=#[environment.database.directory]
+        SET PGNAME=%VT_VOLUME_NAME% PostgreSQL
+        SET PGDATABASE=postgres
+        SET PGUSER=dba
+        SET PGPASSWORD=none
+        SET PGPORT=5432
+        SET PGLOCALEDIR=%PGHOME%\share\locale
+        SET PGLOG=%PGDATA%\pg.log
+        SET PATH=%PGHOME%\bin;%PATH%
+
+    attach: |
+        net stop "%PGNAME%"
+        ping -n 3 127.0.0.1 > NUL
+        sc delete "%PGNAME%"
+        %PGHOME%\bin\pg_ctl register -D "%PGDATA%" -N "%PGNAME%" -p "%PGHOME%\bin\pg_ctl.exe" -S demand -s
+        ping -n 3 127.0.0.1 > NUL
+        net start "%PGNAME%"
+
+    detach:  |
+        net stop "%PGNAME%"
+        ping -n 3 127.0.0.1 > NUL
+        sc delete "%PGNAME%"
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>48</ID>
+          <Text>Brave</Text>
+          <IconFile/>
+          <IconIndex>0</IconIndex>
+          <Filename>#[module.environment]\brave-portable.exe</Filename>
+          <Arguments/>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
+
+monitoring:
+    url:     https://www.enterprisedb.com/download-postgresql-binaries
+    pattern:

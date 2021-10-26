@@ -1,0 +1,25 @@
+module:
+    description: >
+        Platform provides the required file structure for the virtual
+        environment.
+
+    source:      #[workspace.platform.directory]
+    destination: #[workspace.environment.directory]
+
+    configure:
+        - #[workspace.environment.directory]/AutoRun.inf
+        - #[workspace.environment.directory]/Startup.cmd
+
+    script: |
+        Workspace.download("https://www.iconfinder.com/icons/23352/download/ico",
+                Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
+
+        const iconsDownloadFile = Workspace.download("https://securedl.cdn.chip.de/downloads/15543156/Windows_7_Icon-Pack.zip")
+        const iconsDownloadDirectory = Workspace.unpackDirectory(iconsDownloadFile)
+        Workspace.copyDirectoryInto(iconsDownloadDirectory + "/Windows 7 6801 Icon-Pack by marxo",
+                Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons"))
+
+        const resourceHackerDownloadFile = Workspace.download("http://www.angusj.com/resourcehacker/resource_hacker.zip")
+        const resourceHackerDownloadDirectory = Workspace.unpackDirectory(resourceHackerDownloadFile)
+        Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
+                Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))

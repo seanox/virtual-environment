@@ -1,0 +1,29 @@
+module:
+    description: >
+        Detach terminates all programs and services started by the virtual
+        environment and mounts the virtual drive. The tool is one of the
+        essential things of the virtual environment.
+
+    depends: Platform
+
+    configure:
+        - #[module.destination]\detach.cmd
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>53</ID>
+          <Text>Detach</Text>
+          <IconFile>%windir%\System32\shell32.dll</IconFile>
+          <IconIndex>27</IconIndex>
+          <Filename>#[module.environment]\detach.exe</Filename>
+          <Arguments/>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>

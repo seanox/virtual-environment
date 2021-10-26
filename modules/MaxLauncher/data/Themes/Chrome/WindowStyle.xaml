@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:System="clr-namespace:System;assembly=mscorlib">
+
+  <Style x:Key="MainWindowWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="MessageBoxMLWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="AboutDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="DataFilesDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="EditButtonDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="HotkeyDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="OptionsDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="ProgramInformationDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="InputDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+
+  <Style x:Key="ThemeDialogWindowStyle" TargetType="{x:Type Window}">
+    <Setter Property="Background" Value="{DynamicResource Window.Background}" />
+    <Setter Property="Foreground" Value="{DynamicResource Window.Foreground}" />
+  </Style>
+</ResourceDictionary>

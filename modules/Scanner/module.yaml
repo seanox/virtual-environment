@@ -1,0 +1,31 @@
+module:
+    description: >
+        This tool uses a sunburst chart to display the usage of your hard disk
+        or other media. The chart shows all major files and folders from all
+        directory levels at once.
+
+    depends:  Platform
+    download: http://steffengerlach.de/freeware/scn2.zip
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>16</ID>
+          <Text>Scanner</Text>
+          <IconFile>%windir%\System32\Defrag.exe</IconFile>
+          <IconIndex>0</IconIndex>
+          <Filename>#[module.environment]\Scanner.exe</Filename>
+          <Arguments/>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
+
+monitoring:
+    url:     http://steffengerlach.de/freeware/index.html
+    pattern:

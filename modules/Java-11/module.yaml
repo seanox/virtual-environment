@@ -1,0 +1,10 @@
+module:
+    description: >
+        Java 11 as the basis for numerous Java applications. Since EOL has been
+        reached here, it is not intended as a module for development. If
+        possible Java 11 LTS should be used here, but the download requires a
+        logon.
+
+    depends:  Platform
+    download: https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_windows-x64_bin.zip
+    source:   #[workspace.temp.directory]\#[module.name]\jdk-11.0.2

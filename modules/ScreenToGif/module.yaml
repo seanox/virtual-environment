@@ -1,0 +1,33 @@
+module:
+    description: >
+        ScreenToGif creates recordings from the screen in freely definable
+        areas and intervals. The recordings can then be cut, edited, designed
+        and labeled in the integrated editor. The output is an animated GIF
+        with high compression, as only the changes to the following image are
+        used.
+
+    depends:  Platform
+    download: https://github.com/NickeManarin/ScreenToGif/releases/download/2.34/ScreenToGif.2.34.Portable.zip
+
+    control: |
+        <Button>
+          <Tab_ID>1</Tab_ID>
+          <ID>39</ID>
+          <Text>ScreenToGif</Text>
+          <IconFile/>
+          <IconIndex>0</IconIndex>
+          <Filename>#[module.environment]\ScreenToGif.exe</Filename>
+          <Arguments/>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
+          <WindowStyle>0</WindowStyle>
+          <WindowStyleEx>0</WindowStyleEx>
+          <RunAsAdmin>false</RunAsAdmin>
+          <WindowTitle/>
+          <WindowProcessName/>
+          <WindowRect>0,0,0,0</WindowRect>
+          <GroupID/>
+        </Button>
+
+monitoring:
+    url:     https://www.screentogif.com/
+    pattern:
