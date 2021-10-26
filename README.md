@@ -1,8 +1,8 @@
 <p>
-  <a href="https://github.com/seanox/portable-development-environment/pulls">
+  <a href="https://github.com/seanox/virtual-environment-creator/pulls">
     <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
   </a>  
-  <a href="https://github.com/seanox/portable-development-environment/issues">
+  <a href="https://github.com/seanox/virtual-environment-creator/issues">
     <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
   </a>
   <a href="http://seanox.de/contact">
@@ -13,15 +13,15 @@
 
 # Description
 Since about 2010, the project exists for a modular platform for Windows to
-create portable development environments. Based on a virtual drive, the
-environment can be started easily and provides developers with a completely
-preconfigured development environment with numerous tools, services and
-programs and standardizes the toolset in a development team. Short setup times,
-uniform tools with uniform configuration, uniform paths in the file system,
-centralized maintenance and easy distribution and updating are some of the
-benefits. The platform is easily customizable, can be quickly switched to use
-for different projects, and the environment can be easily transferred to other
-machines where work started can be easily continued.
+create virtual environments. Based on a virtual drive, the environment can be
+started easily and provides developers with a completely preconfigured
+development environment with numerous tools, services and  programs and
+standardizes the toolset in a development team. Short setup times, uniform
+tools with uniform configuration, uniform paths in the file system, centralized
+maintenance and easy distribution and updating are some of the benefits. The
+platform is easily customizable, can be quickly switched to use for different
+projects, and the environment can be easily transferred to other machines where
+work started can be easily continued.
 
 __The project provides a tool for initial creation of a pre-configured
 environment with some tools and programs, which are automatically downloaded
@@ -90,7 +90,7 @@ Coming soon
   Learn more [about the modules](/modules/README.md).
 - Use the command line and go to the root directory of the project
 - Call `npm install` to initialize the runtime environment
-- Call `npm start` or `node creator.js` to create a Portable Development Environment
+- Call `npm start` or `node creator.js` to create a virtual environment
 - Environment is created in the directory `./workspace`
 
 
@@ -98,8 +98,8 @@ Coming soon
 
 
 # Contact
-[Issues](https://github.com/seanox/portable-development-environment/issues)  
-[Requests](https://github.com/seanox/portable-development-environment/pulls)  
+[Issues](https://github.com/seanox/virtual-environment-creator/issues)  
+[Requests](https://github.com/seanox/virtual-environment-creator/pulls)  
 [Mail](http://seanox.de/contact)
 
 
