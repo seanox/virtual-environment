@@ -50,7 +50,7 @@ is also supported :-)
 
 
 ## List of available modules 
-https://github.com/seanox/portable-development-environment/tree/main/modules
+https://github.com/seanox/virtual-environment/tree/main/modules
 
 __Project is in development.__
 
