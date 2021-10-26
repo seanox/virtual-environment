@@ -6,6 +6,7 @@ module:
         amounts of Basic Attention Tokens (BAT) cryptocurrency with
         individually approved ads and posts.
 
+    depends:  Platform
     download: https://github.com/portapps/brave-portable/releases/download/1.28.106-76/brave-portable-win64-1.28.106-76.7z
 
     control: |
@@ -15,9 +16,9 @@ module:
           <Text>Brave</Text>
           <IconFile/>
           <IconIndex>0</IconIndex>
-          <Filename>#[module.destination]\brave-portable.exe</Filename>
+          <Filename>#[module.environment]\brave-portable.exe</Filename>
           <Arguments/>
-          <WorkingDirectory>#[module.destination]</WorkingDirectory>
+          <WorkingDirectory>#[module.environment]</WorkingDirectory>
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>
@@ -27,6 +28,6 @@ module:
           <GroupID/>
         </Button>
 
-watcher:
-    url:        https://github.com/portapps/brave-portable
+monitoring:
+    url:     https://github.com/portapps/brave-portable
     pattern:
