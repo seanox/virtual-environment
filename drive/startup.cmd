@@ -12,7 +12,7 @@
     GOTO MAIN
 
 :INIT
-    SET VT_LETTER=#[release.drive.letter]
+    SET VT_LETTER=#[environment.drive]
     SET VT_NAME=%~n0
     SET VT_SCRIPT=%cd%\%~n0%~x0
     SET VT_HOME=%cd%
