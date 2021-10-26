@@ -1,61 +1,76 @@
 # Explanation of the properties
 #
-#     boolean values
-# Supports: true/false on/off yes/no (case-insensitive)
-# The values are normalized to true/false before use and used only as
-# true/false (case-sensitive) in the scripts.
+#     Workspace Environment vs. Environment
+#     ----
+# Workspace environment was needed if the project itself is already used in a
+# virtual environment. Then environment-drive is already used. That is why
+# another virtual drive is used as the workspace. During creation, it is
+# important to understand that the scripts for creation use the drive and paths
+# from the workspace environment and the configurations and scripts of the
+# programs use the environment.
+#
+#     Modules
+#     ----
+# Modules contain installation instructions primarily in the form of 
+# descriptions for automated installation on in the virtual environment. The
+# installation can be based on downloads from the Internet and/or files and
+# file structures contained in the module.
+#
+#     Extension of the modules
+#     ----
+# This file contains the collection of all modules. For each entry a
+# corresponding module directory is expected, which contains the final
+# assembly instructions as YAML file. New modules are simply added to the
+# collection or unneeded ones are simply removed.
 #
 #     Syntax of the placeholders in the scripts
+#     ----
 # All properties can be used as placeholders with fully qualified name in the
 # creator-scripts. Own/additional properties can be added here. The following
 # case-insensitive syntax is used in the scripts: #[key]
 # Unknown placeholders are not cleaned up.
 #
-#     workspace-drive vs. release-drive
-# Workspace-drive was required when the project is used in a portable
-# development environment. Then release-drive is already used.
-#
-#     Extension of the modules
-# This file contains the collection of all modules. For each entry a
-# corresponding module directory is expected, which contains the final assembly
-# instructions as JavaScript file. New modules are simply added to the
-# collection or unneeded ones are simply removed.
+#     boolean values
+#     ----
+# Supports: true/false on/off yes/no (case-insensitive)
+# The values are normalized to true/false before use and used only as
+# true/false (case-sensitive) in the scripts.
 
 workspace:
     drive:            A
     proxy:            off
 
-release:
-    name:             master
-    display:          Master
+environment:
+    name:             Master
     version:          3.0.0
+    drive:            B
+    size:             131072
+    type:             expandable
+    style:            gpt
+    compress:         on
+    bitlocker:        off
 
-    drive:
-        letter:       B
-        size:         131072
-        type:         expandable
-        style:        gpt
-        compress:     on
-        bitlocker:    off
-
-    proxy:
-        http:         off
-        https:        off
+    database:         Database
+    documents:        Documents
+    install:          Install
+    programs:         Program Portable
+    resources:        Resources
+    temp:             Temp
 
 modules:
     Ant:              off
     Apache:           off
     Brave:            off
-    Certificates:     on
     Console:          on
     DataGrid:         off
     DbVisualizer:     off
     Detach:           on
+    Documents:        on
     Eclipse:          off
     Git:              off
     HiEditor:         off
     Hosts:            on
-    IntelliJ:         off
+    IdeaIJ:           off
     JasperStudio:     off
     Java:             off
     JavaDecompiler:   off
@@ -67,10 +82,10 @@ modules:
     Notepad:          off
     Postgres:         off
     Postman:          off
+    Proxy:            off
     Scanner:          off
     ScreenToGif:      off
     Services:         on
-    Skype:            off
     StepsRecord:      on
     Svn:              off
     Tail:             off
