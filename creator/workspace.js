@@ -3,7 +3,7 @@
  * Folgenden Seanox Software Solutions oder kurz Seanox genannt.
  * Diese Software unterliegt der Version 2 der Apache License.
  *
- * Portable Development Environment
+ * Virtual Environment Creator
  * Copyright (C) 2021 Seanox Software Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 3.0.0 20211017
+ * Workspace 3.0.0 20211019
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211017
+ * @version 3.0.0 20211019
  */
 import child from "child_process"
 import flat from "flat"
@@ -34,32 +34,82 @@ import yaml from "yaml"
 
 import Diskpart from "./diskpart.js"
 
-const VARIABLES = new Map()
+const workspaceVariables = new Map()
+
+const workspaceLocateDirectory = (key, subPath = false) => {
+    const directory = Workspace.getVariable(key)
+    if (subPath)
+        return path.normalize(directory + "/" + subPath)
+    return path.normalize(directory)
+}
 
 export default class Workspace {
-
-    static getDriveDirectory() {
-        return Workspace.getVariable("workspace.drive.directory")
-    }
 
     static getDriveFile() {
         return Workspace.getVariable("workspace.drive.file")
     }
 
-    static getModulesDirectory() {
-        return Workspace.getVariable("workspace.modules.directory")
+    static getDriveDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.drive.directory", subPath)
     }
 
-    static getPlatformDirectory() {
-        return Workspace.getVariable("workspace.platform.directory")
+    static getModulesDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.modules.directory", subPath)
     }
 
-    static getStartupDirectory() {
-        return Workspace.getVariable("workspace.startup.directory")
+    static getPlatformDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.platform.directory", subPath)
     }
 
-    static getTempDirectory() {
-        return Workspace.getVariable("workspace.temp.directory")
+    static getStartupDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.startup.directory", subPath)
+    }
+
+    static getTempDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.temp.directory", subPath)
+    }
+
+    static getWorkspaceDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.workspace.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentProgramsDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.programs.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentInstallDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.install.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentDatabaseDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.database.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentDocumentsDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.documents.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentDocumentsSettingsDirectory(subPath = false) {
+        return Workspace.getWorkspaceEnvironmentDocumentsDirectory("/Settings" + (subPath ? "/" + subPath :  ""))
+    }
+
+    static getWorkspaceEnvironmentResourcesDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.resources.directory", subPath)
+    }
+
+    static getEnvironmentDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.directory", subPath)
+    }
+
+    static getProxy() {
+        const workspaceProxy = Workspace.getVariable("workspace.proxy")
+        if (workspaceProxy.match(/^(off|false|no)$/i))
+            return false
+        return workspaceProxy
     }
 
     static initialize(yamlFile) {
@@ -75,61 +125,64 @@ export default class Workspace {
             Workspace.setVariable(key, value)
         }
 
-        const tempDirectory = path.normalize(path.dirname(yamlFile) + "/temp")
-        Workspace.setVariable("workspace.temp.directory", tempDirectory)
+        Workspace.setVariable("workspace.workspace.directory", path.normalize(path.dirname(yamlFile) + "/workspace"))
+        Workspace.setVariable("workspace.temp.directory", Workspace.getWorkspaceDirectory("../temp"))
+        Workspace.setVariable("workspace.drive.directory", Workspace.getWorkspaceDirectory("../drive"))
+        Workspace.setVariable("workspace.drive.file", Workspace.getWorkspaceDirectory("/" + Workspace.getVariable("environment.name").toLowerCase() + ".vhdx"))
+        Workspace.setVariable("workspace.startup.directory", Workspace.getWorkspaceDirectory("../startup"))
+        Workspace.setVariable("workspace.modules.directory", Workspace.getWorkspaceDirectory("../modules"))
+        Workspace.setVariable("workspace.platform.directory", Workspace.getWorkspaceDirectory("../platform"))
 
-        const workspaceDirectory = path.normalize(path.dirname(yamlFile) + "/workspace")
-        Workspace.setVariable("workspace.directory", workspaceDirectory)
+        Workspace.setVariable("workspace.environment.drive", Workspace.getVariable("workspace.drive"))
+        Workspace.setVariable("workspace.environment.directory", Workspace.getVariable("workspace.drive") + ":\\")
+        Workspace.setVariable("workspace.environment.database.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.database")))
+        Workspace.setVariable("workspace.environment.documents.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.documents")))
+        Workspace.setVariable("workspace.environment.install.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.install")))
+        Workspace.setVariable("workspace.environment.programs.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.programs")))
+        Workspace.setVariable("workspace.environment.resources.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.resources")))
+        Workspace.setVariable("workspace.environment.temp.directory", Workspace.getWorkspaceEnvironmentDirectory(Workspace.getVariable("environment.temp")))
 
-        const workspaceDriveFile = path.normalize(workspaceDirectory + "/" + Workspace.getVariable("release.name") + ".vhdx")
-        Workspace.setVariable("workspace.drive.file", workspaceDriveFile)
+        Workspace.setVariable("environment.drive", Workspace.getVariable("environment.drive"))
+        Workspace.setVariable("environment.directory", Workspace.getVariable("environment.drive") + ":\\")
+        Workspace.setVariable("environment.database.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.database")))
+        Workspace.setVariable("environment.documents.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.documents")))
+        Workspace.setVariable("environment.install.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.install")))
+        Workspace.setVariable("environment.programs.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.programs")))
+        Workspace.setVariable("environment.resources.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.resources")))
+        Workspace.setVariable("environment.temp.directory", Workspace.getEnvironmentDirectory(Workspace.getVariable("environment.temp")))
 
-        const workspaceStartupDirectory = path.normalize(path.dirname(yamlFile) + "/startup")
-        Workspace.setVariable("workspace.startup.directory", workspaceStartupDirectory)
-
-        const workspaceModulesDirectory = path.normalize(path.dirname(yamlFile) + "/modules")
-        Workspace.setVariable("workspace.modules.directory", workspaceModulesDirectory)
-
-        const workspacePlatformDirectory = path.normalize(path.dirname(yamlFile) + "/platform")
-        Workspace.setVariable("workspace.platform.directory", workspacePlatformDirectory)
-
-        const workspaceDriveDirectory = path.normalize(path.dirname(yamlFile) + "/drive")
-        Workspace.setVariable("workspace.drive.directory", workspaceDriveDirectory)
-
-        const workspaceDriveRootDirectory = path.normalize(Workspace.getVariable("workspace.drive") + ":/")
-        Workspace.setVariable("workspace.destination.directory", workspaceDriveRootDirectory)
+        if (fs.existsSync(Workspace.getTempDirectory()))
+            fs.rmSync(Workspace.getTempDirectory(), {recursive: true})
+        fs.mkdirSync(Workspace.getTempDirectory(), {recursive: true})
 
         // Detach workspace drives if necessary
         Workspace.detachDrive(false)
 
-        fs.rmSync(tempDirectory, {recursive: true})
-        fs.mkdirSync(tempDirectory, {recursive: true})
-
-        fs.rmSync(workspaceDirectory, {recursive: true})
-        fs.mkdirSync(workspaceDirectory, {recursive: true})
+        if (fs.existsSync(Workspace.getWorkspaceDirectory()))
+            fs.rmSync(Workspace.getWorkspaceDirectory(), {recursive: true})
+        fs.mkdirSync(Workspace.getWorkspaceDirectory(), {recursive: true})
     }
 
     static setVariable(key, value) {
-        VARIABLES.set(key, value)
+        workspaceVariables.set(key, value)
     }
 
     static getVariable(key) {
-        return VARIABLES.get(key)
+        return workspaceVariables.get(key)
     }
 
     static removeVariable(key) {
-        return VARIABLES.delete(key)
+        return workspaceVariables.delete(key)
     }
 
     static listVariables() {
-        return Array.from(VARIABLES.keys())
-    }
-
-    static getDirectory() {
-        return Workspace.getVariable("workspace.directory")
+        return Array.from(workspaceVariables.keys())
     }
 
     static copyDirectoryInto(sourceDir, destinationDir) {
+
+        sourceDir = path.normalize(sourceDir)
+        destinationDir = path.normalize(destinationDir)
 
         const copy = (copySource, copyDestination) => {
 
@@ -140,7 +193,8 @@ export default class Workspace {
                 return
             }
 
-            fs.mkdirSync(copyDestination)
+            if (!fs.existsSync(copyDestination))
+                fs.mkdirSync(copyDestination, {recursive: true})
             const directory = fs.readdirSync(copySource)
             directory.forEach((file) => {
                 const source = path.normalize(copySource + "/" + file)
@@ -162,29 +216,6 @@ export default class Workspace {
         })
     }
 
-    static getDestinationDirectory() {
-        return Workspace.getVariable("workspace.destination.directory")
-    }
-
-    static getDestinationModulesDirectory() {
-        return path.normalize(Workspace.getDestinationDirectory() + "/Modules")
-    }
-
-    static getDestinationDocumentsDirectory() {
-        return path.normalize(Workspace.getDestinationDirectory() + "/Documents")
-    }
-
-    static getDestinationDocumentsProfileDirectory() {
-        return path.normalize(Workspace.getDestinationDocumentsDirectory() + "/Profile")
-    }
-
-    static getProxy() {
-        const workspaceProxy = Workspace.getVariable("workspace.proxy")
-        if (workspaceProxy.match(/^(off|false|no)$/i))
-            return false
-        return workspaceProxy
-    }
-
     static createDrive(failure = true) {
         return Diskpart.diskpartExec("diskpart.create", failure)
     }
@@ -196,11 +227,11 @@ export default class Workspace {
     static assignDrive(failure = true) {
         Workspace.attachDrive(failure)
         const listDrivesResult = Diskpart.diskpartExec("diskpart.list", failure)
-        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("release.display") + "\\s", "im")
+        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("environment.name") + "\\s", "im")
         const listDrivesMatch = listDrivesResult.stdout.toString().match(listDrivesFilter)
         if (!listDrivesMatch) {
             console.log(listDrivesResult.stdout.toString())
-            throw new Error("Volume for '" + Workspace.getVariable("release.display") + "' was not found in diskpart.list")
+            throw new Error("Volume for '" + Workspace.getVariable("environment.name") + "' was not found in diskpart.list")
         }
         Workspace.setVariable("workspace.drive.number", listDrivesMatch[1])
         return Diskpart.diskpartExec("diskpart.assign", false)
@@ -232,7 +263,7 @@ export default class Workspace {
     static createWorkfile(sourceFile, destinationFile) {
 
         if (sourceFile === undefined)
-            return path.normalize(Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase())
+            return Workspace.getTempDirectory("/" + new Date().getTime().toString(36).toUpperCase())
 
         let workFileContent = fs.readFileSync(sourceFile).toString()
         for (const key of Workspace.listVariables())
@@ -241,14 +272,23 @@ export default class Workspace {
                     return Workspace.getVariable(match[2])
                 return match[0]
             })
-        const workFile = path.normalize(destinationFile || Workspace.getTempDirectory() + "/" + path.basename(sourceFile))
-        fs.writeFileSync(workFile, workFileContent)
-        return workFile
+
+        if (destinationFile)
+            destinationFile = path.normalize(destinationFile)
+        else destinationFile = Workspace.getTempDirectory("/" + path.basename(sourceFile))
+        fs.writeFileSync(destinationFile, workFileContent)
+        return destinationFile
     }
 
     static download(url, destinationFile) {
 
-        destinationFile = path.normalize(destinationFile || Workspace.getTempDirectory() + "/" + new Date().getTime().toString(36).toUpperCase() + path.extname(url))
+        if (destinationFile)
+            destinationFile = path.normalize(destinationFile)
+        else destinationFile = Workspace.getTempDirectory("/" + new Date().getTime().toString(36).toUpperCase() + path.extname(url))
+
+        const destinationDirectory = path.dirname(destinationFile)
+        if (!fs.existsSync(destinationDirectory))
+            fs.mkdirSync(destinationDirectory, {recursive:true})
 
         console.log("- download " + url)
         console.log("  to " + destinationFile)
@@ -277,12 +317,14 @@ export default class Workspace {
 
     static unpackDirectory(archiveFile, destinationDirectory) {
 
-        destinationDirectory = path.normalize(destinationDirectory || Workspace.getTempDirectory() + "/" + path.basename(archiveFile).replace(/\..*$/, ""))
+        if (destinationDirectory)
+            destinationDirectory = path.normalize(destinationDirectory)
+        else destinationDirectory = Workspace.getTempDirectory("/" + path.basename(archiveFile).replace(/\..*$/, ""))
 
         console.log("- unpack " + archiveFile)
         console.log("  to " + destinationDirectory)
 
-        const unpackResult = child.spawnSync(path.normalize(Workspace.getPlatformDirectory() + "/Resources/7zip/7za"), ["x", archiveFile, "-o" + destinationDirectory ])
+        const unpackResult = child.spawnSync(Workspace.getPlatformDirectory("/Resources/7zip/7za"), ["x", archiveFile, "-o" + destinationDirectory ])
         if (unpackResult instanceof Error)
             throw unpackResult
         if (unpackResult.status === 0)
