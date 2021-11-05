@@ -15,21 +15,9 @@ module:
     commons: |
         SET PATH=#[module.environment];%PATH%
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>44</ID>
-          <Text>Console</Text>
-          <IconFile>%windir%\System32\cmd.exe</IconFile>
-          <IconIndex>0</IconIndex>
-          <Filename>#[module.environment]\console.cmd</Filename>
-          <Arguments/>
-          <WorkingDirectory>#[module.environment]</WorkingDirectory>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:     1
+        button:  44
+        text:    Console
+        icon:    %windir%\System32\cmd.exe,0
+        execute: #[module.environment]\console.cmd
