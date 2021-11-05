@@ -5,21 +5,11 @@ module:
 
     depends: Platform
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>22</ID>
-          <Text>hosts</Text>
-          <IconFile>%windir%\System32\netcenter.dll</IconFile>
-          <IconIndex>0</IconIndex>
-          <Filename>%windir%\System32\notepad.exe</Filename>
-          <Arguments>%windir%\System32\drivers\etc\hosts</Arguments>
-          <WorkingDirectory>%windir%\System32\drivers\etc\hosts</WorkingDirectory>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:       1
+        button:    22
+        text:      hosts
+        icon:      %windir%\System32\netcenter.dll,0
+        execute:   %windir%\System32\notepad.exe
+        arguments: %windir%\System32\drivers\etc\hosts
+        workspace: %windir%\System32\drivers\etc
