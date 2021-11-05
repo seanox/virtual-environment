@@ -5,21 +5,10 @@ module:
 
     depends: Platform
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>52</ID>
-          <Text>Documents</Text>
-          <IconFile>%windir%\system32\shell32.dll</IconFile>
-          <IconIndex>126</IconIndex>
-          <Filename>%windir%\explorer.exe</Filename>
-          <Arguments>#[module.environment]</Arguments>
-          <WorkingDirectory/>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:       1
+        button:    52
+        text:      Documents
+        icon:      %windir%\system32\shell32.dll,126
+        execute:   %windir%\explorer.exe
+        arguments: #[module.environment]
