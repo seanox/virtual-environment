@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License
  * .
- * Workspace 3.0.0 20211019
+ * Workspace 3.0.0 20211105
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211019
+ * @version 3.0.0 20211105
  */
 import child from "child_process"
 import flat from "flat"
@@ -103,6 +103,30 @@ export default class Workspace {
 
     static getEnvironmentDirectory(subPath = false) {
         return workspaceLocateDirectory("environment.directory", subPath)
+    }
+
+    static getEnvironmentProgramsDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.programs.directory", subPath)
+    }
+
+    static getWorkspaceEnvironmentInstallDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.install.directory", subPath)
+    }
+
+    static getEnvironmentDatabaseDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.database.directory", subPath)
+    }
+
+    static getEnvironmentDocumentsDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.documents.directory", subPath)
+    }
+
+    static getEnvironmentDocumentsSettingsDirectory(subPath = false) {
+        return Workspace.getEnvironmentDocumentsDirectory("/Settings" + (subPath ? "/" + subPath :  ""))
+    }
+
+    static getEnvironmentResourcesDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.resources.directory", subPath)
     }
 
     static getProxy() {
@@ -196,7 +220,7 @@ export default class Workspace {
             if (!fs.existsSync(copyDestination))
                 fs.mkdirSync(copyDestination, {recursive: true})
             const directory = fs.readdirSync(copySource)
-            directory.forEach((file) => {
+            directory.forEach(file => {
                 const source = path.normalize(copySource + "/" + file)
                 const destination = path.normalize(copyDestination + "/" + file)
                 copy(source, destination)
@@ -209,7 +233,7 @@ export default class Workspace {
         if (!fs.existsSync(destinationDir))
             fs.mkdirSync(destinationDir, {recursive: true})
         const directory = fs.readdirSync(sourceDir)
-        directory.forEach((file) => {
+        directory.forEach(file => {
             const source = path.normalize(sourceDir + "/" + file)
             const destination = path.normalize(destinationDir + "/" + file)
             copy(source, destination)
@@ -288,7 +312,7 @@ export default class Workspace {
 
         const destinationDirectory = path.dirname(destinationFile)
         if (!fs.existsSync(destinationDirectory))
-            fs.mkdirSync(destinationDirectory, {recursive:true})
+            fs.mkdirSync(destinationDirectory, {recursive: true})
 
         console.log("- download " + url)
         console.log("  to " + destinationFile)

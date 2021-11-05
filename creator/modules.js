@@ -18,12 +18,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Modules 3.0.0 20211019
+ * Modules 3.0.0 20211105
  * Copyright (C) 2021 Seanox Software Solutions
  * All rights reserved.
  *
  * @author  Seanox Software Solutions
- * @version 3.0.0 20211019
+ * @version 3.0.0 20211105
  */
 import fs from "fs"
 import os from "os"
@@ -32,26 +32,21 @@ import yaml from "yaml"
 
 import Workspace from "./workspace.js"
 
-const REGISTRY = []
+const modulesRegistry = []
 
 export default class Modules {
 
     static integrate() {
 
-        const modules = Workspace.listVariables()
-            .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
-            .map(key => key.substr(8))
+        const parseModuleMetaWorkFile = (moduleMetaFile) => {
+            const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
+            try {return yaml.parse(fs.readFileSync(moduleMetaWorkFile).toString())
+            } catch (error) {
+                return error
+            }
+        }
 
         const parseModuleMetaFile = (module) => {
-
-            const parseModuleMetaWorkFile = (moduleMetaFile) => {
-                const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
-                try {return yaml.parse(fs.readFileSync(moduleMetaWorkFile).toString())
-                } catch (error) {
-                    return error
-                }
-            }
-
             const moduleMetaFile = Workspace.getModulesDirectory("/" + module + "/module.yaml")
             const moduleMeta = parseModuleMetaWorkFile(moduleMetaFile)
             if (moduleMeta instanceof Error
@@ -64,50 +59,61 @@ export default class Modules {
                 throw new Error("Invalid module meta file: " + moduleMetaFile)
             }
 
-            return moduleMeta.module
-        }
-
-        modules.forEach(module => {
-            const moduleMeta = parseModuleMetaFile(module)
-            if (!moduleMeta.source
-                    || !moduleMeta.source.initial
-                    || typeof moduleMeta.source.initial !== "string")
-                return
-            const moduleInitialization = eval(moduleMeta.source.initial)
-            if (typeof moduleInitialization === "function")
-                moduleInitialization.call(this, moduleMeta)
-        })
-
-        const integrateModule = (module) => {
-
-            const moduleRegitryName = (module || "").toLowerCase().trim()
-            if (!moduleRegitryName
-                    || REGISTRY.includes(moduleRegitryName))
-                return
-            REGISTRY.push(moduleRegitryName)
-
             const moduleDirectory = Workspace.getModulesDirectory("/" + module)
-            const moduleMetaFile = path.normalize(moduleDirectory + "/module.yaml")
             if (!fs.existsSync(Workspace.getModulesDirectory())
                     || !fs.existsSync(moduleMetaFile))
                 return
 
             const moduleProgramDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/" + module)
-            const moduleInstallDirectory = Workspace.getWorkspaceEnvironmentInstallDirectory("/" + module)
             const moduleEnvironmentProgramDirectory = Workspace.getEnvironmentDirectory(moduleProgramDirectory.substr(3))
 
-            Workspace.setVariable("module.name", module)
-            Workspace.setVariable("module.directory", moduleDirectory)
-            Workspace.setVariable("module.destination", moduleProgramDirectory)
-            Workspace.setVariable("module.environment", moduleEnvironmentProgramDirectory)
+            moduleMeta.module.name = module
+            moduleMeta.module.directory = moduleDirectory
+            if (moduleMeta.module.destination)
+                moduleMeta.module.destination = path.normalize(moduleMeta.module.destination)
+            else moduleMeta.module.destination = moduleProgramDirectory
+            moduleMeta.module.environment = moduleEnvironmentProgramDirectory
 
-            const moduleMeta = parseModuleMetaFile(module)
-            moduleMeta.name = module
-            moduleMeta.directory = moduleDirectory
-            if (moduleMeta.destination)
-                moduleMeta.destination = path.normalize(moduleMeta.destination)
-            else moduleMeta.destination = moduleProgramDirectory
-            moduleMeta.environment = moduleEnvironmentProgramDirectory
+            return moduleMeta.module
+        }
+
+        const modules = Workspace.listVariables()
+            .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
+            .map(key => parseModuleMetaFile(key.substr(8)))
+            .filter(module => !!module)
+
+        Workspace.setVariable("workspace.modules", modules)
+
+        modules.forEach(moduleMeta => {
+            if (!moduleMeta.script
+                    || !moduleMeta.script.initial
+                    || typeof moduleMeta.script.initial !== "string")
+                return
+            console.log("Modules: Initialization of " + moduleMeta.name)
+            const moduleInitialization = eval(moduleMeta.script.initial)
+            if (typeof moduleInitialization === "function")
+                moduleInitialization.call(this, moduleMeta)
+        })
+
+        const integrateModule = (moduleMeta) => {
+
+            const moduleRegitryName = (moduleMeta.name || "").toLowerCase().trim()
+            if (!moduleRegitryName
+                    || modulesRegistry.includes(moduleRegitryName))
+                return
+            modulesRegistry.push(moduleRegitryName)
+
+            const moduleDirectory = Workspace.getModulesDirectory("/" + moduleMeta.name)
+            const moduleMetaFile = path.normalize(moduleDirectory + "/module.yaml")
+            if (!fs.existsSync(Workspace.getModulesDirectory())
+                    || !fs.existsSync(moduleMetaFile))
+                return
+
+            Workspace.setVariable("module.name", moduleMeta.name)
+            Workspace.setVariable("module.directory", moduleMeta.directory)
+            Workspace.setVariable("module.destination", moduleMeta.destination)
+            Workspace.setVariable("module.environment", moduleMeta.environment)
+            Workspace.setVariable("module.meta", moduleMeta.meta)
 
             if (moduleMeta.depends) {
                 if (!Array.isArray(moduleMeta.depends))
@@ -120,7 +126,7 @@ export default class Modules {
                 })
             }
 
-            console.log("Modules: Integration of " + module)
+            console.log("Modules: Integration of " + moduleMeta.name)
 
             if (moduleMeta.download) {
                 const moduleDownloadFile = Modules.download(moduleMeta)
@@ -136,9 +142,14 @@ export default class Modules {
                     && fs.statSync(moduleDirectory + "/data").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/data", moduleMeta.destination)
 
+            const moduleInstallDirectory = Workspace.getWorkspaceEnvironmentInstallDirectory("/" + moduleMeta.name)
             if (fs.existsSync(moduleDirectory + "/install")
                     && fs.statSync(moduleDirectory + "/install").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleInstallDirectory)
+
+            const workspaceDocumentSettingsDirectory = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory()
+            if (!fs.existsSync(workspaceDocumentSettingsDirectory))
+                fs.mkdirSync(workspaceDocumentSettingsDirectory, {recursive: true})
 
             const settingsCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/commons.cmd")
             if (moduleMeta.commons)
@@ -151,10 +162,6 @@ export default class Modules {
             const settingsDetachFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/detach.cmd")
             if (moduleMeta.detach)
                 fs.appendFileSync(settingsDetachFile, os.EOL + moduleMeta.detach.trim())
-
-            const settingsControlFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/control.data")
-            if (moduleMeta.control)
-                fs.appendFileSync(settingsControlFile, os.EOL + moduleMeta.control.trim())
 
             // Unfortunately, synchronous dynamic loading of modules does not
             // work, therefore the script from the yaml file is used with eval.
@@ -187,19 +194,20 @@ export default class Modules {
             Workspace.removeVariable("module.directory")
             Workspace.removeVariable("module.destination")
             Workspace.removeVariable("module.environment")
+            Workspace.removeVariable("module.meta")
         }
 
-        modules.forEach(module => {
-            integrateModule(module)
+        modules.forEach(moduleMeta => {
+            integrateModule(moduleMeta)
         })
 
-        modules.forEach(module => {
-            const moduleMeta = parseModuleMetaFile(module)
-            if (!moduleMeta.source
-                    || !moduleMeta.source.final
-                    || typeof moduleMeta.source.final !== "string")
+        modules.forEach(moduleMeta => {
+            if (!moduleMeta.script
+                    || !moduleMeta.script.final
+                    || typeof moduleMeta.script.final !== "string")
                 return
-            const moduleFinalization = eval(moduleMeta.source.final)
+            console.log("Modules: Finalization of " + moduleMeta.name)
+            const moduleFinalization = eval(moduleMeta.script.final)
             if (typeof moduleFinalization === "function")
                 moduleFinalization.call(this, moduleMeta)
         })
