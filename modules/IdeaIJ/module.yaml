@@ -13,24 +13,11 @@ module:
     configure:
         - #[module.destination]\bin\idea64.exe.vmoptions
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>23</ID>
-          <Text>IntelliJ IDEA</Text>
-          <IconFile/>
-          <IconIndex>0</IconIndex>
-          <Filename>#[module.environment]\bin\idea64.exe</Filename>
-          <Arguments/>
-          <WorkingDirectory>#[module.environment]\bin</WorkingDirectory>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:     1
+        button:  23
+        text:    IntelliJ IDEA
+        execute: #[module.environment]\bin\idea64.exe
 
 monitoring:
     url:     https://www.jetbrains.com/idea/download/download-thanks.html?platform=windowsZip
