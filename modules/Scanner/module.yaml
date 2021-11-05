@@ -7,24 +7,12 @@ module:
     depends:  Platform
     download: http://steffengerlach.de/freeware/scn2.zip
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>16</ID>
-          <Text>Scanner</Text>
-          <IconFile>%windir%\System32\Defrag.exe</IconFile>
-          <IconIndex>0</IconIndex>
-          <Filename>#[module.environment]\Scanner.exe</Filename>
-          <Arguments/>
-          <WorkingDirectory>#[module.environment]</WorkingDirectory>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:     1
+        button:  16
+        text:    Scanner
+        icon:    %windir%\System32\Defrag.exe,0
+        execute: #[module.environment]\Scanner.exe
 
 monitoring:
     url:     http://steffengerlach.de/freeware/index.html
