@@ -22,7 +22,7 @@ IF "%1" == "exit" (
         The virtual environment will be detached.^
         \r\nPrograms and services are terminated.
 
-    IF EXIST %SETTINGS%\detach.cmd CALL %SETTINGS%\detach.cmd
+    IF EXIST %ROOT%\Resources\detach.cmd CALL %ROOT%\Resources\detach.cmd
 
     SETLOCAL ENABLEDELAYEDEXPANSION
 
@@ -118,12 +118,11 @@ SET TMP=%TEMP%
 SET APPDATA=%VT_HOMEPATH%\Roaming
 SET LOCALAPPDATA=%VT_HOMEPATH%\Local
 SET HOME=%VT_HOMEPATH%
-SET SETTINGS=%ROOT%\Documents\Settings
 SET PUBLIC=%VT_PUBLIC%
 
-IF EXIST %SETTINGS%\commons.cmd CALL %SETTINGS%\commons.cmd
-IF EXIST %SETTINGS%\attach.cmd CALL %SETTINGS%\attach.cmd
+IF EXIST %ROOT%\Resources\commons.cmd CALL %ROOT%\Resources\commons.cmd
+IF EXIST %ROOT%\Resources\attach.cmd CALL %ROOT%\Resources\attach.cmd
 
 taskkill /f /t /im mshta.exe
 
-IF EXIST %SETTINGS%\launcher.cmd CALL %SETTINGS%\launcher.cmd
+IF EXIST %ROOT%\Resources\startup.cmd CALL %ROOT%\Resources\startup.cmd
