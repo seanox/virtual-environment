@@ -11,4 +11,4 @@ module:
         text:      Documents
         icon:      %windir%\system32\shell32.dll,126
         execute:   %windir%\explorer.exe
-        arguments: #[module.environment]
+        arguments: #[environment.documents.directory]
