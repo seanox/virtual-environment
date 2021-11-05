@@ -1,0 +1,12 @@
+module:
+    description: >
+
+    depends:  Platform
+    download: https://deac-ams.dl.sourceforge.net/project/maxlauncher/MaxLauncher/1.30.0.0/maxlauncher_1.30.0.0_portable.zip
+
+    script:
+        final:
+
+monitoring:
+    url:     https://maxlauncher.sourceforge.io/downloads.html
+    pattern:

@@ -38,7 +38,6 @@ is also supported :-)
 
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
-- The drives can also be used over the network.
 - The drives can also be supplied and used via the network.
 - Only one large file can be copied faster and also shared.
 - Snapshots and versioning are possible.
@@ -47,10 +46,11 @@ is also supported :-)
 - Fixed drive letters and paths are used.
 - The use of the file system and registry from the host is avoided.
 - Environments can be maintained and distributed centrally.
-- Users all use the same environment with the same paths and configurations, which makes automation easier.
+- A team use the same environment with the same paths and configurations, which facilitates automation.
+
 
 ## List of available modules 
-https://github.com/seanox/portable-development-environment/tree/main/modules
+https://github.com/seanox/virtual-environment/tree/main/modules
 
 __Project is in development.__
 
