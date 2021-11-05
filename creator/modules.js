@@ -155,6 +155,10 @@ export default class Modules {
             if (moduleMeta.attach)
                 fs.appendFileSync(startupAttachFile, os.EOL + moduleMeta.attach.trim())
 
+            const startupStartupFile = Workspace.getWorkspaceEnvironmentResourcesDirectory("/startup.cmd")
+            if (moduleMeta.startup)
+                fs.appendFileSync(startupStartupFile, os.EOL + moduleMeta.startup.trim())
+
             const startupDetachFile = Workspace.getWorkspaceEnvironmentResourcesDirectory("/detach.cmd")
             if (moduleMeta.detach)
                 fs.appendFileSync(startupDetachFile, os.EOL + moduleMeta.detach.trim())
