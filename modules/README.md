@@ -50,7 +50,9 @@ module:           # Configuration of the module
     attach:       # Batch script for initialization, will be executed after common
     detach:       # Batch script when exiting the environment
 
-    control:      # Launcher configuration for the program, service or tool
+    meta:         # Additional attributes
+                  # Attributes are available with #[workspace.modules] and #[module.meta].
+                  # Among other things, they are used for the configuration of the launcher.
 
 monitoring:       # Configuration of version monitoring 
     url:          # URL of the website where the version should be checked
