@@ -9,24 +9,11 @@ module:
     depends:  Platform
     download: https://github.com/portapps/brave-portable/releases/download/1.28.106-76/brave-portable-win64-1.28.106-76.7z
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>48</ID>
-          <Text>Brave</Text>
-          <IconFile/>
-          <IconIndex>0</IconIndex>
-          <Filename>#[module.environment]\brave-portable.exe</Filename>
-          <Arguments/>
-          <WorkingDirectory>#[module.environment]</WorkingDirectory>
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+    meta:
+        tab:     1
+        button:  48
+        text:    Brave
+        execute: #[module.environment]\brave-portable.exe
 
 monitoring:
     url:     https://github.com/portapps/brave-portable
