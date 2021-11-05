@@ -147,21 +147,17 @@ export default class Modules {
                     && fs.statSync(moduleDirectory + "/install").isDirectory())
                 Workspace.copyDirectoryInto(moduleDirectory + "/install", moduleInstallDirectory)
 
-            const workspaceDocumentSettingsDirectory = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory()
-            if (!fs.existsSync(workspaceDocumentSettingsDirectory))
-                fs.mkdirSync(workspaceDocumentSettingsDirectory, {recursive: true})
-
-            const settingsCommonsFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/commons.cmd")
+            const startupCommonsFile = Workspace.getWorkspaceEnvironmentResourcesDirectory("/commons.cmd")
             if (moduleMeta.commons)
-                fs.appendFileSync(settingsCommonsFile, os.EOL + moduleMeta.commons.trim())
+                fs.appendFileSync(startupCommonsFile, os.EOL + moduleMeta.commons.trim())
 
-            const settingsAttachFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/attach.cmd.cmd")
+            const startupAttachFile = Workspace.getWorkspaceEnvironmentResourcesDirectory("/attach.cmd")
             if (moduleMeta.attach)
-                fs.appendFileSync(settingsAttachFile, os.EOL + moduleMeta.attach.trim())
+                fs.appendFileSync(startupAttachFile, os.EOL + moduleMeta.attach.trim())
 
-            const settingsDetachFile = Workspace.getWorkspaceEnvironmentDocumentsSettingsDirectory("/detach.cmd")
+            const startupDetachFile = Workspace.getWorkspaceEnvironmentResourcesDirectory("/detach.cmd")
             if (moduleMeta.detach)
-                fs.appendFileSync(settingsDetachFile, os.EOL + moduleMeta.detach.trim())
+                fs.appendFileSync(startupDetachFile, os.EOL + moduleMeta.detach.trim())
 
             // Unfortunately, synchronous dynamic loading of modules does not
             // work, therefore the script from the yaml file is used with eval.

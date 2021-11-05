@@ -93,10 +93,6 @@ export default class Workspace {
         return workspaceLocateDirectory("workspace.environment.documents.directory", subPath)
     }
 
-    static getWorkspaceEnvironmentDocumentsSettingsDirectory(subPath = false) {
-        return Workspace.getWorkspaceEnvironmentDocumentsDirectory("/Settings" + (subPath ? "/" + subPath :  ""))
-    }
-
     static getWorkspaceEnvironmentResourcesDirectory(subPath = false) {
         return workspaceLocateDirectory("workspace.environment.resources.directory", subPath)
     }
