@@ -106,7 +106,7 @@ SET VT_PATH_DOCS=%VT_PATH%\Documents
 
 SET VT_HOMEPATH=%VT_PATH%\Documents\Local
 SET VT_USERPROFILE=%VT_HOMEPATH%\Profile
-SET VT_PUBLIC=%VT_HOMEPATH%
+SET VT_PUBLIC=%VT_PATH%\Documents\Public
 
 FOR /F "tokens=1,2 delims==" %%a IN ('WMIC LogicalDisk WHERE DeviceId^="B:" Get VolumeName /Value') DO (
     IF NOT "%%b" == "" SET VT_VOLUME_NAME=%%b
@@ -119,6 +119,7 @@ SET APPDATA=%VT_HOMEPATH%\Roaming
 SET LOCALAPPDATA=%VT_HOMEPATH%\Local
 SET HOME=%VT_HOMEPATH%
 SET SETTINGS=%ROOT%\Documents\Settings
+SET PUBLIC=%VT_PUBLIC%
 
 IF EXIST %SETTINGS%\commons.cmd CALL %SETTINGS%\commons.cmd
 IF EXIST %SETTINGS%\attach.cmd CALL %SETTINGS%\attach.cmd
