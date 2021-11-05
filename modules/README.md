@@ -48,6 +48,7 @@ module:           # Configuration of the module
 
     commons:      # Batch script with common commands 
     attach:       # Batch script for initialization, will be executed after common
+    startup:      # Batch script after initialization for program starts
     detach:       # Batch script when exiting the environment
 
     meta:         # Additional attributes
