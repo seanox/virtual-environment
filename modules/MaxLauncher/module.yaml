@@ -4,8 +4,67 @@ module:
     depends:  Platform
     download: https://deac-ams.dl.sourceforge.net/project/maxlauncher/MaxLauncher/1.30.0.0/maxlauncher_1.30.0.0_portable.zip
 
-    script:
-        final:
+    configure:
+        - #[module.destination]\app.cfg
+
+    script: |
+        const buttonTemplate = (() => {
+            const templateFile = Workspace.getVariable("module.destination") + "\\environment.mld"
+            const templateFileContent = fs.readFileSync(templateFile).toString()
+            const templateButtonPattern = /<button>[\s\S]+<\/button>/ig
+            fs.writeFileSync(templateFile, templateFileContent.replace(templateButtonPattern, ""), {flag: "w"})
+            return templateFileContent.match(templateButtonPattern)[0]
+        })()
+
+        const createTabButtons = (module) => {
+
+            if (module.meta.workspace
+                    && !module.meta.execute)
+                module.meta.workspace = path.normalize(path.dirname(module.meta.execute))
+
+            let buttonContent = buttonTemplate
+
+            const tabIdPattern = new RegExp("(<tab_id>)(</tab_id>)", "ig")
+            const idPattern = new RegExp("(<id>)(</id>)", "ig")
+            const iconFilePattern = new RegExp("(<iconfile>)(</iconfile>)", "ig")
+            const iconFileNamePattern = new RegExp("(?:^.*(?=,\d+))|(?:^.*$)")
+            const iconFileIndexPattern = new RegExp("(?<=,)\d+$")
+            const iconIndexPattern = new RegExp("(<iconindex>)(</iconindex>)", "ig")
+            const textPattern = new RegExp("(<text>)(</text>)", "ig")
+            const filenamePattern = new RegExp("(<filename>)(</filename>)", "ig")
+            const argumentsPattern = new RegExp("(<arguments>)(</arguments>)", "ig")
+            const workingDirectoryPattern = new RegExp("(<workingdirectory>)(</workingdirectory>)", "ig")
+
+            const fillPattern = (pattern, value) => {
+                if (value) buttonContent = buttonContent.replace(pattern, "$1" + value + "$2")
+            }
+
+            fillPattern(tabIdPattern, module.meta.tab)
+            fillPattern(idPattern, module.meta.button)
+            fillPattern(iconFilePattern, (module.meta.icon || "").match(iconFileNamePattern))
+            fillPattern(iconIndexPattern, (module.meta.icon || "").match(iconFileIndexPattern))
+            fillPattern(textPattern, module.meta.text)
+            fillPattern(filenamePattern, module.meta.execute)
+            fillPattern(argumentsPattern, module.meta.arguments)
+            fillPattern(workingDirectoryPattern, module.meta.workspace)
+
+            return buttonContent
+        }
+
+        const migrateTabButtons = (tabId, modules) => {
+            const templateFile = Workspace.getVariable("module.destination") + "\\environment.mld"
+            const templateFileContent = fs.readFileSync(templateFile).toString()
+            const templateTabPattern = new RegExp("(<tab>[\\s\S]+?<id>" + tabId + "</id>[\\s\\S]+?</text>)", "i")
+            const tabButtons = modules
+                .filter(module => module.meta && module.meta.tab === tabId)
+                .map(module => createTabButtons(module))
+                .join("")
+            fs.writeFileSync(templateFile, templateFileContent.replace(templateTabPattern, "$1" + tabButtons), {flag: "w"})
+        }
+
+        migrateTabButtons(1, Workspace.getVariable("workspace.modules"))
+        migrateTabButtons(2, Workspace.getVariable("workspace.modules"))
+        migrateTabButtons(3, Workspace.getVariable("workspace.modules"))
 
 monitoring:
     url:     https://maxlauncher.sourceforge.io/downloads.html
