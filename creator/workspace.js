@@ -97,6 +97,10 @@ export default class Workspace {
         return workspaceLocateDirectory("workspace.environment.resources.directory", subPath)
     }
 
+    static getWorkspaceEnvironmentTempDirectory(subPath = false) {
+        return workspaceLocateDirectory("workspace.environment.temp.directory", subPath)
+    }
+
     static getEnvironmentDirectory(subPath = false) {
         return workspaceLocateDirectory("environment.directory", subPath)
     }
@@ -105,7 +109,7 @@ export default class Workspace {
         return workspaceLocateDirectory("environment.programs.directory", subPath)
     }
 
-    static getWorkspaceEnvironmentInstallDirectory(subPath = false) {
+    static getEnvironmentInstallDirectory(subPath = false) {
         return workspaceLocateDirectory("environment.install.directory", subPath)
     }
 
@@ -119,6 +123,10 @@ export default class Workspace {
 
     static getEnvironmentResourcesDirectory(subPath = false) {
         return workspaceLocateDirectory("environment.resources.directory", subPath)
+    }
+
+    static getEnvironmentTempDirectory(subPath = false) {
+        return workspaceLocateDirectory("environment.temp.directory", subPath)
     }
 
     static getProxy() {
