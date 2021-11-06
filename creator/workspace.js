@@ -185,6 +185,14 @@ export default class Workspace {
         if (fs.existsSync(Workspace.getWorkspaceDirectory()))
             fs.rmSync(Workspace.getWorkspaceDirectory(), {recursive: true})
         fs.mkdirSync(Workspace.getWorkspaceDirectory(), {recursive: true})
+
+        // Node.js may not be able to use files with hidden attributes. That is
+        // why the hidden attribute in the platform and module directories is
+        // removed recursively. Windows can also set the attribute for system
+        // files automatically during cloning from the Git repository.
+
+        child.spawnSync("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getPlatformDirectory()})
+        child.spawnSync("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getModulesDirectory()})
     }
 
     static setVariable(key, value) {
