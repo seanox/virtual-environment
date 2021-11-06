@@ -1,0 +1,16 @@
+module:
+    description: >
+        OpenJDK is the official free implementation of the Java Platform,
+        Standard Edition (Java SE) and free successor of the Java Development
+        Kit (JDK).
+
+    depends:  Platform
+    download: https://download.java.net/java/GA/jdk17.0.1/2a2082e5a09d4267845be086888add4f/12/GPL/openjdk-17.0.1_windows-x64_bin.zip
+    source:   #[workspace.temp.directory]\#[module.name]\jdk-17.0.1
+
+    commons: |
+        SET PATH=#[module.environment]\bin;%PATH%
+
+monitoring:
+    url:     https://openjdk.java.net/
+    pattern:
