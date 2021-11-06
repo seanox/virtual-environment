@@ -13,7 +13,7 @@ module:
     script: |
         fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
         Workspace.unpackDirectory(Workspace.getVariable("module.directory") + "/install/database.7z",
-                Workspace.getWorkspaceEnvironmentDatabaseDirectory())
+            Workspace.getWorkspaceEnvironmentDatabaseDirectory())
 
     commons: |
         SET PGHOME=#[module.environment]
@@ -40,16 +40,14 @@ module:
         ping -n 3 127.0.0.1 > NUL
         sc delete "%PGNAME%"
 
-    control: |
-        <Button>
-          <Tab_ID>1</Tab_ID>
-          <ID>48</ID>
-          <Text>Brave</Text>
-          <IconFile/>
-          <IconIndex>0</IconIndex>
-          <Filename>#[module.environment]\brave-portable.exe</Filename>
+    meta:
+        tab: 1
+        button: 48
+        text: Brave
+        icon:
+          execute: #[module.environment]\brave-portable.exe
           <Arguments/>
-          <WorkingDirectory>#[module.environment]</WorkingDirectory>
+          workingDirectory: #[module.environment]
           <WindowStyle>0</WindowStyle>
           <WindowStyleEx>0</WindowStyleEx>
           <RunAsAdmin>false</RunAsAdmin>

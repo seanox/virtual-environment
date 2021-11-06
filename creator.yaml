@@ -41,7 +41,7 @@ workspace:
     proxy:            off
 
 environment:
-    name:             Example
+    name:             Master
     version:          10.0.0
     drive:            B
     size:             131072
@@ -86,8 +86,8 @@ modules:
     Scanner:          off
     ScreenToGif:      off
     Services:         on
+    Settings:         on
     StepsRecord:      on
-    Svn:              off
     Tail:             off
     VSCode:           off
     WebStorm:         off
