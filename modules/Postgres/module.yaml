@@ -41,21 +41,12 @@ module:
         sc delete "%PGNAME%"
 
     meta:
-        tab: 1
-        button: 48
-        text: Brave
-        icon:
-          execute: #[module.environment]\brave-portable.exe
-          <Arguments/>
-          workingDirectory: #[module.environment]
-          <WindowStyle>0</WindowStyle>
-          <WindowStyleEx>0</WindowStyleEx>
-          <RunAsAdmin>false</RunAsAdmin>
-          <WindowTitle/>
-          <WindowProcessName/>
-          <WindowRect>0,0,0,0</WindowRect>
-          <GroupID/>
-        </Button>
+        tab:       1
+        button:    48
+        text:      PostgreSQL
+        icon:      #[module.environment]\psql.exe,0
+        execute:   #[environment.database]\psql.exe
+        arguments: -d %PGDATABASE% -p %PGPORT% -h 127.0.0.1 -U %PGUSER%
 
 monitoring:
     url:     https://www.enterprisedb.com/download-postgresql-binaries
