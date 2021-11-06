@@ -7,19 +7,47 @@ module:
     destination: #[workspace.environment.directory]
 
     configure:
+        - #[workspace.environment.database.directory]/desktop.ini
+        - #[workspace.environment.documents.directory]/desktop.ini
+        - #[workspace.environment.documents.directory]/Local/desktop.ini
+        - #[workspace.environment.documents.directory]/Music/desktop.ini
+        - #[workspace.environment.documents.directory]/Pictures/desktop.ini
+        - #[workspace.environment.documents.directory]/Projects/desktop.ini
+        - #[workspace.environment.documents.directory]/Public/desktop.ini
+        - #[workspace.environment.documents.directory]/Videos/desktop.ini
+        - #[workspace.environment.install.directory]/desktop.ini
+        - #[workspace.environment.programs.directory]/desktop.ini
+        - #[workspace.environment.resources.directory]/desktop.ini
+        - #[workspace.environment.temp.directory]/desktop.ini
         - #[workspace.environment.directory]/AutoRun.inf
         - #[workspace.environment.directory]/Startup.cmd
 
     script: |
-        Workspace.download("https://www.iconfinder.com/icons/23352/download/ico",
-                Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
+
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/database"),
+            Workspace.getWorkspaceEnvironmentDatabaseDirectory())
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/documents"),
+            Workspace.getWorkspaceEnvironmentDocumentsDirectory())
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/install"),
+            Workspace.getWorkspaceEnvironmentInstallDirectory())
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/programs"),
+            Workspace.getWorkspaceEnvironmentProgramsDirectory())
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/resources"),
+            Workspace.getWorkspaceEnvironmentResourcesDirectory())
+        fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/temp"),
+            Workspace.getWorkspaceEnvironmentTempDirectory())
 
         const iconsDownloadFile = Workspace.download("https://securedl.cdn.chip.de/downloads/15543156/Windows_7_Icon-Pack.zip")
         const iconsDownloadDirectory = Workspace.unpackDirectory(iconsDownloadFile)
         Workspace.copyDirectoryInto(iconsDownloadDirectory + "/Windows 7 6801 Icon-Pack by marxo",
-                Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons"))
+            Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons"))
 
         const resourceHackerDownloadFile = Workspace.download("http://www.angusj.com/resourcehacker/resource_hacker.zip")
         const resourceHackerDownloadDirectory = Workspace.unpackDirectory(resourceHackerDownloadFile)
         Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
-                Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
+            Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
+
+        // Human o2 icon set https://www.iconfinder.com/iconsets/humano2,
+        // is used as the icon for the drive.
+        Workspace.download("https://www.iconfinder.com/icons/23352/download/ico/128",
+            Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
