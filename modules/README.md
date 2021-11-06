@@ -37,12 +37,11 @@ module:           # Configuration of the module
     description:  # Description is used only for understanding the module
 
     depends:      # Value or list of dependent modules which are loaded before
-    download:     # URL for download 
+    download:     # URL for download; 7z, zip, msi are automatically unpacked into the destination
     source:       # Directory different from the download, whose content is copied to the destination
     destination:  # Destination directory of the module, default is /Program Portable/<module>
     script:       # JavaScript that is executed after downloading and copying
-                  # Script can be further classified:
-                  #     initial (before all), immediate (with module), final (after all)
+                  # Script can be classified: initial (before all), immediate (with module), final (after all)
                   # Script can be code or function that is passed a meta-object of the module.
     configure:    # Path or list of paths of destination files where placeholders are replaced
 
