@@ -35,7 +35,7 @@ module:
         ping -n 3 127.0.0.1 > NUL
         net start "%PGNAME%"
 
-    detach:  |
+    detach: |
         net stop "%PGNAME%"
         ping -n 3 127.0.0.1 > NUL
         sc delete "%PGNAME%"
