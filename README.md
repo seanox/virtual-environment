@@ -103,6 +103,7 @@ Coming soon
 
 
 # Changes (Change Log)
+[Read more](https://raw.githubusercontent.com/seanox/roundup/master/CHANGES)
 
 
 # Contact
