@@ -23,7 +23,6 @@ module:
         - #[workspace.environment.directory]/Startup.cmd
 
     script: |
-
         fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/database"),
             Workspace.getWorkspaceEnvironmentDatabaseDirectory())
         fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/documents"),
@@ -47,7 +46,9 @@ module:
         Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
 
-        // Human o2 icon set https://www.iconfinder.com/iconsets/humano2,
+        // Media - Greyscale icon set https://www.iconfinder.com/iconsets/media-greyscale,
         // is used as the icon for the drive.
-        Workspace.download("https://www.iconfinder.com/icons/23352/download/ico/128",
+        Workspace.download("https://www.iconfinder.com/icons/2949783/download/ico/4096",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
+        Workspace.download("https://www.iconfinder.com/icons/2949783/download/png/64",
+            Workspace.getWorkspaceEnvironmentResourcesDirectory("/message.png"))
