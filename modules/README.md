@@ -63,7 +63,7 @@ The module integration uses the following automations and assumptions:
 - If a module has already been integrated, it will be ignored when requested
   again. This can happen due to dependencies.
 - If dependencies have been defined, they will be processed first.
-- If there is a _module_ directory, the content will be copied to the
+- If there is a _data_ directory, the content will be copied to the
   destination directory after the download.
 - If there is an _install_ directory it will be copied to `/Install/<Module>`.
 
@@ -107,6 +107,7 @@ The following placeholders are supported and replaced if the files are declared 
 | `#[module.directory]`                          | Directory of the module                                                            |
 | `#[module.destination]`                        | Destination directory of the module with the drive letter of the workspace         |
 | `#[module.environment]`                        | Destination directory of the module with the drive letter of the final environment |
+| `#[module.meta]`                               | Meta information about the module                                                  |
 | &nbsp;                                         | &nbsp;                                                                             |
 | `#[environment.name]`                          | Name of final environment, is also used as the label from the drive                |
 | `#[environment.version]`                       | Version of final environment, is used as the label from the drive                  |
