@@ -10,7 +10,7 @@ module:
     meta:
         tab:     1
         button:  16
-        text:    Scanner
+        text:    #[module.name]
         icon:    %windir%\System32\Defrag.exe,0
         execute: #[module.environment]\Scanner.exe
 

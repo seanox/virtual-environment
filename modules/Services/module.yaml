@@ -8,5 +8,5 @@ module:
     meta:
         tab:     1
         button:  36
-        text:    Services
+        text:    #[module.name]
         execute: %windir%\system32\services.msc

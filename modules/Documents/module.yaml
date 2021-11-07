@@ -8,7 +8,7 @@ module:
     meta:
         tab:       1
         button:    52
-        text:      Documents
+        text:      #[module.name]
         icon:      %windir%\system32\shell32.dll,126
         execute:   %windir%\explorer.exe
         arguments: #[environment.documents.directory]

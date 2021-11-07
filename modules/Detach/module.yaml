@@ -12,6 +12,6 @@ module:
     meta:
         tab:     1
         button:  53
-        text:    Detach
+        text:    #[module.name]
         icon:    %windir%\System32\shell32.dll,27
         execute: #[module.environment]\detach.exe

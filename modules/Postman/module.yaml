@@ -1,0 +1,18 @@
+module:
+    description: >
+        Postman as a toolchain covers the complete lifecycle for API
+        development from designing a schema to building test suites and
+        creating live documentation.
+
+    depends:  Platform
+    download: https://github.com/portapps/postman-portable/releases/download/9.1.2-51/postman-portable-win64-9.1.2-51.7z
+
+    meta:
+        tab:     1
+        button:  25
+        text:    #[module.name]
+        execute: #[module.environment]\postman-portable.exe
+
+monitoring:
+    url:     https://portapps.io/app/postman-portable
+    pattern:

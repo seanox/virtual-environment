@@ -12,7 +12,7 @@ module:
     meta:
         tab:     1
         button:  48
-        text:    Brave
+        text:    #[module.name]
         execute: #[module.environment]\brave-portable.exe
 
 monitoring:

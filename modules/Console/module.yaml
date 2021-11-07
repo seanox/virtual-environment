@@ -18,6 +18,6 @@ module:
     meta:
         tab:     1
         button:  44
-        text:    Console
+        text:    #[module.name]
         icon:    %windir%\System32\cmd.exe,0
         execute: #[module.environment]\console.cmd

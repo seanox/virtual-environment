@@ -18,7 +18,7 @@ module:
     meta:
         tab:     1
         button:  32
-        text:    DbVisualizer
+        text:    #[module.name]
         icon:    #[module.environment]\dbvis.exe,0
         execute: #[module.environment]\startup.exe
 

@@ -12,7 +12,7 @@ module:
     meta:
         tab:     1
         button:  39
-        text:    ScreenToGif
+        text:    #[module.name]
         execute: #[module.environment]\ScreenToGif.exe
 
 monitoring:
