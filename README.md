@@ -52,7 +52,15 @@ is also supported :-)
 ## List of available modules 
 https://github.com/seanox/virtual-environment-creator/tree/main/modules
 
-__Project is in development.__
+More applications can be easily added for the creator or even later in the
+final virtual environment.
+
+Good sources for portable apps are:
+- https://portableapps.com/apps
+- https://portapps.io/apps
+
+Often there is also software directly from the manufacturer/vendor as a
+portable version.
 
 
 # Licence Agreement
