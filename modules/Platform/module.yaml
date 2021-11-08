@@ -7,6 +7,18 @@ module:
     destination: #[workspace.environment.directory]
 
     configure:
+        - #[workspace.environment.database.directory]/desktop.ini
+        - #[workspace.environment.documents.directory]/desktop.ini
+        - #[workspace.environment.documents.directory]/Local/desktop.ini
+        - #[workspace.environment.documents.directory]/Music/desktop.ini
+        - #[workspace.environment.documents.directory]/Pictures/desktop.ini
+        - #[workspace.environment.documents.directory]/Projects/desktop.ini
+        - #[workspace.environment.documents.directory]/Public/desktop.ini
+        - #[workspace.environment.documents.directory]/Videos/desktop.ini
+        - #[workspace.environment.install.directory]/desktop.ini
+        - #[workspace.environment.programs.directory]/desktop.ini
+        - #[workspace.environment.resources.directory]/desktop.ini
+        - #[workspace.environment.temp.directory]/desktop.ini
         - #[workspace.environment.directory]/AutoRun.inf
         - #[workspace.environment.directory]/Startup.cmd
 
