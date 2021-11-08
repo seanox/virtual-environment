@@ -392,7 +392,10 @@ export default class Workspace {
         console.log("- unpack " + archiveFile)
         console.log("  to " + destinationDirectory)
 
-        const unpackResult = child.spawnSync(Workspace.getPlatformDirectory("/Resources/7zip/7za"), ["x", archiveFile, "-o" + destinationDirectory ])
+        let parameters = [Workspace.getPlatformDirectory("/Resources/7zip/7za"), ["x", archiveFile, "-o" + destinationDirectory]]
+        if (path.extname(archiveFile).substr(1).toLowerCase() === "msi")
+            parameters = ["msiexec.exe", ["/a", archiveFile, "/qb", "TARGETDIR=" + destinationDirectory]]
+        const unpackResult = child.spawnSync(...parameters)
         if (unpackResult instanceof Error)
             throw unpackResult
         if (unpackResult.status === 0)
