@@ -9,7 +9,7 @@ module:
 
     script: |
         const buttonTemplate = (() => {
-            const templateFile = Workspace.getVariable("module.destination") + "\\environment.mld"
+            const templateFile = Workspace.getModuleDestinationDirectory("/environment.mld")
             const templateFileContent = fs.readFileSync(templateFile).toString()
             const templateButtonPattern = /<button>[\s\S]+<\/button>/ig
             fs.writeFileSync(templateFile, templateFileContent.replace(templateButtonPattern, ""), {flag: "w"})
@@ -52,7 +52,7 @@ module:
         }
 
         const migrateTabButtons = (tabId, modules) => {
-            const templateFile = Workspace.getVariable("module.destination") + "\\environment.mld"
+            const templateFile = Workspace.getModuleDestinationDirectory("/environment.mld")
             const templateFileContent = fs.readFileSync(templateFile).toString()
             const templateTabPattern = new RegExp("(<tab>[\\s\S]+?<id>" + tabId + "</id>[\\s\\S]+?</text>)", "i")
             const tabButtons = modules

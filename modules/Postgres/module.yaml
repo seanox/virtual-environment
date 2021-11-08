@@ -11,8 +11,8 @@ module:
         - #[workspace.environment.install.directory]\Postgres\readme.txt
 
     script: |
-        fs.rmSync(Workspace.getVariable("module.destination") + "/pgAdmin 4", {recursive:true, force:true})
-        Workspace.unpackDirectory(Workspace.getVariable("module.directory") + "/install/database.7z",
+        fs.rmSync(Workspace.getModuleDestinationDirectory("/pgAdmin 4"), {recursive:true, force:true})
+        Workspace.unpackDirectory(Workspace.getModuleDirectory("/install/database.7z"),
             Workspace.getWorkspaceEnvironmentDatabaseDirectory())
 
     commons: |
