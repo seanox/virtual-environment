@@ -36,7 +36,7 @@ const modulesRegistry = []
 
 export default class Modules {
 
-    static integrate() {
+    static integrate(module = undefined) {
 
         const parseModuleMetaWorkFile = (moduleMetaFile) => {
             const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
@@ -99,24 +99,6 @@ export default class Modules {
             return moduleMeta
         }
 
-        const modules = Workspace.listVariables()
-            .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
-            .map(key => parseModuleMetaFile(key.substr(8)))
-            .filter(module => !!module)
-
-        Workspace.setVariable("workspace.modules", modules)
-
-        modules.forEach(moduleMeta => {
-            if (!moduleMeta.script
-                    || !moduleMeta.script.initial
-                    || typeof moduleMeta.script.initial !== "string")
-                return
-            console.log("Modules: Initialization of " + moduleMeta.name)
-            const moduleInitialization = eval(moduleMeta.script.initial)
-            if (typeof moduleInitialization === "function")
-                moduleInitialization.call(this, moduleMeta)
-        })
-
         const integrateModule = (moduleMeta) => {
 
             const moduleRegitryName = (moduleMeta.name || "").toLowerCase().trim()
@@ -150,8 +132,16 @@ export default class Modules {
 
             console.log("Modules: Integration of " + moduleMeta.name)
 
+            const download = (moduleMeta) => {
+
+                // Everything synchronous - this reduces the network functions,
+                // therefore the workaround with cURL as Windows function.
+                const downloadFile = Workspace.getTempDirectory("/" + moduleMeta.name + path.extname(moduleMeta.download))
+                return Workspace.download(moduleMeta.download, downloadFile)
+            }
+
             if (moduleMeta.download) {
-                const moduleDownloadFile = Modules.download(moduleMeta)
+                const moduleDownloadFile = download(moduleMeta)
                 const moduleDownloadDirectory = Workspace.unpackDirectory(moduleDownloadFile)
                 Workspace.copyDirectoryInto(moduleMeta.source || moduleDownloadDirectory, moduleMeta.destination)
             }
@@ -223,6 +213,34 @@ export default class Modules {
             Workspace.removeVariable("module.meta")
         }
 
+        if (module) {
+            const moduleMeta = parseModuleMetaFile(module)
+            if (moduleMeta)
+                integrateModule(moduleMeta)
+            return
+        }
+
+        if (Workspace.hasVariable("workspace.modules"))
+            return
+
+        const modules = Workspace.listVariables()
+            .filter(key => key.startsWith("modules.") && Workspace.getVariable(key).match(/^(on|true|yes)$/i))
+            .map(key => parseModuleMetaFile(key.substr(8)))
+            .filter(module => !!module)
+
+        Workspace.setVariable("workspace.modules", modules)
+
+        modules.forEach(moduleMeta => {
+            if (!moduleMeta.script
+                    || !moduleMeta.script.initial
+                    || typeof moduleMeta.script.initial !== "string")
+                return
+            console.log("Modules: Initialization of " + moduleMeta.name)
+            const moduleInitialization = eval(moduleMeta.script.initial)
+            if (typeof moduleInitialization === "function")
+                moduleInitialization.call(this, moduleMeta)
+        })
+
         modules.forEach(moduleMeta => {
             integrateModule(moduleMeta)
         })
@@ -237,13 +255,5 @@ export default class Modules {
             if (typeof moduleFinalization === "function")
                 moduleFinalization.call(this, moduleMeta)
         })
-    }
-
-    static download(moduleMeta) {
-
-        // Everything synchronous - this reduces the network functions,
-        // therefore the workaround with cURL as Windows function.
-        const downloadFile = Workspace.getTempDirectory("/" + moduleMeta.name + path.extname(moduleMeta.download))
-        return Workspace.download(moduleMeta.download, downloadFile)
     }
 }

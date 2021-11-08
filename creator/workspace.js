@@ -191,8 +191,12 @@ export default class Workspace {
         // removed recursively. Windows can also set the attribute for system
         // files automatically during cloning from the Git repository.
 
-        child.spawnSync("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getPlatformDirectory()})
-        child.spawnSync("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getModulesDirectory()})
+        Workspace.exec("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getPlatformDirectory()})
+        Workspace.exec("attrib", ["-H", "-S", "/D", "/S"], {cwd: Workspace.getModulesDirectory()})
+    }
+
+    static hasVariable(key) {
+        return workspaceVariables.has(key)
     }
 
     static setVariable(key, value) {
@@ -276,13 +280,7 @@ export default class Workspace {
     static finalize() {
 
         Workspace.assignDrive()
-        const defragResult = child.spawnSync("defrag", [Workspace.getVariable("workspace.drive") + ":"])
-        if (defragResult instanceof Error)
-            throw defragResult
-        if (defragResult.status !== 0) {
-            console.log(defragResult.stdout)
-            throw new Error("An unexpected error occurred during defrag")
-        }
+        Workspace.exec("defrag", [Workspace.getVariable("workspace.drive") + ":"])
         Workspace.detachDrive()
 
         // Compacting, double optimize is effective for virtual drive
@@ -363,5 +361,29 @@ export default class Workspace {
             return destinationDirectory
         console.log(unpackResult.stderr.toString())
         throw new Error("An unexpected error occurred during unpack:" + os.EOL + "\t" + archiveFile)
+    }
+
+    static exec(command, parameters, options) {
+
+        parameters = parameters || []
+        options = options || {}
+
+        console.log("- exec " + (command + " " + parameters.join(" ").trim()).trim())
+        if (options.cwd)
+            console.log("  in " + path.normalize(options.cwd))
+
+        const execResult = child.spawnSync(command, parameters, options)
+        if (options.failure === false)
+            return execResult
+        if (execResult instanceof Error)
+            throw execResult
+        if (execResult.output
+                && (execResult.status !== 0
+                        || options.verbose === true))
+            console.log(execResult.stdout.toString())
+        if (execResult.status === 0)
+            return execResult
+        console.log(execResult.stderr.toString())
+        throw new Error("An unexpected error occurred")
     }
 }

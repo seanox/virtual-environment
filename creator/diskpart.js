@@ -33,15 +33,6 @@ export default class Diskpart {
 
     static diskpartExec(diskpart, failure = true) {
         const diskpartWorkFile = Workspace.createWorkfile("./creator/" + diskpart)
-        const diskpartResult = child.spawnSync("diskpart", ["/s", diskpartWorkFile])
-        if (!failure)
-            return diskpartResult
-        if (diskpartResult instanceof Error)
-            throw diskpartResult
-        if (diskpartResult.status === 0)
-            return diskpartResult
-        if (diskpartResult.output)
-            console.log(diskpartResult.stdout.toString())
-        throw new Error("An unexpected error occurred during " + diskpart)
+        return Workspace.exec("diskpart", ["/s", diskpartWorkFile], {failure: failure !== false})
     }
 }
