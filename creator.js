@@ -29,7 +29,7 @@ import path from "path"
 
 import Creator from "./creator/creator.js"
 
-const scriptFile = path.normalize(process.argv.slice(1)[0]);
+const scriptFile = path.normalize(process.argv.slice(1)[0])
 const yamlFile = scriptFile.replace(/[^\.]*$/, "yaml")
 
 process.on("uncaughtException", (error) => {
