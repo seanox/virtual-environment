@@ -129,6 +129,40 @@ export default class Workspace {
         return workspaceLocateDirectory("environment.temp.directory", subPath)
     }
 
+    //     Important:
+    // The module methods are temporarily filled and only usable if
+    // a module is integrated, otherwise the methods will cause an error.
+
+    static getModuleName() {
+        if (!Workspace.hasVariable("module.name"))
+            throw new Error("No active module present")
+        return Workspace.getVariable("module.name")
+    }
+
+    static getModuleDirectory(subPath = false) {
+        if (!Workspace.hasVariable("module.directory"))
+            throw new Error("No active module present")
+        return workspaceLocateDirectory("module.directory", subPath)
+    }
+
+    static getModuleDestinationDirectory(subPath = false) {
+        if (!Workspace.hasVariable("module.destination"))
+            throw new Error("No active module present")
+        return workspaceLocateDirectory("module.destination", subPath)
+    }
+
+    static getModuleEnvironmentDirectory(subPath = false) {
+        if (!Workspace.hasVariable("module.environment"))
+            throw new Error("No active module present")
+        return workspaceLocateDirectory("module.environment", subPath)
+    }
+
+    static getModuleMeta() {
+        if (!Workspace.hasVariable("module.meta"))
+            throw new Error("No active module present")
+        return Workspace.getVariable("module.meta")
+    }
+
     static getProxy() {
         const workspaceProxy = Workspace.getVariable("workspace.proxy")
         if (workspaceProxy.match(/^(off|false|no)$/i))
