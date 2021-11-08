@@ -1,0 +1,33 @@
+module:
+    description: >
+        Settings are a part of the initial startup of the virtual environment.
+        The file system of the virtual environment is completely configured
+        after creation. Settings is then an optional extension to further
+        personalize this configuration. For this purpose, this file contains
+        key-value pairs with a list of files in which the corresponding fully
+        qualified placeholders are replaced, which is executed each time the
+        virtual environment is started.
+
+        The settings are a YAML file with the same name as the virtual
+        environment in the directory of the virtual disk and thus outside the
+        environment. The idea is that personal data can be stored there, which
+        can be used already with the first start of the virtual environment.
+
+        This simplifies the distribution, migrations and updates.
+
+    depends:
+        - Platform
+        - Node
+
+    destination: #[workspace.environment.resources.directory]
+
+    attach: |
+        #[environment.resources.directory]\Node\node.exe #[environment.resources.directory]\settings.js
+        IF %ERRORLEVEL% NEQ 0 (
+            mshta "javascript:new ActiveXObject('WScript.Shell').Popup('Settings of the virtual environment\nAn unexpected error occurred.', 10, 'Warning', 48 +4096); close();"
+        )
+
+    script: |
+        fs.copyFileSync(Workspace.getModuleDestinationDirectory("/settings.yaml"),
+            Workspace.getWorkspaceDirectory("/" + Workspace.getEnvironmentName().toLowerCase() + ".yaml"))
+        fs.unlinkSync(Workspace.getModuleDestinationDirectory("/settings.yaml"))

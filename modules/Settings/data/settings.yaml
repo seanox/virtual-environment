@@ -1,0 +1,39 @@
+# Settings are a part of the initial startup of the virtual environment.
+#
+# The file system of the virtual environment is completely configured after
+# creation. Settings is then an optional extension to further personalize this
+# configuration. For this purpose, this file contains key-value pairs with a
+# list of files in which the corresponding fully qualified placeholders are
+# replaced, which is executed each time the virtual environment is started.
+#
+# Because only keys with a value are replaced, this file can be prepared with
+# the creation of the virtual environment. The user enters his personal data
+# and the specified files are personalized with the next start of the virtual
+# environment.
+#
+# This file supports two types of placeholders for the creator #[...] and
+# environment variables $[...] at runtime.
+# Placeholders from the creator are filled with a value in this file.
+# Dynamic placeholders of the environment variables are retained and are only
+# resolved at runtime.
+#
+# In the destination files of the settings both forms of the variables can be
+# used and so environment variables can be used directly.
+# The names of the variables are case-insensitive.
+#
+#     IMPORTANT
+# THE FILE CONTAINS USEFUL EXAMPLE BUT MUST BE CUSTOMIZED.
+
+
+# Settings defines the key-value pairs that can be further strutcurated, the
+# placeholders are then fully qualified and without the 'settings' prefix.
+# e.g. #[account]
+settings:
+    account:  $[USERNAME]
+    password:
+
+
+# List of files where placeholders are replaced.
+files:
+    - #[environment.programs.directory]\Maven\conf\settings.xml
+    - #[environment.documents.directory]\Local\.m2\settings.xml
