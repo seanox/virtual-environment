@@ -36,19 +36,32 @@ module:
         fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/temp"),
             Workspace.getWorkspaceEnvironmentTempDirectory())
 
+        // Additional: Icons make the world more colorful
         const iconsDownloadFile = Workspace.download("https://securedl.cdn.chip.de/downloads/15543156/Windows_7_Icon-Pack.zip")
         const iconsDownloadDirectory = Workspace.unpackDirectory(iconsDownloadFile)
         Workspace.copyDirectoryInto(iconsDownloadDirectory + "/Windows 7 6801 Icon-Pack by marxo",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons"))
 
+        // Additional: ResourceHacker for customizing programs
         const resourceHackerDownloadFile = Workspace.download("http://www.angusj.com/resourcehacker/resource_hacker.zip")
         const resourceHackerDownloadDirectory = Workspace.unpackDirectory(resourceHackerDownloadFile)
         Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
 
-        // Media - Greyscale icon set https://www.iconfinder.com/iconsets/media-greyscale,
-        // is used as the icon for the drive.
+        // Additional: Media - Greyscale icon set is used as the icon for the drive
+        // see also https://www.iconfinder.com/iconsets/media-greyscale
         Workspace.download("https://www.iconfinder.com/icons/2949783/download/ico/4096",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
         Workspace.download("https://www.iconfinder.com/icons/2949783/download/png/64",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/message.png"))
+
+        // Node.js + YAML is used internally in the virtual environment.
+        // Therefore, the Node module is loaded manually and copied to Resources,
+        // which is then used as the internal runtime environment.
+        Modules.integrate("Node")
+        const resourcesNodeDirectory = Workspace.getWorkspaceEnvironmentResourcesDirectory("/Node")
+        if (!fs.existsSync(resourcesNodeDirectory))
+            fs.mkdirSync(resourcesNodeDirectory, {recursive: true})
+        const programsNodeDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/Node")
+        Workspace.copyDirectoryInto(programsNodeDirectory, resourcesNodeDirectory)
+        Workspace.exec("npm.cmd", ["install", "-g", "yaml"], {cwd: resourcesNodeDirectory})
