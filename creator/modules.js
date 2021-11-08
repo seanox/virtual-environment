@@ -25,8 +25,8 @@
  * @author  Seanox Software Solutions
  * @version 3.0.0 20211105
  */
-import fs from "fs"
-import os from "os"
+import fs   from "fs"
+import os   from "os"
 import path from "path"
 import yaml from "yaml"
 

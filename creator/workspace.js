@@ -26,11 +26,11 @@
  * @version 3.0.0 20211105
  */
 import child from "child_process"
-import flat from "flat"
-import fs from "fs"
-import os from "os"
-import path from "path"
-import yaml from "yaml"
+import flat  from "flat"
+import fs    from "fs"
+import os    from "os"
+import path  from "path"
+import yaml  from "yaml"
 
 import Diskpart from "./diskpart.js"
 
@@ -99,6 +99,10 @@ export default class Workspace {
 
     static getWorkspaceEnvironmentTempDirectory(subPath = false) {
         return workspaceLocateDirectory("workspace.environment.temp.directory", subPath)
+    }
+
+    static getEnvironmentName() {
+        return Workspace.getVariable("environment.name")
     }
 
     static getEnvironmentDirectory(subPath = false) {
@@ -186,7 +190,7 @@ export default class Workspace {
         Workspace.setVariable("workspace.workspace.directory", path.normalize(path.dirname(yamlFile) + "/workspace"))
         Workspace.setVariable("workspace.temp.directory", Workspace.getWorkspaceDirectory("../temp"))
         Workspace.setVariable("workspace.drive.directory", Workspace.getWorkspaceDirectory("../drive"))
-        Workspace.setVariable("workspace.drive.file", Workspace.getWorkspaceDirectory("/" + Workspace.getVariable("environment.name").toLowerCase() + ".vhdx"))
+        Workspace.setVariable("workspace.drive.file", Workspace.getWorkspaceDirectory("/" + Workspace.getEnvironmentName().toLowerCase() + ".vhdx"))
         Workspace.setVariable("workspace.startup.directory", Workspace.getWorkspaceDirectory("../startup"))
         Workspace.setVariable("workspace.modules.directory", Workspace.getWorkspaceDirectory("../modules"))
         Workspace.setVariable("workspace.platform.directory", Workspace.getWorkspaceDirectory("../platform"))
@@ -297,11 +301,11 @@ export default class Workspace {
     static assignDrive(failure = true) {
         Workspace.attachDrive(failure)
         const listDrivesResult = Diskpart.diskpartExec("diskpart.list", failure)
-        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getVariable("environment.name") + "\\s", "im")
+        const listDrivesFilter = new RegExp("^\\s*volume\\s+(\\d+)\\s+(\\w\\s+)?" + Workspace.getEnvironmentName() + "\\s", "im")
         const listDrivesMatch = listDrivesResult.stdout.toString().match(listDrivesFilter)
         if (!listDrivesMatch) {
             console.log(listDrivesResult.stdout.toString())
-            throw new Error("Volume for '" + Workspace.getVariable("environment.name") + "' was not found in diskpart.list")
+            throw new Error("Volume for '" + Workspace.getEnvironmentName() + "' was not found in diskpart.list")
         }
         Workspace.setVariable("workspace.drive.number", listDrivesMatch[1])
         return Diskpart.diskpartExec("diskpart.assign", false)
