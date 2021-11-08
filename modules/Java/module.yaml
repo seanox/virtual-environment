@@ -9,6 +9,23 @@ module:
     source:   #[workspace.temp.directory]\#[module.name]\jdk-17.0.1
 
     commons: |
+        SET JAVA_HOME=#[module.environment]
+        SET JDK_HOME=%JAVA_HOME%
+        SET JAVA_TRUSTSTORE_PASSWORD=changeit
+        SET JAVA_TRUSTSTORE_TYPE=JKS
+        SET JAVA_KEYSTORE_PASSWORD=%JAVA_TRUSTSTORE_PASSWORD%
+        SET JAVA_KEYSTORE_TYPE=%JAVA_TRUSTSTORE_TYPE%
+        SET JAVA_SETTINGS=-Djavax.net.ssl.trustStorePassword=%JAVA_TRUSTSTORE_PASSWORD%^
+                -Djavax.net.ssl.trustStoreType=%JAVA_TRUSTSTORE_TYPE%
+        IF "#[environment.proxy.host]" NEQ "" (
+            SET JAVA_SETTINGS=%JAVA_SETTINGS%^
+                    -Dhttp.proxyHost=#[environment.proxy.host]^
+                    -Dhttp.proxyPort=#[environment.proxy.port]^
+                    -Dhttp.nonProxyHosts="127.0.0.1|localhost"^
+                    -Dhttps.proxyHost=#[environment.proxy.host]^
+                    -Dhttps.proxyPort=#[environment.proxy.port]^
+                    -Dhttps.nonProxyHosts="127.0.0.1|localhost"
+        )
         SET PATH=#[module.environment]\bin;%PATH%
 
 monitoring:

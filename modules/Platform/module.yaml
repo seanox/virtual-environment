@@ -65,3 +65,4 @@ module:
         const programsNodeDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/Node")
         Workspace.copyDirectoryInto(programsNodeDirectory, resourcesNodeDirectory)
         Workspace.exec("npm.cmd", ["install", "-g", "yaml"], {cwd: resourcesNodeDirectory})
+        Workspace.exec("npm.cmd", ["install", "-g", "flat"], {cwd: resourcesNodeDirectory})
