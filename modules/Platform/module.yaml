@@ -36,10 +36,16 @@ module:
         fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/temp"),
             Workspace.getWorkspaceEnvironmentTempDirectory())
 
-        // The proxy is a very central module, as its environment variables
-        // provide guidance for other modules to make decisions. Therefore it
-        // is integrated here optionally, thus only if is switched on.
+        // Proxy is a very central module, as its environment variables provide
+        // guidance for other modules to make decisions. Therefore it is
+        // integrated here optionally, thus only if is switched on.
         Modules.integrate("Proxy", true)
+
+        // Settings is another key component required to personalize the
+        // configuration of programs and services before launch. Therefore, it
+        // must be executed in the attach script in the first place, which is
+        // accomplished by the optional integrate.
+        Modules.integrate("Settings", true)
 
         // Node.js + YAML is used internally in the virtual environment.
         // Therefore, the Node module is loaded manually and copied to Resources,
