@@ -68,7 +68,6 @@ modules:
     Documents:        on
     Eclipse:          off
     Git:              off
-    HiEditor:         off
     Hosts:            on
     IdeaIJ:           off
     JasperStudio:     off
@@ -79,7 +78,7 @@ modules:
     Mercurial:        off
     Nginx:            off
     Node:             off
-    Notepad:          off
+    PeaZip:           off
     Postgres:         off
     Postman:          off
     Proxy:            off
@@ -91,4 +90,3 @@ modules:
     Tail:             off
     VSCode:           off
     WebStorm:         off
-    WinMerge:         off
