@@ -1,0 +1,21 @@
+module:
+    description: >
+        The quick function opens the hosts file of Windows for administrative
+        purposes.
+
+    depends:
+        - Platform
+        - Java
+
+    download: https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-windows-1.6.6.zip
+    source:   #[workspace.temp.directory]\#[module.name]\jd-gui-windows-1.6.6
+
+    meta:
+        tab:     1
+        button:  45
+        text:    Java Decompiler
+        execute: #[module.environment]\jd-gui.exe
+
+monitoring:
+    url:     https://github.com/java-decompiler/jd-gui/releases
+    pattern:
