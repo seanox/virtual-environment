@@ -1,0 +1,18 @@
+module:
+    description: >
+        PeaZip Portable is a standalone compression program file archiver
+        utility for more as 200 archive types.
+
+    depends:  Platform
+    download: https://github.com/peazip/PeaZip/releases/download/8.2.0/peazip_portable-8.2.0.WIN64.zip
+    source:   #[workspace.temp.directory]\#[module.name]\peazip_portable-8.2.0.WIN64
+
+    meta:
+        tab:     1
+        button:  21
+        text:    #[module.name]
+        execute: #[module.environment]\peazip.exe
+
+monitoring:
+    url:     https://peazip.github.io/peazip-portable.html
+    pattern:
