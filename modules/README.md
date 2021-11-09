@@ -104,6 +104,7 @@ The following placeholders are supported and replaced if the files are declared 
 | `#[workspace.environment.temp.directory]`      | Path of the temp-directory of the temporary environment from the workspace         |
 | &nbsp;                                         | &nbsp;                                                                             |
 | `#[module.name]`                               | Name of the module                                                                 |
+| `#[module.enabled]`                            | Is true if the module is enabled and untrue if integration is forced               |
 | `#[module.directory]`                          | Directory of the module                                                            |
 | `#[module.destination]`                        | Destination directory of the module with the drive letter of the workspace         |
 | `#[module.environment]`                        | Destination directory of the module with the drive letter of the final environment |
