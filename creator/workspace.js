@@ -370,8 +370,9 @@ export default class Workspace {
         // -L Follow redirects
         // -o Path of the output file
         // -x URL of the proxy, with empty the option is ignored
+        // -A User-Agent, some download servers don't like cURL and send nasty redirects
 
-        const curlResult = child.spawnSync("curl", [url, "-f", "-L", "-o", destinationFile, "-x", Workspace.getProxy() || ""])
+        const curlResult = child.spawnSync("curl", [url, "-f", "-L", "-o", destinationFile, "-x", Workspace.getProxy() || "", "-A", "Mozilla/5.0 (KHTML, like Gecko)"])
         if (curlResult instanceof Error)
             throw curlResult
         if (curlResult.status === 0)
