@@ -1,7 +1,9 @@
 module:
     description: >
-        The quick function opens the hosts file of Windows for administrative
-        purposes.
+        Java Decompiler aims to develop tools in order to decompile and
+        analyze Java 5 byte code and the later versions as a standalone
+        graphical utility that displays the reconstructed source code of class
+        and jar files.
 
     depends:
         - Platform
