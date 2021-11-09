@@ -57,11 +57,6 @@ environment:
     resources:        Resources
     temp:             Temp
 
-  # proxy:
-  #     schema:       http
-  #     host:         proxy.local
-  #     port:         3128
-
 modules:
     Ant:              off
     Apache:           off
