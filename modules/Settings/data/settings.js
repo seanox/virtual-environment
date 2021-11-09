@@ -63,10 +63,17 @@ for (const key in settingsFlat) {
 }
 
 settings.files.forEach(file => {
+
     file = path.normalize(file)
-    if (fs.existsSync(file)) {
-        const fileContent = fs.readFileSync(file).toString().replace(/([\$\#])\[\s*(.*?)\s*\]/g,
-            (match, context, variable) => variablesMap.get(context + variable.toLowerCase()) || match)
-        fs.writeFileSync(file, fileContent)
-    }
+    if (!fs.existsSync(file))
+        return
+
+    const template = file + "_template"
+    if (fs.existsSync(template))
+        fs.copyFileSync(template, file)
+    else fs.copyFileSync(file, template)
+
+    const fileContent = fs.readFileSync(file).toString().replace(/([\$\#])\[\s*(.*?)\s*\]/g,
+        (match, context, variable) => variablesMap.get(context + variable.toLowerCase()) || match)
+    fs.writeFileSync(file, fileContent)
 })

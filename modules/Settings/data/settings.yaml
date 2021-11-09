@@ -11,15 +11,23 @@
 # and the specified files are personalized with the next start of the virtual
 # environment.
 #
-# This file supports two types of placeholders for the creator #[...] and
-# environment variables $[...] at runtime.
-# Placeholders from the creator are filled with a value in this file.
-# Dynamic placeholders of the environment variables are retained and are only
-# resolved at runtime.
+# Settings supports two types of variables and placeholders in this file and
+# the destination files that are resolved with the start of the virtual
+# environment. Environment variables $[...] and application variables #[...].
+# Application variables are read from the settings.yaml file when the virtual
+# environment is started. Applications variables can also be used in the
+# settings.yaml file. However, these are replaced directly by the creator.
+# Environment variables are resolved in the settings.yaml file as in the
+# destination files only with the start of the virtual environment.
 #
-# In the destination files of the settings both forms of the variables can be
-# used and so environment variables can be used directly.
-# The names of the variables are case-insensitive.
+# Another important point is that Settings is executed with every start of the
+# virtual environment and the target files are always reconfigured. For this to
+# work, Settings creates copies with the target files as a template. The
+# templates can be identified by the extended file extension _template. If no
+# template exists, the one from the destination file will be created.
+#
+# The placeholders are generally case-insensitive and unknown ones are not
+# replaced.
 #
 #     IMPORTANT
 # THE FILE CONTAINS USEFUL EXAMPLE BUT MUST BE CUSTOMIZED.
@@ -36,4 +44,3 @@ settings:
 # List of files where placeholders are replaced.
 files:
     - #[environment.programs.directory]\Maven\conf\settings.xml
-    - #[environment.documents.directory]\Local\.m2\settings.xml
