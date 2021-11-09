@@ -13,6 +13,7 @@ module:
         - #[module.destination]\console.cmd
 
     commons: |
+        REM --- #[module.name]
         SET PATH=#[module.environment];%PATH%
 
     meta:

@@ -11,6 +11,7 @@ module:
     source:   #[workspace.temp.directory]\#[module.name]\apache-ant-1.9.16
 
     commons: |
+        REM --- #[module.name]
         SET ANT_OPTS=-Xms512M -Xmx512M
         SET PATH=#[module.environment]\bin;%PATH%
 
