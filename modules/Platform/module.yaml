@@ -71,9 +71,9 @@ module:
         Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
 
-        // Additional: Media - Greyscale icon set is used as the icon for the drive
-        // see also https://www.iconfinder.com/iconsets/media-greyscale
-        Workspace.download("https://www.iconfinder.com/icons/2949783/download/ico/4096",
+        // Additional: Oxygen icon set is used as the icon for the drive
+        // see also https://iconarchive.com/show/oxygen-icons-by-oxygen-icons.org.html
+        Workspace.download("https://iconarchive.com/download/i43110/oxygen-icons.org/oxygen/Emblems-emblem-symbolic-link.ico",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
-        Workspace.download("https://www.iconfinder.com/icons/2949783/download/png/64",
+        Workspace.download("https://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/64/Emblems-emblem-symbolic-link-icon.png",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/message.png"))
