@@ -16,6 +16,7 @@ module:
             Workspace.getWorkspaceEnvironmentDatabaseDirectory())
 
     commons: |
+        REM --- #[module.name]
         SET PGHOME=#[module.environment]
         SET PGDATA=#[environment.database.directory]
         SET PGNAME=%VT_VOLUME_NAME% PostgreSQL
@@ -28,6 +29,7 @@ module:
         SET PATH=%PGHOME%\bin;%PATH%
 
     attach: |
+        REM --- #[module.name]
         net stop "%PGNAME%"
         ping -n 3 127.0.0.1 > NUL
         sc delete "%PGNAME%"
@@ -36,6 +38,7 @@ module:
         net start "%PGNAME%"
 
     detach: |
+        REM --- #[module.name]
         net stop "%PGNAME%"
         ping -n 3 127.0.0.1 > NUL
         sc delete "%PGNAME%"

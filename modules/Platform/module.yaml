@@ -36,6 +36,23 @@ module:
         fs.renameSync(Workspace.getWorkspaceEnvironmentDirectory("/temp"),
             Workspace.getWorkspaceEnvironmentTempDirectory())
 
+        // The proxy is a very central module, as its environment variables
+        // provide guidance for other modules to make decisions. Therefore it
+        // is integrated here optionally, thus only if is switched on.
+        Modules.integrate("Proxy", true)
+
+        // Node.js + YAML is used internally in the virtual environment.
+        // Therefore, the Node module is loaded manually and copied to Resources,
+        // which is then used as the internal runtime environment.
+        Modules.integrate("Node")
+        const resourcesNodeDirectory = Workspace.getWorkspaceEnvironmentResourcesDirectory("/Node")
+        if (!fs.existsSync(resourcesNodeDirectory))
+            fs.mkdirSync(resourcesNodeDirectory, {recursive: true})
+        const programsNodeDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/Node")
+        Workspace.copyDirectoryInto(programsNodeDirectory, resourcesNodeDirectory)
+        Workspace.exec("npm.cmd", ["install", "-g", "yaml"], {cwd: resourcesNodeDirectory})
+        Workspace.exec("npm.cmd", ["install", "-g", "flat"], {cwd: resourcesNodeDirectory})
+
         // Additional: Icons make the world more colorful
         const iconsDownloadFile = Workspace.download("https://securedl.cdn.chip.de/downloads/15543156/Windows_7_Icon-Pack.zip")
         const iconsDownloadDirectory = Workspace.unpackDirectory(iconsDownloadFile)
@@ -54,15 +71,3 @@ module:
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons/platform.ico"))
         Workspace.download("https://www.iconfinder.com/icons/2949783/download/png/64",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/message.png"))
-
-        // Node.js + YAML is used internally in the virtual environment.
-        // Therefore, the Node module is loaded manually and copied to Resources,
-        // which is then used as the internal runtime environment.
-        Modules.integrate("Node")
-        const resourcesNodeDirectory = Workspace.getWorkspaceEnvironmentResourcesDirectory("/Node")
-        if (!fs.existsSync(resourcesNodeDirectory))
-            fs.mkdirSync(resourcesNodeDirectory, {recursive: true})
-        const programsNodeDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/Node")
-        Workspace.copyDirectoryInto(programsNodeDirectory, resourcesNodeDirectory)
-        Workspace.exec("npm.cmd", ["install", "-g", "yaml"], {cwd: resourcesNodeDirectory})
-        Workspace.exec("npm.cmd", ["install", "-g", "flat"], {cwd: resourcesNodeDirectory})

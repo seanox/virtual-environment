@@ -9,8 +9,10 @@ module:
     depends: Platform
 
     commons: |
-        SET HTTP_PROXY_HOST=#[environment.proxy.host]
-        SET HTTP_PROXY_PORT=#[environment.proxy.port]
-        SET HTTP_PROXY=#[environment.proxy.schema]://%HTTP_PROXY_HOST%:%HTTP_PROXY_PORT%
+        REM --- #[module.name]
+        SET HTTP_PROXY_SCHEMA=http
+        SET HTTP_PROXY_HOST=proxy.local
+        SET HTTP_PROXY_PORT=3128
+        SET HTTP_PROXY=%HTTP_PROXY_SCHEMA%://%HTTP_PROXY_HOST%:%HTTP_PROXY_PORT%
         SET HTTPS_PROXY=%HTTP_PROXY%
         SET NO_PROXY=127.0.0.1,localhost
