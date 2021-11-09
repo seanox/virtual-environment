@@ -1,7 +1,7 @@
 # Settings are a part of the initial startup of the virtual environment.
 #
 # The file system of the virtual environment is completely configured after
-# creation. Settings is then an optional extension to further personalize this
+# creation. Settings are an optional extension to further personalize this
 # configuration. For this purpose, this file contains key-value pairs with a
 # list of files in which the corresponding fully qualified placeholders are
 # replaced, which is executed each time the virtual environment is started.
