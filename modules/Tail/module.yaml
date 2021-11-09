@@ -1,0 +1,17 @@
+module:
+    description: >
+        WinTail is a monitoring tool and displays changes at the end of file
+        contents at runtime.
+
+    depends:  Platform
+    download: https://www.onworks.net/downloadapp/SOFTWARE/WinTail-2.3.1.0-portable.zip
+
+    meta:
+        tab:     1
+        button:  17
+        text:    #[module.name]
+        execute: #[module.environment]\WinTail-2.3.1.0-portable.exe
+
+monitoring:
+    url:     http://www.tailforwindows.net/en/download
+    pattern:
