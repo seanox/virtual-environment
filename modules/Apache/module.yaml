@@ -1,0 +1,30 @@
+module:
+    description: >
+        Apache (HTTP Server) is an open source web server for static and
+        dynamic content. With the numerous extension, more network-based
+        functions can be added.
+
+    depends:  Platform
+    download: https://www.apachelounge.com/download/VS16/binaries/httpd-2.4.51-win64-VS16.zip
+    source:   #[workspace.temp.directory]\#[module.name]\Apache24
+
+    configure:
+        - #[module.destination]\conf\extra\httpd-vhosts.conf
+        - #[module.destination]\conf\httpd.conf
+
+    startup: |
+        REM --- #[module.name]
+        SET HTTPD_SERVICE_NAME=%VT_VOLUME_NAME% Apache HTTPD
+        "#[module.environment]\bin\httpd.exe" -k install -n "%HTTPD_SERVICE_NAME%"
+        ping -n 3 127.0.0.1 > NUL
+        "#[module.environment]\bin\httpd.exe" -k start -n "%HTTPD_SERVICE_NAME%"
+
+    detach: |
+        REM --- #[module.name]
+        "#[module.environment]\bin\httpd.exe" -k stop -n "%HTTPD_SERVICE_NAME%"
+        ping -n 3 127.0.0.1 > NUL
+        "#[module.environment]\bin\httpd.exe" -k uninstall -n "%HTTPD_SERVICE_NAME%"
+
+monitoring:
+    url:     https://www.apachelounge.com/download
+    pattern:
