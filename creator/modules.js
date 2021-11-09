@@ -36,7 +36,7 @@ const modulesRegistry = []
 
 export default class Modules {
 
-    static integrate(module = undefined) {
+    static integrate(module = undefined, optional = false) {
 
         const parseModuleMetaWorkFile = (moduleMetaFile) => {
             const moduleMetaWorkFile = Workspace.createWorkfile(moduleMetaFile)
@@ -71,6 +71,7 @@ export default class Modules {
                 const moduleEnvironmentProgramDirectory = Workspace.getEnvironmentDirectory(moduleProgramDirectory.substr(3))
 
                 moduleMeta.module.name = module
+                moduleMeta.module.enabled = (Workspace.getVariable(module) || "").match(/^(on|true|yes)$/i)
                 moduleMeta.module.directory = moduleDirectory
                 if (moduleMeta.module.destination)
                     moduleMeta.module.destination = path.normalize(moduleMeta.module.destination)
@@ -215,7 +216,7 @@ export default class Modules {
 
         if (module) {
             const moduleMeta = parseModuleMetaFile(module)
-            if (moduleMeta)
+            if (moduleMeta && moduleMeta.enabled || optional !== true)
                 integrateModule(moduleMeta)
             return
         }
