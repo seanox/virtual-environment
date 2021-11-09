@@ -1,0 +1,37 @@
+{
+  "name": "virtual-environment-creator",
+  "version": "3.0.0",
+  "description": "Modular creator for virtual environments for Windows, based on virtual drives.",
+  "main": "creator.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seanox/virtual-environment-creator.git"
+  },
+  "keywords": [
+    "seanox",
+    "portable",
+    "virtual",
+    "platform",
+    "ide",
+    "windows",
+    "virtual",
+    "drive",
+    "creator",
+    "node.js"
+  ],
+  "author": "Seanox Software Solutions",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/seanox/virtual-environment-creator/issues"
+  },
+  "homepage": "https://github.com/seanox/virtual-environment-creator#readme",
+  "scripts": {
+    "start": "node creator.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.9",
+    "flat": "^5.0.2",
+    "yaml": "^1.10.2"
+  }
+}
