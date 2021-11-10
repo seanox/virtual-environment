@@ -20,15 +20,29 @@ module:
         - Node
 
     destination: #[workspace.environment.resources.directory]
+    configure:   #[workspace.workspace.directory]\#[environment.name].yaml
 
     attach: |
         REM --- #[module.name]
-        #[environment.resources.directory]\Node\node.exe #[environment.resources.directory]\settings.js
+        node.exe #[environment.resources.directory]\settings.js
         IF %ERRORLEVEL% NEQ 0 (
             mshta "javascript:new ActiveXObject('WScript.Shell').Popup('Settings of the virtual environment\nAn unexpected error occurred.', 10, 'Warning', 48 +4096); close();"
         )
 
-    script: |
-        fs.copyFileSync(Workspace.getModuleDestinationDirectory("/settings.yaml"),
-            Workspace.getWorkspaceDirectory("/" + Workspace.getEnvironmentName().toLowerCase() + ".yaml"))
-        fs.unlinkSync(Workspace.getModuleDestinationDirectory("/settings.yaml"))
+    script:
+        initial: |
+            const moduleSourceDirectory = Workspace.getModuleDirectory("/sources")
+            const moduleTempDirectory = Workspace.getModuleDirectory("/temp")
+            if (fs.existsSync(moduleTempDirectory))
+                fs.rmSync(moduleTempDirectory, {recursive: true})
+            fs.mkdirSync(moduleTempDirectory)
+            Workspace.copyDirectoryInto(moduleSourceDirectory, moduleTempDirectory)
+            Workspace.exec("npm.cmd", ["install"], {cwd: moduleTempDirectory})
+            Workspace.exec("npm.cmd", ["run", "build"], {cwd: moduleTempDirectory})
+            fs.rmSync(moduleTempDirectory, {recursive: true})
+        immediate: |
+            fs.copyFileSync(Workspace.getModuleDestinationDirectory("/settings.yaml"),
+                Workspace.getWorkspaceDirectory("/" + Workspace.getEnvironmentName().toLowerCase() + ".yaml"))
+            fs.unlinkSync(Workspace.getModuleDestinationDirectory("/settings.yaml"))
+        final: |
+            fs.unlinkSync(Workspace.getModuleDirectory("/data/settings.js"))
