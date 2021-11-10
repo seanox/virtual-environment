@@ -2,6 +2,8 @@
 
 CD /D #[environment.directory]
 
+
+
 REM Verification that the correct drive is available
 REM ----
 
@@ -20,11 +22,13 @@ REM Environment will be terminated
 REM ----
 
 IF "%1" == "exit" (
-    CALL cmd /c start B:\Resources\message.hta^
+    CALL cmd /c start #[environment.resources.directory]\message.hta^
         The virtual environment will be detached.^
         \r\nPrograms and services are terminated.
 
-    IF EXIST %ROOT%\Resources\detach.cmd CALL %ROOT%\Resources\detach.cmd
+    REM Script when exiting the environment
+    REM ---- DETACH
+    IF EXIST #[environment.resources.directory]\detach.cmd CALL #[environment.resources.directory]\detach.cmd
 
     SETLOCAL ENABLEDELAYEDEXPANSION
 
@@ -78,7 +82,6 @@ IF "%1" == "exit" (
     ENDLOCAL
 
     ping -n 3 127.0.0.1 > NUL
-
     taskkill /f /t /im mshta.exe
 
     GOTO:EOF
@@ -89,7 +92,7 @@ IF "%1" == "exit" (
 REM Environment will be configured and started
 REM ----
 
-CALL cmd /c start B:\Resources\message.hta^
+CALL cmd /c start #[environment.resources.directory]\message.hta^
     The virtual environment starts.^
     \r\nPrograms and services are established.
 
@@ -108,6 +111,7 @@ SET VT_PATH_DOCS=%VT_PATH%\#[environment.documents]
 SET VT_HOMEPATH=%VT_PATH_DOCS%\Local
 SET VT_USERPROFILE=%VT_PATH_DOCS%\Profile
 SET VT_PUBLIC=%VT_PATH_DOCS%\Public
+SET VT_RESOURCES=%ROOT%\#[environment.resources]
 
 FOR /F "tokens=1,2 delims==" %%a IN ('WMIC LogicalDisk WHERE DeviceId^="B:" Get VolumeName /Value') DO (
     IF NOT "%%b" == "" SET VT_VOLUME_NAME=%%b
@@ -121,9 +125,17 @@ SET LOCALAPPDATA=%VT_HOMEPATH%\Local
 SET HOME=%VT_HOMEPATH%
 SET PUBLIC=%VT_PUBLIC%
 
-IF EXIST %ROOT%\Resources\commons.cmd CALL %ROOT%\Resources\commons.cmd
-IF EXIST %ROOT%\Resources\attach.cmd CALL %ROOT%\Resources\attach.cmd
+REM Script with common commands
+REM ---- COMMONS
+IF EXIST %ROOT%\#[environment.resources]\commons.cmd CALL %ROOT%\#[environment.resources]\commons.cmd
 
+REM Script for initialization, will be executed after common
+REM ---- ATTACH
+IF EXIST %ROOT%\#[environment.resources]\attach.cmd CALL %ROOT%\#[environment.resources]\attach.cmd
+
+ping -n 3 127.0.0.1 > NUL
 taskkill /f /t /im mshta.exe
 
-IF EXIST %ROOT%\Resources\startup.cmd CALL %ROOT%\Resources\startup.cmd
+REM Script after initialization for program starts
+REM ---- STARTUP
+IF EXIST %ROOT%\#[environment.resources]\startup.cmd CALL %ROOT%\#[environment.resources]\startup.cmd
