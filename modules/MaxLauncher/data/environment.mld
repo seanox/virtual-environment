@@ -8,7 +8,7 @@
       <ID></ID>
       <Text></Text>
       <IconFile></IconFile>
-      <IconIndex></IconIndex>
+      <IconIndex>0</IconIndex>
       <Filename></Filename>
       <Arguments></Arguments>
       <WorkingDirectory></WorkingDirectory>

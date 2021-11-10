@@ -2,7 +2,7 @@ module:
     description: >
 
     depends:  Platform
-    download: https://deac-ams.dl.sourceforge.net/project/maxlauncher/MaxLauncher/1.30.0.0/maxlauncher_1.30.0.0_portable.zip
+    download: https://deac-ams.dl.sourceforge.net/project/maxlauncher/MaxLauncher/1.31.0.0/maxlauncher_1.31.0.0_portable.zip
 
     configure:
         - #[module.destination]\app.cfg
@@ -33,29 +33,26 @@ module:
 
             let buttonContent = buttonTemplate
 
-            const tabIdPattern = new RegExp("(<tab_id>)(</tab_id>)", "ig")
-            const idPattern = new RegExp("(<id>)(</id>)", "ig")
-            const iconFilePattern = new RegExp("(<iconfile>)(</iconfile>)", "ig")
-            const iconFileNamePattern = new RegExp("(?:^.*(?=,\d+))|(?:^.*$)")
-            const iconFileIndexPattern = new RegExp("(?<=,)\d+$")
-            const iconIndexPattern = new RegExp("(<iconindex>)(</iconindex>)", "ig")
-            const textPattern = new RegExp("(<text>)(</text>)", "ig")
-            const filenamePattern = new RegExp("(<filename>)(</filename>)", "ig")
-            const argumentsPattern = new RegExp("(<arguments>)(</arguments>)", "ig")
-            const workingDirectoryPattern = new RegExp("(<workingdirectory>)(</workingdirectory>)", "ig")
+            const iconFileNamePattern = new RegExp("(?:^.*(?=,\\d+))|(?:^.*$)")
+            const iconFileIndexPattern = new RegExp("(?<=,)\\d+$")
 
-            const fillPattern = (pattern, value) => {
-                if (value) buttonContent = buttonContent.replace(pattern, "$1" + value + "$2")
+            const fillElement = (element, value) => {
+                const pattern = new RegExp("(?<=<(" + element + ")>).*?(?=</\\1>)", "ig")
+                if (Array.isArray(value))
+                    value = value[0]
+                if (value !== undefined
+                        && value !== null)
+                    buttonContent = buttonContent.replace(pattern, value)
             }
 
-            fillPattern(tabIdPattern, module.meta.tab)
-            fillPattern(idPattern, module.meta.button)
-            fillPattern(iconFilePattern, iconFileNamePattern.exec(module.meta.icon || ""))
-            fillPattern(iconIndexPattern, iconFileIndexPattern.exec(module.meta.icon || "") || 0)
-            fillPattern(textPattern, module.meta.text)
-            fillPattern(filenamePattern, module.meta.execute)
-            fillPattern(argumentsPattern, module.meta.arguments)
-            fillPattern(workingDirectoryPattern, module.meta.workspace)
+            fillElement("tab_id", module.meta.tab)
+            fillElement("id", module.meta.button)
+            fillElement("iconfile", iconFileNamePattern.exec(module.meta.icon || ""))
+            fillElement("iconindex", iconFileIndexPattern.exec(module.meta.icon || ""))
+            fillElement("text", module.meta.text)
+            fillElement("filename", module.meta.execute)
+            fillElement("arguments", module.meta.arguments)
+            fillElement("workingdirectory", module.meta.workspace)
 
             return buttonContent
         }
