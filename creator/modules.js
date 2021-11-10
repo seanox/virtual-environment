@@ -71,7 +71,7 @@ export default class Modules {
                 const moduleEnvironmentProgramDirectory = Workspace.getEnvironmentDirectory(moduleProgramDirectory.substr(3))
 
                 moduleMeta.module.name = module
-                moduleMeta.module.enabled = (Workspace.getVariable(module) || "").match(/^(on|true|yes)$/i)
+                moduleMeta.module.enabled = (Workspace.getVariable("modules." + module) || "").match(/^(on|true|yes)$/i)
                 moduleMeta.module.directory = moduleDirectory
                 if (moduleMeta.module.destination)
                     moduleMeta.module.destination = path.normalize(moduleMeta.module.destination)
