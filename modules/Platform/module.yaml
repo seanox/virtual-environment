@@ -47,29 +47,11 @@ module:
         // accomplished by the optional integrate.
         Modules.integrate("Settings", true)
 
-        // Node.js + YAML is used internally in the virtual environment.
-        // Therefore, the Node module is loaded manually and copied to Resources,
-        // which is then used as the internal runtime environment.
-        Modules.integrate("Node")
-        const resourcesNodeDirectory = Workspace.getWorkspaceEnvironmentResourcesDirectory("/Node")
-        if (!fs.existsSync(resourcesNodeDirectory))
-            fs.mkdirSync(resourcesNodeDirectory, {recursive: true})
-        const programsNodeDirectory = Workspace.getWorkspaceEnvironmentProgramsDirectory("/Node")
-        Workspace.copyDirectoryInto(programsNodeDirectory, resourcesNodeDirectory)
-        Workspace.exec("npm.cmd", ["install", "-g", "yaml"], {cwd: resourcesNodeDirectory})
-        Workspace.exec("npm.cmd", ["install", "-g", "flat"], {cwd: resourcesNodeDirectory})
-
         // Additional: Icons make the world more colorful
         const iconsDownloadFile = Workspace.download("https://securedl.cdn.chip.de/downloads/15543156/Windows_7_Icon-Pack.zip")
         const iconsDownloadDirectory = Workspace.unpackDirectory(iconsDownloadFile)
         Workspace.copyDirectoryInto(iconsDownloadDirectory + "/Windows 7 6801 Icon-Pack by marxo",
             Workspace.getWorkspaceEnvironmentResourcesDirectory("/Icons"))
-
-        // Additional: ResourceHacker for customizing programs
-        const resourceHackerDownloadFile = Workspace.download("http://www.angusj.com/resourcehacker/resource_hacker.zip")
-        const resourceHackerDownloadDirectory = Workspace.unpackDirectory(resourceHackerDownloadFile)
-        Workspace.copyDirectoryInto(resourceHackerDownloadDirectory,
-            Workspace.getWorkspaceEnvironmentResourcesDirectory("/ResourceHacker"))
 
         // Additional: Oxygen icon set is used as the icon for the drive
         // see also https://iconarchive.com/show/oxygen-icons-by-oxygen-icons.org.html
