@@ -53,7 +53,7 @@ environment:
     database:         Database
     documents:        Documents
     install:          Install
-    programs:         Program Portable
+    programs:         Program Portables
     resources:        Resources
     temp:             Temp
 
