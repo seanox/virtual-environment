@@ -28,7 +28,7 @@ module:
         SET PGLOG=%PGDATA%\pg.log
         SET PATH=%PGHOME%\bin;%PATH%
 
-    attach: |
+    startup: |
         REM --- #[module.name]
         net stop "%PGNAME%"
         ping -n 3 127.0.0.1 > NUL

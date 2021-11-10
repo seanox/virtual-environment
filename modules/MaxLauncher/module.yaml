@@ -7,6 +7,15 @@ module:
     configure:
         - #[module.destination]\app.cfg
 
+    startup: |
+        REM --- #[module.name]
+        SETLOCAL
+        SET TEMP_HERE=%cd%
+        cd /D #[module.environment]
+        start MaxLauncher.exe
+        cd /D TEMP_HERE
+        ENDLOCAL
+
     script: |
         const buttonTemplate = (() => {
             const templateFile = Workspace.getModuleDestinationDirectory("/environment.mld")
