@@ -13,7 +13,7 @@ module:
         SET TEMP_HERE=%cd%
         cd /D #[module.environment]
         start MaxLauncher.exe
-        cd /D TEMP_HERE
+        cd /D %TEMP_HERE%
         ENDLOCAL
 
     script: |
