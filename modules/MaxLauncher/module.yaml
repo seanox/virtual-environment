@@ -50,8 +50,8 @@ module:
 
             fillPattern(tabIdPattern, module.meta.tab)
             fillPattern(idPattern, module.meta.button)
-            fillPattern(iconFilePattern, (module.meta.icon || "").match(iconFileNamePattern))
-            fillPattern(iconIndexPattern, (module.meta.icon || "").match(iconFileIndexPattern))
+            fillPattern(iconFilePattern, iconFileNamePattern.exec(module.meta.icon || ""))
+            fillPattern(iconIndexPattern, iconFileIndexPattern.exec(module.meta.icon || "") || 0)
             fillPattern(textPattern, module.meta.text)
             fillPattern(filenamePattern, module.meta.execute)
             fillPattern(argumentsPattern, module.meta.arguments)
