@@ -1,5 +1,7 @@
 @ECHO OFF
 
+CD /D #[environment.directory]
+
 REM Verification that the correct drive is available
 REM ----
 
@@ -99,21 +101,20 @@ SET OS_USERPROFILE=%USERPROFILE%
 SET OS_PUBLIC=%PUBLIC%
 SET OS_PATH=%PATH%
 
-SET VT_ROOT=%CD%
+SET VT_ROOT=#[environment.directory]
 SET VT_PATH=%VT_ROOT%
-SET VT_PATH_APPS=%VT_PATH%\PortableApps
-SET VT_PATH_DOCS=%VT_PATH%\Documents
-
-SET VT_HOMEPATH=%VT_PATH%\Documents\Local
-SET VT_USERPROFILE=%VT_HOMEPATH%\Profile
-SET VT_PUBLIC=%VT_PATH%\Documents\Public
+SET VT_PATH_APPS=%VT_PATH%\#[environment.programs]
+SET VT_PATH_DOCS=%VT_PATH%\#[environment.documents]
+SET VT_HOMEPATH=%VT_PATH_DOCS%\Local
+SET VT_USERPROFILE=%VT_PATH_DOCS%\Profile
+SET VT_PUBLIC=%VT_PATH_DOCS%\Public
 
 FOR /F "tokens=1,2 delims==" %%a IN ('WMIC LogicalDisk WHERE DeviceId^="B:" Get VolumeName /Value') DO (
     IF NOT "%%b" == "" SET VT_VOLUME_NAME=%%b
 )
 
 SET ROOT=%VT_ROOT%
-SET TEMP=%ROOT%\Temp
+SET TEMP=%ROOT%\#[environment.temp]
 SET TMP=%TEMP%
 SET APPDATA=%VT_HOMEPATH%\Roaming
 SET LOCALAPPDATA=%VT_HOMEPATH%\Local

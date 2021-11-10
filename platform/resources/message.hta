@@ -19,7 +19,7 @@
         window.onload = function() {
             var text = Message.commandLine || "";
             text = text.replace(/(^\s*[\"'].*?[\"']\s*)|(\s+$)/g, "");
-            text = text.replace(/(\r\n)|(\n\r)|[\r\n]/, "<br>");
+            text = text.replace(/(\\r\\n)|(\\n\\r)|[\\r\\n]/, "<br>");
             Text.innerHTML = text;
             window.resizeTo(400, 100);
             window.moveTo((screen.availWidth /2) -(document.body.offsetWidth /2), (screen.availHeight /2) -(document.body.offsetHeight /2));
