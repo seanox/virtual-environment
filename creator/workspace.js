@@ -372,7 +372,10 @@ export default class Workspace {
         // -x URL of the proxy, with empty the option is ignored
         // -A User-Agent, some download servers don't like cURL and send nasty redirects
 
-        const curlResult = child.spawnSync("curl", [url, "-f", "-L", "-o", destinationFile, "-x", Workspace.getProxy() || "", "-A", "Mozilla/5.0 (KHTML, like Gecko)"])
+        const curlResult = child.spawnSync("curl", [url, "-f", "-L",
+                "-o", destinationFile,
+                "-A", "Mozilla/5.0 (KHTML, like Gecko)",
+                "-x", Workspace.getProxy() || ""])
         if (curlResult instanceof Error)
             throw curlResult
         if (curlResult.status === 0)
@@ -422,10 +425,10 @@ export default class Workspace {
         if (execResult.output
                 && (execResult.status !== 0
                         || options.verbose === true))
-            console.log(execResult.stdout.toString())
+            console.log((execResult.stdout || "").toString())
         if (execResult.status === 0)
             return execResult
-        console.log(execResult.stderr.toString())
+        console.log((execResult.stderr || "").toString())
         throw new Error("An unexpected error occurred")
     }
 }

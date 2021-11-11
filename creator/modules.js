@@ -83,21 +83,27 @@ export default class Modules {
 
             const moduleMetaPre = parseMetaFile(module)
 
-            Workspace.setVariable("module.name", moduleMetaPre.name)
-            Workspace.setVariable("module.directory", moduleMetaPre.directory)
-            Workspace.setVariable("module.destination", moduleMetaPre.destination)
-            Workspace.setVariable("module.environment", moduleMetaPre.environment)
-            Workspace.setVariable("module.meta", moduleMetaPre.meta)
-
+            setModuleVariables(moduleMetaPre)
             const moduleMeta = parseMetaFile(module)
+            removeModuleVariables()
 
+            return moduleMeta
+        }
+
+        const setModuleVariables = (moduleMeta) => {
+            Workspace.setVariable("module.name", moduleMeta.name)
+            Workspace.setVariable("module.directory", moduleMeta.directory)
+            Workspace.setVariable("module.destination", moduleMeta.destination)
+            Workspace.setVariable("module.environment", moduleMeta.environment)
+            Workspace.setVariable("module.meta", moduleMeta.meta)
+        }
+
+        const removeModuleVariables = () => {
             Workspace.removeVariable("module.name")
             Workspace.removeVariable("module.directory")
             Workspace.removeVariable("module.destination")
             Workspace.removeVariable("module.environment")
             Workspace.removeVariable("module.meta")
-
-            return moduleMeta
         }
 
         const integrateModule = (moduleMeta) => {
@@ -125,11 +131,7 @@ export default class Modules {
                 })
             }
 
-            Workspace.setVariable("module.name", moduleMeta.name)
-            Workspace.setVariable("module.directory", moduleMeta.directory)
-            Workspace.setVariable("module.destination", moduleMeta.destination)
-            Workspace.setVariable("module.environment", moduleMeta.environment)
-            Workspace.setVariable("module.meta", moduleMeta.meta)
+            setModuleVariables(moduleMeta)
 
             console.log("Modules: Integration of " + moduleMeta.name)
 
@@ -207,11 +209,7 @@ export default class Modules {
                 })
             }
 
-            Workspace.removeVariable("module.name")
-            Workspace.removeVariable("module.directory")
-            Workspace.removeVariable("module.destination")
-            Workspace.removeVariable("module.environment")
-            Workspace.removeVariable("module.meta")
+            removeModuleVariables()
         }
 
         if (module) {
@@ -237,9 +235,11 @@ export default class Modules {
                     || typeof moduleMeta.script.initial !== "string")
                 return
             console.log("Modules: Initialization of " + moduleMeta.name)
+            setModuleVariables(moduleMeta)
             const moduleInitialization = eval(moduleMeta.script.initial)
             if (typeof moduleInitialization === "function")
                 moduleInitialization.call(this, moduleMeta)
+            removeModuleVariables()
         })
 
         modules.forEach(moduleMeta => {
@@ -252,9 +252,11 @@ export default class Modules {
                     || typeof moduleMeta.script.final !== "string")
                 return
             console.log("Modules: Finalization of " + moduleMeta.name)
+            setModuleVariables(moduleMeta)
             const moduleFinalization = eval(moduleMeta.script.final)
             if (typeof moduleFinalization === "function")
                 moduleFinalization.call(this, moduleMeta)
+            removeModuleVariables()
         })
     }
 }
