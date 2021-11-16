@@ -1,0 +1,5 @@
+select vdisk file="#[file]"
+attach vdisk readonly
+compact vdisk
+detach vdisk
+exit

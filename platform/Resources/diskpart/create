@@ -1,0 +1,8 @@
+create vdisk file="#[file]" type=#[type] maximum=#[size]
+select vdisk file="#[file]"
+attach vdisk
+convert #[style]
+create partition primary
+format FS=NTFS LABEL="#[name]" QUICK
+detach vdisk
+exit

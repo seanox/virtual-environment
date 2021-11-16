@@ -1,0 +1,3 @@
+[AutoRun]
+Label = #[name] #[version]
+Icon  = .\Resources\drive.ico
