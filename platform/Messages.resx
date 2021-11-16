@@ -216,7 +216,7 @@ Programs and services are terminated.</value>
     <value>An unexpected error has occurred.</value>
   </data>
   <data name="WorkerUsage" xml:space="preserve">
-    <value>Seanox Virtual Environment [{0}]
+    <value>Seanox Virtual Environment [3.0.0 20211115]
 {1} A-Z: [create|compact|attach|detach]</value>
   </data>
 </root>
