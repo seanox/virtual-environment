@@ -16,6 +16,9 @@ IF NOT "%STARTUP:~0,2%" == "#[environment.drive]:" (
 )
 ENDLOCAL
 
+startup -s
+startup -m waring sdsdfssfsdf
+startup -a
 
 
 REM Environment will be terminated
@@ -104,38 +107,45 @@ SET OS_USERPROFILE=%USERPROFILE%
 SET OS_PUBLIC=%PUBLIC%
 SET OS_PATH=%PATH%
 
-SET VT_ROOT=#[environment.directory]
-SET VT_PATH=%VT_ROOT%
-SET VT_PATH_APPS=%VT_PATH%\#[environment.programs]
-SET VT_PATH_DOCS=%VT_PATH%\#[environment.documents]
-SET VT_HOMEPATH=%VT_PATH_DOCS%\Local
-SET VT_USERPROFILE=%VT_PATH_DOCS%\Profile
-SET VT_PUBLIC=%VT_PATH_DOCS%\Public
+SET VT_ROOT=#[environment.drive]
+SET VT_DATABASE=%VT_ROOT%\#[environment.database]
+SET VT_DOCUMENTS=%VT_ROOT%\#[environment.documents]
+SET VT_HOMEPATH=%VT_DOCUMENTS%\Local
+SET VT_USERPROFILE=%VT_DOCUMENTS%\Profile
+SET VT_PUBLIC=%VT_DOCUMENTS%\Public
+SET VT_PROGRAMS=%VT_ROOT%\#[environment.programs]
 SET VT_RESOURCES=%ROOT%\#[environment.resources]
+SET VT_TEMP=%ROOT%\#[environment.temp]
 
 FOR /F "tokens=1,2 delims==" %%a IN ('WMIC LogicalDisk WHERE DeviceId^="B:" Get VolumeName /Value') DO (
     IF NOT "%%b" == "" SET VT_VOLUME_NAME=%%b
 )
 
 SET ROOT=%VT_ROOT%
-SET TEMP=%ROOT%\#[environment.temp]
+SET TEMP=%VT_TEMP%
 SET TMP=%TEMP%
 SET APPDATA=%VT_HOMEPATH%\Roaming
 SET LOCALAPPDATA=%VT_HOMEPATH%\Local
 SET HOME=%VT_HOMEPATH%
 SET PUBLIC=%VT_PUBLIC%
 
+SET DATABASE=%VT_DATABASE%
+SET DOCUMENTS=%VT_DOCUMENTS%
+SET PROGRAMS=%VT_PROGRAMS%
+SET RESOURCES=%VT_RESOURCES%
+SET TEMP=%TEMP%
+
 REM Script with common commands
 REM ---- COMMONS
-IF EXIST %ROOT%\#[environment.resources]\commons.cmd CALL %ROOT%\#[environment.resources]\commons.cmd
+IF EXIST %RESOURCES%\commons.cmd CALL %RESOURCES%\commons.cmd
 
 REM Script for initialization, will be executed after common
 REM ---- ATTACH
-IF EXIST %ROOT%\#[environment.resources]\attach.cmd CALL %ROOT%\#[environment.resources]\attach.cmd
+IF EXIST %RESOURCES%\attach.cmd CALL %RESOURCES%\attach.cmd
 
 ping -n 3 127.0.0.1 > NUL
 taskkill /f /t /im mshta.exe
 
 REM Script after initialization for program starts
 REM ---- STARTUP
-IF EXIST %ROOT%\#[environment.resources]\startup.cmd CALL %ROOT%\#[environment.resources]\startup.cmd
+IF EXIST %RESOURCES%\startup.cmd CALL %RESOURCES%\startup.cmd
