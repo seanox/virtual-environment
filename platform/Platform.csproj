@@ -120,9 +120,13 @@
     <EmbeddedResource Include="Resources\diskpart\create" />
     <EmbeddedResource Include="Resources\diskpart\detach" />
     <EmbeddedResource Include="Resources\diskpart\list" />
-    <EmbeddedResource Include="Resources\platform\Startup.cmd" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Console\console.cmd" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Detach\detach.cmd" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Detach\detach.exe" />    
+    <EmbeddedResource Include="Resources\platform\Resources\drive.ico" />
+    <EmbeddedResource Include="Resources\platform\Resources\drive.png" />
+    <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
+    <EmbeddedResource Include="Resources\platform\Startup.cmd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -138,19 +142,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\Program Portables\Console\console.exe" />
-    <EmbeddedResource Include="Resources\platform\Program Portables\Detach\detach.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\Resources\drive.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\Resources\drive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
