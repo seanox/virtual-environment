@@ -33,6 +33,7 @@ namespace Platform
         {
             Error,
             Trace,
+            Batch,
             Abort
         }
 
@@ -52,6 +53,16 @@ namespace Platform
         static Notification()
         {
             Notification.subscriptions = new List<INotification>();
+
+            string applicationPath = Assembly.GetExecutingAssembly().Location;
+            string loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
+                Path.GetFileNameWithoutExtension(applicationPath) + ".log");
+            if (File.Exists(loggingFile)
+                    && new FileInfo(loggingFile).Length > 0)
+                using (StreamWriter streamWriter = File.AppendText(loggingFile))
+                {
+                    streamWriter.WriteLine();
+                }
         }
 
         internal static void Push(Type type, params string[] messages)
@@ -60,8 +71,9 @@ namespace Platform
             string publication = String.Join("\r\n" + delimiter, messages.Where(message =>
                     !message.Trim().StartsWith("@")));
 
-            Notification.subscriptions.ForEach(recipient =>
-                    recipient.Receive(new Message(type, publication)));
+            if (publication.Length > 0)
+                Notification.subscriptions.ForEach(recipient =>
+                        recipient.Receive(new Message(type, publication)));
             
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
@@ -72,7 +84,7 @@ namespace Platform
             {
                 string prefix = String.Format("{0} {1} ", timestamp, type.ToString().ToUpper());
                 string output = prefix + Regex.Replace(message, "^@+", "");
-                output = Regex.Replace(output, "(\r\n)|(\n\r)|[\r|\n]", "\r\n" + prefix);
+                output = Regex.Replace(output, "(\r\n)|(\n\r)|[\r\n]", "\r\n" + prefix);
                 using (StreamWriter streamWriter = File.AppendText(loggingFile))
                 {
                     streamWriter.WriteLine(output);

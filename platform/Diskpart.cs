@@ -109,14 +109,14 @@ namespace Platform
                 process.Start();
                 process.WaitForExit();
 
-                string output = (process.StandardError.ReadToEnd() ?? "").Trim();
-                if (output.Length <= 0)
-                    output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
-                return new DiskpartResult()
-                {
-                    Output = output,
-                    Failed = process.ExitCode != 0
-                };
+                DiskpartResult diskpartResult = new DiskpartResult();
+                diskpartResult.Output = (process.StandardError.ReadToEnd() ?? "").Trim();
+                if (diskpartResult.Output.Length <= 0)
+                    diskpartResult.Output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
+                else diskpartResult.Failed = true;
+                if (process.ExitCode != 0)
+                    diskpartResult.Failed = true;
+                return diskpartResult;
             }
             catch (Exception exception)
             {

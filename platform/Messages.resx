@@ -196,6 +196,14 @@
     <value>The virtual environment will be attached.
 Programs and services are established.</value>
   </data>
+  <data name="WorkerCompactText" xml:space="preserve">
+    <value>The virtual environment will be compacted.
+Virtual disk and file system are optimized.</value>
+  </data>
+  <data name="WorkerCreateText" xml:space="preserve">
+    <value>The virtual environment will be created.
+Virtual disk and file system are established.</value>
+  </data>
   <data name="WorkerDetach" xml:space="preserve">
     <value>The virtual environment will be detached.</value>
   </data>
@@ -216,7 +224,9 @@ Programs and services are terminated.</value>
     <value>An unexpected error has occurred.</value>
   </data>
   <data name="WorkerUsage" xml:space="preserve">
-    <value>Seanox Virtual Environment [3.0.0 20211115]
-{1} A-Z: [create|compact|attach|detach]</value>
+    <value>{0} A-Z: [create|compact|attach|detach]</value>
+  </data>
+  <data name="WorkerVersion" xml:space="preserve">
+    <value>Seanox Virtual Environment [3.0.0 20211116]</value>
   </data>
 </root>

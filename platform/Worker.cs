@@ -132,14 +132,14 @@ namespace Platform {
                 process.Start();
                 process.WaitForExit();
 
-                string output = (process.StandardError.ReadToEnd() ?? "").Trim();
-                if (output.Length <= 0)
-                    output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
-                return new BatchResult()
-                {
-                    Output = output,
-                    Failed = process.ExitCode != 0
-                };
+                BatchResult batchResult = new BatchResult(); 
+                batchResult.Output = (process.StandardError.ReadToEnd() ?? "").Trim();
+                if (batchResult.Output.Length <= 0)
+                    batchResult.Output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
+                else batchResult.Failed = true;
+                if (process.ExitCode != 0)
+                    batchResult.Failed = true;
+                return batchResult;
             }
             catch (Exception exception)
             {
@@ -172,35 +172,44 @@ namespace Platform {
                     switch (workerTask.Task)
                     {
                         case Task.Attach:
-                            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
-                            Thread.Sleep(3000);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerAttachText);
+                            Thread.Sleep(1000);
 
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Output);
-                            
+                            Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
+
                             Notification.Push(Notification.Type.Abort, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
                             break;
 
                         case Task.Create:
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerCreateText);
+                            Thread.Sleep(1000);
+
                             Diskpart.CreateDisk(workerTask.Drive, workerTask.DiskFile);
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
                         case Task.Compact:
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerCompactText);
+                            Thread.Sleep(1000);
+
                             Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
                         case Task.Detach:
-                            Notification.Push(Notification.Type.Trace, Messages.WorkerDetachText);
-                            Thread.Sleep(3000);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerDetachText);
+                            Thread.Sleep(1000);
 
                             batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);
+                            Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
 
                             Worker.GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
@@ -218,13 +227,10 @@ namespace Platform {
                             break;
                         
                         default:
-                            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                            string applicationVersion = String.Format("{0}.{1}.{2} {3}",
-                                assemblyVersion.Major, assemblyVersion.Minor, assemblyVersion.Build, assemblyVersion.Revision);
                             string applicationPath = Assembly.GetExecutingAssembly().Location;
                             string applicationFile = Path.GetFileName(applicationPath);
-                            Notification.Push(Notification.Type.Abort,
-                                    String.Format(Messages.WorkerUsage, applicationVersion, applicationFile));
+                            Notification.Push(Notification.Type.Abort, Messages.WorkerVersion,
+                                    String.Format(Messages.WorkerUsage, applicationFile));
                             break;
                     }
                 }
@@ -257,11 +263,11 @@ namespace Platform {
 
             Size originSize = this.Progress.Size;
             this.Progress.Visible = true;
-            for (int width = 1; width < originSize.Width; width++)
+            for (int width = 1; width < originSize.Width; width += 3)
             {
-                this.Progress.Size = new Size(width, originSize.Height);
+                this.Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
                 this.Refresh();
-                Thread.Sleep(10);
+                Thread.Sleep(25);
             }
 
             Thread.Sleep(500);
