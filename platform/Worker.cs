@@ -98,6 +98,41 @@ namespace Platform {
 
         private static BatchResult BatchExec(string fileName, params string[] arguments)
         {
+            // It was a long way of experiences for the small piece of code :-|
+            //     What you need to know
+            // What is the plan: In the virtual environment, the batch file
+            // Startup.cmd is used to start and stop the environment. The batch
+            // file then contains all the commands to set up the environment
+            // and start the required programs.
+            // For this purpose, a process is started in C#. If other programs
+            // are started in this process and run in the background, they are
+            // child processes. Now the parent process -- like cmd.exe here --
+            // can end with the end of the batch file and is then no longer
+            // included in the list of active processes. But since child
+            // processes are still active, the resources remain active and so
+            // does the stdout/stderr. Therefore you can not access them, the
+            // access will block.
+            //
+            // Why should it be accessed?
+            // So that possible errors and outputs can be written into the log
+            // file.
+            //
+            // As a workaround, cmd.exe /A was used. The outputs are redirected
+            // to a file with the operating system. Therefore stdout/stderr do
+            // not have to be used by the process. If the batch script was run
+            // to the end, the parent process will end and the PID from the
+            // parent process is no longer in the list of active processes,
+            // which is interpreted as an end signal.
+            // Now stdout/stderr can be read from the redirected file. However,
+            // the file is still exclusively open when child processes are
+            // still running.Therefore the file is copied and the data is read
+            // from the copy. The copy is then deleted. 
+
+            string outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + (arguments[0] ?? "output"));
+            
+            arguments = (new string[] {fileName}).Concat(arguments).ToArray();
+            arguments = new string[] {"/A", "/C", String.Join(" ", arguments), ">", outputFile};
+
             ProcessStartInfo processStartInfo = new ProcessStartInfo()
             {
                 UseShellExecute = false,
@@ -105,19 +140,20 @@ namespace Platform {
 
                 WindowStyle = ProcessWindowStyle.Minimized,
 
-                FileName  = fileName,
+                FileName  = "cmd.exe",
                 Arguments = String.Join(" ", arguments),
                 WorkingDirectory = Path.GetDirectoryName(fileName),
 
-                RedirectStandardError  = true,
-                RedirectStandardOutput = true,
+                RedirectStandardError  = false,
+                RedirectStandardOutput = false
             };
-
+                        
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string applicationFile = Path.GetFileName(applicationPath);
             string applicationDirectory = Path.GetDirectoryName(applicationPath);
             string applicationName = Path.GetFileNameWithoutExtension(applicationFile);
             string diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
+
             processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_NAME", applicationName);
             processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_HOME", applicationDirectory);
             processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_DISK", diskFile);
@@ -125,20 +161,22 @@ namespace Platform {
             string rootPath = Path.GetPathRoot(fileName);
             processStartInfo.EnvironmentVariables.Add("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
+            string outputTempFile = Path.GetTempFileName();
+
             try
             {
                 Process process = new Process();
                 process.StartInfo = processStartInfo;
                 process.Start();
-                process.WaitForExit();
 
-                BatchResult batchResult = new BatchResult(); 
-                batchResult.Output = (process.StandardError.ReadToEnd() ?? "").Trim();
-                if (batchResult.Output.Length <= 0)
-                    batchResult.Output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
-                else batchResult.Failed = true;
-                if (process.ExitCode != 0)
-                    batchResult.Failed = true;
+                while (Process.GetProcesses().Any(entry => entry.Id == process.Id))
+                    Thread.Sleep(25);
+
+                File.Copy(outputFile, outputTempFile, true);
+                BatchResult batchResult = new BatchResult();
+                batchResult.Output = File.ReadAllText(outputTempFile);
+                batchResult.Failed = process.ExitCode != 0;
+
                 return batchResult;
             }
             catch (Exception exception)
@@ -148,6 +186,10 @@ namespace Platform {
                     Output = exception.Message,
                     Failed = true
                 };
+            }
+            finally
+            {
+                File.Delete(outputTempFile);
             }
         }
 
@@ -172,22 +214,25 @@ namespace Platform {
                     switch (workerTask.Task)
                     {
                         case Task.Attach:
-                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerAttachText);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             Thread.Sleep(1000);
 
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
-                            batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd");
+                            batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "startup");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Output);
-                            Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
+                            if (batchResult.Output.Length > 0)
+                                Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
 
                             Notification.Push(Notification.Type.Abort, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
                             break;
 
                         case Task.Create:
-                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerCreateText);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerCreateText);
                             Thread.Sleep(1000);
 
                             Diskpart.CreateDisk(workerTask.Drive, workerTask.DiskFile);
@@ -195,7 +240,8 @@ namespace Platform {
                             break;
                         
                         case Task.Compact:
-                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerCompactText);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerCompactText);
                             Thread.Sleep(1000);
 
                             Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
@@ -203,13 +249,15 @@ namespace Platform {
                             break;
                         
                         case Task.Detach:
-                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion, Messages.WorkerDetachText);
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerDetachText);
                             Thread.Sleep(1000);
 
                             batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);
-                            Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
+                            if (batchResult.Output.Length > 0)
+                                Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
 
                             Worker.GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)

@@ -74,21 +74,20 @@ namespace Platform
             if (publication.Length > 0)
                 Notification.subscriptions.ForEach(recipient =>
                         recipient.Receive(new Message(type, publication)));
-            
+
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                 Path.GetFileNameWithoutExtension(applicationPath) + ".log");
 
+            
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            foreach (string message in messages)
+            string output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
+            output = String.Format("{0} {1} ", timestamp, type.ToString().ToUpper()) + output;
+            string prefix = String.Format("{0} {1} ", timestamp, " ... ");
+            output = Regex.Replace(output, "(\r\n)|(\n\r)|[\r\n]", "\r\n" + prefix);
+            using (StreamWriter streamWriter = File.AppendText(loggingFile))
             {
-                string prefix = String.Format("{0} {1} ", timestamp, type.ToString().ToUpper());
-                string output = prefix + Regex.Replace(message, "^@+", "");
-                output = Regex.Replace(output, "(\r\n)|(\n\r)|[\r\n]", "\r\n" + prefix);
-                using (StreamWriter streamWriter = File.AppendText(loggingFile))
-                {
-                    streamWriter.WriteLine(output);
-                }
+                streamWriter.WriteLine(output);
             }
         }
 
