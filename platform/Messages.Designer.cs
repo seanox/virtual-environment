@@ -137,12 +137,24 @@
             }
         }
 
+        internal static string DiskpartDriveSelectionIsIncorrect {
+            get {
+                return ResourceManager.GetString("DiskpartDriveSelectionIsIncorrect", resourceCulture);
+            }
+        }
+        
         internal static string DiskpartFileAlreadyExists {
             get {
                 return ResourceManager.GetString("DiskpartFileAlreadyExists", resourceCulture);
             }
         }
 
+        internal static string DiskpartFileAlreadyInUse {
+            get {
+                return ResourceManager.GetString("DiskpartFileAlreadyInUse", resourceCulture);
+            }
+        }
+        
         internal static string DiskpartFileNotExists {
             get {
                 return ResourceManager.GetString("DiskpartFileNotExists", resourceCulture);
@@ -190,19 +202,19 @@
                 return ResourceManager.GetString("WorkerAttachText", resourceCulture);
             }
         }
-        
+
         internal static string WorkerCompactText {
             get {
                 return ResourceManager.GetString("WorkerCompactText", resourceCulture);
             }
         }
-        
+
         internal static string WorkerCreateText {
             get {
                 return ResourceManager.GetString("WorkerCreateText", resourceCulture);
             }
         }
-        
+
         internal static string WorkerDetach {
             get {
                 return ResourceManager.GetString("WorkerDetach", resourceCulture);

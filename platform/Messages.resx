@@ -168,8 +168,14 @@
   <data name="DiskpartDriveNotExists" xml:space="preserve">
     <value>Drive does not exist</value>
   </data>
+  <data name="DiskpartDriveSelectionIsIncorrect" xml:space="preserve">
+    <value>Drive selection is incorrect.</value>
+  </data>
   <data name="DiskpartFileAlreadyExists" xml:space="preserve">
     <value>A file already exists for the virtual disk</value>
+  </data>
+  <data name="DiskpartFileAlreadyInUse" xml:space="preserve">
+    <value>Virtual disc is already in use.</value>
   </data>
   <data name="DiskpartFileNotExists" xml:space="preserve">
     <value>No file can be found for the virtual disk</value>
@@ -227,6 +233,6 @@ Programs and services are terminated.</value>
     <value>{0} A-Z: [create|compact|attach|detach]</value>
   </data>
   <data name="WorkerVersion" xml:space="preserve">
-    <value>Seanox Virtual Environment [3.0.0 20211118]</value>
+    <value>Seanox Virtual Environment [3.0.0 20211120]</value>
   </data>
 </root>

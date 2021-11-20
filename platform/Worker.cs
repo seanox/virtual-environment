@@ -268,6 +268,8 @@ namespace Platform {
                             Notification.Push(Notification.Type.Trace, Messages.WorkerDetachText);
                             Thread.Sleep(1000);
 
+                            Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
+
                             batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);

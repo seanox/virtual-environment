@@ -146,6 +146,14 @@ namespace Platform
         {
             if (!File.Exists(diskFile))
                 throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartFileNotExists);
+
+            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartPorperties());
+            if (diskpartResult.Failed)
+                throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            Regex volumePattern = new Regex(@"^.*\s+(\d+)\s +.*" + Regex.Escape(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            Match volumeMatch = volumePattern.Match(diskpartResult.Output);
+            if (volumeMatch.Success)
+                throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartFileAlreadyInUse, "@" + diskpartResult.Output);
         }
 
         internal static void CompactDisk(string drive, string diskFile)
@@ -165,6 +173,14 @@ namespace Platform
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartDriveAlreadyExists);
             if (!File.Exists(diskFile))
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartFileNotExists);
+
+            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartPorperties());
+            if (diskpartResult.Failed)
+                throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            Regex volumePattern = new Regex(@"^.*\s+(\d+)\s +.*" + Regex.Escape(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            Match volumeMatch = volumePattern.Match(diskpartResult.Output);
+            if (volumeMatch.Success)
+                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartFileAlreadyInUse, "@" + diskpartResult.Output);
         }
 
         internal static void AttachDisk(string drive, string diskFile)
@@ -199,10 +215,25 @@ namespace Platform
 
         internal static void CanDetachDisk(string drive, string diskFile)
         {
+            Regex volumePattern;
+            Match volumeMatch;
+
             if (!Directory.Exists(drive))
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartDriveNotExists);
             if (!File.Exists(diskFile))
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartFileNotExists);
+
+            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartPorperties());
+            if (diskpartResult.Failed)
+                throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            volumePattern = new Regex(@"^.*\s+(\d+)\s +.*" + Regex.Escape(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            volumeMatch = volumePattern.Match(diskpartResult.Output);
+            if (!volumeMatch.Success)
+                throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
+            volumePattern = new Regex(@"^\s*Volume\s+(\d+)\s+([A-Z]\s+)?" + Path.GetFileNameWithoutExtension(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            volumeMatch = volumePattern.Match(diskpartResult.Output);
+            if (!volumeMatch.Success)
+                throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartDriveSelectionIsIncorrect, "@" + diskpartResult.Output);
         }
 
         internal static void DetachDisk(string drive, string diskFile)
