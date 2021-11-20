@@ -1,6 +1,6 @@
 3.0.0 2021XXXX
   CR: License: Changed to Apache License Version 2.0
-  CR: Project: Change from Ant to Node.js
+  CR: Project: Change from Ant to .NET
 
 2.1.0 2019XXXX
   CR: Added support for VHDX and BitLocker

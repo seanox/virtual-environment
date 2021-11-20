@@ -23,10 +23,10 @@ platform is easily customizable, can be quickly switched to use for different
 projects, and the environment can be easily transferred to other machines where
 work started can be easily continued.
 
-__The project provides a tool for initial creation of a pre-configured
-environment with some tools and programs, which are automatically downloaded
-from the Internet and integrated as required. Afterwards, the environment can
-be maintained, configured and extended independently without this tool.__
+__The project includes [Platform](platform), a tool for the initial creation,
+use and management of the virtual environment and modules that then
+automatically download tools and programs from the Internet, configure them and
+integrated them in the virtual environment.__
 
 Complete environments can be several gigabytes in size and not all tools,
 programs and services are always needed and so everyone can decide for
@@ -34,6 +34,10 @@ themselves and customize the environment.
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
+
+__What is the project status?  
+The platform tool is ready and is already being used productively. The
+implementation of the modules is still in progress.__
 
 
 ## Advantages
@@ -50,7 +54,7 @@ is also supported :-)
 
 
 ## List of available modules 
-https://github.com/seanox/virtual-environment-creator/tree/main/modules
+https://github.com/seanox/virtual-environment/tree/main/modules
 
 More applications can be easily added for the creator or even later in the
 final virtual environment.
@@ -85,7 +89,7 @@ specific language governing permissions and limitations under the License.
 
 # System Requirement
 - Windows 7 or higher as operating system
-- Node.js 14.x or higher
+- .NET 4.7.x or higher
 
 
 # Downloads
@@ -93,13 +97,15 @@ Coming soon
 
 
 # Usage
-- Download the release
-- Configure the environment in `creator.yaml`  
-  Learn more [about the modules](/modules/README.md).
-- Use the command line and go to the root directory of the project
-- Call `npm install` to initialize the runtime environment
-- Call `npm start` or `node creator.js` to create a virtual environment
-- Environment is created in the directory `./workspace`
+- Download the release or [platform.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Platform.exe)
+- Rename __platform.exe__ to the name that will be used for the environment and drive
+- Call e.g. `platform.exe B: create` to create the initial environment as vhdx
+- Call e.g. `platform.exe B: attach` to attach the environment
+- Configure __Startup.cmd__ and the desired programs
+- Call e.g. `platform.exe B: detach` to detach the environment
+- Call e.g. `platform.exe B: compact` to shrink the environment
+
+Note: Module integration will come later, but will be similar.
 
 
 # Changes (Change Log)
