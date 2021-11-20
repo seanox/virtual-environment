@@ -82,12 +82,21 @@ namespace Platform
 
         private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartPorperties diskpartPorperties)
         {
-            string diskpartScript = Diskpart.GetTextResource("diskpart." + diskpartTask.ToString().ToLower());
+            string diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
+            string diskpartScript = Diskpart.GetTextResource(diskpartScriptName);
             foreach (FieldInfo field in typeof(DiskpartPorperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                 diskpartScript = diskpartScript.Replace(String.Format("#[{0}]", field.Name.ToLower()),
                         (field.GetValue(diskpartPorperties) ?? "").ToString());
 
-            string diskpartScriptFile = Path.GetTempFileName();
+            // In case the cleanup does not work and not so much junk
+            // accumulates in the temp directory, fixed file names are used.
+
+            string diskpartScriptTempFile = Path.GetTempFileName();
+            string diskpartScriptDirectory = Path.GetDirectoryName(diskpartScriptTempFile);
+            string diskpartScriptFile = Path.Combine(diskpartScriptDirectory, diskpartScriptName);
+            File.Delete(diskpartScriptFile);
+            File.Move(diskpartScriptTempFile, diskpartScriptFile);
+
             try
             {
                 File.WriteAllBytes(diskpartScriptFile, Encoding.ASCII.GetBytes(diskpartScript));
@@ -128,7 +137,8 @@ namespace Platform
             }
             finally
             {
-                File.Delete(diskpartScriptFile);
+                if (File.Exists(diskpartScriptFile))
+                    File.Delete(diskpartScriptFile);
             }
         }
 
@@ -270,17 +280,14 @@ namespace Platform
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
             Directory.CreateDirectory(tempDrive + @"\Database");
             Directory.CreateDirectory(tempDrive + @"\Documents");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Macros");
             Directory.CreateDirectory(tempDrive + @"\Documents\Music");
             Directory.CreateDirectory(tempDrive + @"\Documents\Pictures");
             Directory.CreateDirectory(tempDrive + @"\Documents\Projects");
+            Directory.CreateDirectory(tempDrive + @"\Documents\Settings");
             Directory.CreateDirectory(tempDrive + @"\Documents\Videos");
             Directory.CreateDirectory(tempDrive + @"\Install");
             Directory.CreateDirectory(tempDrive + @"\Program Portables");
-            Directory.CreateDirectory(tempDrive + @"\Program Portables\Detach");
-            Directory.CreateDirectory(tempDrive + @"\Program Portables\Console");
             Directory.CreateDirectory(tempDrive + @"\Resources");
-            Directory.CreateDirectory(tempDrive + @"\Settings");
             Directory.CreateDirectory(tempDrive + @"\Temp");
 
             Dictionary<string, string> replacements = new Dictionary<string, string>();
@@ -288,8 +295,6 @@ namespace Platform
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", String.Format("{0}.x", Assembly.GetExecutingAssembly().GetName().Version.Major));
 
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Detach\detach.cmd", replacements);
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Console\console.cmd", replacements);
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\drive.ico");
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\drive.png");
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);

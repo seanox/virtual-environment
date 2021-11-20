@@ -79,7 +79,11 @@ namespace Platform
             string loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                 Path.GetFileNameWithoutExtension(applicationPath) + ".log");
 
-            
+            messages.Select(message =>
+                    Messages.DiskpartUnexpectedErrorOccurred == message
+                            || Messages.WorkerUnexpectedErrorOccurred == message
+                        ? String.Format(message, Path.GetFileName(loggingFile)) : message).ToArray();
+
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
             output = String.Format("{0} {1} ", timestamp, type.ToString().ToUpper()) + output;

@@ -154,14 +154,28 @@ namespace Platform {
             string applicationName = Path.GetFileNameWithoutExtension(applicationFile);
             string diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
 
-            processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_NAME", applicationName);
-            processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_HOME", applicationDirectory);
-            processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_DISK", diskFile);
-            processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_APP", applicationFile);
+            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_NAME")))
+                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_NAME", applicationName);
+            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_HOME")))
+                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_HOME", applicationDirectory);
+            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_DISK")))
+                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_DISK", diskFile);
+            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_APP")))
+                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_APP", applicationPath);
             string rootPath = Path.GetPathRoot(fileName);
-            processStartInfo.EnvironmentVariables.Add("VT_HOMEDRIVE", rootPath.Substring(0, 2));
+            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_HOMEDRIVE")))
+                processStartInfo.EnvironmentVariables.Add("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
-            string outputTempFile = Path.GetTempFileName();
+            // When detaching, the drive and thus the temp directory is
+            // detached before cleaning, so a fixed name of the temp file is
+            // used so that not so much garbage accumulates in the temp
+            // directory.
+
+            string tempFile = Path.GetTempFileName();
+            string tempDirectory = Path.GetDirectoryName(tempFile);
+            string outputTempFile = Path.Combine(tempDirectory, "stdout");
+            File.Delete(outputTempFile);
+            File.Move(tempFile, outputTempFile);
 
             try
             {
@@ -189,7 +203,8 @@ namespace Platform {
             }
             finally
             {
-                File.Delete(outputTempFile);
+                if (File.Exists(outputTempFile))
+                    File.Delete(outputTempFile);
             }
         }
 
@@ -289,7 +304,7 @@ namespace Platform {
                     else if (exception is DiskpartException)
                         Notification.Push(Notification.Type.Error, ((DiskpartException)exception).Messages);
                     else
-                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception.Message);
+                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred);
                 }
             });
         }

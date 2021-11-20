@@ -39,28 +39,36 @@ REM - VT_PLATFORM_DISK  Path of the virtual disc
 REM - VT_PLATFORM_APP   Path from the environment startup program 
 REM - VT_HOMEDRIVE      Root directory of the started virtual environment
 
+SET VT_HOMEPATH=\Documents
 SET VT_USERPROFILE=%VT_HOMEDRIVE%\Settings
 SET VT_APPDATA=%VT_USERPROFILE%\Roaming
 SET VT_LOCALAPPDATA=%VT_USERPROFILE%\Local
-SET VT_PUBLIC=%VT_USERPROFILE%\Public
-SET VT_HOMEPATH=%VT_HOMEDRIVE%\Documents
+SET VT_PUBLIC=%VT_HOMEDRIVE%\Documents\Public
 SET VT_APPSPATH=%VT_HOMEDRIVE%\Program Portables
 SET VT_TEMP=%VT_HOMEDRIVE%\Temp
 
 REM Relevant system variables are rewritten
-SET HOMEDRIVE=%VT_HOMEDRIVE%
+REM Be careful with changing USERPROFILE, it can cause unexpected results. 
 SET APPDATA=%VT_APPDATA%
-SET LOCALAPPDATA=%VT_LOCALAPPDATA%
-SET HOMEPATH=%VT_HOMEPATH%
 SET APPSPATH=%VT_APPSPATH%
-SET PATH=%VT_PATH%
+SET APPSSETTINGS=%VT_HOMEDRIVE%\Settings
+SET HOMEDRIVE=%VT_HOMEDRIVE%
+SET HOMEPATH=%VT_HOMEPATH%
+SET LOCALAPPDATA=%VT_LOCALAPPDATA%
 SET PUBLIC=%VT_PUBLIC%
 SET TEMP=%VT_TEMP%
 SET TMP=%VT_TMP%
-SET USERPROFILE=%VT_USERPROFILE%
+
+SET PLATFORM_NAME=%VT_PLATFORM_NAME%
+SET PLATFORM_HOME=%VT_PLATFORM_HOME%
+SET PLATFORM_DISK=%VT_PLATFORM_DISK%
+SET PLATFORM_APP=%VT_PLATFORM_APP%
 
 REM Further environment variables are inserted here.
 REM Please do not set program starts here, that will come later.
+
+REM Changes the platform name to uppercase, e.g. as a prefix for services.
+REM for /f "usebackq delims=" %%I in (`powershell "\"%PLATFORM_NAME%\".toUpper()"`) do set "PLATFORM_NAME=%%~I"
 
 REM Placeholder for automatic module integration
 REM INSERT COMMONS
@@ -92,6 +100,17 @@ REM environment waits for the end of the startup script.
 REM Basically, a launcher or start menu should be started so that the programs
 REM can later use the virtual environment and the required environment
 REM variables. This is also important so that detaching works properly.
+
+REM Here, a launcher must be launched to keep the environment alive.
+REM     Examples:
+REM https://maxlauncher.sourceforge.io/
+REM https://sourceforge.net/projects/winlaunch/
+REM https://portableapps.com/download
+REM https://www.ugmfree.it/
+REM A detach function should then also be configured here.
+REM     Target:    %PLATFORM_APP%
+REM     Arguments: %HOMEDRIVE% detach
+REM     Start in:  %PLATFORM_HOME%
 
 REM Placeholder for automatic module integration
 REM INSERT STARTUP
