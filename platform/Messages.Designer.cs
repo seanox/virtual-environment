@@ -136,22 +136,10 @@
                 return ResourceManager.GetString("DiskpartDriveNotExists", resourceCulture);
             }
         }
-
-        internal static string DiskpartDriveSelectionIsIncorrect {
-            get {
-                return ResourceManager.GetString("DiskpartDriveSelectionIsIncorrect", resourceCulture);
-            }
-        }
         
         internal static string DiskpartFileAlreadyExists {
             get {
                 return ResourceManager.GetString("DiskpartFileAlreadyExists", resourceCulture);
-            }
-        }
-
-        internal static string DiskpartFileAlreadyInUse {
-            get {
-                return ResourceManager.GetString("DiskpartFileAlreadyInUse", resourceCulture);
             }
         }
         

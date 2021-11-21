@@ -233,6 +233,7 @@ namespace Platform {
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             Thread.Sleep(1000);
 
+                            Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
@@ -250,6 +251,7 @@ namespace Platform {
                             Notification.Push(Notification.Type.Trace, Messages.WorkerCreateText);
                             Thread.Sleep(1000);
 
+                            Diskpart.CanCreateDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.CreateDisk(workerTask.Drive, workerTask.DiskFile);
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
                             break;
@@ -259,6 +261,7 @@ namespace Platform {
                             Notification.Push(Notification.Type.Trace, Messages.WorkerCompactText);
                             Thread.Sleep(1000);
 
+                            Diskpart.CanCompactDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
                             break;
