@@ -231,7 +231,7 @@ namespace Platform {
                 process.Start();
                 process.WaitForExit();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
             }
             finally
