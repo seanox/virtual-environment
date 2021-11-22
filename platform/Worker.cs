@@ -208,6 +208,38 @@ namespace Platform {
             }
         }
 
+        private static void KillProcess(ProcessesInfo processesInfo)
+        {
+            // The process is completed in three stages. First friendly, then
+            // gentle, then hard. Here, gentle and hard are implemented.
+            // Friendly had no effect before. Gentle tries to end the process
+            // with the process structure. Occurring errors are ignored.
+            
+            try
+            {
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    CreateNoWindow  = true,
+
+                    WindowStyle = ProcessWindowStyle.Hidden,
+
+                    FileName = "taskkill.exe ",
+                    Arguments = "/t /pid " + processesInfo.Process.Id
+                };
+                process.Start();
+                process.WaitForExit();
+            }
+            catch (Exception exception)
+            {
+            }
+            finally
+            {
+                processesInfo.Process.Kill();
+            }
+        }
+
         private void Service(object payload)
         {
             if (!this.IsHandleCreated
@@ -218,8 +250,8 @@ namespace Platform {
 
             this.Invoke((MethodInvoker)delegate
             {
-                /// The timer should only trigger the asynchronous processing,
-                /// after that it is no longer needed and will be terminated.
+                // The timer should only trigger the asynchronous processing,
+                // after that it is no longer needed and will be terminated.
                 this.timer.Dispose();
 
                 try
@@ -284,10 +316,11 @@ namespace Platform {
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
                                 .ForEach(processInfo => processInfo.Process.CloseMainWindow());
                             Thread.Sleep(3000);
+                            
                             Worker.GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
-                                .ForEach(processInfo => processInfo.Process.Kill());
+                                .ForEach(processInfo => Worker.KillProcess(processInfo));
 
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
 

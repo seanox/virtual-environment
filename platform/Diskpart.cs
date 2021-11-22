@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -52,8 +53,8 @@ namespace Platform
             internal int    Number;
         }
 
-        /// It is a balancing act between notifications that work comparable to
-        /// a trace log and a usable exception handling.
+        // It is a balancing act between notifications that work comparable to
+        // a trace log and a usable exception handling.
 
         private static byte[] GetResource(string resourceName)
         {
@@ -101,13 +102,13 @@ namespace Platform
             {
                 File.WriteAllBytes(diskpartScriptFile, Encoding.ASCII.GetBytes(diskpartScript));
 
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                process.StartInfo = new System.Diagnostics.ProcessStartInfo()
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo()
                 {
                     UseShellExecute = false,
                     CreateNoWindow  = true,
                     
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                    WindowStyle = ProcessWindowStyle.Hidden,
                     
                     FileName  = "diskpart.exe",
                     Arguments = "/s " + diskpartScriptFile,
