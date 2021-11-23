@@ -28,16 +28,16 @@ use and management of the virtual environment and [modules](modules) that then
 automatically download tools and programs from the Internet, configure them and
 integrated them in the virtual environment.__
 
+__In the upcoming release 3.0.0 the modules are not yet supported. The software
+in the virtual environment must be set up manually, but this is easy, which is
+a normal drive.__
+
 Complete environments can be several gigabytes in size and not all tools,
 programs and services are always needed and so everyone can decide for
 themselves and customize the environment.
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
-
-__What is the project status?  
-The platform tool is ready and is already being used productively. The
-implementation of the modules is still in progress.__
 
 
 ## Advantages
@@ -99,13 +99,16 @@ Coming soon
 # Usage
 - Download the release or [platform.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Platform.exe)
 - Rename __platform.exe__ to the name that will be used for the environment and drive
-- Call e.g. `platform.exe B: create` to create the initial environment as vhdx
-- Call e.g. `platform.exe B: attach` to attach the environment
-- Configure __Startup.cmd__ and the desired programs
-- Call e.g. `platform.exe B: detach` to detach the environment
-- Call e.g. `platform.exe B: compact` to shrink the environment
 
-Note: Module integration will come later, but will be similar.
+When the virtual environment is created in the form of the vhdx file, it can be used as follows.
+
+- Call e.g. `seanox.exe B: create` to create the initial environment as vhdx
+- Call e.g. `seanox.exe B: attach` to attach the environment
+- Configure __Startup.cmd__ and the desired programs
+- Call e.g. `seanox.exe B: detach` to detach the environment
+- Call e.g. `seanox.exe B: compact` to shrink the environment
+
+__Module integration will come later, but will be similar.__
 
 
 # Changes (Change Log)
