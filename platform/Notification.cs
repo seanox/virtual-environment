@@ -60,9 +60,7 @@ namespace Platform
             if (File.Exists(loggingFile)
                     && new FileInfo(loggingFile).Length > 0)
                 using (StreamWriter streamWriter = File.AppendText(loggingFile))
-                {
                     streamWriter.WriteLine();
-                }
         }
 
         internal static void Push(Type type, params string[] messages)
@@ -90,9 +88,7 @@ namespace Platform
             string prefix = String.Format("{0} {1} ", timestamp, " ... ");
             output = Regex.Replace(output, "(\r\n)|(\n\r)|[\r\n]", "\r\n" + prefix);
             using (StreamWriter streamWriter = File.AppendText(loggingFile))
-            {
                 streamWriter.WriteLine(output);
-            }
         }
 
         internal static void Subscribe(INotification recipient)

@@ -330,7 +330,7 @@ namespace Platform {
                         default:
                             string applicationPath = Assembly.GetExecutingAssembly().Location;
                             string applicationFile = Path.GetFileName(applicationPath);
-                            Notification.Push(Notification.Type.Abort, Messages.WorkerVersion,
+                            Notification.Push(Notification.Type.Error, Messages.WorkerVersion,
                                     String.Format(Messages.WorkerUsage, applicationFile));
                             break;
                     }
