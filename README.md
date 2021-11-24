@@ -121,7 +121,10 @@ Coming soon
 
 When the virtual environment is created in the form of the vhdx file, it can be used as follows.
 
+`usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
+
 - Call e.g. `seanox.exe B: create` to create the initial environment as vhdx
+- Call e.g. `seanox.exe B: shortcuts` to create the usual calls as shortcuts
 - Call e.g. `seanox.exe B: attach` to attach the environment
 - Configure __Startup.cmd__ and the desired programs
 - Call e.g. `seanox.exe B: detach` to detach the environment
