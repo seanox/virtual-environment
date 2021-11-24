@@ -129,7 +129,10 @@ Example
 - `seanox.exe B: attach` to attach the environment
 
 Configure __Startup.cmd__ in the root directory of the virtual environment and
-add the desired programs and services.
+add the desired programs and services. It is recommended to use a launcher so
+that the environment variables are available to the called programs. Detach
+should also be started via the launcher if programs and services are terminated
+when detaching and the environment variables are needed for this.
 
 - `seanox.exe B: detach` to detach the environment
 - `seanox.exe B: compact` to shrink the environment
