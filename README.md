@@ -127,7 +127,10 @@ Example
 - `seanox.exe B: create` to create the initial environment as vhdx
 - `seanox.exe B: shortcuts` to create the usual calls as shortcuts
 - `seanox.exe B: attach` to attach the environment
-- Configure __Startup.cmd__ and the desired programs
+
+Configure __Startup.cmd__ in the root directory of the virtual environment and
+add the desired programs and services.
+
 - `seanox.exe B: detach` to detach the environment
 - `seanox.exe B: compact` to shrink the environment
 
