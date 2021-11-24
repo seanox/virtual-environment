@@ -224,9 +224,16 @@ Programs and services are terminated.</value>
     <value>An unexpected error has occurred.</value>
   </data>
   <data name="WorkerUsage" xml:space="preserve">
-    <value>{0} A-Z: [create|compact|attach|detach]</value>
+    <value>{0} A-Z: [create|attach|detach|...]</value>
   </data>
   <data name="WorkerVersion" xml:space="preserve">
     <value>Seanox Virtual Environment [3.0.0 20211123]</value>
+  </data>
+  <data name="WorkerShortcuts" xml:space="preserve">
+    <value>Shortcuts will be created.</value>
+  </data>
+  <data name="WorkerShortcutsText" xml:space="preserve">
+    <value>Shortcuts will be created.
+The usual use are established.</value>
   </data>
 </root>

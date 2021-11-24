@@ -11,7 +11,6 @@
 namespace Platform {
     using System;
     
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -353,6 +352,25 @@ namespace Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shortcuts will be created..
+        /// </summary>
+        internal static string WorkerShortcuts {
+            get {
+                return ResourceManager.GetString("WorkerShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortcuts will be created.
+        ///The usual use are established..
+        /// </summary>
+        internal static string WorkerShortcutsText {
+            get {
+                return ResourceManager.GetString("WorkerShortcutsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully completed.
         /// </summary>
         internal static string WorkerSuccessfullyCompleted {
@@ -371,7 +389,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} A-Z: [create|compact|attach|detach].
+        ///   Looks up a localized string similar to {0} A-Z: [create|attach|detach|...].
         /// </summary>
         internal static string WorkerUsage {
             get {
@@ -380,7 +398,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [3.0.0 20211122].
+        ///   Looks up a localized string similar to Seanox Virtual Environment [3.0.0 20211123].
         /// </summary>
         internal static string WorkerVersion {
             get {
