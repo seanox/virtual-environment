@@ -11,6 +11,7 @@
 namespace Platform {
     using System;
     
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -295,6 +296,15 @@ namespace Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temporary directory will be cleaned.
+        /// </summary>
+        internal static string WorkerCompactCleanTemp {
+            get {
+                return ResourceManager.GetString("WorkerCompactCleanTemp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual environment will be compacted.
         ///Virtual disk and file system are optimized..
         /// </summary>
@@ -362,7 +372,7 @@ namespace Platform {
         
         /// <summary>
         ///   Looks up a localized string similar to Shortcuts will be created.
-        ///The usual use are established..
+        ///The usual usage are established..
         /// </summary>
         internal static string WorkerShortcutsText {
             get {
@@ -398,7 +408,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [3.0.0 20211123].
+        ///   Looks up a localized string similar to Seanox Virtual Environment [3.0.0 20211124].
         /// </summary>
         internal static string WorkerVersion {
             get {

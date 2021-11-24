@@ -309,8 +309,21 @@ namespace Platform {
                             Notification.Push(Notification.Type.Trace, Messages.WorkerCompactText);
                             Thread.Sleep(1000);
 
+                            Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
+                            Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
+
+                            string tempDirectory = Path.Combine(workerTask.Drive, "Temp");
+                            if (Directory.Exists(tempDirectory))
+                            {
+                                Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanTemp);
+                                Directory.Delete(tempDirectory, true);
+                                Directory.CreateDirectory(tempDirectory);
+                            }
+                            
+                            Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
+                            Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
+                            
                             Diskpart.CanCompactDisk(workerTask.Drive, workerTask.DiskFile);
-                            Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
