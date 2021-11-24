@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Platform")]
+[assembly: AssemblyTitle("Seanox Virtual Environment")]
 [assembly: AssemblyDescription("Creates, starts and controls a virtual environment.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
