@@ -39,6 +39,25 @@ themselves and customize the environment.
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
 
+__What is the difference with PortableApps.com or portapps.io?__
+
+The virtual environment focuses on the virtual drive as a platform. It is about
+the advantages that the platform can be used as a single file and programs and
+services can be used in it with a complete configuration and with reliable
+absolute paths.
+
+The integration and distribution of portable applications are not the ambition
+of this project.
+
+The use of modules for the integration of programs and services is planned, but
+is more an exemplification of the possibilities for the integration of programs
+and services. However, it is not the intention of the project to establish a
+corresponding eco-system or repository.
+
+PortableApps.com and portapps.io complement the virtual environment perfectly
+and both release very good portable versions of programs that can be used in
+the virtual environment.
+
 
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
