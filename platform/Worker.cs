@@ -42,6 +42,7 @@ namespace Platform {
             Create,
             Compact,
             Detach,
+            Shortcuts,
             Usage
         }
 
@@ -240,6 +241,21 @@ namespace Platform {
             }
         }
 
+        private static void CreateShortcut(string drive, string diskFile, Task task)
+        {
+            string applicationPath = Path.GetDirectoryName(diskFile);
+            string applicationName = Path.GetFileNameWithoutExtension(diskFile);
+            IWshRuntimeLibrary.WshShell wshShell = new IWshRuntimeLibrary.WshShell();
+            string shortcutFile = Path.Combine(applicationPath, applicationName + "." + task.ToString().ToLower() + ".lnk");
+            if (File.Exists(shortcutFile))
+                return;
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
+            shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
+            shortcut.Arguments = drive + " " + task.ToString().ToLower();
+            shortcut.IconLocation = shortcut.TargetPath; 
+            shortcut.Save();
+        }
+
         private void Service(object payload)
         {
             if (!this.IsHandleCreated
@@ -326,6 +342,18 @@ namespace Platform {
 
                             Notification.Push(Notification.Type.Abort, Messages.WorkerDetach, Messages.WorkerSuccessfullyCompleted);
                             break;
+                     
+                        case Task.Shortcuts:
+                            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
+                            Notification.Push(Notification.Type.Trace, Messages.WorkerShortcutsText);
+                            Thread.Sleep(1000);
+                            
+                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Attach);
+                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Detach);
+                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Compact);
+
+                            Notification.Push(Notification.Type.Abort, Messages.WorkerShortcuts, Messages.WorkerSuccessfullyCompleted);
+                            break;
                         
                         default:
                             string applicationPath = Assembly.GetExecutingAssembly().Location;
@@ -359,16 +387,17 @@ namespace Platform {
             if (message.Type == Notification.Type.Error)
             {
                 this.BackColor = Color.FromArgb(250, 225, 150);
-                this.Progress.BackColor = Color.FromArgb(225, 175, 100);
+                this.Progress.BackColor = Color.FromArgb(200, 150, 75);
+                this.Label.ForeColor = this.Progress.BackColor;
             }
 
             Size originSize = this.Progress.Size;
             this.Progress.Visible = true;
-            for (int width = 1; width < originSize.Width; width += 3)
+            for (int width = 1; width < originSize.Width; width += 1)
             {
                 this.Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
                 this.Refresh();
-                Thread.Sleep(25);
+                Thread.Sleep(message.Type == Notification.Type.Error ? 75 : 25);
             }
 
             Thread.Sleep(500);

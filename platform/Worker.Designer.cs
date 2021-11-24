@@ -15,6 +15,10 @@
 
         #region Vom Windows Form-Designer generierter Code
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Worker));
@@ -51,7 +55,7 @@
             this.Label.AutoSize = true;
             this.Label.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.Label.Location = new System.Drawing.Point(324, 75);
+            this.Label.Location = new System.Drawing.Point(328, 79);
             this.Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Label.Name = "Label";
             this.Label.Size = new System.Drawing.Size(67, 13);
@@ -61,10 +65,10 @@
             // Progress
             // 
             this.Progress.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.Progress.Location = new System.Drawing.Point(91, 74);
+            this.Progress.Location = new System.Drawing.Point(24, 85);
             this.Progress.Margin = new System.Windows.Forms.Padding(0);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(296, 3);
+            this.Progress.Size = new System.Drawing.Size(50, 3);
             this.Progress.TabIndex = 3;
             this.Progress.Visible = false;
             // 
