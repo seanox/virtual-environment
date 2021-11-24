@@ -20,6 +20,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -39,7 +40,9 @@ namespace Platform
             if (arguments == null
                     || arguments.Length < 2
                     || !new Regex("^[A-Z]:$", RegexOptions.IgnoreCase).IsMatch(arguments[0])
-                    || !new Regex("^(create|compact|attach|detach)$", RegexOptions.IgnoreCase).IsMatch(arguments[1])) {
+                    || Enum.GetValues(typeof(Worker.Task)).Cast<Worker.Task>()
+                            .Where(task => !Worker.Task.Usage.Equals(task))
+                            .All(task => string.Equals(task.ToString(), arguments[1], StringComparison.OrdinalIgnoreCase))) {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Worker(Worker.Task.Usage, null, null));
@@ -50,25 +53,28 @@ namespace Platform
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                 Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
-            Worker.Task workertask = Worker.Task.Usage;
+            Worker.Task workerTask = Worker.Task.Usage;
             switch (arguments[1].ToLower())
             {
                 case "create":
-                    workertask = Worker.Task.Create;
+                    workerTask = Worker.Task.Create;
                     break;
                 case "compact":
-                    workertask = Worker.Task.Compact;
+                    workerTask = Worker.Task.Compact;
                     break;
                 case "attach":
-                    workertask = Worker.Task.Attach;
+                    workerTask = Worker.Task.Attach;
                     break;
                 case "detach":
-                    workertask = Worker.Task.Detach;
+                    workerTask = Worker.Task.Detach;
+                    break;
+                case "shortcuts":
+                    workerTask = Worker.Task.Shortcuts;
                     break;
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Worker(workertask, drive, diskFile));
+            Application.Run(new Worker(workerTask, drive, diskFile));
         }
     }
 }
