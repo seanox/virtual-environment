@@ -23,10 +23,10 @@ platform is easily customizable, can be quickly switched to use for different
 projects, and the environment can be easily transferred to other machines where
 work started can be easily continued.
 
-__The project includes [platform](platform), a tool for the initial creation,
-use and management of the virtual environment and [modules](modules) that then
-automatically download tools and programs from the Internet, configure them and
-integrated them in the virtual environment.__
+__The project includes with [platform](platform), a tool for the initial
+creation, use and management of the virtual environment and [modules](modules)
+that then automatically download tools and programs from the Internet,
+configure them and integrated them in the virtual environment.__
 
 __In the upcoming release 3.0.0 the modules are not yet supported. The software
 in the virtual environment must be set up manually, but this is easy, which is
