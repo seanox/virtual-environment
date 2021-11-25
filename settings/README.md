@@ -56,4 +56,6 @@ contains the working directory.
 
 Example from `Startup.cmd`
 
-`"%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"`
+```
+"%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
+```
