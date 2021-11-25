@@ -1,7 +1,7 @@
 # Settings
 Settings is a command-line program that replaces placeholders in files with
 stored values. The program expects as argument the path to an ini file which
-contains two sections (settings and files).
+contains two sections. settings and files.
 
 The section `settings` provides the keys and values for the placeholder
 replacement. The values can also already contain placeholders from preceding
@@ -18,7 +18,7 @@ drive where it is executed.
 Example of the ini file:
 
 ```ini
-[settings]
+[SETTINGS]
   account       #[USERNAME]
   password      You do not want to know.
   gitlab-user   #[account]
@@ -26,7 +26,7 @@ Example of the ini file:
   jira-user     #[account] 
   jira-tokem    jir_123_456_789
 
-[files]
+[FILES]
   - \Program Portables\Maven\conf\settings.xml
   - \Settings\.m2\settings.xml
 ```
