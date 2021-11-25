@@ -35,6 +35,10 @@ namespace Startup
             string applicationDirectory = Path.GetDirectoryName(applicationPath);
             string applicationName = Path.GetFileNameWithoutExtension(applicationPath);
             string scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
+
+            if (File.Exists(Path.Combine(".", Path.GetFileName(scriptName))))
+                applicationDirectory = ".";
+
             string scriptFile = Path.Combine(applicationDirectory, scriptName);
 
             if (!File.Exists(scriptFile))
