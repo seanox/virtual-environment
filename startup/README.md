@@ -8,3 +8,5 @@ batch script.
 
 If the startup program is renamed, this also affects the name of the expected
 batch script.
+
+Arguments are also supported and passed to the batch script.
