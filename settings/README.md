@@ -54,7 +54,7 @@ virtual environment and is configured and started in Startup.cmd. For the
 access to the outside ini file the environment variable xxx is used, which
 contains the working directory.
 
-Example from `Startup.cmd`
+Example of use in `Startup.cmd`
 
 ```
 "%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
