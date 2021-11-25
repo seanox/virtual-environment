@@ -44,3 +44,16 @@ template or the template is older than the original, then a new template is
 created.
 
 Only known placeholders are replaced, unknown ones remain.
+
+
+# Integration
+Settings is primarily used to further personalize a virtual environment. The
+idea is that the ini file with the values is stored in the working directory
+and thus outside the virtual hard disk. The Settings program is included in the
+virtual environment and is configured and started in Startup.cmd. For the
+access to the outside ini file the environment variable xxx is used, which
+contains the working directory.
+
+Example from `Startup.cmd`
+
+`"%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"`
