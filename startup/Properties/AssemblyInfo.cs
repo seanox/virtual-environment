@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Startup")]
-[assembly: AssemblyDescription("Starts a batch script with the same name minimized.")]
+[assembly: AssemblyTitle("Starts batch scripts in a minimized console window.")]
+[assembly: AssemblyDescription("Starts batch scripts in a minimized console window.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
 [assembly: AssemblyProduct("Startup")]
