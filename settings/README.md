@@ -39,7 +39,8 @@ variable. The notation of the placeholders is the same in both cases.
 The settings are implemented in such a way that the program can be started with
 new values at any time. To ensure that the change still works after the first
 replacement, the program creates reusable copies of the files as templates (end
-with #), where the placeholders still remain included. If there is no template
-it will be created from the current file.
+with settings), where the placeholders still remain included. If there is no
+template or the template is older than the original, then a new template is
+created.
 
 Only known placeholders are replaced, unknown ones remain.
