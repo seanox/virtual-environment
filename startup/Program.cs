@@ -21,6 +21,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -29,7 +30,7 @@ namespace Startup
     internal static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] arguments)
         {
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string applicationDirectory = Path.GetDirectoryName(applicationPath);
@@ -63,7 +64,12 @@ namespace Startup
                 RedirectStandardError  = false,
                 RedirectStandardOutput = false,
             };
-
+            
+            if (!(arguments is null)
+                    && arguments.Length > 0)
+                processStartInfo.Arguments = String.Join(" ", arguments
+                        .Select(argument => "\"" + argument  + "\""));
+                
             Process process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
