@@ -112,7 +112,7 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.0.0](#) 
+[Seanox Virtual Environment 3.0.0](https://github.com/seanox/virtual-environment/releases/download/3.0.0/seanox-virtual-platform-3.0.0.zip) 
 
 
 # Usage
@@ -142,11 +142,11 @@ __Module integration will come later, but will be similar.__
 
 # Changes (Change Log)
 ## 3.0.0 20211126 (summary of the current version)
-CR: License: Changed to Apache License Version 2.0
-CR: Project: Change from Ant to .NET
-CR: Platform: Added function compact
-CR: Platform: Added function shortcuts
-CR: Settings: Added for Placeholder replacement in files
+CR: License: Changed to Apache License Version 2.0  
+CR: Project: Change from Ant to .NET  
+CR: Platform: Added function compact  
+CR: Platform: Added function shortcuts  
+CR: Settings: Added for Placeholder replacement in files  
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 
 
