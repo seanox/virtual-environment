@@ -383,7 +383,7 @@ namespace Platform {
                     else if (exception is DiskpartException)
                         Notification.Push(Notification.Type.Error, ((DiskpartException)exception).Messages);
                     else
-                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred);
+                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, "@" + exception.Message);
                 }
             });
         }

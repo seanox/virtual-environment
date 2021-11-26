@@ -70,6 +70,9 @@ REM Please do not set program starts here, that will come later.
 REM Changes the platform name to uppercase, e.g. as a prefix for services.
 REM for /f "usebackq delims=" %%I in (`powershell "\"%PLATFORM_NAME%\".toUpper()"`) do set "PLATFORM_NAME=%%~I"
 
+REM ---- Extensions
+SET PATH=%APPSPATH%\Extensions;%PATH%
+
 REM Placeholder for automatic module integration
 REM INSERT COMMONS
 
@@ -81,6 +84,11 @@ REM Environment will be prepared
 REM ----
 
 REM Programs and service are configured and initialized here, but not started.
+
+REM ---- Settings
+IF EXIST "%PLATFORM_HOME%\%PLATFORM_NAME%.ini" (
+    "%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
+)
 
 REM Placeholder for automatic module integration
 REM INSERT ATTACH

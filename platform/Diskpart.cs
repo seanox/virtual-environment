@@ -243,6 +243,9 @@ namespace Platform
                             replacements[key]);
                 fileContent = Encoding.ASCII.GetBytes(fileContentText);
             }
+            string targetDirectory = Path.GetDirectoryName(drive + resourcePlatformPath);
+            if (!Directory.Exists(targetDirectory))
+                Directory.CreateDirectory(targetDirectory);
             File.WriteAllBytes(drive + resourcePlatformPath, fileContent);
         }
 
@@ -296,8 +299,10 @@ namespace Platform
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", String.Format("{0}.x", Assembly.GetExecutingAssembly().GetName().Version.Major));
 
+            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Extensions\startup.exe");
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\drive.ico");
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\drive.png");
+            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Settings\settings.exe");
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
             Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Startup.cmd", replacements);
 
