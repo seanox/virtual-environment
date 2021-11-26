@@ -33,7 +33,8 @@ Example of the ini file:
 Basically, sections, keys and placeholders are case-insensitive.
 
 The values of the placeholders come from the settings or from the environment
-variable. The notation of the placeholders is the same in both cases.
+variable. Settings values take precedence. The notation of the placeholders is
+the same in both cases.
 
 The settings are implemented in such a way that the program can be started with
 new values at any time. To ensure that the change still works after the first

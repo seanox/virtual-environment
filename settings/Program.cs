@@ -64,16 +64,14 @@ namespace Settings
             
             string templateFile = targetFile + "-settings";
             if (!File.Exists(templateFile)
-                    || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) != 0)
+                    || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) < 0)
                 File.Copy(targetFile, templateFile, true);
             
             string templateContent = File.ReadAllText(templateFile);
             string targetContent = Program.ReplacePlaceholders(templateContent, settings);
             File.WriteAllText(targetFile, targetContent);
 
-            DateTime targetDateTime = File.GetLastWriteTime(targetFile);
-            File.SetLastWriteTime(targetFile, targetDateTime);
-            File.SetLastWriteTime(templateFile, targetDateTime);
+            File.SetLastWriteTime(templateFile, DateTime.Now);
         }
 
         public static void Main(string[] arguments)
