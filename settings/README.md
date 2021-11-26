@@ -24,7 +24,7 @@ Example of the ini file:
   gitlab-user   git_#[account]
   gitlab-token  git_123_456_789
   jira-user     jir_#[account] 
-  jira-tokem    jir_123_456_789
+  jira-token    jir_123_456_789
 
 [FILES]
   - \Program Portables\Maven\conf\settings.xml
