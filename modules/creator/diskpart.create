@@ -1,8 +1,0 @@
-create vdisk file="#[workspace.drive.file]" type=#[environment.type] maximum=#[environment.size]
-select vdisk file="#[workspace.drive.file]"
-attach vdisk
-convert #[environment.style]
-create partition primary
-format FS=NTFS LABEL="#[environment.name]" QUICK
-detach vdisk
-exit

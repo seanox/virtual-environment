@@ -1,5 +1,0 @@
-select vdisk file="#[workspace.drive.file]"
-attach vdisk readonly
-compact vdisk
-detach vdisk
-exit

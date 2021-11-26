@@ -1,3 +1,0 @@
-select volume #[workspace.drive.number]
-assign letter=#[workspace.drive]
-exit
