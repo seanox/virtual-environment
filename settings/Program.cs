@@ -40,7 +40,7 @@ namespace Settings
         private static readonly Regex PATTERN_LINES =
             new Regex(@"(\r\n)+|(\n\r)+|[\r\n]");
         private static readonly Regex PATTERN_PLACEHOLDER =
-            new Regex(@"#\[\s*([a-z_](?:[\w\.]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
+            new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
         
         private static string ReplacePlaceholders(string text, Dictionary<string, string> settings)
         {
@@ -57,8 +57,10 @@ namespace Settings
         {
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             string targetFile = Path.GetPathRoot(applicationPath).Substring(0, 2) + file.Replace("/", @"\");
-            if (!File.Exists(file))
+            if (!File.Exists(targetFile))
                 return;
+            
+            Console.WriteLine("- " + targetFile);
             
             string templateFile = targetFile + "-settings";
             if (!File.Exists(templateFile)
@@ -76,13 +78,14 @@ namespace Settings
 
         public static void Main(string[] arguments)
         {
+            Console.WriteLine("Seanox Settings [Version 1.0.0.0 20211126]");
+            Console.WriteLine("Copyright (C) 2021 Seanox Software Solutions");
+            Console.WriteLine("Placeholder replacement in files");
+            
             if (arguments == null
                     || arguments.Length < 1
                     || !File.Exists(arguments[0]))
             {
-                Console.WriteLine("Seanox Settings [Version 1.0.0.0 20211125]");
-                Console.WriteLine("Copyright (C) 2021 Seanox Software Solutions");
-                Console.WriteLine();
                 string applicationPath = Assembly.GetExecutingAssembly().Location;
                 Console.WriteLine("usage: " + Path.GetFileName(applicationPath) + " <file>");
                 return;
@@ -117,9 +120,11 @@ namespace Settings
             string filesSection = "";
             if (filesSectionMatch.Success)
                 filesSection = filesSectionMatch.Groups[1].Value;
-            string[] filesLines = PATTERN_LINES.Split(filesSection);
-            foreach (string line in filesLines
-                    .Where(line => PATTERN_SECTION_FILE.IsMatch(line)))
+            string[] filesLines = PATTERN_LINES.Split(filesSection)
+                .Where(line => PATTERN_SECTION_FILE.IsMatch(line)).ToArray();
+            if (filesLines.Length <= 0)
+                Console.WriteLine("- no file defined");
+            foreach (string line in filesLines)
                 Program.ReplaceFilePlaceholders(PATTERN_SECTION_FILE.Replace(line, "$1"), settingDirectory);
         }
     }
