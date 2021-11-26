@@ -28,9 +28,9 @@ creation, use and management of the virtual environment and [modules](modules)
 that then automatically download tools and programs from the Internet,
 configure them and integrated them in the virtual environment.__
 
-__In the upcoming release 3.0.0 the modules are not yet supported. The software
-in the virtual environment must be set up manually, but this is easy, which is
-a normal drive.__
+__In release 3.0.0 the modules are not yet supported. The software in the
+virtual environment must be set up manually, but this is easy, which is a
+normal drive.__
 
 Complete environments can be several gigabytes in size and not all tools,
 programs and services are always needed and so everyone can decide for
@@ -112,7 +112,7 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-Coming soon
+[Seanox Virtual Environment 3.0.0](#) 
 
 
 # Usage
@@ -141,6 +141,12 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes (Change Log)
+## 3.0.0 20211126 (summary of the current version)
+CR: License: Changed to Apache License Version 2.0
+CR: Project: Change from Ant to .NET
+CR: Platform: Added function compact
+CR: Platform: Added function shortcuts
+CR: Settings: Added for Placeholder replacement in files
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 
 
