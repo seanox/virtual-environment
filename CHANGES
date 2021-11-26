@@ -1,6 +1,14 @@
-3.0.0 2021XXXX
+3.0.0 20211126
   CR: License: Changed to Apache License Version 2.0
   CR: Project: Change from Ant to .NET
+  CR: Platform: Added function compact
+      Cleans the temp directory on the virtual disk and shrinks the disk in general.
+      e.g. platform.exe B: compact
+  CR: Platform: Added function shortcuts
+      Creates the usual calls as shortcuts.
+      e.g. platform.exe B: shortcuts
+  CR: Settings: Added for Placeholder replacement in files
+      This simplifies the personalization , distribution, migrations and updates.
 
 2.1.0 2019XXXX
   CR: Added support for VHDX and BitLocker
