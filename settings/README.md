@@ -21,14 +21,13 @@ Example of the ini file:
 [SETTINGS]
   account       #[USERNAME]
   password      You do not want to know.
-  gitlab-user   #[account]
+  gitlab-user   git_#[account]
   gitlab-token  git_123_456_789
-  jira-user     #[account] 
+  jira-user     jir_#[account] 
   jira-tokem    jir_123_456_789
 
 [FILES]
   - \Program Portables\Maven\conf\settings.xml
-  - \Settings\.m2\settings.xml
 ```
 
 Basically, sections, keys and placeholders are case-insensitive.
@@ -57,5 +56,16 @@ contains the working directory.
 Example of use in `Startup.cmd`
 
 ```
-"%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
+REM Environment will be prepared
+REM ----
+
+REM Programs and service are configured and initialized here, but not started.
+
+REM ---- Settings
+IF EXIST "%PLATFORM_HOME%\%PLATFORM_NAME%.ini" (
+    "%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
+)
+
+REM Placeholder for automatic module integration
+REM INSERT ATTACH
 ```
