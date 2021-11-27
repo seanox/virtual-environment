@@ -65,10 +65,8 @@ namespace Platform
 
         internal static void Push(Type type, params string[] messages)
         {
-            string delimiter = Type.Trace == type ? "- " : "";
-            string publication = String.Join("\r\n" + delimiter, messages.Where(message =>
+            string publication = String.Join("\r\n", messages.Where(message =>
                     !message.Trim().StartsWith("@")));
-
             if (publication.Length > 0)
                 Notification.subscriptions.ForEach(recipient =>
                         recipient.Receive(new Message(type, publication)));
