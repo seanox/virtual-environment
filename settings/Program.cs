@@ -64,7 +64,7 @@ namespace Settings
             
             string templateFile = targetFile + "-settings";
             if (!File.Exists(templateFile)
-                    || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) < 0)
+                    || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) > 0)
                 File.Copy(targetFile, templateFile, true);
             
             string templateContent = File.ReadAllText(templateFile);
@@ -76,7 +76,7 @@ namespace Settings
 
         public static void Main(string[] arguments)
         {
-            Console.WriteLine("Seanox Settings [Version 1.0.0.0 20211126]");
+            Console.WriteLine("Seanox Settings [Version 1.0.1.0 20211127]");
             Console.WriteLine("Copyright (C) 2021 Seanox Software Solutions");
             Console.WriteLine("Placeholder replacement in files");
             

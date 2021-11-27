@@ -154,5 +154,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
