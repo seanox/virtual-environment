@@ -322,7 +322,8 @@ namespace Platform {
                             }
 
                             string recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
-                            Directory.Delete(recycleDirectory, true);
+                            if (Directory.Exists(recycleDirectory))
+                                Directory.Delete(recycleDirectory, true);
 
                             string startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
                             if (File.Exists(startupExitFile))
