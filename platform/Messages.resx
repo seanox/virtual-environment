@@ -227,7 +227,7 @@ Programs and services are terminated.</value>
     <value>{0} A-Z: [create|attach|detach|...]</value>
   </data>
   <data name="WorkerVersion" xml:space="preserve">
-    <value>Seanox Virtual Environment [3.0.0 20211126]</value>
+    <value>Seanox Virtual Environment [3.1.0 20211127]</value>
   </data>
   <data name="WorkerShortcuts" xml:space="preserve">
     <value>Shortcuts will be created.</value>
@@ -236,7 +236,7 @@ Programs and services are terminated.</value>
     <value>Shortcuts will be created.
 The usual usage are established.</value>
   </data>
-  <data name="WorkerCompactCleanTemp" xml:space="preserve">
-    <value>Temporary directory will be cleaned</value>
+  <data name="WorkerCompactCleanFilesytem" xml:space="preserve">
+    <value>Temporary files will be cleaned</value>
   </data>
 </root>

@@ -296,11 +296,11 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporary directory will be cleaned.
+        ///   Looks up a localized string similar to Temporary files will be cleaned.
         /// </summary>
-        internal static string WorkerCompactCleanTemp {
+        internal static string WorkerCompactCleanFilesytem {
             get {
-                return ResourceManager.GetString("WorkerCompactCleanTemp", resourceCulture);
+                return ResourceManager.GetString("WorkerCompactCleanFilesytem", resourceCulture);
             }
         }
         
@@ -408,7 +408,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [3.0.0 20211126].
+        ///   Looks up a localized string similar to Seanox Virtual Environment [3.1.0 20211127].
         /// </summary>
         internal static string WorkerVersion {
             get {

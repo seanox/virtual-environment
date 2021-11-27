@@ -312,13 +312,25 @@ namespace Platform {
                             Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
 
+                            Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesytem);
+
                             string tempDirectory = Path.Combine(workerTask.Drive, "Temp");
                             if (Directory.Exists(tempDirectory))
                             {
-                                Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanTemp);
                                 Directory.Delete(tempDirectory, true);
                                 Directory.CreateDirectory(tempDirectory);
                             }
+
+                            string recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
+                            Directory.Delete(recycleDirectory, true);
+
+                            string startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
+                            if (File.Exists(startupExitFile))
+                                File.Delete(startupExitFile);
+
+                            string startupStartupFile = Path.Combine(workerTask.Drive, "Startup.startup");
+                            if (File.Exists(startupStartupFile))
+                                File.Delete(startupStartupFile);
                             
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
