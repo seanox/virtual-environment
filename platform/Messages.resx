@@ -227,7 +227,7 @@ Programs and services are terminated.</value>
     <value>{0} A-Z: [create|attach|detach|...]</value>
   </data>
   <data name="WorkerVersion" xml:space="preserve">
-    <value>Seanox Virtual Environment [3.1.0 20211127]</value>
+    <value>Seanox Virtual Environment [3.1.0 20211130]</value>
   </data>
   <data name="WorkerShortcuts" xml:space="preserve">
     <value>Shortcuts will be created.</value>
