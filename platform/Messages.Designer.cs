@@ -88,7 +88,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be attached via diskpart.
+        ///   Looks up a localized string similar to Virtual disk will be attached.
         /// </summary>
         internal static string DiskpartAttachDiskpart {
             get {
@@ -115,7 +115,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be compacted via diskpart.
+        ///   Looks up a localized string similar to Virtual disk will be compacted.
         /// </summary>
         internal static string DiskpartCompactDiskpart {
             get {
@@ -142,7 +142,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be created via diskpart.
+        ///   Looks up a localized string similar to Virtual disk will be created.
         /// </summary>
         internal static string DiskpartCreateDiskpart {
             get {
@@ -178,7 +178,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be detached via diskpart.
+        ///   Looks up a localized string similar to Virtual disk will be detached.
         /// </summary>
         internal static string DiskpartDetachDiskpart {
             get {
@@ -408,7 +408,7 @@ namespace Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [3.1.0 20211127].
+        ///   Looks up a localized string similar to Seanox Virtual Environment [3.1.0 20211130].
         /// </summary>
         internal static string WorkerVersion {
             get {

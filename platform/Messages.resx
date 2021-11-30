@@ -127,7 +127,7 @@
     <value>Virtual disk will be detected in the volumes</value>
   </data>
   <data name="DiskpartAttachDiskpart" xml:space="preserve">
-    <value>Virtual disk will be attached via diskpart</value>
+    <value>Virtual disk will be attached</value>
   </data>
   <data name="DiskpartAttachFailed" xml:space="preserve">
     <value>Attachment of the virtual disk falied.</value>
@@ -136,7 +136,7 @@
     <value>Compaction of the virtual disk</value>
   </data>
   <data name="DiskpartCompactDiskpart" xml:space="preserve">
-    <value>Virtual disk will be compacted via diskpart</value>
+    <value>Virtual disk will be compacted</value>
   </data>
   <data name="DiskpartCompactFailed" xml:space="preserve">
     <value>Compaction of the virtual disk failed.</value>
@@ -145,7 +145,7 @@
     <value>Creation of the virtual disk</value>
   </data>
   <data name="DiskpartCreateDiskpart" xml:space="preserve">
-    <value>Virtual disk will be created via diskpart</value>
+    <value>Virtual disk will be created</value>
   </data>
   <data name="DiskpartCreateFailed" xml:space="preserve">
     <value>Creation of the virtual disk failed.</value>
@@ -157,7 +157,7 @@
     <value>Detachment of the virtual disk</value>
   </data>
   <data name="DiskpartDetachDiskpart" xml:space="preserve">
-    <value>Virtual disk will be detached via diskpart</value>
+    <value>Virtual disk will be detached</value>
   </data>
   <data name="DiskpartDetachFailed" xml:space="preserve">
     <value>Detachment of the virtual disk failed.</value>
