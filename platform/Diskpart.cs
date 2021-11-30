@@ -287,11 +287,11 @@ namespace Platform
             Directory.CreateDirectory(tempDrive + @"\Documents\Music");
             Directory.CreateDirectory(tempDrive + @"\Documents\Pictures");
             Directory.CreateDirectory(tempDrive + @"\Documents\Projects");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Settings");
             Directory.CreateDirectory(tempDrive + @"\Documents\Videos");
             Directory.CreateDirectory(tempDrive + @"\Install");
             Directory.CreateDirectory(tempDrive + @"\Program Portables");
             Directory.CreateDirectory(tempDrive + @"\Resources");
+            Directory.CreateDirectory(tempDrive + @"\Settings");
             Directory.CreateDirectory(tempDrive + @"\Temp");
 
             Dictionary<string, string> replacements = new Dictionary<string, string>();

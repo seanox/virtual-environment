@@ -1,6 +1,8 @@
 3.1.0 2022xxxx
   BF: Settings: Correction of template synchronization
       If the target file is newer than the template, the template will be updated.
+  BF: Platform Create: Correction of settings directory
+      Has been moved from \Documents\Settings to \Settings.
   CR: Platform: Optimization / enhancement of function compact
   CR: Platform: Optimization of notification message output 
 
