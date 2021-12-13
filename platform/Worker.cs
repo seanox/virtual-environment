@@ -337,7 +337,10 @@ namespace Platform {
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Diskpart.CanCompactDisk(workerTask.Drive, workerTask.DiskFile);
+                            Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
+                            
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
+                            
                             break;
                         
                         case Task.Detach:
