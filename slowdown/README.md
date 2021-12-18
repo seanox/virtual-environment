@@ -2,8 +2,8 @@
 
 My computer with i5 3rd generation (i5 3320M) suffers from the updates from
 Intel and Windows since Meltdown and Spectre were fixed. When the CPU is
-loaded, various IO interfaces have problems, e.g. sound stalls and access to
-USB devices.
+loaded, various IO interfaces have problems, e.g.  access to USB devices and
+sound stutters.
 
 What helps is to reduce the priority of the processes that generate the load.
 
