@@ -46,6 +46,9 @@ privileges.
 ```
 sc.exe create ShiftDown binpath="...\shiftdown.exe" start=auto
 sc.exe start ShiftDown
+
+sc.exe stop ShiftDown
+sc.exe delete ShiftDown
 ```
 
 The service supports start, pause, continue and stop.  
