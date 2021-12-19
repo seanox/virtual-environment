@@ -25,7 +25,7 @@ __Against the expectation, the program does not reduce the computer's
 performance, but tries to improve that all programs get enough CPU time.__
 
 
-# System Requirement
+## System Requirement
 - Windows 10 or higher as operating system
 - .NET 4.7.x or higher
 
@@ -35,7 +35,7 @@ performance, but tries to improve that all programs get enough CPU time.__
 The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
 but can also be downloaded and used separately.
 
-Download: [shiftdown.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Resources/platform/Settings/shiftdown.exe)
+https://github.com/seanox/virtual-environment/raw/main/platform/Resources/platform/Settings/shiftdown.exe
 
 
 ## Usage
