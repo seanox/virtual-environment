@@ -44,7 +44,8 @@ The program is installed as a service, which requires administration
 privileges.
 
 ```
-sc.exe create shiftdown binpath="...\shiftdown.exe" start=auto
+sc.exe create ShiftDown binpath="...\shiftdown.exe" start=auto
+sc.exe start ShiftDown
 ```
 
 The service supports start, pause, continue and stop.  

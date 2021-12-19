@@ -31,16 +31,20 @@ namespace shiftdown
 {
     internal class Program
     {
-        private static void Main()
+        internal static readonly string VERSION = 
+            $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
+               + "Copyright (C) 0000 Seanox Software Solutions";
+
+        private static void Main(string[] options)
         {
             if (Environment.UserInteractive)
             {
-                Console.WriteLine("Seanox ShiftDown [Version 0.0.0 00000000]");
-                Console.WriteLine("Copyright (C) 0000 Seanox Software Solutions");
+                Console.WriteLine(Program.VERSION);
                 Console.WriteLine();
                 Console.WriteLine("The program must be configured as a service.");
                 Console.WriteLine();
-                Console.WriteLine($"sc.exe create shiftdown binpath=\"{Assembly.GetExecutingAssembly().Location}\" start=auto");
+                Console.WriteLine($"sc.exe create ShiftDown binpath=\"{Assembly.GetExecutingAssembly().Location}\" start=auto");
+                Console.WriteLine($"sc.exe start ShiftDown");
                 Console.WriteLine();
                 Console.WriteLine("The service supports start, pause, continue and stop.");
                 Console.WriteLine("When the program ends, the priority of the changed processes is restored.");
@@ -53,17 +57,17 @@ namespace shiftdown
     
     internal class Service : ServiceBase
     {
-        private const int CPU_LOAD_THRESHOLD_PERCENT = 25;
+        private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
-        private const int INTERRUPT_MILLISECONDS = 25;
+        private const int INTERRUPT_MILLISECONDS = 5;
 
         private BackgroundWorker backgroundWorker;
         
         private BackgroundWorker backgroundCleaner;
 
         private bool interrupt;
-        
-        private readonly Dictionary<int, ProcessPriorityClass> processPriorities; 
+
+        private readonly Dictionary<int, ProcessPriorityClass> processPriorities;
 
         public Service()
         {
@@ -73,6 +77,8 @@ namespace shiftdown
             this.AutoLog = false;
 
             this.processPriorities = new Dictionary<int, ProcessPriorityClass>();
+
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
         }
 
         private Dictionary<string, PerformanceCounter> CollectPerformanceCounter()
@@ -80,14 +86,13 @@ namespace shiftdown
             var performanceCounterDictionary = new Dictionary<string, PerformanceCounter>();
             Process.GetProcesses().ToList().ForEach(process =>
             {
+                Thread.Sleep(INTERRUPT_MILLISECONDS);
                 if (this.backgroundWorker.CancellationPending
                         || this.interrupt)
                 {
                     performanceCounterDictionary.Clear();
                     return;
                 }
-                
-                Thread.Sleep(INTERRUPT_MILLISECONDS);
                 
                 try
                 {
@@ -110,22 +115,26 @@ namespace shiftdown
             return performanceCounterDictionary;
         }
 
-        private void SwitchDownPrioritySmart(Dictionary<string, PerformanceCounter> performanceCounterDictionary)
+        private void ShiftDownPrioritySmart(Dictionary<string, PerformanceCounter> performanceCounterDictionary)
         {
             foreach (var keyValuePair in performanceCounterDictionary)
             {
+                Thread.Sleep(INTERRUPT_MILLISECONDS);
                 if (this.backgroundWorker.CancellationPending
                         || this.interrupt)
                     return;
-                
-                Thread.Sleep(INTERRUPT_MILLISECONDS);
 
-                if (keyValuePair.Value.NextValue() < CPU_LOAD_THRESHOLD_PERCENT)
+                var cpuLoad = keyValuePair.Value.NextValue() / Environment.ProcessorCount; 
+                if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
                     continue;
 
                 foreach (var process in Process.GetProcessesByName(keyValuePair.Key))
                 {
-                    EventLog.WriteEntry(keyValuePair.Key , EventLogEntryType.Information);
+                    Thread.Sleep(INTERRUPT_MILLISECONDS);
+                    if (this.backgroundWorker.CancellationPending
+                            || this.interrupt)
+                        return;
+
                     try
                     {
                         if (!this.processPriorities.ContainsKey(process.Id))
@@ -161,17 +170,16 @@ namespace shiftdown
             backgroundCleaner.WorkerReportsProgress = false;
             backgroundCleaner.DoWork += (sender, eventArguments) =>
             {
-                EventLog.WriteEntry("Cleaner running.", EventLogEntryType.Information);
                 while (!this.backgroundCleaner.CancellationPending)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(MEASURING_TIME_MILLISECONDS);
                     if (this.interrupt
                             || this.backgroundCleaner.CancellationPending)
                         break;
 
                     foreach (var keyValuePair in this.processPriorities)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(MEASURING_TIME_MILLISECONDS);
                         if (this.interrupt
                                 || this.backgroundCleaner.CancellationPending)
                             break;
@@ -198,14 +206,13 @@ namespace shiftdown
             backgroundWorker.WorkerReportsProgress = false;
             backgroundWorker.DoWork += (sender, eventArguments) =>
             {
-                EventLog.WriteEntry("Worker running.", EventLogEntryType.Information);
                 while (!this.backgroundWorker.CancellationPending)
                 {
                     var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                     cpuUsage.NextValue();
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
                     if (this.interrupt
-                            || cpuUsage.NextValue() < CPU_LOAD_THRESHOLD_PERCENT)
+                            || cpuUsage.NextValue() / Environment.ProcessorCount < MAXIMUM_CPU_LOAD_PERCENT)
                         continue;
 
                     var performanceCounterDictionary = this.CollectPerformanceCounter();
@@ -213,12 +220,10 @@ namespace shiftdown
                     if (this.interrupt
                             || this.backgroundWorker.CancellationPending)
                         continue;
-                    this.SwitchDownPrioritySmart(performanceCounterDictionary);
+                    this.ShiftDownPrioritySmart(performanceCounterDictionary);
                 }
 
                 this.RestorePriority();
-
-                EventLog.WriteEntry("Worker stopped.", EventLogEntryType.Information);
             };
 
             return backgroundWorker;
@@ -229,14 +234,15 @@ namespace shiftdown
             if (this.backgroundWorker != null
                     && this.backgroundWorker.IsBusy)
                 return;
-            EventLog.WriteEntry("Service initialized.", EventLogEntryType.Information);
+
+            EventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
 
             this.backgroundCleaner = this.CreateBackgroundCleaner();
             this.backgroundCleaner.RunWorkerAsync();
 
             this.backgroundWorker = this.CreateBackgroundWorker();
             this.backgroundWorker.RunWorkerAsync();
-            
+
             EventLog.WriteEntry("Service started.", EventLogEntryType.Information);
         }
 
@@ -265,7 +271,7 @@ namespace shiftdown
             this.backgroundWorker.CancelAsync();
             while (this.backgroundCleaner.IsBusy
                     || this.backgroundWorker.IsBusy)
-                Thread.Sleep(INTERRUPT_MILLISECONDS);
+                Thread.Sleep(25);
             this.backgroundCleaner = null;
             this.backgroundWorker = null;
             EventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
