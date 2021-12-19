@@ -20,3 +20,24 @@ usage of the processes. All processes with a CPU usage are changed in priority
 to "IDLE" -- the procedure has worked for me.
 
 If the program is terminated, the original priority is restored.
+
+
+## Download
+
+The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
+but can also be downloaded and used separately.
+
+Download: [slowdown.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Resources/platform/Settings/slowdown.exe)
+
+
+## Usage
+
+The program is installed as a service, which requires administration
+privileges.
+
+```
+sc.exe create slowdown binpath="...\slowdown.exe" start=auto
+```
+
+The service supports Start, Pause, Continue and Stop.  
+When the program ends, the priority of the changed processes will be restored.
