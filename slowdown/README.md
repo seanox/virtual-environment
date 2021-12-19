@@ -39,5 +39,5 @@ privileges.
 sc.exe create slowdown binpath="...\slowdown.exe" start=auto
 ```
 
-The service supports Start, Pause, Continue and Stop.  
+The service supports start, pause, continue and stop.  
 When the program ends, the priority of the changed processes will be restored.

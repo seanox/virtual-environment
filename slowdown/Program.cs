@@ -41,6 +41,10 @@ namespace slowdown
                 Console.WriteLine("The program must be configured as a service.");
                 Console.WriteLine();
                 Console.WriteLine($"sc.exe create slowdown binpath=\"{Assembly.GetExecutingAssembly().Location}\" start=auto");
+                Console.WriteLine();
+                Console.WriteLine("The service supports start, pause, continue and stop.");
+                Console.WriteLine("When the program ends, the priority of the changed processes is restored.");
+
                 return;
             }
             System.ServiceProcess.ServiceBase.Run(new Service());
