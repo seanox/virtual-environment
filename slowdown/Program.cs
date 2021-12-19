@@ -20,133 +20,251 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.ServiceProcess;
 using System.Threading;
 
 namespace slowdown
 {
     internal class Program
     {
-        private struct ProcessesInfo
+        private static void Main()
         {
-            internal Process Process;
-            internal float   Load;
-            internal string  Path;
+            if (Environment.UserInteractive)
+            {
+                Console.WriteLine("Seanox SwitchDown [Version 0.0.0 00000000]");
+                Console.WriteLine("Copyright (C) 0000 Seanox Software Solutions");
+                Console.WriteLine();
+                Console.WriteLine("The program must be configured as a service.");
+                Console.WriteLine();
+                Console.WriteLine($"sc.exe create slowdown binpath=\"{Assembly.GetExecutingAssembly().Location}\" start=auto");
+                return;
+            }
+            System.ServiceProcess.ServiceBase.Run(new Service());
+        }
+    }
+    
+    internal class Service : ServiceBase
+    {
+        private const int CPU_LOAD_THRESHOLD_PERCENT = 25;
+        private const int MEASURING_TIME_MILLISECONDS = 1000;
+        private const int INTERRUPT_MILLISECONDS = 25;
+
+        private BackgroundWorker backgroundWorker;
+        
+        private BackgroundWorker backgroundCleaner;
+
+        private bool interrupt;
+        
+        private readonly Dictionary<int, ProcessPriorityClass> processPriorities; 
+
+        public Service()
+        {
+            this.ServiceName = "SlowDown";
+            this.CanStop = true;
+            this.CanPauseAndContinue = true;
+            this.AutoLog = false;
+
+            this.processPriorities = new Dictionary<int, ProcessPriorityClass>();
         }
 
-        private enum State
+        private Dictionary<string, PerformanceCounter> CollectPerformanceCounter()
         {
-            Run,
-            Interrupt,
-            Stop
+            var performanceCounterDictionary = new Dictionary<string, PerformanceCounter>();
+            Process.GetProcesses().ToList().ForEach(process =>
+            {
+                if (this.backgroundWorker.CancellationPending
+                        || this.interrupt)
+                {
+                    performanceCounterDictionary.Clear();
+                    return;
+                }
+                
+                Thread.Sleep(INTERRUPT_MILLISECONDS);
+                
+                try
+                {
+                    using (process)
+                    {
+                        if (ProcessPriorityClass.Idle.Equals(process.PriorityClass)
+                                || performanceCounterDictionary.ContainsKey(process.ProcessName))
+                            return;
+                        var performanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                            process.ProcessName, true);
+                        performanceCounter.NextValue();
+                        performanceCounterDictionary.Add(process.ProcessName, performanceCounter);
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            });
+
+            return performanceCounterDictionary;
         }
 
-        private static State state = Program.State.Run;
-
-        private static Dictionary<int, ProcessPriorityClass> processPriorities; 
-
-        public static void Main(params string[] options)
+        private void SwitchDownPrioritySmart(Dictionary<string, PerformanceCounter> performanceCounterDictionary)
         {
-            Console.WriteLine("Seanox SwitchDown [Version 0.0.0 00000000]");
-            Console.WriteLine("Copyright (C) 0000 Seanox Software Solutions");
-            Console.WriteLine("Running");
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            foreach (var keyValuePair in performanceCounterDictionary)
+            {
+                if (this.backgroundWorker.CancellationPending
+                        || this.interrupt)
+                    return;
+                
+                Thread.Sleep(INTERRUPT_MILLISECONDS);
 
-            Program.processPriorities = new Dictionary<int, ProcessPriorityClass>();
-            
-            Console.TreatControlCAsInput = false;
-            Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs consoleEvent) =>
-            {
-                if (Program.State.Run.Equals(Program.state))
-                    Program.state = Program.State.Interrupt;
-                while (!Program.State.Stop.Equals(Program.state))
-                    Thread.Sleep(25);
-            };
-            
-            while (Program.State.Run.Equals(Program.state))
-            {
-                var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                cpuUsage.NextValue();
-                for (int counter = 0; Program.State.Run.Equals(Program.state) && counter < 50; counter++)
-                    Thread.Sleep(25);
-                if (!Program.State.Run.Equals(Program.state))
-                    break;
-                if (cpuUsage.NextValue() < 25)
+                if (keyValuePair.Value.NextValue() < CPU_LOAD_THRESHOLD_PERCENT)
                     continue;
-                
-                var performanceCounterDictionary = new Dictionary<string, PerformanceCounter>();
-                Process.GetProcesses().ToList().ForEach(process =>
-                {
-                    if (!Program.State.Run.Equals(Program.state))
-                        return;
-                    Thread.Sleep(25);
-                    try
-                    {
-                        using (process)
-                        {
-                            if (ProcessPriorityClass.Idle.Equals(process.PriorityClass)
-                                    || performanceCounterDictionary.ContainsKey(process.ProcessName))
-                                return;
-                            var performanceCounter = new PerformanceCounter("Process", "% Processor Time",
-                                process.ProcessName, true);
-                            performanceCounter.NextValue();
-                            performanceCounterDictionary.Add(process.ProcessName, performanceCounter);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
-                });
-                
-                for (int counter = 0; Program.State.Run.Equals(Program.state) && counter < 10; counter++)
-                    Thread.Sleep(25);
-                if (!Program.State.Run.Equals(Program.state))
-                    break;
-                
-                foreach (var keyValuePair in performanceCounterDictionary)
-                {
-                    if (!Program.State.Run.Equals(Program.state))
-                        break;
-                    Thread.Sleep(25);
 
+                foreach (var process in Process.GetProcessesByName(keyValuePair.Key))
+                {
+                    EventLog.WriteEntry(keyValuePair.Key , EventLogEntryType.Information);
                     try
                     {
-                        if ((keyValuePair.Value.NextValue() / Environment.ProcessorCount) < 25)
-                            continue;
-                        foreach (var process in Process.GetProcessesByName(keyValuePair.Key))
-                        {
-                            if (!Program.processPriorities.ContainsKey(process.Id))
-                                Program.processPriorities.Add(process.Id, process .PriorityClass);
-                            process .PriorityClass = ProcessPriorityClass.Idle;
-                        }
+                        if (!this.processPriorities.ContainsKey(process.Id))
+                            this.processPriorities.Add(process.Id, process.PriorityClass);
+                        process.PriorityClass = ProcessPriorityClass.Idle;
                     }
                     catch (Exception)
                     {
                     }
                 }
             }
-            
-            foreach (var KeyValuePair in Program.processPriorities)
+        }
+
+        private void RestorePriority()
+        {
+            foreach (var keyValuePair in this.processPriorities)
             {
                 try
                 {
-                    var process = Process.GetProcessById(KeyValuePair.Key);
-                    process.PriorityClass = KeyValuePair.Value;
+                    var process = Process.GetProcessById(keyValuePair.Key);
+                    process.PriorityClass = keyValuePair.Value;
                 }
                 catch (Exception)
                 {
                 }
             }
-            
-            Program.state = Program.State.Stop;
+        }
 
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth)); 
-            Console.SetCursorPosition(0, currentLineCursor);
+        private BackgroundWorker CreateBackgroundCleaner()
+        {
+            var backgroundCleaner = new BackgroundWorker();
+            backgroundCleaner.WorkerSupportsCancellation = true;
+            backgroundCleaner.WorkerReportsProgress = false;
+            backgroundCleaner.DoWork += (sender, eventArguments) =>
+            {
+                EventLog.WriteEntry("Cleaner running.", EventLogEntryType.Information);
+                while (!this.backgroundCleaner.CancellationPending)
+                {
+                    Thread.Sleep(1000);
+                    if (this.interrupt
+                            || this.backgroundCleaner.CancellationPending)
+                        break;
+
+                    foreach (var keyValuePair in this.processPriorities)
+                    {
+                        Thread.Sleep(1000);
+                        if (this.interrupt
+                                || this.backgroundCleaner.CancellationPending)
+                            break;
+
+                        try
+                        {
+                            Process.GetProcessById(keyValuePair.Key);
+                        }
+                        catch (Exception)
+                        {
+                            this.processPriorities.Remove(keyValuePair.Key);
+                        }
+                    }
+                }
+            };
+
+            return backgroundCleaner;
+        }
+
+        private BackgroundWorker CreateBackgroundWorker()
+        {
+            var backgroundWorker = new BackgroundWorker();
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.WorkerReportsProgress = false;
+            backgroundWorker.DoWork += (sender, eventArguments) =>
+            {
+                EventLog.WriteEntry("Worker running.", EventLogEntryType.Information);
+                while (!this.backgroundWorker.CancellationPending)
+                {
+                    var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                    cpuUsage.NextValue();
+                    Thread.Sleep(MEASURING_TIME_MILLISECONDS);
+                    if (this.interrupt
+                            || cpuUsage.NextValue() < CPU_LOAD_THRESHOLD_PERCENT)
+                        continue;
+
+                    var performanceCounterDictionary = this.CollectPerformanceCounter();
+                    Thread.Sleep(MEASURING_TIME_MILLISECONDS);
+                    if (this.interrupt
+                            || this.backgroundWorker.CancellationPending)
+                        continue;
+                    this.SwitchDownPrioritySmart(performanceCounterDictionary);
+                }
+
+                this.RestorePriority();
+
+                EventLog.WriteEntry("Worker stopped.", EventLogEntryType.Information);
+            };
+
+            return backgroundWorker;
+        }
+
+        protected override void OnStart(string[] options)
+        {
+            if (this.backgroundWorker != null
+                    && this.backgroundWorker.IsBusy)
+                return;
+            EventLog.WriteEntry("Service initialized.", EventLogEntryType.Information);
+
+            this.backgroundCleaner = this.CreateBackgroundCleaner();
+            this.backgroundCleaner.RunWorkerAsync();
+
+            this.backgroundWorker = this.CreateBackgroundWorker();
+            this.backgroundWorker.RunWorkerAsync();
             
-            Console.Write("Terminated");
+            EventLog.WriteEntry("Service started.", EventLogEntryType.Information);
+        }
+
+        protected override void OnPause()
+        {
+            if (this.interrupt)
+                return;
+            this.interrupt = true;
+            EventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
+        }
+
+        protected override void OnContinue()
+        {
+            if (!this.interrupt)
+                return;
+            this.interrupt = false;
+            EventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
+        }
+
+        protected override void OnStop()
+        {
+            if (!this.backgroundWorker.IsBusy)
+                return;
+
+            this.backgroundCleaner.CancelAsync();
+            this.backgroundWorker.CancelAsync();
+            while (this.backgroundCleaner.IsBusy
+                    || this.backgroundWorker.IsBusy)
+                Thread.Sleep(INTERRUPT_MILLISECONDS);
+            this.backgroundCleaner = null;
+            this.backgroundWorker = null;
+            EventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
         }
     }
 }

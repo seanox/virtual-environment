@@ -6,6 +6,8 @@
   BF: Platform: Compact per Diskpart was not executed
   CR: Platform: Optimization / enhancement of function compact
   CR: Platform: Optimization of notification message output 
+  CR: Slowdown: Added a optional service to switch down the process priority
+      For older Intel generations that suffer from the update of Windows and Intel.
 
 3.0.0 20211126
   CR: License: Changed to Apache License Version 2.0
