@@ -22,6 +22,11 @@ to "IDLE" -- the procedure has worked for me.
 If the program is terminated, the original priority is restored.
 
 
+# System Requirement
+- Windows 10 or higher as operating system
+- .NET 4.7.x or higher
+
+
 ## Download
 
 The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
