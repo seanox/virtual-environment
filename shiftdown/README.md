@@ -21,6 +21,9 @@ to "IDLE" -- the procedure has worked for me.
 
 If the program is terminated, the original priority is restored.
 
+__Against the expectation, the program does not reduce the computer's
+performance, but tries to improve that all programs get enough CPU time.__
+
 
 # System Requirement
 - Windows 10 or higher as operating system
