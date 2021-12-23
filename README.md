@@ -78,7 +78,7 @@ Here you can download an example of a virtual environment approx __3.2 GB__:
 https://seanox.com/KXJ7W3TN/master-10.1.0.7z
 
 Included are various development environment and tools for Java and Node.js,
-incl. a preconfigured Eclipse, a PostgreSQL database and much more.
+incl. a customized Eclipse, a PostgreSQL database and much more.
 
 Start `master.exe B: attach`.
 
