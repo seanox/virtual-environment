@@ -22,9 +22,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace shiftdown
@@ -32,26 +34,102 @@ namespace shiftdown
     internal class Program
     {
         internal static readonly string VERSION = 
-            $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
+            $"Seanox ShiftDown [Version 1.1.0 00000000]{Environment.NewLine}"
                + "Copyright (C) 0000 Seanox Software Solutions";
 
-        private static void Main(string[] options)
+        private static void Main(params string[] options)
         {
+            #if !DEBUG
+                var service = new Service();
+                service.OnDebug();
+                return;
+            #endif
+            
             if (Environment.UserInteractive)
             {
                 Console.WriteLine(Program.VERSION);
                 Console.WriteLine();
-                Console.WriteLine("The program must be configured as a service.");
-                Console.WriteLine();
-                Console.WriteLine($"sc.exe create ShiftDown binpath=\"{Assembly.GetExecutingAssembly().Location}\" start=auto");
-                Console.WriteLine($"sc.exe start ShiftDown");
-                Console.WriteLine();
-                Console.WriteLine("The service supports start, pause, continue and stop.");
-                Console.WriteLine("When the program ends, the priority of the changed processes is restored.");
 
+                var applicationLocation = Assembly.GetExecutingAssembly().Location;
+                var applicationFile = Path.GetFileName(applicationLocation).Trim();
+                var applicationName = Path.GetFileNameWithoutExtension(applicationLocation);
+                applicationName = Regex.Replace(applicationName, @"\s+", "");
+                if (applicationName.Length <= 0)
+                    applicationName = "ShiftDown";
+
+                var command = (options.Length > 0 ? options[0] : "").Trim().ToLower();
+                switch (command)
+                {
+                    case "install":
+                        Program.BatchExec("sc.exe", "create", applicationName, $"binpath=\"{applicationLocation}\"", "start=auto");
+                        break;
+                    case "uninstall":
+                        Program.BatchExec("sc.exe", "stop", applicationName);
+                        Program.BatchExec("sc.exe", "delete", applicationName);
+                        break;
+                    case "start":
+                    case "pause":
+                    case "continue":
+                    case "stop":
+                        Program.BatchExec("sc.exe", command, applicationName);
+                        break;
+                    default:
+                        Console.WriteLine($"The program must be configured as a service ({applicationName}).");
+                        Console.WriteLine();
+                        Console.WriteLine($"usage: {applicationFile} <command>");
+                        Console.WriteLine();
+                        Console.WriteLine($"    install   creates the service");
+                        Console.WriteLine($"    uninstall deletes the service");
+                        Console.WriteLine();
+                        Console.WriteLine("The service supports start, pause, continue and stop.");
+                        Console.WriteLine();
+                        Console.WriteLine("    start     starts when not running");
+                        Console.WriteLine("    pause     pauses when running");
+                        Console.WriteLine("    continue  continues when paused");
+                        Console.WriteLine("    stop      stops when running");
+                        Console.WriteLine();
+                        Console.WriteLine("When the program ends, the priority of the changed processes is restored.");
+                        break;
+                }
                 return;
             }
-            System.ServiceProcess.ServiceBase.Run(new Service());
+            
+            ServiceBase.Run(new Service());
+        }
+
+        private static void BatchExec(string fileName, params string[] arguments)
+        {
+            Console.WriteLine(fileName + " " + String.Join(" ", arguments));
+            Console.WriteLine();
+
+            Process process = new Process();
+            process.StartInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                CreateNoWindow  = true,
+
+                WindowStyle = ProcessWindowStyle.Hidden,
+
+                FileName  = fileName,
+                Arguments = String.Join(" ", arguments),
+
+                RedirectStandardError  = true,
+                RedirectStandardOutput = true
+            };
+            process.Start();
+            process.WaitForExit();
+            var standardErrorOutput = (process.StandardError.ReadToEnd() ?? "").Trim();
+            if (standardErrorOutput.Length > 0)
+            {
+                Console.Out.Write(standardErrorOutput);
+                Console.WriteLine();
+            }
+            var standardOutput = (process.StandardOutput.ReadToEnd() ?? "").Trim();
+            if (standardOutput.Length > 0)
+            {
+                Console.Out.Write(standardOutput);
+                Console.WriteLine();
+            }
         }
     }
     
@@ -61,13 +139,20 @@ namespace shiftdown
         private const int MEASURING_TIME_MILLISECONDS = 1000;
         private const int INTERRUPT_MILLISECONDS = 5;
 
+        private int processId;
+
         private BackgroundWorker backgroundWorker;
         
-        private BackgroundWorker backgroundCleaner;
-
         private bool interrupt;
-
-        private readonly Dictionary<int, ProcessPriorityClass> processPriorities;
+        
+        private struct ProcessMonitor
+        {
+            internal int processId;
+            internal ProcessPriorityClass processPriorityClassInitial;
+            internal PerformanceCounter performanceCounter;
+        }
+        
+        private readonly Dictionary<int, ProcessMonitor> processMonitors;
 
         public Service()
         {
@@ -76,127 +161,62 @@ namespace shiftdown
             this.CanPauseAndContinue = true;
             this.AutoLog = false;
 
-            this.processPriorities = new Dictionary<int, ProcessPriorityClass>();
+            this.processMonitors = new Dictionary<int, ProcessMonitor>();
 
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+            var process = Process.GetCurrentProcess();
+            process.PriorityClass = ProcessPriorityClass.AboveNormal;
+            this.processId = process.Id;
         }
 
-        private Dictionary<string, PerformanceCounter> CollectPerformanceCounter()
+        private void ShiftDownPrioritySmart(List<ProcessMonitor> processMonitors)
         {
-            var performanceCounterDictionary = new Dictionary<string, PerformanceCounter>();
-            Process.GetProcesses().ToList().ForEach(process =>
+            foreach (var processMonitor in processMonitors)
             {
                 Thread.Sleep(INTERRUPT_MILLISECONDS);
                 if (this.backgroundWorker.CancellationPending
                         || this.interrupt)
-                {
-                    performanceCounterDictionary.Clear();
                     return;
-                }
-                
+
                 try
                 {
-                    using (process)
+                    using (var process = Process.GetProcessById(processMonitor.processId))
                     {
-                        if (ProcessPriorityClass.Idle.Equals(process.PriorityClass)
-                                || performanceCounterDictionary.ContainsKey(process.ProcessName))
-                            return;
-                        var performanceCounter = new PerformanceCounter("Process", "% Processor Time",
-                            process.ProcessName, true);
-                        performanceCounter.NextValue();
-                        performanceCounterDictionary.Add(process.ProcessName, performanceCounter);
+                        if (!this.processMonitors.ContainsKey(processMonitor.processId))
+                            this.processMonitors.Add(processMonitor.processId, processMonitor);
+
+                        if (ProcessPriorityClass.Idle == process.PriorityClass
+                                || ProcessPriorityClass.BelowNormal == process.PriorityClass)
+                            continue;
+
+                        var cpuLoad = processMonitor.performanceCounter.NextValue() / Environment.ProcessorCount;
+                        if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
+                            continue;
+
+                        process.PriorityClass = ProcessPriorityClass.BelowNormal;    
                     }
+                }
+                catch (ArgumentException)
+                {
+                    this.processMonitors.Remove(processMonitor.processId);
                 }
                 catch (Exception)
                 {
-                }
-            });
-
-            return performanceCounterDictionary;
-        }
-
-        private void ShiftDownPrioritySmart(Dictionary<string, PerformanceCounter> performanceCounterDictionary)
-        {
-            foreach (var keyValuePair in performanceCounterDictionary)
-            {
-                Thread.Sleep(INTERRUPT_MILLISECONDS);
-                if (this.backgroundWorker.CancellationPending
-                        || this.interrupt)
-                    return;
-
-                var cpuLoad = keyValuePair.Value.NextValue() / Environment.ProcessorCount; 
-                if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
-                    continue;
-
-                foreach (var process in Process.GetProcessesByName(keyValuePair.Key))
-                {
-                    Thread.Sleep(INTERRUPT_MILLISECONDS);
-                    if (this.backgroundWorker.CancellationPending
-                            || this.interrupt)
-                        return;
-
-                    try
-                    {
-                        if (!this.processPriorities.ContainsKey(process.Id))
-                            this.processPriorities.Add(process.Id, process.PriorityClass);
-                        process.PriorityClass = ProcessPriorityClass.Idle;
-                    }
-                    catch (Exception)
-                    {
-                    }
                 }
             }
         }
 
         private void RestorePriority()
         {
-            foreach (var keyValuePair in this.processPriorities)
+            foreach (var processMonitor in this.processMonitors.Values)
             {
                 try
                 {
-                    var process = Process.GetProcessById(keyValuePair.Key);
-                    process.PriorityClass = keyValuePair.Value;
+                    Process.GetProcessById(processMonitor.processId).PriorityClass = processMonitor.processPriorityClassInitial;
                 }
                 catch (Exception)
                 {
                 }
             }
-        }
-
-        private BackgroundWorker CreateBackgroundCleaner()
-        {
-            var backgroundCleaner = new BackgroundWorker();
-            backgroundCleaner.WorkerSupportsCancellation = true;
-            backgroundCleaner.WorkerReportsProgress = false;
-            backgroundCleaner.DoWork += (sender, eventArguments) =>
-            {
-                while (!this.backgroundCleaner.CancellationPending)
-                {
-                    Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.interrupt
-                            || this.backgroundCleaner.CancellationPending)
-                        break;
-
-                    foreach (var keyValuePair in this.processPriorities)
-                    {
-                        Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                        if (this.interrupt
-                                || this.backgroundCleaner.CancellationPending)
-                            break;
-
-                        try
-                        {
-                            Process.GetProcessById(keyValuePair.Key);
-                        }
-                        catch (Exception)
-                        {
-                            this.processPriorities.Remove(keyValuePair.Key);
-                        }
-                    }
-                }
-            };
-
-            return backgroundCleaner;
         }
 
         private BackgroundWorker CreateBackgroundWorker()
@@ -206,6 +226,25 @@ namespace shiftdown
             backgroundWorker.WorkerReportsProgress = false;
             backgroundWorker.DoWork += (sender, eventArguments) =>
             {
+                // How it works:
+                // - Periodic measurement of the total CPU load
+                //   From a load  of 25 percent (percentage on all cores) the
+                //   priorities of the processes start to be checked
+                // - Fast way: query all established ProcessMonitors with
+                //      PerformanceCounter 
+                // - Analyze the load by the process and try to reduce the
+                //   priority if it has a load of more than 25 percent.
+                // - Slower way: Query all active processes, ignore those wher
+                //    a ProcessMonitor with PerformanceCounter already exists.
+                
+                // Analysis:
+                // - Check if the process still exists, if not clean it up
+                // - If the priority is less than NORMAL, then ignore the process
+                // - Measure the load of the "main process" (process name
+                //   -- unfortunately I didn't find another easy way)
+                // - If the load of the main process is greater than or equal
+                //   to 25 percent, try to reduce the priority of the process
+                
                 while (!this.backgroundWorker.CancellationPending)
                 {
                     var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
@@ -214,13 +253,44 @@ namespace shiftdown
                     if (this.interrupt
                             || cpuUsage.NextValue() / Environment.ProcessorCount < MAXIMUM_CPU_LOAD_PERCENT)
                         continue;
+                    
+                    this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
+                    var processMonitorsTemp = new List<ProcessMonitor>();
+                    
+                    Process.GetProcesses().ToList().ForEach(process =>
+                    {
+                        try
+                        {
+                            using (process)
+                            {
+                                if (this.processId == process.Id
+                                        || ProcessPriorityClass.Idle == process.PriorityClass
+                                        || ProcessPriorityClass.BelowNormal == process.PriorityClass
+                                        || this.processMonitors.ContainsKey(process.Id))
+                                    return;
 
-                    var performanceCounterDictionary = this.CollectPerformanceCounter();
+                                var processMonitor = new ProcessMonitor()
+                                {
+                                    processPriorityClassInitial = process.PriorityClass,
+                                    processId = process.Id,
+                                    performanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                                        process.ProcessName, true)
+                                };
+                                processMonitor.performanceCounter.NextValue();
+                                processMonitorsTemp.Add(processMonitor);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    });
+                    
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.interrupt
-                            || this.backgroundWorker.CancellationPending)
-                        continue;
-                    this.ShiftDownPrioritySmart(performanceCounterDictionary);
+                    if (this.backgroundWorker.CancellationPending
+                            || this.interrupt)
+                        return;
+                    
+                    this.ShiftDownPrioritySmart(processMonitorsTemp);
                 }
 
                 this.RestorePriority();
@@ -229,16 +299,22 @@ namespace shiftdown
             return backgroundWorker;
         }
 
-        protected override void OnStart(string[] options)
+        internal void OnDebug(params string[] options)
         {
+            this.OnStart(options);
+            while (!this.backgroundWorker.CancellationPending
+                    && !this.interrupt)
+                Thread.Sleep(1000);
+            this.OnStop();
+        }
+
+        protected override void OnStart(params string[] options)
+        { 
             if (this.backgroundWorker != null
                     && this.backgroundWorker.IsBusy)
                 return;
 
             EventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
-
-            this.backgroundCleaner = this.CreateBackgroundCleaner();
-            this.backgroundCleaner.RunWorkerAsync();
 
             this.backgroundWorker = this.CreateBackgroundWorker();
             this.backgroundWorker.RunWorkerAsync();
@@ -267,12 +343,9 @@ namespace shiftdown
             if (!this.backgroundWorker.IsBusy)
                 return;
 
-            this.backgroundCleaner.CancelAsync();
             this.backgroundWorker.CancelAsync();
-            while (this.backgroundCleaner.IsBusy
-                    || this.backgroundWorker.IsBusy)
+            while (this.backgroundWorker.IsBusy)
                 Thread.Sleep(25);
-            this.backgroundCleaner = null;
             this.backgroundWorker = null;
             EventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
         }
