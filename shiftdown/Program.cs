@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -57,7 +58,11 @@ namespace shiftdown
                 if (applicationName.Length <= 0)
                     applicationName = "ShiftDown";
 
-                var command = (options.Length > 0 ? options[0] : "").Trim().ToLower();
+                bool isAdministrator;
+                using (var identity = WindowsIdentity.GetCurrent())
+                    isAdministrator = new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
+                
+                var command = (isAdministrator && options.Length > 0 ? options[0] : "").Trim().ToLower();
                 switch (command)
                 {
                     case "install":
@@ -76,11 +81,17 @@ namespace shiftdown
                         break;
                     default:
                         Console.WriteLine($"The program must be configured as a service ({applicationName}).");
+                        if (!isAdministrator)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("The use requires an administrator.");
+                            Console.WriteLine("Please use a command line as administrator.");
+                        }
                         Console.WriteLine();
                         Console.WriteLine($"usage: {applicationFile} <command>");
                         Console.WriteLine();
-                        Console.WriteLine($"    install   creates the service");
-                        Console.WriteLine($"    uninstall deletes the service");
+                        Console.WriteLine("    install   creates the service");
+                        Console.WriteLine("    uninstall deletes the service");
                         Console.WriteLine();
                         Console.WriteLine("The service supports start, pause, continue and stop.");
                         Console.WriteLine();

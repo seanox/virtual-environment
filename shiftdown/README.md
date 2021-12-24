@@ -17,7 +17,7 @@ simple.
 
 If the total CPU usage rises above 25% the program starts to evaluate the CPU
 usage of the processes. All processes with a high CPU usage are changed in
-priority to "IDLE" -- the procedure has worked for me.
+priority to 'BelowNormal' -- the procedure has worked for me.
 
 If the program is terminated, the original priority is restored.
 
@@ -61,7 +61,7 @@ When the program ends, the priority of the changed processes will be restored.
 
 
 # Changes (Change Log)
-## 1.1.0 20211224 (summary of the current version)
+## 1.1.1 20211224 (summary of the current version)
 CR: Optimization of process scanning  
 CR: Change the target priority from 'Idle' to 'BelowNormal' (also sufficient)  
 CR: Added command line functions for: install, uninstall, start, pause, continue and stop  
