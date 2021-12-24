@@ -1,7 +1,7 @@
 1.1.0 20211224
   CR: Optimization of process scanning
   CR: Change the target priority from 'Idle' to 'BelowNormal' (also sufficient)
-  CR: Added command line functions for: install, uninstall, start, pause, resume and stop
+  CR: Added command line functions for: install, uninstall, start, pause, continue and stop
       e.g. shiftdown install
   CR: Added Debug-Mode for easier testing and debugging (only during development)    
   
