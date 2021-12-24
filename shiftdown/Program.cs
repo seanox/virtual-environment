@@ -34,12 +34,12 @@ namespace shiftdown
     internal class Program
     {
         internal static readonly string VERSION = 
-            $"Seanox ShiftDown [Version 1.1.0 00000000]{Environment.NewLine}"
+            $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
                + "Copyright (C) 0000 Seanox Software Solutions";
 
         private static void Main(params string[] options)
         {
-            #if !DEBUG
+            #if DEBUG
                 var service = new Service();
                 service.OnDebug();
                 return;
@@ -64,7 +64,8 @@ namespace shiftdown
                         Program.BatchExec("sc.exe", "create", applicationName, $"binpath=\"{applicationLocation}\"", "start=auto");
                         break;
                     case "uninstall":
-                        Program.BatchExec("sc.exe", "stop", applicationName);
+                        Program.BatchExec(new BatchExecMeta()
+                            {fileName = "sc.exe", arguments = new string[] {"stop", applicationName}, output = false});
                         Program.BatchExec("sc.exe", "delete", applicationName);
                         break;
                     case "start":
@@ -97,10 +98,25 @@ namespace shiftdown
             ServiceBase.Run(new Service());
         }
 
+        private struct BatchExecMeta
+        {
+            internal string   fileName;
+            internal string[] arguments;
+            internal bool     output;
+        }
+
         private static void BatchExec(string fileName, params string[] arguments)
         {
-            Console.WriteLine(fileName + " " + String.Join(" ", arguments));
-            Console.WriteLine();
+            Program.BatchExec(new BatchExecMeta() {fileName = fileName, arguments = arguments, output = true});
+        }
+
+        private static void BatchExec(BatchExecMeta batchExecMeta)
+        {
+            if (batchExecMeta.output)
+            {
+                Console.WriteLine(batchExecMeta.fileName + " " + String.Join(" ", batchExecMeta.arguments));
+                Console.WriteLine();
+            }
 
             Process process = new Process();
             process.StartInfo = new ProcessStartInfo()
@@ -110,25 +126,28 @@ namespace shiftdown
 
                 WindowStyle = ProcessWindowStyle.Hidden,
 
-                FileName  = fileName,
-                Arguments = String.Join(" ", arguments),
+                FileName  = batchExecMeta.fileName,
+                Arguments = String.Join(" ", batchExecMeta.arguments),
 
                 RedirectStandardError  = true,
                 RedirectStandardOutput = true
             };
             process.Start();
             process.WaitForExit();
-            var standardErrorOutput = (process.StandardError.ReadToEnd() ?? "").Trim();
-            if (standardErrorOutput.Length > 0)
+            if (batchExecMeta.output)
             {
-                Console.Out.Write(standardErrorOutput);
-                Console.WriteLine();
-            }
-            var standardOutput = (process.StandardOutput.ReadToEnd() ?? "").Trim();
-            if (standardOutput.Length > 0)
-            {
-                Console.Out.Write(standardOutput);
-                Console.WriteLine();
+                var standardErrorOutput = (process.StandardError.ReadToEnd() ?? "").Trim();
+                if (standardErrorOutput.Length > 0)
+                {
+                    Console.Out.Write(standardErrorOutput);
+                    Console.WriteLine();
+                }
+                var standardOutput = (process.StandardOutput.ReadToEnd() ?? "").Trim();
+                if (standardOutput.Length > 0)
+                {
+                    Console.Out.Write(standardOutput);
+                    Console.WriteLine();
+                }
             }
         }
     }

@@ -32,6 +32,9 @@
         <WarningLevel>4</WarningLevel>
         <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
+    <PropertyGroup>
+        <ApplicationManifest>App.manifest</ApplicationManifest>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="System" />
         <Reference Include="System.Core" />
