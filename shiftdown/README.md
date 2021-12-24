@@ -62,9 +62,9 @@ When the program ends, the priority of the changed processes will be restored.
 
 # Changes (Change Log)
 ## 1.1.0 20211224 (summary of the current version)
-CR: Optimization of process scanning
-CR: Change the target priority from 'Idle' to 'BelowNormal' (also sufficient)
-CR: Added command line functions for: install, uninstall, start, pause, continue and stop
+CR: Optimization of process scanning  
+CR: Change the target priority from 'Idle' to 'BelowNormal' (also sufficient)  
+CR: Added command line functions for: install, uninstall, start, pause, continue and stop  
 CR: Added Debug-Mode for easier testing and debugging (only during development)    
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
