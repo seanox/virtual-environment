@@ -16,8 +16,8 @@ The program does not need to be configured, because the functionality is very
 simple. 
 
 If the total CPU usage rises above 25% the program starts to evaluate the CPU
-usage of the processes. All processes with a CPU usage are changed in priority
-to "IDLE" -- the procedure has worked for me.
+usage of the processes. All processes with a high CPU usage are changed in
+priority to "IDLE" -- the procedure has worked for me.
 
 If the program is terminated, the original priority is restored.
 
@@ -46,6 +46,12 @@ privileges.
 ```
 sc.exe create ShiftDown binpath="...\shiftdown.exe" start=auto
 sc.exe start ShiftDown
+
+sc.exe pause ShiftDown
+sc.exe continue ShiftDown
+
+sc.exe stop ShiftDown
+sc.exe delete ShiftDown
 ```
 
 The service supports start, pause, continue and stop.  

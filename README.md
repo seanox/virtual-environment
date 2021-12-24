@@ -72,6 +72,21 @@ the virtual environment.
 - A team use the same environment with the same paths and configurations, which facilitates automation.
 
 
+## Example
+
+Here you can download an example of a virtual environment (approx __3.2 GB__):  
+https://seanox.com/KXJ7W3TN/master-10.1.0.7z
+
+Included are various development environment and tools for Java and Node.js,
+incl. a customized Eclipse, a PostgreSQL database and much more.
+
+Start `master.exe B: attach`.
+
+The host key combination for the launcher: `Win + ESC`
+
+To exit, use the Detach button at the bottom right of the launcher.
+
+
 ## List of available modules 
 https://github.com/seanox/virtual-environment/tree/main/modules
 
