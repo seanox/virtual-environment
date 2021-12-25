@@ -1,10 +1,15 @@
 1.2.0 2021xxxx
   BF: Correction of the unwanted program end when the service pauses
   BF: Correction of the EventLog
-  BF: Target priority changed from 'BelowNormal' to 'Idle' (it was not enough)
+  BF: Target priority changed from 'BelowNormal' to 'Idle'
+      -- it was not enough
   CR: Change to use net.exe for start, pause, continue and stop
       Output is better understandable than with sc.exe
   CR: Optimization of process scanning    
+  CR: Added a multi-level priority decrease
+      Idle is used only temporarily during high load, when the CPU load
+      normalizes, BelowNormal is used.    
+  CR: Change the service own priority to `AboveNormal`
   
 1.1.0 20211224
 1.0.0 20211224

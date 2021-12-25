@@ -38,6 +38,20 @@ namespace shiftdown
             $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
                + "Copyright (C) 0000 Seanox Software Solutions";
 
+        internal struct Meta
+        {
+            internal string Location;
+            internal string File;
+            internal string Name;
+        }
+
+        internal static readonly Meta ApplicationMeta = new Meta()
+        {
+            Location = Assembly.GetExecutingAssembly().Location,
+            File = Path.GetFileName(Assembly.GetExecutingAssembly().Location).Trim(),
+            Name = Regex.Replace(Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location), @"\s+", "")
+        };
+
         private static void Main(params string[] options)
         {
             #if DEBUG
@@ -51,37 +65,32 @@ namespace shiftdown
                 Console.WriteLine(Program.VERSION);
                 Console.WriteLine();
 
-                var applicationLocation = Assembly.GetExecutingAssembly().Location;
-                var applicationFile = Path.GetFileName(applicationLocation).Trim();
-                var applicationName = Path.GetFileNameWithoutExtension(applicationLocation);
-                applicationName = Regex.Replace(applicationName, @"\s+", "");
-
                 bool isAdministrator;
                 using (var identity = WindowsIdentity.GetCurrent())
                     isAdministrator = new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
                 
                 var command = (isAdministrator
-                        && applicationName.Length > 0
+                        && ApplicationMeta.Name.Length > 0
                         && options.Length > 0
                     ? options[0] : "").Trim().ToLower();
                 switch (command)
                 {
                     case "install":
-                        Program.BatchExec("sc.exe", "create", applicationName, $"binpath=\"{applicationLocation}\"", "start=auto");
+                        Program.BatchExec("sc.exe", "create", ApplicationMeta.Name, $"binpath=\"{Program.ApplicationMeta.Location}\"", "start=auto");
                         break;
                     case "uninstall":
                         Program.BatchExec(new BatchExecMeta()
-                            {fileName = "net.exe", arguments = new string[] {"stop", applicationName}, output = false});
-                        Program.BatchExec("sc.exe", "delete", applicationName);
+                            {fileName = "net.exe", arguments = new string[] {"stop", ApplicationMeta.Name}, output = false});
+                        Program.BatchExec("sc.exe", "delete", ApplicationMeta.Name);
                         break;
                     case "start":
                     case "pause":
                     case "continue":
                     case "stop":
-                        Program.BatchExec("net.exe", command, applicationName);
+                        Program.BatchExec("net.exe", command, ApplicationMeta.Name);
                         break;
                     default:
-                        Console.WriteLine($"The program must be configured as a service ({applicationName}).");
+                        Console.WriteLine($"The program must be configured as a service ({ApplicationMeta.Name}).");
                         if (!isAdministrator)
                         {
                             Console.WriteLine();
@@ -89,7 +98,7 @@ namespace shiftdown
                             Console.WriteLine("Please use a command line as administrator.");
                         }
                         Console.WriteLine();
-                        Console.WriteLine($"usage: {applicationFile} <command>");
+                        Console.WriteLine($"usage: {ApplicationMeta.File} <command>");
                         Console.WriteLine();
                         Console.WriteLine("    install   creates the service");
                         Console.WriteLine("    uninstall deletes the service");
@@ -182,6 +191,8 @@ namespace shiftdown
             internal ProcessPriorityClass processPriorityClassInitial;
             internal PerformanceCounter performanceCounter;
         }
+
+        private readonly List<ProcessMonitor> processMonitorsDecreased;  
         
         private readonly Dictionary<int, ProcessMonitor> processMonitors;
 
@@ -189,17 +200,15 @@ namespace shiftdown
 
         public Service()
         {
-            var applicationLocation = Assembly.GetExecutingAssembly().Location;
-            var applicationName = Path.GetFileNameWithoutExtension(applicationLocation);
-
             this.eventLog = new EventLog();
-            this.eventLog.Source = Regex.Replace(applicationName, @"\s+", ""); 
+            this.eventLog.Source = Program.ApplicationMeta.Name; 
             
             this.CanStop = true;
             this.CanPauseAndContinue = true;
             this.AutoLog = false;
 
             this.processMonitors = new Dictionary<int, ProcessMonitor>();
+            this.processMonitorsDecreased = new List<ProcessMonitor>();
 
             var process = Process.GetCurrentProcess();
             process.PriorityClass = ProcessPriorityClass.AboveNormal;
@@ -218,15 +227,15 @@ namespace shiftdown
                         if (!this.processMonitors.ContainsKey(processMonitor.processId))
                             this.processMonitors.Add(processMonitor.processId, processMonitor);
 
-                        if (ProcessPriorityClass.Idle == process.PriorityClass
-                                || ProcessPriorityClass.BelowNormal == process.PriorityClass)
+                        if (ProcessPriorityClass.Idle == process.PriorityClass)
                             continue;
 
                         var cpuLoad = processMonitor.performanceCounter.NextValue() / Environment.ProcessorCount;
                         if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
                             continue;
 
-                        process.PriorityClass = ProcessPriorityClass.Idle;    
+                        process.PriorityClass = ProcessPriorityClass.Idle;
+                        this.processMonitorsDecreased.Add(processMonitor);
                     }
                 }
                 catch (ArgumentException)
@@ -279,14 +288,42 @@ namespace shiftdown
                 // - If the load of the main process is greater than or equal
                 //   to 25 percent, try to reduce the priority of the process
                 
+                // Attempted optimization of processes:
+                // - In case of high load, the priority of the processes with
+                //   high load is temporarily set to Idle
+                // - If the general CPU load decreases to a quarter of the
+                //   threshold value, the processes are set to BelowNormal
+                // - Original priority normal or higher is restored only at the
+                //   end of the service.
+                
                 while (!this.backgroundWorker.CancellationPending)
                 {
                     var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                     cpuUsage.NextValue();
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.interrupt
-                            || cpuUsage.NextValue() / Environment.ProcessorCount < MAXIMUM_CPU_LOAD_PERCENT)
+                    if (this.interrupt)
                         continue;
+                    var cpuUsageCurrent = cpuUsage.NextValue() / Environment.ProcessorCount;
+                    if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT)
+                    {
+                        if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT / 4
+                                && this.processMonitorsDecreased.Count > 0)
+                        {
+                            this.processMonitorsDecreased.ForEach(processMonitor =>
+                            {
+                                try
+                                {
+                                    using (var process = Process.GetProcessById(processMonitor.processId))
+                                        process.PriorityClass = ProcessPriorityClass.BelowNormal;
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            });
+                            this.processMonitorsDecreased.Clear();
+                        }
+                        continue;
+                    }
                     
                     Process.GetProcesses().ToList().ForEach(process =>
                     {
@@ -296,7 +333,6 @@ namespace shiftdown
                             {
                                 if (this.processId == process.Id
                                         || ProcessPriorityClass.Idle == process.PriorityClass
-                                        || ProcessPriorityClass.BelowNormal == process.PriorityClass
                                         || this.processMonitors.ContainsKey(process.Id))
                                     return;
 
