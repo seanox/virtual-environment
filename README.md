@@ -162,6 +162,7 @@ CR: Project: Change from Ant to .NET
 CR: Platform: Added function compact  
 CR: Platform: Added function shortcuts  
 CR: Settings: Added for Placeholder replacement in files  
+
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 
 
