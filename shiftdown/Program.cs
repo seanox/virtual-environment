@@ -177,7 +177,6 @@ namespace shiftdown
     {
         private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
-        private const int INTERRUPT_MILLISECONDS = 25;
 
         private int processId;
 
@@ -296,6 +295,8 @@ namespace shiftdown
                 // - Original priority normal or higher is restored only at the
                 //   end of the service.
                 
+                long cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                
                 while (!this.backgroundWorker.CancellationPending)
                 {
                     var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
@@ -306,8 +307,16 @@ namespace shiftdown
                     var cpuUsageCurrent = cpuUsage.NextValue() / Environment.ProcessorCount;
                     if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT)
                     {
+                        // Increasing the priority is done with a delay, so
+                        // that the priority is not switched up and down
+                        // excessively -- because it can have effects on the
+                        // process. 5 seconds is based on the assumption that
+                        // a program will try to do things quickly and avoid
+                        // delays of several seconds.  
+                        
                         if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT / 4
-                                && this.processMonitorsDecreased.Count > 0)
+                                && this.processMonitorsDecreased.Count > 0
+                                && DateTimeOffset.Now.ToUnixTimeMilliseconds() - cpuLoadTiming < 5000)
                         {
                             this.processMonitorsDecreased.ForEach(processMonitor =>
                             {
@@ -321,7 +330,7 @@ namespace shiftdown
                                 }
                             });
                             this.processMonitorsDecreased.Clear();
-                        }
+                        } else cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                         continue;
                     }
                     
@@ -358,6 +367,8 @@ namespace shiftdown
                         return;
 
                     this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
+                    
+                    cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
 
                 this.RestorePriority();
