@@ -32,7 +32,7 @@ using System.Threading;
 
 namespace shiftdown
 {
-    internal class Program
+    internal static class Program
     {
         internal static readonly string VERSION = 
             $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
@@ -80,7 +80,7 @@ namespace shiftdown
                         break;
                     case "uninstall":
                         Program.BatchExec(new BatchExecMeta()
-                            {fileName = "net.exe", arguments = new string[] {"stop", ApplicationMeta.Name}, output = false});
+                            {FileName = "net.exe", Arguments = new string[] {"stop", ApplicationMeta.Name}, Output = false});
                         Program.BatchExec("sc.exe", "delete", ApplicationMeta.Name);
                         break;
                     case "start":
@@ -121,21 +121,21 @@ namespace shiftdown
 
         private struct BatchExecMeta
         {
-            internal string   fileName;
-            internal string[] arguments;
-            internal bool     output;
+            internal string   FileName;
+            internal string[] Arguments;
+            internal bool     Output;
         }
 
         private static void BatchExec(string fileName, params string[] arguments)
         {
-            Program.BatchExec(new BatchExecMeta() {fileName = fileName, arguments = arguments, output = true});
+            Program.BatchExec(new BatchExecMeta() {FileName = fileName, Arguments = arguments, Output = true});
         }
 
         private static void BatchExec(BatchExecMeta batchExecMeta)
         {
-            if (batchExecMeta.output)
+            if (batchExecMeta.Output)
             {
-                Console.WriteLine(batchExecMeta.fileName + " " + String.Join(" ", batchExecMeta.arguments));
+                Console.WriteLine(batchExecMeta.FileName + " " + String.Join(" ", batchExecMeta.Arguments));
                 Console.WriteLine();
             }
 
@@ -147,28 +147,29 @@ namespace shiftdown
 
                 WindowStyle = ProcessWindowStyle.Hidden,
 
-                FileName  = batchExecMeta.fileName,
-                Arguments = String.Join(" ", batchExecMeta.arguments),
+                FileName  = batchExecMeta.FileName,
+                Arguments = String.Join(" ", batchExecMeta.Arguments),
 
                 RedirectStandardError  = true,
                 RedirectStandardOutput = true
             };
             process.Start();
             process.WaitForExit();
-            if (batchExecMeta.output)
+
+            if (!batchExecMeta.Output)
+                return;
+            
+            var standardErrorOutput = (process.StandardError.ReadToEnd()).Trim();
+            if (standardErrorOutput.Length > 0)
             {
-                var standardErrorOutput = (process.StandardError.ReadToEnd() ?? "").Trim();
-                if (standardErrorOutput.Length > 0)
-                {
-                    Console.Out.Write(standardErrorOutput);
-                    Console.WriteLine();
-                }
-                var standardOutput = (process.StandardOutput.ReadToEnd() ?? "").Trim();
-                if (standardOutput.Length > 0)
-                {
-                    Console.Out.Write(standardOutput);
-                    Console.WriteLine();
-                }
+                Console.Out.Write(standardErrorOutput);
+                Console.WriteLine();
+            }
+            var standardOutput = (process.StandardOutput.ReadToEnd()).Trim();
+            if (standardOutput.Length > 0)
+            {
+                Console.Out.Write(standardOutput);
+                Console.WriteLine();
             }
         }
     }
@@ -386,7 +387,7 @@ namespace shiftdown
             this.OnStop();
         }
 
-        protected override void OnStart(params string[] options)
+        protected override void OnStart(string[] options)
         { 
             if (this.backgroundWorker != null
                     && this.backgroundWorker.IsBusy)
