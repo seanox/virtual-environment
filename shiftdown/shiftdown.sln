@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shiftdown", "shiftdown.csproj", "{391BC5F0-E521-4EC7-AD7D-A54340CEFAA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shiftdown", "Shiftdown.csproj", "{391BC5F0-E521-4EC7-AD7D-A54340CEFAA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

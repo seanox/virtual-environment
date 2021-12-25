@@ -7,8 +7,8 @@
         <ProjectGuid>{391BC5F0-E521-4EC7-AD7D-A54340CEFAA5}</ProjectGuid>
         <OutputType>Exe</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>shiftdown</RootNamespace>
-        <AssemblyName>shiftdown</AssemblyName>
+        <RootNamespace>Shiftdown</RootNamespace>
+        <AssemblyName>Shiftdown</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>

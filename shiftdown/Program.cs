@@ -42,7 +42,7 @@ namespace shiftdown
         {
             #if DEBUG
                 var service = new Service();
-                service.OnDebug();
+                service.OnDebug(options);
                 return;
             #endif
             
@@ -55,14 +55,15 @@ namespace shiftdown
                 var applicationFile = Path.GetFileName(applicationLocation).Trim();
                 var applicationName = Path.GetFileNameWithoutExtension(applicationLocation);
                 applicationName = Regex.Replace(applicationName, @"\s+", "");
-                if (applicationName.Length <= 0)
-                    applicationName = "ShiftDown";
 
                 bool isAdministrator;
                 using (var identity = WindowsIdentity.GetCurrent())
                     isAdministrator = new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
                 
-                var command = (isAdministrator && options.Length > 0 ? options[0] : "").Trim().ToLower();
+                var command = (isAdministrator
+                        && applicationName.Length > 0
+                        && options.Length > 0
+                    ? options[0] : "").Trim().ToLower();
                 switch (command)
                 {
                     case "install":
@@ -70,14 +71,14 @@ namespace shiftdown
                         break;
                     case "uninstall":
                         Program.BatchExec(new BatchExecMeta()
-                            {fileName = "sc.exe", arguments = new string[] {"stop", applicationName}, output = false});
+                            {fileName = "net.exe", arguments = new string[] {"stop", applicationName}, output = false});
                         Program.BatchExec("sc.exe", "delete", applicationName);
                         break;
                     case "start":
                     case "pause":
                     case "continue":
                     case "stop":
-                        Program.BatchExec("sc.exe", command, applicationName);
+                        Program.BatchExec("net.exe", command, applicationName);
                         break;
                     default:
                         Console.WriteLine($"The program must be configured as a service ({applicationName}).");
@@ -167,7 +168,7 @@ namespace shiftdown
     {
         private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
-        private const int INTERRUPT_MILLISECONDS = 5;
+        private const int INTERRUPT_MILLISECONDS = 25;
 
         private int processId;
 
@@ -184,9 +185,16 @@ namespace shiftdown
         
         private readonly Dictionary<int, ProcessMonitor> processMonitors;
 
+        private readonly EventLog eventLog;
+
         public Service()
         {
-            this.ServiceName = "ShiftDown";
+            var applicationLocation = Assembly.GetExecutingAssembly().Location;
+            var applicationName = Path.GetFileNameWithoutExtension(applicationLocation);
+
+            this.eventLog = new EventLog();
+            this.eventLog.Source = Regex.Replace(applicationName, @"\s+", ""); 
+            
             this.CanStop = true;
             this.CanPauseAndContinue = true;
             this.AutoLog = false;
@@ -202,11 +210,7 @@ namespace shiftdown
         {
             foreach (var processMonitor in processMonitors)
             {
-                Thread.Sleep(INTERRUPT_MILLISECONDS);
-                if (this.backgroundWorker.CancellationPending
-                        || this.interrupt)
-                    return;
-
+                Thread.Sleep(5);
                 try
                 {
                     using (var process = Process.GetProcessById(processMonitor.processId))
@@ -222,7 +226,7 @@ namespace shiftdown
                         if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
                             continue;
 
-                        process.PriorityClass = ProcessPriorityClass.BelowNormal;    
+                        process.PriorityClass = ProcessPriorityClass.Idle;    
                     }
                 }
                 catch (ArgumentException)
@@ -260,12 +264,12 @@ namespace shiftdown
                 // - Periodic measurement of the total CPU load
                 //   From a load  of 25 percent (percentage on all cores) the
                 //   priorities of the processes start to be checked
-                // - Fast way: query all established ProcessMonitors with
-                //      PerformanceCounter 
-                // - Analyze the load by the process and try to reduce the
-                //   priority if it has a load of more than 25 percent.
-                // - Slower way: Query all active processes, ignore those wher
-                //    a ProcessMonitor with PerformanceCounter already exists.
+                // - Scan all processes and determine the new processes for
+                //   which no process monitor with PerformanceCounter exists
+                //   and create that for the process.
+                // - Analyze CPU consumption based on process monitors and try
+                //   to optimize. In doing so, clean up all process monitors
+                //   for processes that no longer exist. 
                 
                 // Analysis:
                 // - Check if the process still exists, if not clean it up
@@ -283,9 +287,6 @@ namespace shiftdown
                     if (this.interrupt
                             || cpuUsage.NextValue() / Environment.ProcessorCount < MAXIMUM_CPU_LOAD_PERCENT)
                         continue;
-                    
-                    this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
-                    var processMonitorsTemp = new List<ProcessMonitor>();
                     
                     Process.GetProcesses().ToList().ForEach(process =>
                     {
@@ -307,20 +308,20 @@ namespace shiftdown
                                         process.ProcessName, true)
                                 };
                                 processMonitor.performanceCounter.NextValue();
-                                processMonitorsTemp.Add(processMonitor);
+                                
+                                this.processMonitors.Add(processMonitor.processId, processMonitor);
                             }
                         }
                         catch (Exception)
                         {
                         }
                     });
-                    
+
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.backgroundWorker.CancellationPending
-                            || this.interrupt)
+                    if (this.backgroundWorker.CancellationPending)
                         return;
-                    
-                    this.ShiftDownPrioritySmart(processMonitorsTemp);
+
+                    this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
                 }
 
                 this.RestorePriority();
@@ -344,12 +345,12 @@ namespace shiftdown
                     && this.backgroundWorker.IsBusy)
                 return;
 
-            EventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
+            this.eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
 
             this.backgroundWorker = this.CreateBackgroundWorker();
             this.backgroundWorker.RunWorkerAsync();
 
-            EventLog.WriteEntry("Service started.", EventLogEntryType.Information);
+            this.eventLog.WriteEntry("Service started.", EventLogEntryType.Information);
         }
 
         protected override void OnPause()
@@ -357,7 +358,7 @@ namespace shiftdown
             if (this.interrupt)
                 return;
             this.interrupt = true;
-            EventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
+            this.eventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
         }
 
         protected override void OnContinue()
@@ -365,7 +366,7 @@ namespace shiftdown
             if (!this.interrupt)
                 return;
             this.interrupt = false;
-            EventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
+            this.eventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
         }
 
         protected override void OnStop()
@@ -377,7 +378,7 @@ namespace shiftdown
             while (this.backgroundWorker.IsBusy)
                 Thread.Sleep(25);
             this.backgroundWorker = null;
-            EventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
+            this.eventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
         }
     }
 }

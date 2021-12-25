@@ -1,6 +1,15 @@
-1.1.1 20211224
+1.2.0 2021xxxx
+  BF: Correction of the unwanted program end when the service pauses
+  BF: Correction of the EventLog
+  BF: Target priority changed from 'BelowNormal' to 'Idle' (it was not enough)
+  CR: Change to use net.exe for start, pause, continue and stop
+      Output is better understandable than with sc.exe
+  CR: Optimization of process scanning    
+  
+1.1.0 20211224
+1.0.0 20211224
   CR: Optimization of process scanning
-  CR: Change the target priority from 'Idle' to 'BelowNormal' (also sufficient)
+  CR: Change the target priority from 'Idle' to 'BelowNormal' (also enough)
   CR: Added command line functions for: install, uninstall, start, pause, continue and stop
       e.g. shiftdown install
   CR: Added Debug-Mode for easier testing and debugging (only during development)    
