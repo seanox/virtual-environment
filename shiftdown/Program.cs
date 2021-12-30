@@ -179,7 +179,7 @@ namespace shiftdown
         private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
 
-        private int processId;
+        private readonly int processId;
 
         private BackgroundWorker backgroundWorker;
         
@@ -190,6 +190,7 @@ namespace shiftdown
             internal int processId;
             internal ProcessPriorityClass processPriorityClassInitial;
             internal PerformanceCounter performanceCounter;
+            internal Process process;
         }
 
         private readonly List<ProcessMonitor> processMonitorsDecreased;  
@@ -219,26 +220,31 @@ namespace shiftdown
         {
             foreach (var processMonitor in processMonitors)
             {
-                Thread.Sleep(5);
+                Thread.Sleep(25);
+                
                 try
                 {
-                    using (var process = Process.GetProcessById(processMonitor.processId))
-                    {
-                        if (!this.processMonitors.ContainsKey(processMonitor.processId))
-                            this.processMonitors.Add(processMonitor.processId, processMonitor);
+                    var process = processMonitor.process;
+                    
+                    if (!this.processMonitors.ContainsKey(processMonitor.processId))
+                        this.processMonitors.Add(processMonitor.processId, processMonitor);
 
-                        if (ProcessPriorityClass.Idle == process.PriorityClass)
-                            continue;
+                    // Discards all information about the assigned process that
+                    // was cached in the process component. Microsoft also
+                    // likes to cache and it took me a while to understand why
+                    // the priority is not always up to date :-)
+                    process.Refresh();
+                    if (ProcessPriorityClass.Idle.Equals(process.PriorityClass))
+                        continue;
 
-                        var cpuLoad = processMonitor.performanceCounter.NextValue() / Environment.ProcessorCount;
-                        if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
-                            continue;
+                    var cpuLoad = processMonitor.performanceCounter.NextValue() / Environment.ProcessorCount;
+                    if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
+                        continue;
 
-                        process.PriorityClass = ProcessPriorityClass.Idle;
-                        this.processMonitorsDecreased.Add(processMonitor);
-                    }
+                    process.PriorityClass = ProcessPriorityClass.Idle;
+                    this.processMonitorsDecreased.Add(processMonitor);
                 }
-                catch (ArgumentException)
+                catch (InvalidOperationException)
                 {
                     this.processMonitors.Remove(processMonitor.processId);
                 }
@@ -298,14 +304,24 @@ namespace shiftdown
                 
                 long cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 
+                var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                cpuUsage.NextValue();
+                
                 while (!this.backgroundWorker.CancellationPending)
                 {
-                    var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                    cpuUsage.NextValue();
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
                     if (this.interrupt)
                         continue;
-                    var cpuUsageCurrent = cpuUsage.NextValue() / Environment.ProcessorCount;
+                    
+                    // There are different views on the interpretation of the
+                    // value. I refer to the statement that the value
+                    // represents the average over all cores. Over 100% is also
+                    // possible -- calculative or when the CPU uses Turbo Boost.
+                    // Per WMI each core can be queried, but it probably
+                    // doesn't matter with the question if the CPU is generally
+                    // loaded.
+                    
+                    var cpuUsageCurrent = cpuUsage.NextValue();
                     if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT)
                     {
                         // Increasing the priority is done with a delay, so
@@ -323,8 +339,7 @@ namespace shiftdown
                             {
                                 try
                                 {
-                                    using (var process = Process.GetProcessById(processMonitor.processId))
-                                        process.PriorityClass = ProcessPriorityClass.BelowNormal;
+                                    processMonitor.process.PriorityClass = ProcessPriorityClass.BelowNormal;
                                 }
                                 catch (Exception)
                                 {
@@ -335,37 +350,35 @@ namespace shiftdown
                         continue;
                     }
                     
+                    this.ShiftDownPrioritySmart(this.processMonitorsDecreased);
+                    
                     Process.GetProcesses().ToList().ForEach(process =>
                     {
+                        Thread.Sleep(25);
+                        
                         try
                         {
-                            using (process)
-                            {
-                                if (this.processId == process.Id
-                                        || ProcessPriorityClass.Idle == process.PriorityClass
-                                        || this.processMonitors.ContainsKey(process.Id))
-                                    return;
+                            if (this.processId == process.Id
+                                    || ProcessPriorityClass.Idle.Equals(process.PriorityClass)
+                                    || this.processMonitors.ContainsKey(process.Id))
+                                return;
 
-                                var processMonitor = new ProcessMonitor()
-                                {
-                                    processPriorityClassInitial = process.PriorityClass,
-                                    processId = process.Id,
-                                    performanceCounter = new PerformanceCounter("Process", "% Processor Time",
-                                        process.ProcessName, true)
-                                };
-                                processMonitor.performanceCounter.NextValue();
-                                
-                                this.processMonitors.Add(processMonitor.processId, processMonitor);
-                            }
+                            var processMonitor = new ProcessMonitor()
+                            {
+                                process = process,
+                                processPriorityClassInitial = process.PriorityClass,
+                                processId = process.Id,
+                                performanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                                    process.ProcessName, true)
+                            };
+                            processMonitor.performanceCounter.NextValue();
+                            
+                            this.processMonitors.Add(processMonitor.processId, processMonitor);
                         }
                         catch (Exception)
                         {
                         }
                     });
-
-                    Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.backgroundWorker.CancellationPending)
-                        return;
 
                     this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
                     
