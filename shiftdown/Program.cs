@@ -187,10 +187,9 @@ namespace shiftdown
         
         private struct ProcessMonitor
         {
-            internal int processId;
-            internal ProcessPriorityClass processPriorityClassInitial;
-            internal PerformanceCounter performanceCounter;
             internal Process process;
+            internal ProcessPriorityClass priorityClassInitial;
+            internal PerformanceCounter performanceCounter;
         }
 
         private readonly List<ProcessMonitor> processMonitorsDecreased;  
@@ -226,8 +225,8 @@ namespace shiftdown
                 {
                     var process = processMonitor.process;
                     
-                    if (!this.processMonitors.ContainsKey(processMonitor.processId))
-                        this.processMonitors.Add(processMonitor.processId, processMonitor);
+                    if (!this.processMonitors.ContainsKey(processMonitor.process.Id))
+                        this.processMonitors.Add(processMonitor.process.Id, processMonitor);
 
                     // Discards all information about the assigned process that
                     // was cached in the process component. Microsoft also
@@ -242,11 +241,13 @@ namespace shiftdown
                         continue;
 
                     process.PriorityClass = ProcessPriorityClass.Idle;
-                    this.processMonitorsDecreased.Add(processMonitor);
+                    
+                    if (!this.processMonitorsDecreased.Contains(processMonitor))
+                        this.processMonitorsDecreased.Add(processMonitor);
                 }
                 catch (InvalidOperationException)
                 {
-                    this.processMonitors.Remove(processMonitor.processId);
+                    this.processMonitors.Remove(processMonitor.process.Id);
                 }
                 catch (Exception)
                 {
@@ -260,7 +261,7 @@ namespace shiftdown
             {
                 try
                 {
-                    Process.GetProcessById(processMonitor.processId).PriorityClass = processMonitor.processPriorityClassInitial;
+                    processMonitor.process.PriorityClass = processMonitor.priorityClassInitial;
                 }
                 catch (Exception)
                 {
@@ -302,10 +303,12 @@ namespace shiftdown
                 // - Original priority normal or higher is restored only at the
                 //   end of the service.
                 
-                long cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                var cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 
                 var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                 cpuUsage.NextValue();
+
+                var markedProcessId = 0;
                 
                 while (!this.backgroundWorker.CancellationPending)
                 {
@@ -350,35 +353,43 @@ namespace shiftdown
                         continue;
                     }
                     
+                    // Control of the known loaders.
                     this.ShiftDownPrioritySmart(this.processMonitorsDecreased);
-                    
-                    Process.GetProcesses().ToList().ForEach(process =>
-                    {
-                        Thread.Sleep(25);
-                        
-                        try
-                        {
-                            if (this.processId == process.Id
-                                    || ProcessPriorityClass.Idle.Equals(process.PriorityClass)
-                                    || this.processMonitors.ContainsKey(process.Id))
-                                return;
 
-                            var processMonitor = new ProcessMonitor()
-                            {
-                                process = process,
-                                processPriorityClassInitial = process.PriorityClass,
-                                processId = process.Id,
-                                performanceCounter = new PerformanceCounter("Process", "% Processor Time",
-                                    process.ProcessName, true)
-                            };
-                            processMonitor.performanceCounter.NextValue();
-                            
-                            this.processMonitors.Add(processMonitor.processId, processMonitor);
-                        }
-                        catch (Exception)
+                    // An attempt to minimize response time and reduce CPU load
+                    // by the service. Assuming that if the last PID is
+                    // unchanged, there will be no new processes because they
+                    // will be created at the end.
+                    var processList = Process.GetProcesses().ToList();
+                    processList = processList.OrderByDescending(process => process.Id).ToList();
+                    if (markedProcessId != processList[0].Id)
+                        processList.ForEach(process =>
                         {
-                        }
-                    });
+                            Thread.Sleep(25);
+                            
+                            try
+                            {
+                                if (this.processId == process.Id
+                                        || this.processMonitors.ContainsKey(process.Id))
+                                    return;
+
+                                var processMonitor = new ProcessMonitor()
+                                {
+                                    process = process,
+                                    priorityClassInitial = process.PriorityClass,
+                                    performanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                                        process.ProcessName, true)
+                                };
+                                processMonitor.performanceCounter.NextValue();
+                                
+                                this.processMonitors.Add(processMonitor.process.Id, processMonitor);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        });
+
+                    markedProcessId = processList[0].Id;
 
                     this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
                     
