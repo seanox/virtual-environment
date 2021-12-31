@@ -80,7 +80,7 @@ namespace shiftdown
                         break;
                     case "uninstall":
                         Program.BatchExec(new BatchExecMeta()
-                            {FileName = "net.exe", Arguments = new string[] {"stop", ApplicationMeta.Name}, Output = false});
+                            {FileName = "net.exe", Arguments = new[] {"stop", ApplicationMeta.Name}, Output = false});
                         Program.BatchExec("sc.exe", "delete", ApplicationMeta.Name);
                         break;
                     case "start":
@@ -187,9 +187,9 @@ namespace shiftdown
         
         private struct ProcessMonitor
         {
-            internal Process process;
-            internal ProcessPriorityClass priorityClassInitial;
-            internal PerformanceCounter performanceCounter;
+            internal Process Process;
+            internal ProcessPriorityClass PriorityClassInitial;
+            internal PerformanceCounter PerformanceCounter;
         }
 
         private readonly List<ProcessMonitor> processMonitorsDecreased;  
@@ -223,10 +223,10 @@ namespace shiftdown
                 
                 try
                 {
-                    var process = processMonitor.process;
+                    var process = processMonitor.Process;
                     
-                    if (!this.processMonitors.ContainsKey(processMonitor.process.Id))
-                        this.processMonitors.Add(processMonitor.process.Id, processMonitor);
+                    if (!this.processMonitors.ContainsKey(processMonitor.Process.Id))
+                        this.processMonitors.Add(processMonitor.Process.Id, processMonitor);
 
                     // Discards all information about the assigned process that
                     // was cached in the process component. Microsoft also
@@ -236,7 +236,7 @@ namespace shiftdown
                     if (ProcessPriorityClass.Idle.Equals(process.PriorityClass))
                         continue;
 
-                    var cpuLoad = processMonitor.performanceCounter.NextValue() / Environment.ProcessorCount;
+                    var cpuLoad = processMonitor.PerformanceCounter.NextValue() / Environment.ProcessorCount;
                     if (cpuLoad < MAXIMUM_CPU_LOAD_PERCENT)
                         continue;
 
@@ -247,7 +247,7 @@ namespace shiftdown
                 }
                 catch (InvalidOperationException)
                 {
-                    this.processMonitors.Remove(processMonitor.process.Id);
+                    this.processMonitors.Remove(processMonitor.Process.Id);
                 }
                 catch (Exception)
                 {
@@ -261,7 +261,7 @@ namespace shiftdown
             {
                 try
                 {
-                    processMonitor.process.PriorityClass = processMonitor.priorityClassInitial;
+                    processMonitor.Process.PriorityClass = processMonitor.PriorityClassInitial;
                 }
                 catch (Exception)
                 {
@@ -342,7 +342,7 @@ namespace shiftdown
                             {
                                 try
                                 {
-                                    processMonitor.process.PriorityClass = ProcessPriorityClass.BelowNormal;
+                                    processMonitor.Process.PriorityClass = ProcessPriorityClass.BelowNormal;
                                 }
                                 catch (Exception)
                                 {
@@ -375,14 +375,14 @@ namespace shiftdown
 
                                 var processMonitor = new ProcessMonitor()
                                 {
-                                    process = process,
-                                    priorityClassInitial = process.PriorityClass,
-                                    performanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                                    Process = process,
+                                    PriorityClassInitial = process.PriorityClass,
+                                    PerformanceCounter = new PerformanceCounter("Process", "% Processor Time",
                                         process.ProcessName, true)
                                 };
-                                processMonitor.performanceCounter.NextValue();
+                                processMonitor.PerformanceCounter.NextValue();
                                 
-                                this.processMonitors.Add(processMonitor.process.Id, processMonitor);
+                                this.processMonitors.Add(processMonitor.Process.Id, processMonitor);
                             }
                             catch (Exception)
                             {
