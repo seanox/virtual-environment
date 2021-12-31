@@ -1,4 +1,4 @@
-1.2.0 2021xxxx
+1.2.0 2022xxxx
   BF: Correction of the unwanted program end when the service pauses
   BF: Correction of the EventLog
   BF: Target priority changed from 'BelowNormal' to 'Idle'
