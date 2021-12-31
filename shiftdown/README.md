@@ -48,6 +48,9 @@ shiftdown.exe install
 shiftdown.exe uninstall
 ```
 
+To update the program: Stop the service, replace the program file (exe) and
+then start the service again.
+
 The service supports start, pause, continue and stop.
 
 ```
@@ -61,10 +64,13 @@ When the program ends, the priority of the changed processes will be restored.
 
 
 # Changes (Change Log)
-## 1.1.1 20211224 (summary of the current version)
+## 1.2.0 2022xxxx (summary of the next version)
+BF: Correction of the unwanted program end when the service pauses  
+BF: Correction of the EventLog  
+BF: Target priority changed from BelowNormal to Idle  
+CR: Change to use net.exe for start, pause, continue and stop  
 CR: Optimization of process scanning  
-CR: Change the target priority from 'Idle' to 'BelowNormal' (also enough)  
-CR: Added command line functions for: install, uninstall, start, pause, continue and stop  
-CR: Added Debug-Mode for easier testing and debugging (only during development)    
+CR: Added a multi-level priority decrease  
+CR: Change the service own priority to AboveNormal  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
