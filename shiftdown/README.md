@@ -35,7 +35,7 @@ performance, but tries to improve that all programs get enough CPU time.__
 The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
 but can also be downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/raw/main/platform/Resources/platform/Settings/shiftdown.exe
+https://github.com/seanox/virtual-environment/tree/main/shiftdown/Releases
 
 
 ## Usage
