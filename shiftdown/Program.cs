@@ -174,8 +174,6 @@ namespace shiftdown
         private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
 
-        private readonly int _processId;
-
         private BackgroundWorker _backgroundWorker;
         
         private bool _interrupt;
