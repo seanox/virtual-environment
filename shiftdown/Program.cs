@@ -161,16 +161,11 @@ namespace shiftdown
             
             var standardErrorOutput = (process.StandardError.ReadToEnd()).Trim();
             if (standardErrorOutput.Length > 0)
-            {
-                Console.Out.Write(standardErrorOutput);
-                Console.WriteLine();
-            }
+                Console.Error.Write(standardErrorOutput + Environment.NewLine);
+            
             var standardOutput = (process.StandardOutput.ReadToEnd()).Trim();
             if (standardOutput.Length > 0)
-            {
-                Console.Out.Write(standardOutput);
-                Console.WriteLine();
-            }
+                Console.Out.Write(standardOutput + Environment.NewLine);
         }
     }
     
@@ -179,11 +174,11 @@ namespace shiftdown
         private const int MAXIMUM_CPU_LOAD_PERCENT = 25;
         private const int MEASURING_TIME_MILLISECONDS = 1000;
 
-        private readonly int processId;
+        private readonly int _processId;
 
-        private BackgroundWorker backgroundWorker;
+        private BackgroundWorker _backgroundWorker;
         
-        private bool interrupt;
+        private bool _interrupt;
         
         private struct ProcessMonitor
         {
@@ -192,31 +187,41 @@ namespace shiftdown
             internal PerformanceCounter PerformanceCounter;
         }
 
-        private readonly List<ProcessMonitor> processMonitorsDecreased;  
+        private readonly List<ProcessMonitor> _processMonitorsDecreased;  
         
-        private readonly Dictionary<int, ProcessMonitor> processMonitors;
+        private readonly Dictionary<int, ProcessMonitor> _processMonitors;
 
-        private readonly EventLog eventLog;
+        private readonly EventLog _eventLog;
 
         public Service()
         {
-            this.eventLog = new EventLog();
-            this.eventLog.Source = Program.ApplicationMeta.Name; 
+            _eventLog = new EventLog();
+            _eventLog.Source = Program.ApplicationMeta.Name; 
             
             this.CanStop = true;
             this.CanPauseAndContinue = true;
             this.AutoLog = false;
 
-            this.processMonitors = new Dictionary<int, ProcessMonitor>();
-            this.processMonitorsDecreased = new List<ProcessMonitor>();
+            _processMonitors = new Dictionary<int, ProcessMonitor>();
+            _processMonitorsDecreased = new List<ProcessMonitor>();
+
+            // The own priority must be higher than normal, so that the service
+            // itself gets enough CPU time at high load.
+
+            // The service process is treated as a system process and uses an
+            // empty ProcessMonitor, so it is excluded from prioritization.
 
             var process = Process.GetCurrentProcess();
             process.PriorityClass = ProcessPriorityClass.AboveNormal;
-            this.processId = process.Id;
+            _processMonitors.Add(process.Id, new ProcessMonitor());
         }
 
         private void ShiftDownPrioritySmart(List<ProcessMonitor> processMonitors)
         {
+            // Processes where access to the priority is not allowed are
+            // filtered and ignored (e.g. system processes)
+            processMonitors = processMonitors.FindAll(processMonitor => processMonitor.Process != null);
+            
             foreach (var processMonitor in processMonitors)
             {
                 Thread.Sleep(25);
@@ -225,9 +230,6 @@ namespace shiftdown
                 {
                     var process = processMonitor.Process;
                     
-                    if (!this.processMonitors.ContainsKey(processMonitor.Process.Id))
-                        this.processMonitors.Add(processMonitor.Process.Id, processMonitor);
-
                     // Discards all information about the assigned process that
                     // was cached in the process component. Microsoft also
                     // likes to cache and it took me a while to understand why
@@ -242,12 +244,12 @@ namespace shiftdown
 
                     process.PriorityClass = ProcessPriorityClass.Idle;
                     
-                    if (!this.processMonitorsDecreased.Contains(processMonitor))
-                        this.processMonitorsDecreased.Add(processMonitor);
+                    if (!_processMonitorsDecreased.Contains(processMonitor))
+                        _processMonitorsDecreased.Add(processMonitor);
                 }
                 catch (InvalidOperationException)
                 {
-                    this.processMonitors.Remove(processMonitor.Process.Id);
+                    _processMonitors.Remove(processMonitor.Process.Id);
                 }
                 catch (Exception)
                 {
@@ -257,7 +259,7 @@ namespace shiftdown
 
         private void RestorePriority()
         {
-            foreach (var processMonitor in this.processMonitors.Values)
+            foreach (var processMonitor in _processMonitors.Values)
             {
                 try
                 {
@@ -308,12 +310,10 @@ namespace shiftdown
                 var cpuUsage = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                 cpuUsage.NextValue();
 
-                var markedProcessId = 0;
-                
-                while (!this.backgroundWorker.CancellationPending)
+                while (!_backgroundWorker.CancellationPending)
                 {
                     Thread.Sleep(MEASURING_TIME_MILLISECONDS);
-                    if (this.interrupt)
+                    if (_interrupt)
                         continue;
                     
                     // There are different views on the interpretation of the
@@ -324,8 +324,13 @@ namespace shiftdown
                     // doesn't matter with the question if the CPU is generally
                     // loaded.
                     
+                    // The list of the ProcessMonitor always contains at least
+                    // the process of the service. The use of Any function is
+                    // not possible here.
+                    
                     var cpuUsageCurrent = cpuUsage.NextValue();
-                    if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT)
+                    if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT
+                            && _processMonitors.Count() > 1)
                     {
                         // Increasing the priority is done with a delay, so
                         // that the priority is not switched up and down
@@ -335,10 +340,10 @@ namespace shiftdown
                         // delays of several seconds.  
                         
                         if (cpuUsageCurrent < MAXIMUM_CPU_LOAD_PERCENT / 4
-                                && this.processMonitorsDecreased.Count > 0
+                                && _processMonitorsDecreased.Any()
                                 && DateTimeOffset.Now.ToUnixTimeMilliseconds() - cpuLoadTiming < 5000)
                         {
-                            this.processMonitorsDecreased.ForEach(processMonitor =>
+                            _processMonitorsDecreased.ForEach(processMonitor =>
                             {
                                 try
                                 {
@@ -348,50 +353,58 @@ namespace shiftdown
                                 {
                                 }
                             });
-                            this.processMonitorsDecreased.Clear();
+                            _processMonitorsDecreased.Clear();
                         } else cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                         continue;
                     }
                     
                     // Control of the known loaders.
-                    this.ShiftDownPrioritySmart(this.processMonitorsDecreased);
+                    this.ShiftDownPrioritySmart(_processMonitorsDecreased);
 
-                    // An attempt to minimize response time and reduce CPU load
-                    // by the service. Assuming that if the last PID is
-                    // unchanged, there will be no new processes because they
-                    // will be created at the end.
+                    // To determine only new processes Except is a nice
+                    // function for deltas in lists used for this purpose.
                     var processList = Process.GetProcesses().ToList();
-                    processList = processList.OrderByDescending(process => process.Id).ToList();
-                    if (markedProcessId != processList[0].Id)
-                        processList.ForEach(process =>
+                    var processesListCurrent = (from process in processList select process.Id).ToList();
+                    var processListDelta = processesListCurrent.Except(_processMonitors.Keys.ToList());
+                    processList = processList.FindAll(process => processListDelta.Contains(process.Id));
+
+                    foreach (var process in processList)
+                    {
+                        if (_processMonitors.ContainsKey(process.Id))
+                            continue;
+                        
+                        // Access to the priority of system processes is not
+                        // allowed. For these processes an empty ProcessMonitor
+                        // is created so that these processes are not detected
+                        // as new each time.
+
+                        var processMonitor = new ProcessMonitor();
+                        _processMonitors.Add(process.Id, processMonitor);
+                        
+                        try
                         {
-                            Thread.Sleep(25);
+                            processMonitor.Process = process;
+                            processMonitor.PriorityClassInitial = process.PriorityClass;
+                            processMonitor.PerformanceCounter = new PerformanceCounter("Process", "% Processor Time",
+                                    process.ProcessName, true);
+                            processMonitor.PerformanceCounter.NextValue();
                             
-                            try
-                            {
-                                if (this.processId == process.Id
-                                        || this.processMonitors.ContainsKey(process.Id))
-                                    return;
+                            // Structures behave are strange :-|
+                            // Each change of the values creates a new
+                            // instance. That's why the existing reference in
+                            // the list is an original of which with each
+                            // change a copy is created as a new instance.
+                            // Therefore the entry in the list does not get
+                            // anything from the changes and so the changed
+                            // instance must be packed into the list. 
+                            _processMonitors[process.Id] = processMonitor;
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
 
-                                var processMonitor = new ProcessMonitor()
-                                {
-                                    Process = process,
-                                    PriorityClassInitial = process.PriorityClass,
-                                    PerformanceCounter = new PerformanceCounter("Process", "% Processor Time",
-                                        process.ProcessName, true)
-                                };
-                                processMonitor.PerformanceCounter.NextValue();
-                                
-                                this.processMonitors.Add(processMonitor.Process.Id, processMonitor);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        });
-
-                    markedProcessId = processList[0].Id;
-
-                    this.ShiftDownPrioritySmart(this.processMonitors.Values.ToList());
+                    this.ShiftDownPrioritySmart(_processMonitors.Values.ToList());
                     
                     cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
@@ -405,52 +418,52 @@ namespace shiftdown
         internal void OnDebug(params string[] options)
         {
             this.OnStart(options);
-            while (!this.backgroundWorker.CancellationPending
-                    && !this.interrupt)
+            while (!_backgroundWorker.CancellationPending
+                    && !_interrupt)
                 Thread.Sleep(1000);
             this.OnStop();
         }
 
         protected override void OnStart(string[] options)
         { 
-            if (this.backgroundWorker != null
-                    && this.backgroundWorker.IsBusy)
+            if (_backgroundWorker != null
+                    && _backgroundWorker.IsBusy)
                 return;
 
-            this.eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
+            _eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
 
-            this.backgroundWorker = this.CreateBackgroundWorker();
-            this.backgroundWorker.RunWorkerAsync();
+            _backgroundWorker = this.CreateBackgroundWorker();
+            _backgroundWorker.RunWorkerAsync();
 
-            this.eventLog.WriteEntry("Service started.", EventLogEntryType.Information);
+            _eventLog.WriteEntry("Service started.", EventLogEntryType.Information);
         }
 
         protected override void OnPause()
         {
-            if (this.interrupt)
+            if (_interrupt)
                 return;
-            this.interrupt = true;
-            this.eventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
+            _interrupt = true;
+            _eventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
         }
 
         protected override void OnContinue()
         {
-            if (!this.interrupt)
+            if (!_interrupt)
                 return;
-            this.interrupt = false;
-            this.eventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
+            _interrupt = false;
+            _eventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
         }
 
         protected override void OnStop()
         {
-            if (!this.backgroundWorker.IsBusy)
+            if (!_backgroundWorker.IsBusy)
                 return;
 
-            this.backgroundWorker.CancelAsync();
-            while (this.backgroundWorker.IsBusy)
+            _backgroundWorker.CancelAsync();
+            while (_backgroundWorker.IsBusy)
                 Thread.Sleep(25);
-            this.backgroundWorker = null;
-            this.eventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
+            _backgroundWorker = null;
+            _eventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
         }
     }
 }
