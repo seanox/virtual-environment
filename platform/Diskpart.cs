@@ -4,7 +4,7 @@
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2021 Seanox Software Solutions
+// Copyright (C) 2022 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -41,7 +41,7 @@ namespace Platform
             List
         }
         
-        private struct DiskpartPorperties
+        private struct DiskpartProperties
         {
             internal string File;
             internal string Type;
@@ -61,10 +61,10 @@ namespace Platform
             resourceName = String.Format("{0}.{1}.{2}", typeof(Diskpart).Namespace, "Resources", resourceName);
             resourceName = new Regex("[\\./\\\\]+").Replace(resourceName, ".");
             resourceName = new Regex("\\s").Replace(resourceName, "_");
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                byte[] buffer = new byte[(int)stream.Length];
+                var buffer = new byte[(int)stream.Length];
                 stream.Read(buffer, 0, (int)stream.Length);
                 return buffer;
             }
@@ -81,20 +81,21 @@ namespace Platform
             internal bool   Failed;
         }
 
-        private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartPorperties diskpartPorperties)
+        private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartProperties diskpartProperties)
         {
-            string diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
-            string diskpartScript = Diskpart.GetTextResource(diskpartScriptName);
-            foreach (FieldInfo field in typeof(DiskpartPorperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
-                diskpartScript = diskpartScript.Replace(String.Format("#[{0}]", field.Name.ToLower()),
-                        (field.GetValue(diskpartPorperties) ?? "").ToString());
+            var diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
+            var diskpartScript = Diskpart.GetTextResource(diskpartScriptName);
+            diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
+                    .Aggregate(diskpartScript, (current, field) =>
+                            current.Replace(String.Format("#[{0}]", field.Name.ToLower()),
+                                (field.GetValue(diskpartProperties) ?? "").ToString()));
 
             // In case the cleanup does not work and not so much junk
             // accumulates in the temp directory, fixed file names are used.
 
-            string diskpartScriptTempFile = Path.GetTempFileName();
-            string diskpartScriptDirectory = Path.GetDirectoryName(diskpartScriptTempFile);
-            string diskpartScriptFile = Path.Combine(diskpartScriptDirectory, diskpartScriptName);
+            var diskpartScriptTempFile = Path.GetTempFileName();
+            var diskpartScriptDirectory = Path.GetDirectoryName(diskpartScriptTempFile);
+            var diskpartScriptFile = Path.Combine(diskpartScriptDirectory, diskpartScriptName);
             File.Delete(diskpartScriptFile);
             File.Move(diskpartScriptTempFile, diskpartScriptFile);
 
@@ -102,7 +103,7 @@ namespace Platform
             {
                 File.WriteAllBytes(diskpartScriptFile, Encoding.ASCII.GetBytes(diskpartScript));
 
-                Process process = new Process();
+                var process = new Process();
                 process.StartInfo = new ProcessStartInfo()
                 {
                     UseShellExecute = false,
@@ -119,7 +120,7 @@ namespace Platform
                 process.Start();
                 process.WaitForExit();
 
-                DiskpartResult diskpartResult = new DiskpartResult();
+                var diskpartResult = new DiskpartResult();
                 diskpartResult.Output = (process.StandardError.ReadToEnd() ?? "").Trim();
                 if (diskpartResult.Output.Length <= 0)
                     diskpartResult.Output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
@@ -155,7 +156,7 @@ namespace Platform
             Diskpart.CanCompactDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.DiskpartCompactDiskpart);
-            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Compact, new DiskpartPorperties() {File = diskFile});
+            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
         }
@@ -176,20 +177,20 @@ namespace Platform
             Diskpart.CanAttachDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDiskpart);
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Attach, new DiskpartPorperties() {File = diskFile});
+            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDetectVolume);
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartPorperties());
+            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartProperties());
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-            Regex volumeNumberPattern = new Regex(@"^\s*Volume\s+(\d+)\s+([A-Z]\s+)?" + Path.GetFileNameWithoutExtension(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            Match volumeNumberMatch = volumeNumberPattern.Match(diskpartResult.Output);
+            var volumeNumberPattern = new Regex(@"^\s*Volume\s+(\d+)\s+([A-Z]\s+)?" + Path.GetFileNameWithoutExtension(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var volumeNumberMatch = volumeNumberPattern.Match(diskpartResult.Output);
             if (!volumeNumberMatch.Success)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
-            int volumeNumber = int.Parse(volumeNumberMatch.Groups[1].Value);
+            var volumeNumber = int.Parse(volumeNumberMatch.Groups[1].Value);
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, String.Format(Messages.DiskpartAttachAssign, volumeNumber, drive));
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Assign, new DiskpartPorperties()
+            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Assign, new DiskpartProperties()
             {
                 Number = volumeNumber,
                 Drive  = drive.Substring(0, 1)
@@ -212,17 +213,17 @@ namespace Platform
             Diskpart.CanDetachDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartDetach, Messages.DiskpartDetachDiskpart);
-            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Detach, new DiskpartPorperties() {File = diskFile});
+            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
         }
 
         private static char GetNextDriveLetter()
         {
-            List<char> availableDriveLetters = new List<char>();
-            for (char letter = 'A'; letter < 'Z'; letter++)
+            var availableDriveLetters = new List<char>();
+            for (var letter = 'A'; letter < 'Z'; letter++)
                 availableDriveLetters.Add(letter);
-            foreach (DriveInfo driveInfo in DriveInfo.GetDrives())
+            foreach (var driveInfo in DriveInfo.GetDrives())
                 availableDriveLetters.Remove(driveInfo.Name.ToUpper().ToCharArray()[0]);
             return availableDriveLetters.FirstOrDefault();
         }
@@ -237,13 +238,13 @@ namespace Platform
             byte[] fileContent = Diskpart.GetResource(@"\platform\" + resourcePlatformPath);
             if (replacements != null)
             {
-                string fileContentText = Encoding.ASCII.GetString(fileContent);
-                foreach (string key in replacements.Keys)
+                var fileContentText = Encoding.ASCII.GetString(fileContent);
+                foreach (var key in replacements.Keys)
                     fileContentText = fileContentText.Replace(String.Format("#[{0}]", key.ToLower()),
                             replacements[key]);
                 fileContent = Encoding.ASCII.GetBytes(fileContentText);
             }
-            string targetDirectory = Path.GetDirectoryName(drive + resourcePlatformPath);
+            var targetDirectory = Path.GetDirectoryName(drive + resourcePlatformPath);
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
             File.WriteAllBytes(drive + resourcePlatformPath, fileContent);
@@ -260,7 +261,7 @@ namespace Platform
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate);
             Diskpart.CanCreateDisk(drive, diskFile);
 
-            DiskpartPorperties diskpartPorperties = new DiskpartPorperties()
+            var diskpartProperties = new DiskpartProperties()
             {
                 File   = diskFile,
                 Type   = Program.DISK_TYPE,
@@ -271,14 +272,14 @@ namespace Platform
             };
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateDiskpart);
-            DiskpartResult diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Create, diskpartPorperties);
+            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Create, diskpartProperties);
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
 
-            char tempDriveLetter = Diskpart.GetNextDriveLetter();
+            var tempDriveLetter = Diskpart.GetNextDriveLetter();
             if (tempDriveLetter < 'A')
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartNoLetterAvailable);
-            string tempDrive = tempDriveLetter.ToString() + ":";
+            var tempDrive = tempDriveLetter.ToString() + ":";
             Diskpart.AttachDisk(tempDrive, diskFile);
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
@@ -294,7 +295,7 @@ namespace Platform
             Directory.CreateDirectory(tempDrive + @"\Settings");
             Directory.CreateDirectory(tempDrive + @"\Temp");
 
-            Dictionary<string, string> replacements = new Dictionary<string, string>();
+            var replacements = new Dictionary<string, string>();
             replacements.Add("drive", drive);
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", String.Format("{0}.x", Assembly.GetExecutingAssembly().GetName().Version.Major));

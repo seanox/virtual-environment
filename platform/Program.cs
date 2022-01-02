@@ -4,7 +4,7 @@
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2021 Seanox Software Solutions
+// Copyright (C) 2022 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -35,7 +35,7 @@ namespace Platform
         internal const string DISK_FORMAT = "NTFS";
 
         [STAThread]
-        static void Main (string[] arguments)
+        private static void Main (params string[] arguments)
         {
             if (arguments == null
                     || arguments.Length < 2
@@ -49,11 +49,11 @@ namespace Platform
                 return;
             }
 
-            string drive = arguments[0].ToUpper(); 
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
-            string diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
+            var drive = arguments[0].ToUpper(); 
+            var applicationPath = Assembly.GetExecutingAssembly().Location;
+            var diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                 Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
-            Worker.Task workerTask = Worker.Task.Usage;
+            var workerTask = Worker.Task.Usage;
             switch (arguments[1].ToLower())
             {
                 case "create":

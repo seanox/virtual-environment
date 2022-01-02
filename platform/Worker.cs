@@ -4,7 +4,7 @@
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2021 Seanox Software Solutions
+// Copyright (C) 2022 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -27,7 +27,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Management;
-using System.Collections;
 using System.Linq;
 
 namespace Platform {
@@ -53,39 +52,37 @@ namespace Platform {
             internal string DiskFile;
         }
 
-        private System.Threading.Timer timer;
+        private readonly System.Threading.Timer _timer;
 
         internal Worker(Task task, string drive, string diskFile)
         {
             Notification.Subscribe(this);
             InitializeComponent();
-            this.timer = new System.Threading.Timer(Service, new WorkerTask() {Task = task, Drive = drive, DiskFile = diskFile}, 25, -1);
+            _timer = new System.Threading.Timer(Service, new WorkerTask() {Task = task, Drive = drive, DiskFile = diskFile}, 25, -1);
         }
 
         private struct ProcessesInfo
         {
             internal Process Process;
             internal string  Path;
-            internal string  CommandLine;
         }
 
         private static List<ProcessesInfo> GetProcesses()
         {
-            string wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(wmiQueryString))
-            using (ManagementObjectCollection collection = searcher.Get())
+            var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+            using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+            using (var collection = searcher.Get())
             {
-                IEnumerable query = from process in Process.GetProcesses()
-                                    join managementObject in collection.Cast<ManagementObject>()
-                                    on process.Id equals (int)(uint)managementObject["ProcessId"]
-                                    select new ProcessesInfo()
-                                    {
-                                        Process = process,
-                                        Path = (string)managementObject["ExecutablePath"],
-                                        CommandLine = (string)managementObject["CommandLine"]
-                                    };
-                List<ProcessesInfo> resultList = new List<ProcessesInfo>();
-                foreach (ProcessesInfo process in query)
+                var query = from process in Process.GetProcesses()
+                        join managementObject in collection.Cast<ManagementObject>()
+                        on process.Id equals (int)(uint)managementObject["ProcessId"]
+                        select new ProcessesInfo()
+                        {
+                            Process = process,
+                            Path = (string)managementObject["ExecutablePath"],
+                        };
+                var resultList = new List<ProcessesInfo>();
+                foreach (var process in query)
                     resultList.Add(process);
                 return resultList;
             }
@@ -129,12 +126,12 @@ namespace Platform {
             // still running.Therefore the file is copied and the data is read
             // from the copy. The copy is then deleted. 
 
-            string outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + (arguments[0] ?? "output"));
+            var outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + (arguments[0] ?? "output"));
             
-            arguments = (new string[] {fileName}).Concat(arguments).ToArray();
-            arguments = new string[] {"/A", "/C", String.Join(" ", arguments), ">", outputFile};
+            arguments = (new [] {fileName}).Concat(arguments).ToArray();
+            arguments = new [] {"/A", "/C", String.Join(" ", arguments), ">", outputFile};
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo()
+            var processStartInfo = new ProcessStartInfo()
             {
                 UseShellExecute = false,
                 CreateNoWindow  = true,
@@ -149,11 +146,11 @@ namespace Platform {
                 RedirectStandardOutput = false
             };
                         
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
-            string applicationFile = Path.GetFileName(applicationPath);
-            string applicationDirectory = Path.GetDirectoryName(applicationPath);
-            string applicationName = Path.GetFileNameWithoutExtension(applicationFile);
-            string diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
+            var applicationPath = Assembly.GetExecutingAssembly().Location;
+            var applicationFile = Path.GetFileName(applicationPath);
+            var applicationDirectory = Path.GetDirectoryName(applicationPath);
+            var applicationName = Path.GetFileNameWithoutExtension(applicationFile);
+            var diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
 
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_NAME")))
                 processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_NAME", applicationName);
@@ -163,7 +160,7 @@ namespace Platform {
                 processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_DISK", diskFile);
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_APP")))
                 processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_APP", applicationPath);
-            string rootPath = Path.GetPathRoot(fileName);
+            var rootPath = Path.GetPathRoot(fileName);
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_HOMEDRIVE")))
                 processStartInfo.EnvironmentVariables.Add("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
@@ -172,15 +169,15 @@ namespace Platform {
             // used so that not so much garbage accumulates in the temp
             // directory.
 
-            string tempFile = Path.GetTempFileName();
-            string tempDirectory = Path.GetDirectoryName(tempFile);
-            string outputTempFile = Path.Combine(tempDirectory, "stdout");
+            var tempFile = Path.GetTempFileName();
+            var tempDirectory = Path.GetDirectoryName(tempFile);
+            var outputTempFile = Path.Combine(tempDirectory, "stdout");
             File.Delete(outputTempFile);
             File.Move(tempFile, outputTempFile);
 
             try
             {
-                Process process = new Process();
+                var process = new Process();
                 process.StartInfo = processStartInfo;
                 process.Start();
 
@@ -188,9 +185,11 @@ namespace Platform {
                     Thread.Sleep(25);
 
                 File.Copy(outputFile, outputTempFile, true);
-                BatchResult batchResult = new BatchResult();
-                batchResult.Output = File.ReadAllText(outputTempFile);
-                batchResult.Failed = process.ExitCode != 0;
+                var batchResult = new BatchResult
+                {
+                    Output = File.ReadAllText(outputTempFile),
+                    Failed = process.ExitCode != 0
+                };
 
                 return batchResult;
             }
@@ -218,7 +217,7 @@ namespace Platform {
             
             try
             {
-                Process process = new Process();
+                var process = new Process();
                 process.StartInfo = new ProcessStartInfo()
                 {
                     UseShellExecute = true,
@@ -243,13 +242,13 @@ namespace Platform {
 
         private static void CreateShortcut(string drive, string diskFile, Task task)
         {
-            string applicationPath = Path.GetDirectoryName(diskFile);
-            string applicationName = Path.GetFileNameWithoutExtension(diskFile);
-            IWshRuntimeLibrary.WshShell wshShell = new IWshRuntimeLibrary.WshShell();
-            string shortcutFile = Path.Combine(applicationPath, applicationName + "." + task.ToString().ToLower() + ".lnk");
+            var applicationPath = Path.GetDirectoryName(diskFile);
+            var applicationName = Path.GetFileNameWithoutExtension(diskFile);
+            var wshShell = new IWshRuntimeLibrary.WshShell();
+            var shortcutFile = Path.Combine(applicationPath, applicationName + "." + task.ToString().ToLower() + ".lnk");
             if (File.Exists(shortcutFile))
                 return;
-            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
+            var shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
             shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
             shortcut.Arguments = drive + " " + task.ToString().ToLower();
             shortcut.IconLocation = shortcut.TargetPath; 
@@ -262,13 +261,13 @@ namespace Platform {
                     || this.IsDisposed)
                 return;
 
-            WorkerTask workerTask = (WorkerTask)payload;
+            var workerTask = (WorkerTask)payload;
 
             this.Invoke((MethodInvoker)delegate
             {
                 // The timer should only trigger the asynchronous processing,
                 // after that it is no longer needed and will be terminated.
-                this.timer.Dispose();
+                _timer.Dispose();
 
                 try
                 {
@@ -314,22 +313,22 @@ namespace Platform {
 
                             Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesytem);
 
-                            string tempDirectory = Path.Combine(workerTask.Drive, "Temp");
+                            var tempDirectory = Path.Combine(workerTask.Drive, "Temp");
                             if (Directory.Exists(tempDirectory))
                             {
                                 Directory.Delete(tempDirectory, true);
                                 Directory.CreateDirectory(tempDirectory);
                             }
 
-                            string recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
+                            var recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
                             if (Directory.Exists(recycleDirectory))
                                 Directory.Delete(recycleDirectory, true);
 
-                            string startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
+                            var startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
                             if (File.Exists(startupExitFile))
                                 File.Delete(startupExitFile);
 
-                            string startupStartupFile = Path.Combine(workerTask.Drive, "Startup.startup");
+                            var startupStartupFile = Path.Combine(workerTask.Drive, "Startup.startup");
                             if (File.Exists(startupStartupFile))
                                 File.Delete(startupStartupFile);
                             
@@ -385,8 +384,8 @@ namespace Platform {
                             break;
                         
                         default:
-                            string applicationPath = Assembly.GetExecutingAssembly().Location;
-                            string applicationFile = Path.GetFileName(applicationPath);
+                            var applicationPath = Assembly.GetExecutingAssembly().Location;
+                            var applicationFile = Path.GetFileName(applicationPath);
                             Notification.Push(Notification.Type.Error, Messages.WorkerVersion,
                                     String.Format(Messages.WorkerUsage, applicationFile));
                             break;
@@ -420,9 +419,9 @@ namespace Platform {
                 this.Label.ForeColor = this.Progress.BackColor;
             }
 
-            Size originSize = this.Progress.Size;
+            var originSize = this.Progress.Size;
             this.Progress.Visible = true;
-            for (int width = 1; width < originSize.Width; width += 1)
+            for (var width = 1; width < originSize.Width; width += 1)
             {
                 this.Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
                 this.Refresh();
@@ -434,7 +433,7 @@ namespace Platform {
         }
     }
 
-    internal class WorkerException : Exception
+    internal abstract class WorkerException : Exception
     {
         internal string[] Messages { get; }
 
