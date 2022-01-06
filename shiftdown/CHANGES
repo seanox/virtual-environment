@@ -1,8 +1,6 @@
-1.2.0 2022xxxx
+1.2.0 20220107
   BF: Correction of the unwanted program end when the service pauses
   BF: Correction of the EventLog
-  BF: Target priority changed from BelowNormal to Idle
-      -- it was not enough
   CR: Change to use net.exe for start, pause, continue and stop
       Output is better understandable than with sc.exe
   CR: Optimization of process scanning    
