@@ -4,7 +4,7 @@
 //
 // Virtual Environment Startup
 // Downgrades the priority of overactive processes.
-// Copyright (C) 2021 Seanox Software Solutions
+// Copyright (C) 2022 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -196,9 +196,9 @@ namespace shiftdown
             _eventLog = new EventLog();
             _eventLog.Source = Program.ApplicationMeta.Name; 
             
-            this.CanStop = true;
-            this.CanPauseAndContinue = true;
-            this.AutoLog = false;
+            CanStop = true;
+            CanPauseAndContinue = true;
+            AutoLog = false;
 
             _processMonitors = new Dictionary<int, ProcessMonitor>();
             _processMonitorsDecreased = new List<ProcessMonitor>();
@@ -357,7 +357,7 @@ namespace shiftdown
                     }
                     
                     // Control of the known loaders.
-                    this.ShiftDownPrioritySmart(_processMonitorsDecreased);
+                    ShiftDownPrioritySmart(_processMonitorsDecreased);
 
                     // To determine only new processes Except is a nice
                     // function for deltas in lists used for this purpose.
@@ -402,12 +402,12 @@ namespace shiftdown
                         }
                     }
 
-                    this.ShiftDownPrioritySmart(_processMonitors.Values.ToList());
+                    ShiftDownPrioritySmart(_processMonitors.Values.ToList());
                     
                     cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
 
-                this.RestorePriority();
+                RestorePriority();
             };
 
             return backgroundWorker;
@@ -415,11 +415,11 @@ namespace shiftdown
 
         internal void OnDebug(params string[] options)
         {
-            this.OnStart(options);
+            OnStart(options);
             while (!_backgroundWorker.CancellationPending
                     && !_interrupt)
                 Thread.Sleep(1000);
-            this.OnStop();
+            OnStop();
         }
 
         protected override void OnStart(string[] options)
@@ -430,7 +430,7 @@ namespace shiftdown
 
             _eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
 
-            _backgroundWorker = this.CreateBackgroundWorker();
+            _backgroundWorker = CreateBackgroundWorker();
             _backgroundWorker.RunWorkerAsync();
 
             _eventLog.WriteEntry("Service started.", EventLogEntryType.Information);
