@@ -9,6 +9,9 @@
   CR: Shiftdown: Added a optional service to shift down the process priority
       The service automatically downgrades the process priority of CPU-intensive processes. 
       For older Intel generations that suffer from the update of Windows and Intel.
+  CR: Launcher: Switching from MaxLauncher to a self-developed one.
+      MaxLauncher is great, many ideas were taken from there.
+      However, the virtual environment should get its own, which is optimized for the module concept.
 
 3.0.0 20211126
   CR: License: Changed to Apache License Version 2.0
