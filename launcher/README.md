@@ -24,7 +24,7 @@ TODO:
             <!-- Icon file, optionally with index separated by colon -->
             <iconFile>%WINDIR%\system32\shell32.dll:27</iconFile>
             <!-- Path of the application file -->
-            <filename>%PLATFORM_APP%</filename>
+            <destination>%PLATFORM_APP%</destination>
             <!-- Arguments for the program start -->
             <arguments>%HOMEDRIVE% detach</arguments>
             <!-- Working directory in which the application is executed --> 
