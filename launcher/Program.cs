@@ -38,10 +38,20 @@ namespace launcher
             var applicationConfigurationFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
 
-            var serializer = new XmlSerializer(typeof(Settings));
-            using (var reader = new StreamReader(applicationConfigurationFile))
-                _settings = (Settings)serializer.Deserialize(reader);
-            
+            try
+            {
+                var serializer = new XmlSerializer(typeof(Settings));
+                using (var reader = new StreamReader(applicationConfigurationFile))
+                    _settings = (Settings) serializer.Deserialize(reader);
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("The settings file is missing:"
+                                + $"{Environment.NewLine}{applicationConfigurationFile}",
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                return;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Worker(_settings));
