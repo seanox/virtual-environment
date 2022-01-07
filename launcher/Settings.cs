@@ -18,12 +18,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-using System;
 using System.Xml.Serialization;
 
 namespace launcher
 {
-    [Serializable()]
     [XmlRoot("settings")]
     public struct Settings
     {
