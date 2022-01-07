@@ -2,7 +2,7 @@
 // Folgenden Seanox Software Solutions oder kurz Seanox genannt.
 // Diese Software unterliegt der Version 2 der Apache License.
 //
-// Virtual Environment Startup
+// Virtual Environment Shiftdown
 // Downgrades the priority of overactive processes.
 // Copyright (C) 2022 Seanox Software Solutions
 //
