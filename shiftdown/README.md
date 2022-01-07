@@ -65,11 +65,11 @@ When the program ends, the priority of the changed processes will be restored.
 
 # Changes (Change Log)
 ## 1.2.0 20220107 (summary of the current version)
-BF: Correction of the unwanted program end when the service pauses
-BF: Correction of the EventLog
-CR: Change to use net.exe for start, pause, continue and stop
-CR: Optimization of process scanning    
-CR: Added a multi-level priority decrease
+BF: Correction of the unwanted program end when the service pauses  
+BF: Correction of the EventLog  
+CR: Change to use net.exe for start, pause, continue and stop  
+CR: Optimization of process scanning  
+CR: Added a multi-level priority decrease  
 CR: Change the service own priority to AboveNormal
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
