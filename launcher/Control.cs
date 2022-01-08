@@ -22,7 +22,7 @@ using System;
 using System.Windows.Forms;
 using launcher;
 
-// TODO: Tiles: Matrix 4x10 with shortcut from keyboard layout
+// TODO: Tiles: Matrix 4x10 with shortcuts from keyboard layout
 // TODO: Tiles: Navigation Up, Down, Left, Right
 // TODO: MessageBox does not show the correct icon in taskbar
 
@@ -30,17 +30,26 @@ namespace Launcher
 {
     internal partial class Control : Form
     {
+        private Settings _settings;
+        
         internal Control(Settings settings)
         {
             InitializeComponent();
 
-            SizeChanged += OnSizeChanged;
+            _settings = settings;
+
+            SizeChanged += OnVisualChange;
+            VisibleChanged += OnVisualChange;
             KeyDown += OnKeyDown;
             LostFocus += OnLostFocus;
         }
 
-        private void OnSizeChanged(object sender, EventArgs eventArgs)
+        private void OnVisualChange(object sender, EventArgs eventArgs)
         {
+            if (!Visible)
+                return;
+            
+            
         }
 
         private void OnLostFocus(object sender, EventArgs eventArgs)
