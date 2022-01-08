@@ -55,8 +55,7 @@ namespace Launcher
         private const int HOTKEY_ID = 0x0;
         private const int WM_HOTKEY = 0x0312;
 
-        private Control _control;
-
+        private Control  _control;
         private Settings _settings;
         
         internal Worker(Settings settings)
