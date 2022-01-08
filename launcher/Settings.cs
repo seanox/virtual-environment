@@ -26,7 +26,7 @@ namespace launcher
     public struct Settings
     {
         [XmlElement("opacity")]
-        public string Opacity;
+        public int Opacity;
 
         [XmlElement("hotKey")]
         public string HotKey;

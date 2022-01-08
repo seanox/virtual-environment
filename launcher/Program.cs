@@ -48,7 +48,15 @@ namespace launcher
             {
                 MessageBox.Show("The settings file is missing:"
                                 + $"{Environment.NewLine}{applicationConfigurationFile}",
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(("The settings file is incorrect:"
+                        + $"{Environment.NewLine}{exception.Message}"
+                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
