@@ -34,6 +34,13 @@ namespace launcher
         [STAThread]
         internal static void Main()
         {
+            // XML based configuration
+            // - based on the file name from launcher
+            // - contains: Opacity, HotKey, Apps (Tiles)
+            // - XML data is mapped to settings via serialization
+            // - here there is no validation only indirectly it is checked
+            //   during serialization whether the data types fit.
+            
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var applicationConfigurationFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
