@@ -65,7 +65,7 @@ namespace Launcher
             _settings = settings;
 
             if (settings.Opacity > 0)
-                Opacity = settings.Opacity /100f;
+                Opacity = Math.Max(settings.Opacity, 50) /100d;
             
             try
             {

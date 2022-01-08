@@ -9,11 +9,17 @@ TODO:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
-    <!-- Opacity of background in percents -->
+    <!-- 
+        Opacity of background in percents (100 - 50)
+        Less than 50 does not make sense, because then the colors of the labels
+        and frames do not fit.
+    -->
     <opacity>75</opacity>
-    <!-- System-wide hot-key to show the launcher (decimal modifiers:virtual key code) -->
-    <!-- https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey -->
-    <!-- https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes -->
+    <!-- 
+        System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
+        https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
+        https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+    -->
     <hotKey>8:27</hotKey>
     <tiles>
         <tile>
