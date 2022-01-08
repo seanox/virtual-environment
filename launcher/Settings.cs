@@ -18,42 +18,47 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+using System.Drawing;
 using System.Xml.Serialization;
 
 namespace launcher
 {
     [XmlRoot("settings")]
-    public struct Settings
+    public class Settings
     {
         [XmlElement("opacity")]
-        public int Opacity;
+        public int Opacity {get; set;}
 
         [XmlElement("hotKey")]
-        public string HotKey;
+        public string HotKey {get; set;}
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
-        public Tile[] Tiles;
+        public Tile[] Tiles {get; set;}
         
-        public struct Tile
+        public class Tile
         {
             [XmlElement("index")]
-            public int Index;
+            public int Index {get; set;}
 
             [XmlElement("title")]
-            public string Title;
+            public string Title {get; set;}
 
             [XmlElement("icon")]
-            public string Icon;
+            public string Icon {get; set;}
 
             [XmlElement("destination")]
-            public string Destination;
+            public string Destination {get; set;}
 
             [XmlElement("arguments")]
-            public string Arguments;
+            public string Arguments {get; set;}
 
             [XmlElement("workingDirectory")]
-            public string WorkingDirectory;
+            public string WorkingDirectory {get; set;}
+            
+            internal bool Active {get; set;}
+            
+            internal Point Position {get; set;}
         }
     }
 }

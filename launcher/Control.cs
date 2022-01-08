@@ -46,48 +46,74 @@ namespace Launcher
 
         private Settings _settings;
 
+        private readonly Settings.Tile[] _tiles;
+
         private int _cursor;
 
         internal Control(Settings settings)
         {
             _settings = settings;
 
-            for (var index = 1; index <= RASTER_CELL_COUNT; index++)
-                AttachTile(index);
+            _tiles = new Settings.Tile[RASTER_CELL_COUNT];
+
+            for (var index = 0; index < RASTER_CELL_COUNT; index++)
+                _tiles[index] = new Settings.Tile() {Index = index +1};
+            
+            foreach (var tileToAdd in settings.Tiles)
+                if (tileToAdd.Index <= RASTER_CELL_COUNT
+                        && tileToAdd.Index > 0)
+                    _tiles[tileToAdd.Index - 1] = tileToAdd;
+
+            foreach (var tileToAttach in _tiles)
+                AttachTile(tileToAttach);
 
             InitializeComponent();
 
             Message.Font = new Font(SystemFonts.DefaultFont.FontFamily, 24, FontStyle.Regular);
 
-            SizeChanged += OnVisualChange;
-            VisibleChanged += OnVisualChange;
-            Shown += OnVisualChange;
+            SizeChanged += OnSizeChanged;
+            VisibleChanged += OnVisibleChanged;
             KeyDown += OnKeyDown;
             LostFocus += OnLostFocus;
         }
 
-        private void AttachTile(int index)
+        private void AttachTile(Settings.Tile tile)
         {
             // TODO:
         }
 
-        private void SelectTile(int index)
+        private void AlignTile(Settings.Tile tile)
+        {
+            // TODO: Realignment of the tiles according to the current screen resolution.
+        }
+
+        private void HideTile(Settings.Tile tile)
         {
             // TODO:
-            // TODO: only for development
-            Message.Text = "" + index;
         }
-        
-        private void OnVisualChange(object sender, EventArgs eventArgs)
-        {
-            if (!Visible)
-                return;
 
+        private void SelectTile(Settings.Tile tile)
+        {
+            // TODO:
+        }
+
+        private void OnVisibleChanged(object sender, EventArgs eventArgs)
+        {
+            // TODO:
+        }
+
+        private void OnSizeChanged(object sender, EventArgs eventArgs)
+        {
+            foreach (var tile in _tiles)
+                HideTile(tile);    
+
+            Message.Text = "";
             if (Size.Width < RASTER_WIDTH_BORDERED
                     || Size.Height < RASTER_HEIGHT_BORDERED)
                 Message.Text = "The resolution is too low to show the tiles.";
             
-            // TODO: Realignment of the tiles according to the current screen resolution.
+            foreach (var tile in _tiles)
+                AlignTile(tile);
         }
 
         private void OnLostFocus(object sender, EventArgs eventArgs)
@@ -135,7 +161,7 @@ namespace Launcher
                     break;
             }
             
-            SelectTile(_cursor);
+            SelectTile(_tiles[_cursor]);
         }
     }
 }

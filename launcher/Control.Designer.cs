@@ -67,8 +67,6 @@ namespace Launcher
 
         private System.Windows.Forms.Label Message;
 
-        private System.Windows.Forms.Label label1;
-
         #endregion
     }
 }
