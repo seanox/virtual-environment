@@ -23,6 +23,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using launcher;
 
+// TODO: MessageBox does not show the correct icon in taskbar
+
 namespace Launcher
 {
     //     System Tray Icon (NotifyIcon) + menu for show + exit
@@ -54,13 +56,17 @@ namespace Launcher
         private const int WM_HOTKEY = 0x0312;
 
         private Control _control;
+
+        private Settings _settings;
         
         internal Worker(Settings settings)
         {
             InitializeComponent();
 
+            _settings = settings;
+
             if (settings.Opacity > 0)
-                Opacity = Opacity;
+                Opacity = settings.Opacity /100f;
             
             try
             {
@@ -80,7 +86,7 @@ namespace Launcher
             {
                 if (!Visible)
                     return;
-                _control = new Control();
+                _control = new Control(_settings);
                 _control.Closed += (_sender, _eventArgs) => Hide();
                 _control.ShowDialog(this);
             });

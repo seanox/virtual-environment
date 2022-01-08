@@ -25,6 +25,8 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using Launcher;
 
+// TODO: MessageBox does not show the correct icon in taskbar
+
 namespace launcher
 {
     internal static class Program
