@@ -24,41 +24,37 @@ using System.Xml.Serialization;
 namespace launcher
 {
     [XmlRoot("settings")]
-    public class Settings
+    public struct Settings
     {
         [XmlElement("opacity")]
-        public int Opacity {get; set;}
+        public int Opacity;
 
         [XmlElement("hotKey")]
-        public string HotKey {get; set;}
+        public string HotKey;
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
-        public Tile[] Tiles {get; set;}
+        public Tile[] Tiles;
         
-        public class Tile
+        public struct Tile
         {
             [XmlElement("index")]
-            public int Index {get; set;}
+            public int Index;
 
             [XmlElement("title")]
-            public string Title {get; set;}
+            public string Title;
 
             [XmlElement("icon")]
-            public string Icon {get; set;}
+            public string Icon;
 
             [XmlElement("destination")]
-            public string Destination {get; set;}
+            public string Destination;
 
             [XmlElement("arguments")]
-            public string Arguments {get; set;}
+            public string Arguments;
 
             [XmlElement("workingDirectory")]
-            public string WorkingDirectory {get; set;}
-            
-            internal bool Active {get; set;}
-            
-            internal Point Position {get; set;}
+            public string WorkingDirectory;
         }
     }
 }
