@@ -27,7 +27,8 @@ using launcher;
 
 namespace Launcher
 {
-    //     System Tray Icon (NotifyIcon) + menu for show + exit
+    // System Tray Icon (NotifyIcon) + menu for show + exit
+    // ----
     // Omitted so that there is always a child process of the virtual
     // environment that can start other processes in the virtual environment.
     // In general, the launcher should run in the background as long as the
@@ -35,11 +36,13 @@ namespace Launcher
     // The Launcher is terminated with the Detach of the virtual environment
     // via Kill -- sounds hard, but that's the concept.
     
-    //     Global HotKey / KeyEvent 
+    // Global HotKey / KeyEvent 
+    // ----
     // At runtime, the launcher is opened via a system-wide HotKey combination.
     // The launcher is hidden when the focus is lost or the ESC key is pressed.
     
-    //     Worker is just a transparent background overlay for the tile menu     
+    // Worker is just a transparent background overlay for the tile menu     
+    // ----
     // The worker shows a dark, opaque overlay on which the modal menu is
     // displayed. Because the opacity also affects the content of the shape and
     // the tiles but they should be displayed with full opacity.
