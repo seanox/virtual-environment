@@ -63,6 +63,14 @@ namespace Launcher
         
         internal Worker(Settings settings)
         {
+            WindowState = FormWindowState.Normal;
+            FormBorderStyle = FormBorderStyle.None;
+            Bounds = Screen.PrimaryScreen.Bounds;
+
+            #if DEBUG
+            TopMost = false;
+            #endif
+            
             InitializeComponent();
 
             _settings = settings;
@@ -84,30 +92,37 @@ namespace Launcher
                 System.Environment.Exit(0);  
             }
             
-            VisibleChanged += ((sender, eventArgs) =>
+            _control = new Control(settings);
+            _control.VisibleChanged += (sender, eventArgs) =>
             {
-                if (!Visible)
-                    return;
-                _control = new Control(_settings);
-                _control.Closed += (_sender, _eventArgs) => Hide();
-                _control.ShowDialog(this);
-            });
+                if (!_control.Visible)
+                    Visible = _control.Visible;
+            };
+            
+            VisibleChanged += (sender, eventArgs) =>
+            {
+                if (_control.Modal
+                        && _control.Visible != Visible)
+                    _control.Visible = Visible;
+                if (!_control.Modal
+                        && Visible)
+                    _control.ShowDialog(this);
+            };
 
             Closing += (sender, eventArgs) =>
             {
-                if (_control.Visible)
+                if (_control.Modal)
                     _control.Close();    
                 UnregisterHotKey(Handle, HOTKEY_ID);
             };
         }
-        
+
         protected override void WndProc(ref Message message)
         {
             base.WndProc(ref message);
             if (message.Msg == WM_HOTKEY
-                    && message.WParam.ToInt32() == HOTKEY_ID
-                    && !Visible)
-                Show();
+                    && message.WParam.ToInt32() == HOTKEY_ID)
+                Visible = !Visible;
         }
     }
 }
