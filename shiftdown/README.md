@@ -21,8 +21,9 @@ priority to 'BelowNormal' -- the procedure has worked for me.
 
 If the program is terminated, the original priority is restored.
 
-__Against the expectation, the program does not reduce the computer's
-performance, but tries to improve that all programs get enough CPU time.__
+__Against to expectations, the program does not make the computer faster, but
+tries to improve multitasking so that all programs get enough CPU time, without
+application focus and bells and whistles, it's just to improve the work.__
 
 
 ## System Requirement
