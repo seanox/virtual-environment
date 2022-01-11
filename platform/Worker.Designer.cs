@@ -42,7 +42,7 @@
             // 
             // Output
             // 
-            this.Output.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Output.Font = new System.Drawing.Font("", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Output.Location = new System.Drawing.Point(91, 13);
             this.Output.Margin = new System.Windows.Forms.Padding(0);
             this.Output.Name = "Output";
@@ -53,14 +53,15 @@
             // Label
             // 
             this.Label.AutoSize = true;
-            this.Label.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label.Font = new System.Drawing.Font("", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.GrayText;
             this.Label.Location = new System.Drawing.Point(328, 79);
             this.Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Label.Name = "Label";
-            this.Label.Size = new System.Drawing.Size(67, 13);
+            this.Label.Size = new System.Drawing.Size(77, 17);
             this.Label.TabIndex = 2;
             this.Label.Text = "seanox.com";
+            this.Label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Progress
             // 
@@ -84,7 +85,7 @@
             this.Controls.Add(this.Label);
             this.Controls.Add(this.Output);
             this.Controls.Add(this.PictureBox);
-            this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
