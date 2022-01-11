@@ -18,10 +18,9 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-using System.Drawing;
 using System.Xml.Serialization;
 
-namespace launcher
+namespace Seanox.Virtual.Environment.Launcher
 {
     [XmlRoot("settings")]
     public struct Settings

@@ -21,11 +21,10 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using launcher;
 
 // TODO: MessageBox does not show the correct icon in taskbar
 
-namespace Launcher
+namespace Seanox.Virtual.Environment.Launcher
 {
     // System Tray Icon (NotifyIcon) + menu for show + exit
     // ----
@@ -87,7 +86,7 @@ namespace Launcher
             catch (Exception)
             {
                 MessageBox.Show("The settings do not contain a usable hot key."
-                                + $"{Environment.NewLine}Please check the node /settings/hotKey in settings.xml file.",
+                                + $"{System.Environment.NewLine}Please check the node /settings/hotKey in settings.xml file.",
                     "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 System.Environment.Exit(0);  
             }
