@@ -23,11 +23,10 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using Launcher;
-
+    
 // TODO: MessageBox does not show the correct icon in taskbar
 
-namespace launcher
+namespace Seanox.Virtual.Environment.Launcher
 {
     internal static class Program
     {
@@ -56,15 +55,15 @@ namespace launcher
             catch (FileNotFoundException)
             {
                 MessageBox.Show("The settings file is missing:"
-                                + $"{Environment.NewLine}{applicationConfigurationFile}",
+                                + $"{System.Environment.NewLine}{applicationConfigurationFile}",
                     "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             catch (Exception exception)
             {
                 MessageBox.Show(("The settings file is incorrect:"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                        + $"{System.Environment.NewLine}{exception.Message}"
+                        + $"{System.Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
                     "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
