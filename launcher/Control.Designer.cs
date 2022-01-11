@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Launcher
+namespace Seanox.Virtual.Environment.Launcher
 {
     partial class Control
     {
