@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 // TODO: MessageBox does not show the correct icon in taskbar
 
-namespace Seanox.Virtual.Environment.Launcher
+namespace Seanox.Platform.Launcher
 {
     // System Tray Icon (NotifyIcon) + menu for show + exit
     // ----
@@ -58,7 +58,6 @@ namespace Seanox.Virtual.Environment.Launcher
         private const int WM_HOTKEY = 0x0312;
 
         private Control  _control;
-        private Settings _settings;
         
         internal Worker(Settings settings)
         {
@@ -72,8 +71,6 @@ namespace Seanox.Virtual.Environment.Launcher
             
             InitializeComponent();
 
-            _settings = settings;
-
             if (settings.Opacity > 0)
                 Opacity = Math.Max(settings.Opacity, 50) /100d;
             
@@ -86,9 +83,9 @@ namespace Seanox.Virtual.Environment.Launcher
             catch (Exception)
             {
                 MessageBox.Show("The settings do not contain a usable hot key."
-                                + $"{System.Environment.NewLine}Please check the node /settings/hotKey in settings.xml file.",
+                                + $"{Environment.NewLine}Please check the node /settings/hotKey in settings.xml file.",
                     "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                System.Environment.Exit(0);  
+                Environment.Exit(0);  
             }
             
             _control = new Control(settings);

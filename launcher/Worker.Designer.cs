@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Seanox.Virtual.Environment.Launcher
+namespace Seanox.Platform.Launcher
 {
     partial class Worker
     {

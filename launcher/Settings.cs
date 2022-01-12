@@ -20,7 +20,7 @@
 
 using System.Xml.Serialization;
 
-namespace Seanox.Virtual.Environment.Launcher
+namespace Seanox.Platform.Launcher
 {
     [XmlRoot("settings")]
     public struct Settings
