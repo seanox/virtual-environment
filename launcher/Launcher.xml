@@ -10,6 +10,10 @@
     System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
     https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
     https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+    
+    Proven standards:
+    - Release: Win + Esc
+    - Development: Alt + Esc 
   -->
   <hotKey>1:27</hotKey>
   <tiles>
@@ -18,7 +22,10 @@
       <index>40</index>
       <!-- Application name and tile title -->
       <title>Detach</title>
-      <!-- Icon file, optionally with index separated by colon -->
+      <!--
+        Icon file, optionally with index separated by colon.
+        Supports many image formats and icons in exe, dll, ... files.
+      -->
       <icon>%WINDIR%\system32\shell32.dll:27</icon>
       <!-- Path of the application file -->
       <destination>%PLATFORM_APP%</destination>
