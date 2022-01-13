@@ -24,6 +24,8 @@ using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text;
 
+// TODO: Check usage dispose for a robust program
+
 namespace Seanox.Platform.Launcher
 {
     internal static class Utilities
@@ -59,6 +61,24 @@ namespace Seanox.Platform.Launcher
         
         internal static class Graphics
         {
+            [DllImport("Shell32.dll", EntryPoint = "ExtractIconExW", CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+            private static extern int ExtractIconEx(string lpszFile, int nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, int nIcons);
+
+            public static Icon ExtractIcon(string file, int number, bool largeIcon)
+            {
+                IntPtr large;
+                IntPtr small;
+                ExtractIconEx(file, number, out large, out small, 1);
+                try
+                {
+                    return Icon.FromHandle(largeIcon ? large : small);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            
             internal static void DrawRoundedRect(System.Drawing.Graphics graphics, Pen pen, Rectangle bounds, int radius)
             {
                 var diameter = radius * 2;
