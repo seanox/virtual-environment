@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <!-- 
+    Opacity of background in percents (100 - 50)
+    Less than 50 does not make sense, because then the colors of the labels
+    and frames do not fit.
+  -->
+  <opacity>85</opacity>
+  <!-- 
+    System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
+    https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
+    https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+  -->
+  <hotKey>1:27</hotKey>
+  <tiles>
+    <tile>
+      <!-- Nummber of the tile (1 - 40) -->
+      <index>40</index>
+      <!-- Application name and tile title -->
+      <title>Detach</title>
+      <!-- Icon file, optionally with index separated by colon -->
+      <icon>%WINDIR%\system32\shell32.dll:27</icon>
+      <!-- Path of the application file -->
+      <destination>%PLATFORM_APP%</destination>
+      <!-- Arguments for the program start -->
+      <arguments>%HOMEDRIVE% detach</arguments>
+      <!-- Working directory in which the application is executed -->
+      <workingDirectory>%PLATFORM_HOME%</workingDirectory>
+    </tile>
+    <tile>
+      <index>17</index>
+      <title>hosts</title>
+      <icon>%WINDIR%\system32\netcenter.dll:1</icon>
+      <destination>%WINDIR%\system32\notepad.exe</destination>
+      <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
+      <workingDirectory>%APPSPATH%\HiEditor</workingDirectory>
+    </tile>
+    <tile>
+      <index>27</index>
+      <title>Services</title>
+      <destination>%WINDIR%\system32\services.msc</destination>
+      <workingDirectory>%HOMEDRIVE%%HOMEPATH%</workingDirectory>
+    </tile>
+    <tile>
+      <index>31</index>
+      <title>Console</title>
+      <destination>%APPSPATH%\Console\Console.cmd</destination>
+      <workingDirectory>%HOMEDRIVE%\</workingDirectory>
+    </tile>
+    <tile>
+      <index>38</index>
+      <title>Steps Recorder</title>
+      <destination>%WINDIR%\System32\psr.exe</destination>
+      <workingDirectory>%WINDIR%\System32</workingDirectory>
+    </tile>
+    <tile>
+      <index>39</index>
+      <title>Documents</title>
+      <icon>%WINDIR%\system32\shell32.dll:126</icon>
+      <destination>%WINDIR%\explorer.exe</destination>
+      <arguments>B:\Documents</arguments>
+    </tile>
+  </tiles>
+</settings>

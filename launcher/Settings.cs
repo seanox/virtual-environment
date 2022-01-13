@@ -18,6 +18,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace Seanox.Platform.Launcher
@@ -45,6 +46,31 @@ namespace Seanox.Platform.Launcher
 
             [XmlElement("icon")]
             public string Icon;
+
+            internal string IconFile {
+                get
+                {
+                    var iconFile = Icon;
+                    if (Icon == null
+                            || Icon.Trim().Length <= 0)
+                        iconFile = Destination;
+                    else iconFile = new Regex(":.*$").Replace(iconFile, "");
+                    return iconFile != null ? iconFile.Trim() : iconFile;
+                }
+            }
+            
+            internal int IconIndex {
+                get
+                {
+                    var iconFile = Icon;
+                    if (Icon == null
+                            || Icon.Trim().Length <= 0)
+                        return 0;
+                    iconFile = new Regex("^.*:").Replace(iconFile, "");
+                    int.TryParse(iconFile, out var iconIndex);
+                    return iconIndex;
+                }
+            }
 
             [XmlElement("destination")]
             public string Destination;
