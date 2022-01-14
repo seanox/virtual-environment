@@ -18,6 +18,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+using System;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
@@ -26,11 +27,32 @@ namespace Seanox.Platform.Launcher
     [XmlRoot("settings")]
     public struct Settings
     {
+        [XmlElement("hotKey")]
+        public string HotKey;
+
         [XmlElement("opacity")]
         public int Opacity;
 
-        [XmlElement("hotKey")]
-        public string HotKey;
+        [XmlElement("backColor")]
+        public string BackColor;
+
+        [XmlElement("foreColor")]
+        public string ForeColor;
+
+        [XmlElement("activeColor")]
+        public string ActiveColor;
+
+        [XmlElement("rasterSize")]
+        public int RasterSize;
+        
+        [XmlElement("rasterGap")]
+        public int RasterGap;
+        
+        [XmlElement("rasterPadding")]
+        public int RasterPadding;
+        
+        [XmlElement("fontSize")]
+        public double FontSize;
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
@@ -51,8 +73,7 @@ namespace Seanox.Platform.Launcher
                 get
                 {
                     var iconFile = Icon;
-                    if (Icon == null
-                            || Icon.Trim().Length <= 0)
+                    if (String.IsNullOrWhiteSpace(Icon))
                         iconFile = Destination;
                     else iconFile = new Regex(":.*$").Replace(iconFile, "");
                     return iconFile != null ? iconFile.Trim() : iconFile;
@@ -63,8 +84,7 @@ namespace Seanox.Platform.Launcher
                 get
                 {
                     var iconFile = Icon;
-                    if (Icon == null
-                            || Icon.Trim().Length <= 0)
+                    if (String.IsNullOrWhiteSpace(Icon))
                         return 0;
                     iconFile = new Regex("^.*:").Replace(iconFile, "");
                     int.TryParse(iconFile, out var iconIndex);
