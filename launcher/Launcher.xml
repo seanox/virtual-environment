@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
   <!-- 
-    Opacity of background in percents (100 - 50)
-    Less than 50 does not make sense, because then the colors of the labels
-    and frames do not fit.
-  -->
-  <opacity>85</opacity>
-  <!-- 
     System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
-    https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
+    https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey#parameters
     https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
     
     Proven standards:
     - Release: Win + Esc
-    - Development: Alt + Esc 
+    - Development: Alt + Esc
+    
+    Default value: 8:27 
   -->
   <hotKey>1:27</hotKey>
+  <!-- 
+    Opacity of background in percents (100 - 50)
+    Less than 50 does not make sense, because then the colors of the labels
+    and frames do not fit.
+    
+    Default value: 85
+  -->
+  <opacity>85</opacity>
+  <!-- TODO -->
+  <backColor></backColor>
+  <!-- TODO -->
+  <foreColor></foreColor>
+  <!-- TODO -->
+  <activeColor></activeColor>
+  <!-- TODO -->
+  <rasterSize></rasterSize>
+  <!-- TODO -->
+  <rasterGap></rasterGap>
+  <!-- TODO -->
+  <rasterPadding></rasterPadding>
+  <!-- TODO -->
+  <fontSize></fontSize>
   <tiles>
     <tile>
       <!-- Nummber of the tile (1 - 40) -->
@@ -51,6 +69,7 @@
     <tile>
       <index>31</index>
       <title>Console</title>
+      <icon>%WINDIR%\System32\cmd.exe</icon>
       <destination>%APPSPATH%\Console\Console.cmd</destination>
       <workingDirectory>%HOMEDRIVE%\</workingDirectory>
     </tile>
