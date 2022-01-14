@@ -23,15 +23,17 @@
   <!-- TODO -->
   <backColor></backColor>
   <!-- TODO -->
-  <foreColor></foreColor>
+  <baseColor></baseColor>
   <!-- TODO -->
-  <activeColor></activeColor>
+  <foreColor></foreColor>
+  
   <!-- TODO -->
   <rasterSize></rasterSize>
   <!-- TODO -->
   <rasterGap></rasterGap>
   <!-- TODO -->
   <rasterPadding></rasterPadding>
+  
   <!-- TODO -->
   <fontSize></fontSize>
   <tiles>

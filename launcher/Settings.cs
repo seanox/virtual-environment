@@ -35,12 +35,12 @@ namespace Seanox.Platform.Launcher
 
         [XmlElement("backColor")]
         public string BackColor;
-
+        
+        [XmlElement("baseColor")]
+        public string BaseColor;
+        
         [XmlElement("foreColor")]
         public string ForeColor;
-
-        [XmlElement("activeColor")]
-        public string ActiveColor;
 
         [XmlElement("rasterSize")]
         public int RasterSize;
@@ -52,7 +52,7 @@ namespace Seanox.Platform.Launcher
         public int RasterPadding;
         
         [XmlElement("fontSize")]
-        public double FontSize;
+        public float FontSize;
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
