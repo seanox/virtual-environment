@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -72,9 +73,9 @@ namespace Seanox.Platform.Launcher
             
             InitializeComponent();
 
-            if (settings.Opacity > 0)
-                Opacity = Math.Max(settings.Opacity, 50) /100d;
-            
+            Opacity = Math.Min(Math.Max(settings.Opacity, 50), 100) /100d;
+            BackColor = ColorTranslator.FromHtml(settings.BackgroundColor);
+
             try
             {
                 var matchGroups = new Regex(@"^\s*(\d+)\s*:\s*(\d+)\s*$").Matches(settings.HotKey)[0].Groups;

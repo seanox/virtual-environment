@@ -14,11 +14,11 @@
   <hotKey>1:27</hotKey>
 
   <!-- TODO -->
-  <gridSize></gridSize>
+  <gridSize>99</gridSize>
   <!-- TODO -->
-  <gridGap></gridGap>
+  <gridGap>25</gridGap>
   <!-- TODO -->
-  <gridPadding></gridPadding>
+  <gridPadding>10</gridPadding>
 
   <!-- 
     Opacity of background in percents (100 - 50)
@@ -28,18 +28,50 @@
     Default value: 85
   -->
   <opacity>85</opacity>
+  
+  <!--
+    Coloring
+    
+        backgroundColor
+    General background color
+    Default value: #000000
 
-  <!-- TODO -->
-  <backgroundColor></backgroundColor>
-  <!-- TODO -->
-  <foregroundColor></foregroundColor>
-  <!-- TODO -->
-  <borderColor></borderColor>
-  <!-- TODO -->
-  <highlightColor></highlightColor>
+        foregroundColor
+    General foreground color
+    Default value: #C8C8C8
 
-  <!-- TODO -->
-  <fontSize></fontSize>
+        borderColor
+    Border color from grid
+    Default value: #646464
+    
+        highlightColor 
+    Color for highlighting (e.g. navigation)
+    Default value: #FAB400
+  -->
+  
+  <!-- Dark Coloring (default) -->
+  <!--
+  <backgroundColor>#000000</backgroundColor>
+  <foregroundColor>#C8C8C8</foregroundColor>
+  <borderColor>#646464</borderColor>
+  <highlightColor>#FAB400</highlightColor>
+  -->
+  
+  <!-- Light Coloring -->
+  <!--
+  <backgroundColor>#000000</backgroundColor>
+  <foregroundColor>#C8C8C8</foregroundColor>
+  <borderColor>#646464</borderColor>
+  <highlightColor>#FAB400</highlightColor>
+  -->
+
+  <!--
+    TODO
+    
+    Default value: 9.75
+  -->
+  <fontSize>9.75</fontSize>
+
   <tiles>
     <tile>
       <!-- Nummber of the tile (1 - 40) -->
