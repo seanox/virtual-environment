@@ -27,20 +27,20 @@ namespace Seanox.Platform.Launcher
     [XmlRoot("settings")]
     public class Settings
     {
-        internal const string HOT_KEY = "1:27";
+        private const string HOT_KEY = "1:27";
 
-        internal const int GRID_SIZE    = 99;
-        internal const int GRID_GAP     = 25;
-        internal const int GRID_PADDING = 10;
+        private  const int GRID_SIZE    = 99;
+        private  const int GRID_GAP     = 25;
+        private  const int GRID_PADDING = 10;
         
-        internal const int OPACITY = 90;
+        private  const int OPACITY = 90;
         
-        internal const string BACKGROUND_COLOR = "#0F0A07";
-        internal const string FOREGROUND_COLOR = "#999999";
-        internal const string BORDER_COLOR     = "#FFAA44";
-        internal const string HIGHLIGHT_COLOR  = "#FFAA44";
+        private  const string BACKGROUND_COLOR = "#0F0A07";
+        private  const string FOREGROUND_COLOR = "#999999";
+        private  const string BORDER_COLOR     = "#FFAA44";
+        private  const string HIGHLIGHT_COLOR  = "#FFAA44";
         
-        internal const float FONT_SIZE = 9.75f;
+        private  const float FONT_SIZE = 9.75f;
 
         public Settings()
         {
