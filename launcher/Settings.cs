@@ -33,7 +33,7 @@ namespace Seanox.Platform.Launcher
         private  const int GRID_GAP     = 25;
         private  const int GRID_PADDING = 10;
         
-        private  const int OPACITY = 90;
+        private  const int OPACITY = 85;
         
         private  const string BACKGROUND_COLOR = "#0F0A07";
         private  const string FOREGROUND_COLOR = "#999999";
