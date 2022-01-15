@@ -46,16 +46,16 @@ namespace Seanox.Platform.Launcher
         {
             HotKey = HOT_KEY;
             
-            GridSize = GRID_SIZE;
-            GridGap = GRID_GAP;
+            GridSize    = GRID_SIZE;
+            GridGap     = GRID_GAP;
             GridPadding = GRID_PADDING;
             
             Opacity = OPACITY;
             
             BackgroundColor = BACKGROUND_COLOR;
             ForegroundColor = FOREGROUND_COLOR;
-            BorderColor = BORDER_COLOR;
-            HighlightColor = HIGHLIGHT_COLOR;
+            BorderColor     = BORDER_COLOR;
+            HighlightColor  = HIGHLIGHT_COLOR;
             
             FontSize = FONT_SIZE;
             
