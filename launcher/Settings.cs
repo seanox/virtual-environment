@@ -27,24 +27,35 @@ namespace Seanox.Platform.Launcher
     [XmlRoot("settings")]
     public class Settings
     {
+        private string _hotKey;
+        private string _backgroundColor; 
+        private string _foregroundColor;
+        private string _borderColor;
+        private string _highlightColor;
+
         private const string HOT_KEY = "1:27";
 
-        private  const int GRID_SIZE    = 99;
-        private  const int GRID_GAP     = 25;
-        private  const int GRID_PADDING = 10;
+        private const int GRID_SIZE    = 99;
+        private const int GRID_GAP     = 25;
+        private const int GRID_PADDING = 10;
         
-        private  const int OPACITY = 85;
+        private const int OPACITY = 85;
         
-        private  const string BACKGROUND_COLOR = "#0F0A07";
-        private  const string FOREGROUND_COLOR = "#999999";
-        private  const string BORDER_COLOR     = "#FFAA44";
-        private  const string HIGHLIGHT_COLOR  = "#FFAA44";
+        private const string BACKGROUND_COLOR = "#000000";
+        private const string FOREGROUND_COLOR = "#C8C8C8";
+        private const string BORDER_COLOR     = "#646464";
+        private const string HIGHLIGHT_COLOR  = "#FAB400";
         
-        private  const float FONT_SIZE = 9.75f;
+        private const float FONT_SIZE = 9.75f;
+
+        private static Regex PATTERN_HOT_KEY = new Regex(@"^0*([1248])\s*:\s*0*(\d{1,3})$");
+        private static Regex PATTERN_BYTE    = new Regex("^0*([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5])$");
+        private static Regex PATTERN_COLOR   = new Regex("^(#(?:[0-9A-F]{3}){1,2})$", RegexOptions.IgnoreCase);
+        private static Regex PATTERN_ICON    = new Regex(@"^(.*?)\s*(?::\s*([^:]*)){0,1}$");
 
         public Settings()
         {
-            HotKey = HOT_KEY;
+            _hotKey = HOT_KEY;
             
             GridSize    = GRID_SIZE;
             GridGap     = GRID_GAP;
@@ -52,42 +63,70 @@ namespace Seanox.Platform.Launcher
             
             Opacity = OPACITY;
             
-            BackgroundColor = BACKGROUND_COLOR;
-            ForegroundColor = FOREGROUND_COLOR;
-            BorderColor     = BORDER_COLOR;
-            HighlightColor  = HIGHLIGHT_COLOR;
+            _backgroundColor = BACKGROUND_COLOR;
+            _foregroundColor = FOREGROUND_COLOR;
+            _borderColor     = BORDER_COLOR;
+            _highlightColor  = HIGHLIGHT_COLOR;
             
             FontSize = FONT_SIZE;
             
             Tiles = Array.Empty<Tile>();
         }
 
-        [XmlElement("hotKey")]
-        public string HotKey;
+        private static string NormalizeValue(Regex pattern, string value, string standard)
+        {
+            if (String.IsNullOrWhiteSpace(value)
+                    || !pattern.IsMatch(value))
+                return standard;
+            return value.Trim();
+        }
 
-        [XmlElement("rasterSize")]
+        [XmlElement("hotKey")]
+        public string HotKey
+        {
+            get => _hotKey;
+            set => _hotKey = NormalizeValue(PATTERN_HOT_KEY, value, HOT_KEY);
+        }
+
+        [XmlElement("gridSize")]
         public int GridSize;
         
-        [XmlElement("rasterGap")]
+        [XmlElement("gridGap")]
         public int GridGap;
         
-        [XmlElement("rasterPadding")]
+        [XmlElement("gridPadding")]
         public int GridPadding;
 
         [XmlElement("opacity")]
         public int Opacity;
 
         [XmlElement("backgroundColor")]
-        public string BackgroundColor;
-        
+        public string BackgroundColor
+        {
+            get => _backgroundColor;
+            set => _backgroundColor = NormalizeValue(PATTERN_COLOR, value, BACKGROUND_COLOR);
+        }
+
         [XmlElement("foregroundColor")]
-        public string ForegroundColor;
-        
+        public string ForegroundColor
+        {
+            get => _foregroundColor;
+            set => _foregroundColor = NormalizeValue(PATTERN_COLOR, value, FOREGROUND_COLOR);
+        }
+
         [XmlElement("borderColor")]
-        public string BorderColor;
+        public string BorderColor
+        {
+            get => _borderColor;
+            set => _borderColor = NormalizeValue(PATTERN_COLOR, value, BORDER_COLOR);
+        }
         
         [XmlElement("highlightColor")]
-        public string HighlightColor;
+        public string HighlightColor
+        {
+            get => _highlightColor;
+            set => _backgroundColor = NormalizeValue(PATTERN_COLOR, value, HIGHLIGHT_COLOR);
+        }
         
         [XmlElement("fontSize")]
         public float FontSize;
@@ -98,14 +137,28 @@ namespace Seanox.Platform.Launcher
         
         public class Tile
         {
+            private string _title;
+            private string _icon;
+            private string _destination;
+            private string _arguments;
+            private string _workingDirectory;
+            
             [XmlElement("index")]
             public int Index;
-
+            
             [XmlElement("title")]
-            public string Title;
-
+            public string Title
+            {
+                get => _title;
+                set => _title = value.Trim();
+            }
+            
             [XmlElement("icon")]
-            public string Icon;
+            public string Icon
+            {
+                get => _icon;
+                set => _icon = value.Trim();
+            }
 
             internal string IconFile {
                 get
@@ -113,7 +166,7 @@ namespace Seanox.Platform.Launcher
                     var iconFile = Icon;
                     if (String.IsNullOrWhiteSpace(Icon))
                         iconFile = Destination;
-                    else iconFile = new Regex(":.*$").Replace(iconFile, "");
+                    else iconFile = iconFile = PATTERN_ICON.Replace(iconFile, "$1");
                     return iconFile != null ? iconFile.Trim() : iconFile;
                 }
             }
@@ -124,20 +177,32 @@ namespace Seanox.Platform.Launcher
                     var iconFile = Icon;
                     if (String.IsNullOrWhiteSpace(Icon))
                         return 0;
-                    iconFile = new Regex("^.*:").Replace(iconFile, "");
+                    iconFile = PATTERN_ICON.Replace(iconFile, "$2");
                     int.TryParse(iconFile, out var iconIndex);
                     return iconIndex;
                 }
             }
 
             [XmlElement("destination")]
-            public string Destination;
+            public string Destination
+            {
+                get => _destination;
+                set => _destination = value.Trim();
+            }
 
             [XmlElement("arguments")]
-            public string Arguments;
+            public string Arguments
+            {
+                get => _arguments;
+                set => _arguments = value.Trim();
+            }
 
             [XmlElement("workingDirectory")]
-            public string WorkingDirectory;
+            public string WorkingDirectory
+            {
+                get => _workingDirectory;
+                set => _workingDirectory = value.Trim();
+            }
         }
     }
 }
