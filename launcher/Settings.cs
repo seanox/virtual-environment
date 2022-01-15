@@ -25,31 +25,69 @@ using System.Xml.Serialization;
 namespace Seanox.Platform.Launcher
 {
     [XmlRoot("settings")]
-    public struct Settings
+    public class Settings
     {
+        internal const string HOT_KEY = "1:27";
+
+        internal const int GRID_SIZE    = 99;
+        internal const int GRID_GAP     = 25;
+        internal const int GRID_PADDING = 10;
+        
+        internal const int OPACITY = 90;
+        
+        internal const string BACKGROUND_COLOR = "#0F0A07";
+        internal const string FOREGROUND_COLOR = "#999999";
+        internal const string BORDER_COLOR     = "#FFAA44";
+        internal const string HIGHLIGHT_COLOR  = "#FFAA44";
+        
+        internal const float FONT_SIZE = 9.75f;
+
+        public Settings()
+        {
+            HotKey = HOT_KEY;
+            
+            GridSize = GRID_SIZE;
+            GridGap = GRID_GAP;
+            GridPadding = GRID_PADDING;
+            
+            Opacity = OPACITY;
+            
+            BackgroundColor = BACKGROUND_COLOR;
+            ForegroundColor = FOREGROUND_COLOR;
+            BorderColor = BORDER_COLOR;
+            HighlightColor = HIGHLIGHT_COLOR;
+            
+            FontSize = FONT_SIZE;
+            
+            Tiles = Array.Empty<Tile>();
+        }
+
         [XmlElement("hotKey")]
         public string HotKey;
+
+        [XmlElement("rasterSize")]
+        public int GridSize;
+        
+        [XmlElement("rasterGap")]
+        public int GridGap;
+        
+        [XmlElement("rasterPadding")]
+        public int GridPadding;
 
         [XmlElement("opacity")]
         public int Opacity;
 
-        [XmlElement("backColor")]
-        public string BackColor;
+        [XmlElement("backgroundColor")]
+        public string BackgroundColor;
         
-        [XmlElement("baseColor")]
-        public string BaseColor;
+        [XmlElement("foregroundColor")]
+        public string ForegroundColor;
         
-        [XmlElement("foreColor")]
-        public string ForeColor;
-
-        [XmlElement("rasterSize")]
-        public int RasterSize;
+        [XmlElement("borderColor")]
+        public string BorderColor;
         
-        [XmlElement("rasterGap")]
-        public int RasterGap;
-        
-        [XmlElement("rasterPadding")]
-        public int RasterPadding;
+        [XmlElement("highlightColor")]
+        public string HighlightColor;
         
         [XmlElement("fontSize")]
         public float FontSize;
@@ -58,7 +96,7 @@ namespace Seanox.Platform.Launcher
         [XmlArrayItem("tile", typeof(Tile))]
         public Tile[] Tiles;
         
-        public struct Tile
+        public class Tile
         {
             [XmlElement("index")]
             public int Index;

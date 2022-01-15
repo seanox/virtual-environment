@@ -12,6 +12,14 @@
     Default value: 8:27 
   -->
   <hotKey>1:27</hotKey>
+
+  <!-- TODO -->
+  <gridSize></gridSize>
+  <!-- TODO -->
+  <gridGap></gridGap>
+  <!-- TODO -->
+  <gridPadding></gridPadding>
+
   <!-- 
     Opacity of background in percents (100 - 50)
     Less than 50 does not make sense, because then the colors of the labels
@@ -20,20 +28,16 @@
     Default value: 85
   -->
   <opacity>85</opacity>
+
   <!-- TODO -->
-  <backColor></backColor>
+  <backgroundColor></backgroundColor>
   <!-- TODO -->
-  <baseColor></baseColor>
+  <foregroundColor></foregroundColor>
   <!-- TODO -->
-  <foreColor></foreColor>
-  
+  <borderColor></borderColor>
   <!-- TODO -->
-  <rasterSize></rasterSize>
-  <!-- TODO -->
-  <rasterGap></rasterGap>
-  <!-- TODO -->
-  <rasterPadding></rasterPadding>
-  
+  <highlightColor></highlightColor>
+
   <!-- TODO -->
   <fontSize></fontSize>
   <tiles>
