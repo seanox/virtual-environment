@@ -20,6 +20,7 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -27,43 +28,61 @@ using Microsoft.Win32;
 // TODO: Tiles: Navigation Up, Down, Left, Right
 // TODO: OnKeyDown for all shortcuts (according to the keyboard layout)
 // TODO: Rebuild when the keyboard layout changes
+// TODO: Check usage dispose for a robust program
+// TODO: Reload if the configuration file changes
+// TODO: When resize (OnResize) the hide
 
 namespace Seanox.Platform.Launcher
 {
     internal partial class Control : Form
     {
-        private const int RASTER_SIZE = 99;
-        private const int RASTER_GAP = 25;
-        private const int RASTER_COLUMNS = 10;
-        private const int RASTER_ROWS = 4;
-
-        private const int RASTER_COUNT = RASTER_COLUMNS * RASTER_ROWS;
-            
-        private const int RASTER_HEIGHT = ((RASTER_SIZE + RASTER_GAP) * RASTER_ROWS) - RASTER_GAP;
-        private const int RASTER_WIDTH = ((RASTER_SIZE + RASTER_GAP) * RASTER_COLUMNS) - RASTER_GAP;
-        private const int RASTER_HEIGHT_BORDERED = RASTER_HEIGHT + (RASTER_GAP * 2); 
-        private const int RASTER_WIDTH_BORDERED = RASTER_WIDTH + (RASTER_GAP * 2);
+        private readonly Settings Settings;
 
         private readonly MetaTile[] _metaTiles;
+
+        private readonly int GridSize;
+        private readonly int GridGap;
+        private readonly int GridColumns;
+        private readonly int GridRows;
+        private readonly int GridPadding;
+        
+        private int GridCount  => GridColumns * GridRows;
+        private int GridHeight => ((GridSize + GridGap) * GridRows) - GridGap;
+        private int GridWidth  => ((GridSize + GridGap) * GridColumns) - GridGap;
+
+        private int GridHeightBordered => GridHeight + (GridGap * 2);
+        private int GridWidthBordered  => GridWidth + (GridGap * 2);
 
         internal Control(Settings settings)
         {
             WindowState = FormWindowState.Normal;
             FormBorderStyle = FormBorderStyle.None;
-            Bounds = Screen.PrimaryScreen.Bounds;            
+            Bounds = Screen.PrimaryScreen.Bounds;
 
             #if DEBUG
             TopMost = false;
             #endif
+
+            Settings = settings;
+            
+            GridSize    = settings.GridSize;
+            GridGap     = settings.GridGap;
+            GridColumns = 10;
+            GridRows    = 4;
+            GridPadding = settings.GridPadding;
       
-            _metaTiles = new MetaTile[RASTER_COUNT];
-            for (var index = 0; index < RASTER_COUNT; index++)
-                _metaTiles[index] = MetaTile.Create(this, index);
+            // The index for the configuration starts user-friendly with 1, but
+            // internally it is technically started with 0. Therefore the index
+            // in the configuration is different!
+            
+            _metaTiles = new MetaTile[GridCount];
+            for (var index = 0; index < GridCount; index++)
+                _metaTiles[index] = MetaTile.Create(this, new Settings.Tile() {Index = index +1});
             
             foreach (var tile in settings.Tiles)
-                if (tile.Index <= RASTER_COUNT
+                if (tile.Index <= GridCount
                         && tile.Index > 0)
-                    _metaTiles[tile.Index - 1].Tile = tile;
+                    _metaTiles[tile.Index - 1] = MetaTile.Create(this, tile);
 
             foreach (var metaTile in _metaTiles)
                 AttachMetaTile(metaTile);
@@ -81,13 +100,13 @@ namespace Seanox.Platform.Launcher
             OnVisualSettingsChanged(null, null);
         }
 
-        private int _cursor;
+        private int _cursor = -1;
 
         private void AttachMetaTile(MetaTile metaTile)
         {
             Controls.Add(metaTile.Controls.ShortcutLabel);
-            Controls.Add(metaTile.Controls.TitleLabel);
             Controls.Add(metaTile.Controls.IconPictureBox);
+            Controls.Add(metaTile.Controls.TitleLabel);
         }
 
         private void OnVisualSettingsChanged(object sender, EventArgs eventArgs)
@@ -96,8 +115,8 @@ namespace Seanox.Platform.Launcher
                 metaTiles.Hide();
 
             Message.Text = "";
-            if (Screen.FromControl(this).Bounds.Width < RASTER_WIDTH_BORDERED
-                    || Screen.FromControl(this).Bounds.Height < RASTER_HEIGHT_BORDERED)
+            if (Screen.FromControl(this).Bounds.Width < GridWidthBordered
+                    || Screen.FromControl(this).Bounds.Height < GridHeightBordered)
                 Message.Text = "The resolution is too low to show the tiles.";
             else foreach (var metaTile in _metaTiles)
                 metaTile.Show();
@@ -108,45 +127,60 @@ namespace Seanox.Platform.Launcher
             Visible = false;
         }
         
+        private void OnClick(object sender, EventArgs eventArgs)
+        {
+            if ((sender is System.Windows.Forms.Control control)
+                    && (control.Tag is MetaTile metaTile))
+                SelectMetaTile(metaTile);    
+        }
+        
         private void SelectMetaTile(MetaTile metaTile)
         {
+            _cursor = metaTile.Index;
             foreach (var metaTileEntry in _metaTiles)
                 metaTileEntry.Selected = metaTileEntry.Equals(metaTile);
         }
         
         private void OnKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
+            if (_cursor < 0
+                    && (new Keys[] {Keys.Left, Keys.Back, Keys.Up}).Contains(keyEventArgs.KeyCode))
+                _cursor = 0;
+            if (_cursor < 0
+                    && (new Keys[] {Keys.Right, Keys.Tab, Keys.Down}).Contains(keyEventArgs.KeyCode))
+                _cursor = GridCount;
+
             switch (keyEventArgs.KeyCode)
             {
-                case Keys.Escape:
+                case (Keys.Escape):
                     Visible = false;
                     break;
                 case Keys.Left:
                 case Keys.Back:
                     if (_cursor <= 0)
-                        _cursor = RASTER_COUNT;
+                        _cursor = GridCount;
                     _cursor--;
                     break;
                 case Keys.Right:
                 case Keys.Tab:
-                    if (_cursor + 1 >= RASTER_COUNT)
+                    if (_cursor + 1 >= GridCount)
                         _cursor = -1;
                     _cursor++;
                     break;
                 case Keys.Up:
-                    if (_cursor < RASTER_COLUMNS
+                    if (_cursor < GridColumns
                             && _cursor > 0)
-                        _cursor += RASTER_COUNT - 1;
-                    _cursor -= RASTER_COLUMNS;
+                        _cursor += GridCount - 1;
+                    _cursor -= GridColumns;
                     if (_cursor < 0)
-                        _cursor = RASTER_COUNT - 1;
+                        _cursor = GridCount - 1;
                     break;
                 case Keys.Down:
-                    if (_cursor >= RASTER_COUNT -RASTER_COLUMNS
-                            && _cursor < RASTER_COUNT -1)
-                        _cursor = (_cursor -RASTER_COUNT) +1;
-                    _cursor += RASTER_COLUMNS;
-                    if (_cursor >= RASTER_COUNT)
+                    if (_cursor >= GridCount -GridColumns
+                            && _cursor < GridCount - 1)
+                        _cursor = (_cursor - GridCount) + 1;
+                    _cursor += GridColumns;
+                    if (_cursor >= GridCount)
                         _cursor = 0;
                     break;
                 case Keys.Enter:
@@ -154,53 +188,29 @@ namespace Seanox.Platform.Launcher
                     break;
             }
 
-            SelectMetaTile(_metaTiles[_cursor]);
+            if (_cursor >= 0)
+                SelectMetaTile(_metaTiles[_cursor]);
         }
         
         private class MetaTile
         {
-            internal Settings.Tile Tile {get; set;}
-
-            private Control Control {get; set;}
+            private readonly Settings.Tile Tile;
+            private readonly Control Control;
+            private readonly int ScanCode;
+            private readonly string Symbol;
             
-            internal int Index {get; private set;}
-
-            internal int ScanCode {get; private set;}
-            
-            internal string Symbol {get; private set;}
-
-            internal MetaTileControls Controls {get; private set;}
+            internal readonly int Index;
+            internal readonly MetaTileControls Controls;
 
             private bool _selected;
-            
-            private static readonly Color PASSIVE_COLOR = ((Func<Color>)(() =>
-                    Color.FromArgb(100, 100, 100)))();
 
-            private static readonly Color ACTIVE_COLOR = ((Func<Color>)(() =>
-                    Color.FromArgb(250, 180, 0)))();
-            
-            private static readonly Color SHORTCUT_COLOR = ACTIVE_COLOR;
+            private readonly Color BackgroundColor;
+            private readonly Color BorderColor;
+            private readonly Color ForegroundColor;
+            private readonly Color HighlightColor;
 
-            private static readonly Color TITLE_COLOR = ((Func<Color>)(() =>
-                    Color.FromArgb(200, 200, 200)))();
-
-            private static readonly Image PASSIVE_BORDER_IMAGE = ((Func<Image>)(() =>
-            {
-                var borderImage = new Bitmap(RASTER_SIZE, RASTER_SIZE);
-                var borderImageGraphics = Graphics.FromImage(borderImage);
-                Utilities.Graphics.DrawRoundedRect(borderImageGraphics, new Pen(new SolidBrush(PASSIVE_COLOR)),
-                        new Rectangle(0, 0,RASTER_SIZE -1,RASTER_SIZE -1), 1);
-                return borderImage;
-            }))();
-                
-            private static readonly Image ACTIVE_BORDER_IMAGE = ((Func<Image>)(() =>
-            {
-                var borderImage = new Bitmap(RASTER_SIZE, RASTER_SIZE);
-                var borderImageGraphics = Graphics.FromImage(borderImage);
-                Utilities.Graphics.DrawRoundedRect(borderImageGraphics, new Pen(new SolidBrush(ACTIVE_COLOR)),
-                        new Rectangle(0, 0,RASTER_SIZE -1,RASTER_SIZE -1), 1);
-                return borderImage;
-            }))();
+            private readonly Image ActiveBorderImage;
+            private readonly Image PassiveBorderImage;
 
             internal bool Selected
             {
@@ -211,16 +221,18 @@ namespace Seanox.Platform.Launcher
                         return;
                     _selected = value;
                     Controls.TitleLabel.BackgroundImage =
-                        _selected ? ACTIVE_BORDER_IMAGE : PASSIVE_BORDER_IMAGE;
+                        _selected ? ActiveBorderImage : PassiveBorderImage;
                 }
             }
 
-            private MetaTile()
+            private MetaTile(Control control, Settings.Tile tile)
             {
-            }
+                // The index for the configuration starts user-friendly with 1,
+                // but internally it is technically started with 0. Therefore
+                // the index in the configuration is different!
+                
+                var index = tile.Index - 1;
 
-            internal static MetaTile Create(Control control, int index)
-            {
                 // The following scan codes are used:
                 // 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B
                 // 0x10 0x11 0x12 0x13 0x14 0x15 0x16 0x17 0x18 0x19
@@ -237,62 +249,112 @@ namespace Seanox.Platform.Launcher
 
                 var radix = ((int)Math.Floor(index / 10d)) * 14;
                 var scanCode = radix + (index - (10 * (radix / 14))) + 2;
-                
-                return new MetaTile()
+
+                var imageSize = (int)Math.Floor(control.GridSize / 2d);
+                var imageFile = Environment.ExpandEnvironmentVariables(tile.IconFile ?? "");
+                var image = Utilities.Graphics.ImageOf(imageFile, tile.IconIndex);
+                if (image != null)
                 {
-                    Control = control,
-                    Index = index,
-                    ScanCode = scanCode, 
-                    Symbol = Utilities.ScanCode.ToString(scanCode),
-                    Controls = new MetaTileControls()
-                    {
-                        IconPictureBox = new PictureBox()
-                        {
-                            // TODO:
-                        },
-                        TitleLabel = new Label()
-                        {
-                            Width = RASTER_SIZE,
-                            Height = RASTER_SIZE,
-                            Padding = new Padding(10, 10, 10, 10),
+                    var scaleFactor = 1f;
+                    scaleFactor = Math.Min(imageSize / (float)image.Height, scaleFactor);
+                    scaleFactor = Math.Min(imageSize / (float)image.Width, scaleFactor);
+                    if (scaleFactor < 1)
+                        image = Utilities.Graphics.ResizeImage(image, (int)(image.Width *scaleFactor), (int)(image.Height *scaleFactor));        
+                }
 
-                            Font = new Font(SystemFonts.DefaultFont.FontFamily, 9.75f, FontStyle.Regular),
-                            ForeColor = TITLE_COLOR,
-                            TextAlign = ContentAlignment.BottomCenter,
-                            Text = "TODO",
+                Control = control;
 
-                            BackgroundImage = PASSIVE_BORDER_IMAGE
-                        },
-                        ShortcutLabel = new Label()
-                        {
-                            AutoSize = true,
+                BackgroundColor = ColorTranslator.FromHtml(control.Settings.BackgroundColor);
+                BorderColor     = ColorTranslator.FromHtml(control.Settings.BorderColor);
+                ForegroundColor = ColorTranslator.FromHtml(control.Settings.ForegroundColor);
+                HighlightColor  = ColorTranslator.FromHtml(control.Settings.HighlightColor);
 
-                            Font = new Font(SystemFonts.DefaultFont.FontFamily, 9.75f, FontStyle.Regular),
-                            ForeColor = SHORTCUT_COLOR,
-                            TextAlign = ContentAlignment.TopLeft,
-                            Text = Utilities.ScanCode.ToString(scanCode)
-                        }
-                    }
+                PassiveBorderImage = new Bitmap(Control.GridSize, Control.GridSize); 
+                var passiveBorderImageGraphics = Graphics.FromImage(PassiveBorderImage);
+                Utilities.Graphics.DrawRectangleRounded(passiveBorderImageGraphics, new Pen(new SolidBrush(BorderColor)),
+                    new Rectangle(0, 0,Control.GridSize -1,Control.GridSize -1), 1);
+
+                ActiveBorderImage = new Bitmap(Control.GridSize, Control.GridSize);
+                var activeBorderImageGraphics = Graphics.FromImage(ActiveBorderImage);
+                Utilities.Graphics.DrawRectangleRounded(activeBorderImageGraphics, new Pen(new SolidBrush(HighlightColor)),
+                    new Rectangle(0, 0,Control.GridSize -1,Control.GridSize -1), 1);
+
+                var iconPictureBox = new PictureBox()
+                {
+                    Width = imageSize,
+                    Height = imageSize,
+                    SizeMode = PictureBoxSizeMode.CenterImage,
+                    Image = image,
+                    Tag = this
                 };
+                iconPictureBox.Click += Control.OnClick;
+                
+                var titleLabel = new Label()
+                {
+                    Width = Control.GridSize,
+                    Height = Control.GridSize,
+                    Padding = new Padding(Control.GridPadding),
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, Control.Settings.FontSize, FontStyle.Regular),
+                    ForeColor = ForegroundColor,
+                    TextAlign = ContentAlignment.BottomCenter,
+                    BackgroundImage = PassiveBorderImage,
+                    Text = tile.Title,
+                    Tag = this
+                };
+                titleLabel.Click += Control.OnClick;
+                
+                var shortcutLabel = new Label()
+                {
+                    AutoSize = true,
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, 9.75f, FontStyle.Regular),
+                    ForeColor = HighlightColor,
+                    TextAlign = ContentAlignment.TopLeft,
+                    Text = Utilities.ScanCode.ToString(scanCode),
+                    Tag = this
+                };
+                shortcutLabel.Click += Control.OnClick;
+                
+                Index = index;
+                ScanCode = scanCode;
+                Tile = tile;
+                Symbol = Utilities.ScanCode.ToString(scanCode);
+                Controls = MetaTileControls.Create(iconPictureBox, titleLabel, shortcutLabel);
+            }
+
+            internal static MetaTile Create(Control control, Settings.Tile tile)
+            {
+                return new MetaTile(control, tile);
             }
             
             internal class MetaTileControls
             {
-                internal PictureBox IconPictureBox {get; set;}
-                internal Label TitleLabel {set; get;}
-                internal Label ShortcutLabel {get; set;}
+                internal readonly PictureBox IconPictureBox;
+                internal readonly Label TitleLabel;
+                internal readonly Label ShortcutLabel;
+
+                private MetaTileControls(PictureBox iconPictureBox, Label titleLabel, Label shortcutLabel)
+                {
+                    IconPictureBox = iconPictureBox;
+                    TitleLabel = titleLabel;
+                    ShortcutLabel = shortcutLabel;
+                }
+
+                internal static MetaTileControls Create(PictureBox iconPictureBox, Label titleLabel, Label shortcutLabel)
+                {
+                    return new MetaTileControls(iconPictureBox, titleLabel, shortcutLabel);
+                }
             }
 
             private Point Location {
                 get
                 {
-                    var rasterStartX = (Screen.FromControl(Control).Bounds.Width - RASTER_WIDTH) / 2;
-                    var rasterStartY = (Screen.FromControl(Control).Bounds.Height - RASTER_HEIGHT) / 2;
-                    var tileRasterColumn = Index % RASTER_COLUMNS;
-                    var tileRasterRow = (int)Math.Floor((float)Index / RASTER_COLUMNS);
+                    var rasterStartX = (Screen.FromControl(Control).Bounds.Width - Control.GridWidth) / 2;
+                    var rasterStartY = (Screen.FromControl(Control).Bounds.Height - Control.GridHeight) / 2;
+                    var tileRasterColumn = Index % Control.GridColumns;
+                    var tileRasterRow = (int)Math.Floor((float)Index / Control.GridColumns);
 
-                    var tileStartX = rasterStartX + ((tileRasterColumn * (RASTER_SIZE + RASTER_GAP)));
-                    var tileStartY = rasterStartY + ((tileRasterRow * (RASTER_SIZE + RASTER_GAP)));
+                    var tileStartX = rasterStartX + ((tileRasterColumn * (Control.GridSize + Control.GridGap)));
+                    var tileStartY = rasterStartY + ((tileRasterRow * (Control.GridSize + Control.GridGap)));
 
                     return new Point(tileStartX, tileStartY);
                 }
@@ -303,7 +365,9 @@ namespace Seanox.Platform.Launcher
                 var location = Location;
                 Controls.TitleLabel.Location = location;
                 Controls.ShortcutLabel.Location = new Point(location.X + 5, location.Y + 5);
-                    
+                Controls.IconPictureBox.Location = new Point(location.X + ((Control.GridSize -Controls.IconPictureBox.Width) / 2),
+                        location.Y + 10);;
+
                 Controls.IconPictureBox.Visible = true;
                 Controls.TitleLabel.Visible     = true;
                 Controls.ShortcutLabel.Visible  = true;
