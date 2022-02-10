@@ -25,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Platform
+namespace Seanox.Platform
 {
     internal static class Notification
     {

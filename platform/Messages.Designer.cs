@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Platform {
+namespace Seanox.Platform {
     using System;
     
     

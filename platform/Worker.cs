@@ -29,8 +29,8 @@ using System.Collections.Generic;
 using System.Management;
 using System.Linq;
 
-namespace Platform {
-
+namespace Seanox.Platform
+{
     public partial class Worker:Form, Notification.INotification
     {
         internal delegate void BackgroundWorkerCall(Task task);

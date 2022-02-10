@@ -1,4 +1,4 @@
-﻿namespace Platform
+﻿namespace Seanox.Platform
 {
     partial class Worker
     {

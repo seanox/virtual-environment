@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Platform
+namespace Seanox.Platform
 {
     internal static class Program {
 
