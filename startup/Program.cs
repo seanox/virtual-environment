@@ -25,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Startup
+namespace Seanox.Platform.Startup
 {
     internal static class Program
     {
