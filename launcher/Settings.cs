@@ -28,7 +28,8 @@ namespace Seanox.Platform.Launcher
     public class Settings
     {
         private string _hotKey;
-        private string _backgroundColor; 
+        private string _backgroundColor;
+        private string _backgroundImage;
         private string _foregroundColor;
         private string _borderColor;
         private string _highlightColor;
@@ -107,6 +108,9 @@ namespace Seanox.Platform.Launcher
             set => _backgroundColor = NormalizeValue(PATTERN_COLOR, value, BACKGROUND_COLOR);
         }
 
+        [XmlElement("backgroundImage")]
+        public string BackgroundImage;
+
         [XmlElement("foregroundColor")]
         public string ForegroundColor
         {
@@ -125,7 +129,7 @@ namespace Seanox.Platform.Launcher
         public string HighlightColor
         {
             get => _highlightColor;
-            set => _backgroundColor = NormalizeValue(PATTERN_COLOR, value, HIGHLIGHT_COLOR);
+            set => _highlightColor = NormalizeValue(PATTERN_COLOR, value, HIGHLIGHT_COLOR);
         }
         
         [XmlElement("fontSize")]
