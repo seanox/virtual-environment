@@ -9,9 +9,9 @@
     - Release: Win + Esc
     - Development: Alt + Esc
     
-    Default value: 8:27 
+    Default value: 8 + 27 
   -->
-  <hotKey>1:27</hotKey>
+  <hotKey>1 + 27</hotKey>
 
   <!-- TODO -->
   <gridSize>99</gridSize>
@@ -21,14 +21,19 @@
   <gridPadding>10</gridPadding>
 
   <!-- 
-    Opacity of background in percents (100 - 50)
-    Less than 50 does not make sense, because then the colors of the labels
-    and frames do not fit.
+    Opacity of background in percents (100 - 0)
+    Less than 50 makes no sense, because then the UI is difficult to see.
     
     Default value: 85
   -->
   <opacity>85</opacity>
-  
+
+  <!--
+    BackgroundImage is optionally a path relative to the working directory.
+    The image is centered and scaled to fit.
+  -->
+  <backgroundImage></backgroundImage>
+
   <!--
     Coloring
     
@@ -74,7 +79,7 @@
 
   <tiles>
     <tile>
-      <!-- Nummber of the tile (1 - 40) -->
+      <!-- Number of the tile (1 - 40) -->
       <index>40</index>
       <!-- Application name and tile title -->
       <title>Detach</title>
