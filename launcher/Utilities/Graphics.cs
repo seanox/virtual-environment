@@ -73,7 +73,7 @@ namespace Seanox.Platform.Launcher.Utilities
             }
         }
         
-        internal static Image ResizeImage(Image image, int width, int height)
+        internal static Image ImageResize(Image image, int width, int height)
         {
             var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
@@ -97,6 +97,15 @@ namespace Seanox.Platform.Launcher.Utilities
 
             return destImage;
         }
+
+        public static Image ImageScale(Image image, int width, int height)
+        {
+            if (image.Height == height
+                    && image.Width == width)
+                return image;
+            var factor = Math.Max((double)height / image.Height, (double)width / image.Width);
+            return ImageResize(image, (int)(image.Width * factor), (int)(image.Height * factor));
+        }        
 
         internal static void DrawRectangleRounded(System.Drawing.Graphics graphics, Pen pen, Rectangle bounds, int radius)
         {
