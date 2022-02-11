@@ -49,7 +49,7 @@ namespace Seanox.Platform.Launcher
         
         private const float FONT_SIZE = 9.75f;
 
-        private static Regex PATTERN_HOT_KEY = new Regex(@"^0*([1248])\s*:\s*0*(\d{1,3})$");
+        private static Regex PATTERN_HOT_KEY = new Regex(@"^0*([1248])\s*\+\s*0*(\d{1,3})$");
         private static Regex PATTERN_BYTE    = new Regex("^0*([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5])$");
         private static Regex PATTERN_COLOR   = new Regex("^(#(?:[0-9A-F]{3}){1,2})$", RegexOptions.IgnoreCase);
         private static Regex PATTERN_ICON    = new Regex(@"^(.*?)\s*(?::\s*([^:]*)){0,1}$");
