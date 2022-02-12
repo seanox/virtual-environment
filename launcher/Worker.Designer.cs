@@ -31,7 +31,19 @@ namespace Seanox.Platform.Launcher
         /// </summary>
         private void InitializeComponent()
         {
+            this.Message = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // Message
+            // 
+            this.Message.BackColor = System.Drawing.Color.Transparent;
+            this.Message.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Message.ForeColor = System.Drawing.Color.White;
+            this.Message.Location = new System.Drawing.Point(0, 0);
+            this.Message.Name = "Message";
+            this.Message.Size = new System.Drawing.Size(100, 100);
+            this.Message.TabIndex = 0;
+            this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Worker
             // 
@@ -40,6 +52,7 @@ namespace Seanox.Platform.Launcher
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.ControlBox = false;
+            this.Controls.Add(this.Message);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Worker";
             this.Opacity = 0.75D;
@@ -49,6 +62,8 @@ namespace Seanox.Platform.Launcher
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
         }
+        
+        private System.Windows.Forms.Label Message;
 
         #endregion
     }
