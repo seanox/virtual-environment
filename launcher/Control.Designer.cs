@@ -2,7 +2,7 @@
 
 namespace Seanox.Platform.Launcher
 {
-    partial class Worker
+    partial class Control
     {
         /// <summary>
         /// Required designer variable.
@@ -45,7 +45,7 @@ namespace Seanox.Platform.Launcher
             this.Message.TabIndex = 0;
             this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // Worker
+            // Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -54,7 +54,7 @@ namespace Seanox.Platform.Launcher
             this.ControlBox = false;
             this.Controls.Add(this.Message);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Worker";
+            this.Name = "Control";
             this.Opacity = 0.75D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
