@@ -49,8 +49,8 @@ namespace Seanox.Platform.Launcher.Utilities
         internal static string ToString(int scanCode)
         {
             var stringBuilder = new StringBuilder(10);
-            var virtualKey = MapVirtualKey((uint) scanCode, MapType.MapvkVscToVk);
-            ToUnicodeEx(virtualKey, (uint) scanCode, new byte[256], stringBuilder, stringBuilder.Capacity, 0,
+            var virtualKey = MapVirtualKey((uint)scanCode, MapType.MapvkVscToVk);
+            ToUnicodeEx(virtualKey, (uint)scanCode, new byte[256], stringBuilder, stringBuilder.Capacity, 0,
                     GetKeyboardLayout(0));
             return stringBuilder.ToString().ToUpper().Trim();
         }
