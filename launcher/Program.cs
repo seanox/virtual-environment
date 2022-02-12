@@ -71,7 +71,7 @@ namespace Seanox.Platform.Launcher
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Worker(_settings));
+            Application.Run(new Control(_settings));
         }
     }
 }
