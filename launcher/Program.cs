@@ -51,7 +51,7 @@ namespace Seanox.Platform.Launcher
             {
                 var serializer = new XmlSerializer(typeof(Settings));
                 using (var reader = new StreamReader(applicationConfigurationFile))
-                    _settings = (Settings) serializer.Deserialize(reader);
+                    _settings = (Settings)serializer.Deserialize(reader);
             }
             catch (FileNotFoundException)
             {
