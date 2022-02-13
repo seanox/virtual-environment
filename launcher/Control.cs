@@ -37,6 +37,7 @@ using Seanox.Platform.Launcher.Tiles;
 // TODO: Rebuild when the keyboard layout changes
 // TODO: Check usage dispose for a robust program
 // TODO: Reload if the configuration file changes
+// TODO: Reload if the resolution changes
 // TODO: When resize (OnResize) the hide
 
 namespace Seanox.Platform.Launcher
@@ -98,7 +99,7 @@ namespace Seanox.Platform.Launcher
                 _backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage);
             BackColor = ColorTranslator.FromHtml(_settings.BackgroundColor);
             
-            _metaTileGrid = Tiles.MetaTileGrid.Create(_settings, 10, 4);
+            _metaTileGrid = Tiles.MetaTileGrid.Create(_settings);
                         
             // The index for the configuration starts user-friendly with 1, but
             // internally it is technically started with 0. Therefore the index
@@ -113,6 +114,8 @@ namespace Seanox.Platform.Launcher
                         && tile.Index > 0)
                     _metaTiles[tile.Index - 1] = Tiles.MetaTile.Create(_settings, tile);
 
+            _metaTileMap = MetaTileMap.Create(_metaTileGrid, _metaTiles);
+            
             Load += OnLoad;
             LostFocus += (sender, eventArgs) => Visible = false;
         }
@@ -147,15 +150,18 @@ namespace Seanox.Platform.Launcher
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
             base.OnPaintBackground(eventArgs);
-            if (_backgroundImage == null)
-                return;
-            base.OnPaintBackground(eventArgs);
             var screenRectangle = Screen.FromControl(this).Bounds;
-            var backgroundImage = Utilities.Graphics.ImageScale(_backgroundImage, screenRectangle.Width, screenRectangle.Height);
-            var rectangle = new Rectangle((screenRectangle.Width - backgroundImage.Width) / 2,
-                    (screenRectangle.Height - backgroundImage.Height) / 2, 
-                    backgroundImage.Width, backgroundImage.Height);
-            eventArgs.Graphics.DrawImage(backgroundImage, rectangle);
+            if (_backgroundImage != null)
+            {
+                var backgroundImage = Utilities.Graphics.ImageScale(_backgroundImage, screenRectangle.Width, screenRectangle.Height);
+                var rectangle = new Rectangle((screenRectangle.Width - backgroundImage.Width) / 2,
+                        (screenRectangle.Height - backgroundImage.Height) / 2, backgroundImage.Width, backgroundImage.Height);
+                eventArgs.Graphics.DrawImage(backgroundImage, rectangle);
+            }
+            var metaTileMapImage = _metaTileMap.Image;
+            eventArgs.Graphics.DrawImage(_metaTileMap.Image,
+                    (screenRectangle.Width /2) - (metaTileMapImage.Width /2),
+                    (screenRectangle.Height /2) - (metaTileMapImage.Height /2));
         }        
         
         private void OnLoad(object sender, EventArgs eventArgs)
