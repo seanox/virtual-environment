@@ -18,38 +18,35 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-using System.Windows.Forms;
-
 namespace Seanox.Platform.Launcher.Tiles
 {
     internal class MetaTileGrid
     {
+        internal const int Columns = 10;
+        internal const int Rows    = 4;
+        
         internal readonly int Size;
         internal readonly int Gap;
-        internal readonly int Columns;
-        internal readonly int Rows;
         internal readonly int Padding;
 
         internal int Count  => Columns * Rows;
         internal int Height => ((Size + Gap) * Rows) - Gap;
         internal int Width  => ((Size + Gap) * Columns) - Gap;
         
-        private readonly Settings Settings;
+        private readonly Settings _settings;
 
-        private MetaTileGrid(Settings settings, int columns, int rows)
+        private MetaTileGrid(Settings settings)
         {
-            Settings = settings;
-            Rows     = rows;
-            Columns  = columns;
+            _settings = settings;
             
-            Size    = Settings.GridSize;
-            Gap     = Settings.GridGap;
-            Padding = Settings.GridPadding;
+            Size    = _settings.GridSize;
+            Gap     = _settings.GridGap;
+            Padding = _settings.GridPadding;
         }
 
-        internal static MetaTileGrid Create(Settings settings, int columns, int rows)
+        internal static MetaTileGrid Create(Settings settings)
         {
-            return new MetaTileGrid(settings, columns, rows);
+            return new MetaTileGrid(settings);
         }
     }
 }
