@@ -94,11 +94,27 @@ namespace Seanox.Platform.Launcher
             Visible = false;
             Opacity = 0;
             
-            Load += OnLoad;
-            
             if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
                 _backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage);
             BackColor = ColorTranslator.FromHtml(_settings.BackgroundColor);
+            
+            _metaTileGrid = Tiles.MetaTileGrid.Create(_settings, 10, 4);
+                        
+            // The index for the configuration starts user-friendly with 1, but
+            // internally it is technically started with 0. Therefore the index
+            // in the configuration is different!
+            _metaTiles = new MetaTile[_metaTileGrid.Count];
+            
+            for (var index = 0; index < _metaTileGrid.Count; index++)
+                _metaTiles[index] = Tiles.MetaTile.Create(_settings, new Settings.Tile() {Index = index +1});
+            
+            foreach (var tile in _settings.Tiles)
+                if (tile.Index <= _metaTileGrid.Count
+                        && tile.Index > 0)
+                    _metaTiles[tile.Index - 1] = Tiles.MetaTile.Create(_settings, tile);
+
+            Load += OnLoad;
+            LostFocus += (sender, eventArgs) => Visible = false;
         }
 
         private void RegisterHotKey()
@@ -127,7 +143,7 @@ namespace Seanox.Platform.Launcher
                     && message.WParam.ToInt32() == HOTKEY_ID)
                 Visible = !Visible;
         }
-     
+
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
             base.OnPaintBackground(eventArgs);
