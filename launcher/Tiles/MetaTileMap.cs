@@ -19,17 +19,24 @@
 // the License.
 
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
 
 namespace Seanox.Platform.Launcher.Tiles
 {
     internal class MetaTileMap
     {
-        private readonly Image _image;
+        private readonly MetaTile[] _metaTiles;
         
-        internal Image Image => _image;
-        
+        internal readonly Image Image;
+
         private MetaTileMap(MetaTileGrid metaTileGrid, MetaTile[] metaTiles)
         {
+            _metaTiles = metaTiles;
+            Image = new Bitmap(metaTileGrid.Width, metaTileGrid.Height, PixelFormat.Format32bppPArgb);
+            using (var imageGraphics = Graphics.FromImage(Image))
+                foreach (var metaTile in metaTiles.Where(metaTile => metaTile.Image != null))
+                    imageGraphics.DrawImage(metaTile.Image, metaTile.Location.Left, metaTile.Location.Top);
         }
 
         internal static MetaTileMap Create(MetaTileGrid metaTileGrid, MetaTile[] metaTiles)
@@ -39,6 +46,7 @@ namespace Seanox.Platform.Launcher.Tiles
 
         internal MetaTile Locate(Point point)
         {
+            // TODO:
             return null;
         }
     }
