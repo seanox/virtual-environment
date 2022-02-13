@@ -25,8 +25,6 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-// TODO: Check usage dispose for a robust program
-
 namespace Seanox.Platform.Launcher.Utilities
 {
     internal static class Graphics
@@ -60,9 +58,9 @@ namespace Seanox.Platform.Launcher.Utilities
                     return Image.FromFile(file);
                 var icon = ExtractIcon(file, number, large);
                 if (icon != null)
-                    return Bitmap.FromHicon(icon.Handle);
+                    return icon.ToBitmap();
                 icon = Icon.ExtractAssociatedIcon(file);
-                var bitmap = new Bitmap(icon.Width, icon.Height);
+                var bitmap = new Bitmap(icon.Width, icon.Height, PixelFormat.Format32bppPArgb);
                 using (var graphics = System.Drawing.Graphics.FromImage(bitmap))
                     graphics.DrawIcon(icon, 0, 0);
                 return bitmap;
@@ -76,7 +74,7 @@ namespace Seanox.Platform.Launcher.Utilities
         internal static Image ImageResize(Image image, int width, int height)
         {
             var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
+            var destImage = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
 
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
