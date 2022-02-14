@@ -52,7 +52,7 @@ namespace Seanox.Platform.Launcher.Utilities
             var virtualKey = MapVirtualKey((uint)scanCode, MapType.MapvkVscToVk);
             ToUnicodeEx(virtualKey, (uint)scanCode, new byte[256], stringBuilder, stringBuilder.Capacity, 0,
                     GetKeyboardLayout(0));
-            return stringBuilder.ToString().ToUpper().Trim();
+            return stringBuilder.ToString().Trim();
         }
     }
 }
