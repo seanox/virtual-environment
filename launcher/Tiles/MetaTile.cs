@@ -27,6 +27,7 @@ namespace Seanox.Platform.Launcher.Tiles
 {
     internal class MetaTile
     {
+        internal readonly Settings.Tile Settings;
         internal readonly int Index;
         internal readonly int ScanCode;
         internal readonly string Symbol;
@@ -37,6 +38,8 @@ namespace Seanox.Platform.Launcher.Tiles
         
         private MetaTile(Settings settings, Settings.Tile tile)
         {
+            Settings = tile;
+            
             _metaTileGrid = MetaTileGrid.Create(settings);
             
             // The index for the configuration starts user-friendly with 1,

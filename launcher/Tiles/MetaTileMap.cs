@@ -18,9 +18,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Seanox.Platform.Launcher.Tiles
 {
@@ -29,25 +31,50 @@ namespace Seanox.Platform.Launcher.Tiles
         private readonly MetaTile[] _metaTiles;
         
         internal readonly Image Image;
+        internal readonly Image PassiveBorderImage;
+        internal readonly Image ActiveBorderImage;
 
-        private MetaTileMap(MetaTileGrid metaTileGrid, MetaTile[] metaTiles)
+        private MetaTileMap(Settings settings, MetaTile[] metaTiles)
         {
+            var metaTileGrid = MetaTileGrid.Create(settings);
+            
             _metaTiles = metaTiles;
             Image = new Bitmap(metaTileGrid.Width, metaTileGrid.Height, PixelFormat.Format32bppPArgb);
             using (var imageGraphics = Graphics.FromImage(Image))
                 foreach (var metaTile in metaTiles.Where(metaTile => metaTile.Image != null))
                     imageGraphics.DrawImage(metaTile.Image, metaTile.Location.Left, metaTile.Location.Top);
+            
+            var borderColor = ColorTranslator.FromHtml(settings.BorderColor);
+            var highlightColor = ColorTranslator.FromHtml(settings.HighlightColor);
+
+            PassiveBorderImage = new Bitmap(metaTileGrid.Size, metaTileGrid.Size, PixelFormat.Format32bppPArgb);
+            using (var passiveBorderImageGraphics = Graphics.FromImage(PassiveBorderImage))
+            Utilities.Graphics.DrawRectangleRounded(passiveBorderImageGraphics, new Pen(new SolidBrush(borderColor)),
+                    new Rectangle(0, 0, metaTileGrid.Size - 1, metaTileGrid.Size - 1), 1);
+
+            ActiveBorderImage = new Bitmap(metaTileGrid.Size, metaTileGrid.Size, PixelFormat.Format32bppPArgb);
+            using (var activeBorderImageGraphics = Graphics.FromImage(ActiveBorderImage))
+                Utilities.Graphics.DrawRectangleRounded(activeBorderImageGraphics, new Pen(new SolidBrush(highlightColor)),
+                        new Rectangle(0, 0, metaTileGrid.Size - 1, metaTileGrid.Size - 1), 1);
         }
 
-        internal static MetaTileMap Create(MetaTileGrid metaTileGrid, MetaTile[] metaTiles)
+        internal static MetaTileMap Create(Settings settings, MetaTile[] metaTiles)
         {
-            return new MetaTileMap(metaTileGrid, metaTiles);
+            return new MetaTileMap(settings, metaTiles);
         }
 
+        internal MetaTile Locate(string symbol)
+        {
+            return Array.Find(_metaTiles, metaTile => metaTile.Symbol == symbol);
+        }
+        
         internal MetaTile Locate(Point point)
         {
-            // TODO:
-            return null;
+            return Array.Find(_metaTiles, metaTile =>
+                    point.X >= metaTile.Location.Left
+                          && point.X <= metaTile.Location.Right 
+                          && point.Y >= metaTile.Location.Top
+                          && point.Y <= metaTile.Location.Bottom);
         }
     }
 }
