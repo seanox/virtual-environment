@@ -22,8 +22,8 @@ namespace Seanox.Platform.Launcher.Tiles
 {
     internal class MetaTileGrid
     {
-        internal const int Columns = 10;
-        internal const int Rows    = 4;
+        internal readonly int Columns = 10;
+        internal readonly int Rows    = 4;
         
         internal readonly int Size;
         internal readonly int Gap;
