@@ -19,12 +19,11 @@
 // the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using Seanox.Platform.Launcher.Tiles;
 
 // TODO: MessageBox does not show the correct icon in taskbar
@@ -76,6 +75,10 @@ namespace Seanox.Platform.Launcher
         private readonly Settings _settings;
         
         private int _cursor = -1;
+        
+        private Point _selection;
+        private Point _selectionOffset;
+        private bool _selectionLock;
 
         internal Control(Settings settings)
         {
@@ -99,7 +102,7 @@ namespace Seanox.Platform.Launcher
                 _backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage);
             BackColor = ColorTranslator.FromHtml(_settings.BackgroundColor);
             
-            _metaTileGrid = Tiles.MetaTileGrid.Create(_settings);
+            _metaTileGrid = MetaTileGrid.Create(_settings);
                         
             // The index for the configuration starts user-friendly with 1, but
             // internally it is technically started with 0. Therefore the index
@@ -107,17 +110,19 @@ namespace Seanox.Platform.Launcher
             _metaTiles = new MetaTile[_metaTileGrid.Count];
             
             for (var index = 0; index < _metaTileGrid.Count; index++)
-                _metaTiles[index] = Tiles.MetaTile.Create(_settings, new Settings.Tile() {Index = index +1});
+                _metaTiles[index] = MetaTile.Create(_settings, new Settings.Tile() {Index = index +1});
             
             foreach (var tile in _settings.Tiles)
                 if (tile.Index <= _metaTileGrid.Count
                         && tile.Index > 0)
-                    _metaTiles[tile.Index - 1] = Tiles.MetaTile.Create(_settings, tile);
+                    _metaTiles[tile.Index - 1] = MetaTile.Create(_settings, tile);
 
-            _metaTileMap = MetaTileMap.Create(_metaTileGrid, _metaTiles);
+            _metaTileMap = MetaTileMap.Create(_settings, _metaTiles);
             
+            KeyDown += OnKeyDown;
             Load += OnLoad;
             LostFocus += (sender, eventArgs) => Visible = false;
+            MouseClick += OnMouseClick;
         }
 
         private void RegisterHotKey()
@@ -139,12 +144,138 @@ namespace Seanox.Platform.Launcher
             Closing += (sender, eventArgs) => UnregisterHotKey(Handle, HOTKEY_ID);
         }
 
+        private void SelectMetaTile(MetaTile metaTile)
+        {
+            // When the key is held down, the input signals are very fast and
+            // the cursor is barely visible. Therefore, the signal processing
+            // is artificially slowed down. When the lock is active, new input
+            // signals are ignored.  
+            
+            if (_selectionLock
+                    || metaTile == null)
+                return;
+            _selectionLock = true;
+            if (_selection != null
+                    && _selection.X != 0
+                    && _selection.Y != 0)
+                CreateGraphics().DrawImage(_metaTileMap.PassiveBorderImage, _selection);
+            _cursor = Array.IndexOf(_metaTiles, metaTile);
+            _selection = new Point(metaTile.Location.X + _selectionOffset.X,
+                    metaTile.Location.Y + _selectionOffset.Y);
+            CreateGraphics().DrawImage(_metaTileMap.ActiveBorderImage, _selection);
+            Thread.Sleep(50);
+            _selectionLock = false;
+        }
+
+        private void UseMetaTile(MetaTile metaTile)
+        {
+            SelectMetaTile(metaTile);
+            if (metaTile == null
+                    || metaTile.Settings == null
+                    || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
+                return;
+            // TODO:
+        }
+        
         protected override void WndProc(ref Message message)
         {
             base.WndProc(ref message);
             if (message.Msg == WM_HOTKEY
                     && message.WParam.ToInt32() == HOTKEY_ID)
                 Visible = !Visible;
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
+            // Prevents possible flickering effects when drawing from the
+            // background image for the first time.            
+            DoubleBuffered = true;
+            Thread.Sleep(25);
+            Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
+            Visible = true;
+        }
+
+        protected override bool ProcessKeyMessage(ref Message message)
+        {
+            if (message.Msg == 0x102
+                    || message.Msg == 0x106)
+                UseMetaTile(_metaTileMap.Locate(Char.ToString((char)message.WParam)));
+            return base.ProcessKeyMessage(ref message);
+        }
+        
+        private void OnKeyDown(object sender, KeyEventArgs keyEventArgs)
+        {
+            if (_cursor < 0
+                    && (new List<Keys> {Keys.Left, Keys.Back, Keys.Up}).Contains(keyEventArgs.KeyCode))
+                _cursor = 0;
+            if (_cursor < 0
+                    && (new List<Keys> {Keys.Right, Keys.Tab, Keys.Down}).Contains(keyEventArgs.KeyCode))
+                _cursor = _metaTileGrid.Count;
+            
+            // Key combinations with Shift invert the key functions for
+            // navigation. Escape, Enter and Space are excluded from this.
+
+            switch (keyEventArgs.KeyCode)
+            {
+                case (Keys.Escape):
+                    Visible = false;
+                    break;
+                case Keys.Left when !keyEventArgs.Shift:
+                case Keys.Back when !keyEventArgs.Shift:
+                case Keys.Right when keyEventArgs.Shift:
+                case Keys.Tab when keyEventArgs.Shift:
+                    if (_cursor <= 0)
+                        _cursor = _metaTileGrid.Count;
+                    _cursor--;
+                    break;
+                case Keys.Right when !keyEventArgs.Shift:
+                case Keys.Tab when !keyEventArgs.Shift:
+                case Keys.Left when keyEventArgs.Shift:
+                case Keys.Back when keyEventArgs.Shift:
+                    if (_cursor + 1 >= _metaTileGrid.Count)
+                        _cursor = -1;
+                    _cursor++;
+                    break;
+                case Keys.Up when !keyEventArgs.Shift:
+                case Keys.Down when keyEventArgs.Shift:
+                    if (_cursor < _metaTileGrid.Columns
+                            && _cursor > 0)
+                        _cursor += _metaTileGrid.Count - 1;
+                    _cursor -= _metaTileGrid.Columns;
+                    if (_cursor < 0)
+                        _cursor = _metaTileGrid.Count - 1;
+                    break;
+                case Keys.Down when !keyEventArgs.Shift:
+                case Keys.Up when keyEventArgs.Shift:
+                    if (_cursor >= _metaTileGrid.Count -_metaTileGrid.Columns
+                            && _cursor < _metaTileGrid.Count - 1)
+                        _cursor = (_cursor - _metaTileGrid.Count) + 1;
+                    _cursor += _metaTileGrid.Columns;
+                    if (_cursor >= _metaTileGrid.Count)
+                        _cursor = 0;
+                    break;
+                case Keys.Enter:
+                case Keys.Space:
+                    if (_cursor >= 0)
+                        UseMetaTile(_metaTiles[_cursor]);
+                    break;
+            }
+
+            if (_cursor >= 0)
+                SelectMetaTile(_metaTiles[_cursor]);
+        }
+
+        private void OnMouseClick(object sender, MouseEventArgs mouseEventArgs)
+        {
+            var location = new Point(mouseEventArgs.X - _selectionOffset.X,
+                    mouseEventArgs.Y - _selectionOffset.Y);
+            var metaTile = _metaTileMap.Locate(location);
+            SelectMetaTile(metaTile);
+            if ((mouseEventArgs.Button & MouseButtons.Left) == 0
+                    || metaTile.Settings == null
+                    || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
+                return;
+            UseMetaTile(metaTile);
         }
 
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
@@ -159,19 +290,10 @@ namespace Seanox.Platform.Launcher
                 eventArgs.Graphics.DrawImage(backgroundImage, rectangle);
             }
             var metaTileMapImage = _metaTileMap.Image;
-            eventArgs.Graphics.DrawImage(_metaTileMap.Image,
-                    (screenRectangle.Width /2) - (metaTileMapImage.Width /2),
-                    (screenRectangle.Height /2) - (metaTileMapImage.Height /2));
-        }        
-        
-        private void OnLoad(object sender, EventArgs eventArgs)
-        {
-            // Prevents possible flickering effects when drawing from the
-            // background image for the first time.            
-            DoubleBuffered = true;
-            Thread.Sleep(25);
-            Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
-            Visible = true;
+            var metaTileMapPosition = new Point((screenRectangle.Width / 2) - (metaTileMapImage.Width / 2),
+                    (screenRectangle.Height / 2) - (metaTileMapImage.Height / 2));
+            eventArgs.Graphics.DrawImage(_metaTileMap.Image, metaTileMapPosition.X, metaTileMapPosition.Y);
+            _selectionOffset = metaTileMapPosition;
         }
     }
 }
