@@ -68,32 +68,32 @@ namespace Seanox.Platform.Launcher.Tiles
             var textFont = new Font(SystemFonts.DefaultFont.FontFamily, settings.FontSize, FontStyle.Regular);
             var textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", textFont);
 
-            Image = new Bitmap(settings.GridSize, settings.GridSize, PixelFormat.Format32bppPArgb);
+            Image = new Bitmap(_metaTileGrid.Size, _metaTileGrid.Size, PixelFormat.Format32bppPArgb);
             using (var imageGraphics = Graphics.FromImage(Image))
             {
                 Utilities.Graphics.DrawRectangleRounded(imageGraphics, new Pen(new SolidBrush(borderColor)),
-                        new Rectangle(0, 0, settings.GridSize - 1, settings.GridSize - 1), 1);
-                var iconSize = settings.GridSize - (3 * settings.GridPadding) - textMeasure.Height; 
+                        new Rectangle(0, 0, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), 1);
+                var iconSize = _metaTileGrid.Size - (3 * _metaTileGrid.Padding) - textMeasure.Height; 
                 var iconFile = Environment.ExpandEnvironmentVariables(tile.IconFile ?? "");
                 using (var iconImage = GetIconImage(iconSize, iconFile, tile.IconIndex))
                     if (iconImage != null)
-                        imageGraphics.DrawImage(iconImage, (settings.GridSize /2) -(iconImage.Width /2),
-                                (int)(settings.GridPadding + Math.Max(0, iconSize - iconImage.Height)));
+                        imageGraphics.DrawImage(iconImage, (_metaTileGrid.Size /2) -(iconImage.Width /2),
+                                (int)(_metaTileGrid.Padding + Math.Max(0, iconSize - iconImage.Height)));
 
                 var stringFormat = new StringFormat();
                 stringFormat.Alignment = StringAlignment.Center;
                 stringFormat.LineAlignment = StringAlignment.Center;
 
-                var titleRectangle = new Rectangle(settings.GridPadding, settings.GridSize -settings.GridPadding -textMeasure.Height, settings.GridSize - (2 * settings.GridPadding), textMeasure.Height);
+                var titleRectangle = new Rectangle(_metaTileGrid.Padding, _metaTileGrid.Size -_metaTileGrid.Padding -textMeasure.Height, _metaTileGrid.Size - (2 * _metaTileGrid.Padding), textMeasure.Height);
                 imageGraphics.DrawString(tile.Title, textFont, new SolidBrush(foregroundColor), titleRectangle, stringFormat);
                 
-                imageGraphics.DrawString(Symbol, textFont, new SolidBrush(highlightColor), new Point(settings.GridPadding /2, settings.GridPadding /2));
+                imageGraphics.DrawString(Symbol.ToUpper(), textFont, new SolidBrush(highlightColor), new Point(_metaTileGrid.Padding /2, _metaTileGrid.Padding /2));
             }
             
             textFont.Dispose();
 
-            var tileRasterColumn = Index % MetaTileGrid.Columns;
-            var tileRasterRow = (int)Math.Floor((float)Index / MetaTileGrid.Columns);
+            var tileRasterColumn = Index % _metaTileGrid.Columns;
+            var tileRasterRow = (int)Math.Floor((float)Index / _metaTileGrid.Columns);
             var tileStartX = ((tileRasterColumn * (_metaTileGrid.Size + _metaTileGrid.Gap)));
             var tileStartY = ((tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap)));
             Location = new Rectangle(tileStartX, tileStartY, _metaTileGrid.Size, _metaTileGrid.Size);
