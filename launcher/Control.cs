@@ -66,19 +66,15 @@ namespace Seanox.Platform.Launcher
         private const int HOTKEY_ID = 0x0;
         private const int WM_HOTKEY = 0x0312;
 
-        private readonly Image _backgroundImage;
-
         private readonly MetaTile[] _metaTiles;
         private readonly MetaTileGrid _metaTileGrid;
-        private readonly MetaTileMap _metaTileMap;
+        private readonly MetaTileScreen _metaTileScreen;
         
         private readonly Settings _settings;
         
         private int _cursor = -1;
         
-        private Point _selection;
-        private Point _selectionOffset;
-        private bool _selectionLock;
+        private bool _keyEventLock;
 
         internal Control(Settings settings)
         {
@@ -98,8 +94,6 @@ namespace Seanox.Platform.Launcher
             Visible = false;
             Opacity = 0;
             
-            if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
-                _backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage);
             BackColor = ColorTranslator.FromHtml(_settings.BackgroundColor);
             
             _metaTileGrid = MetaTileGrid.Create(_settings);
@@ -108,16 +102,17 @@ namespace Seanox.Platform.Launcher
             // internally it is technically started with 0. Therefore the index
             // in the configuration is different!
             _metaTiles = new MetaTile[_metaTileGrid.Count];
-            
+
+            var screen = Screen.FromControl(this);
             for (var index = 0; index < _metaTileGrid.Count; index++)
-                _metaTiles[index] = MetaTile.Create(_settings, new Settings.Tile() {Index = index +1});
+                _metaTiles[index] = MetaTile.Create(screen, _settings, new Settings.Tile() {Index = index +1});
             
             foreach (var tile in _settings.Tiles)
                 if (tile.Index <= _metaTileGrid.Count
                         && tile.Index > 0)
-                    _metaTiles[tile.Index - 1] = MetaTile.Create(_settings, tile);
+                    _metaTiles[tile.Index - 1] = MetaTile.Create(screen, _settings, tile);
 
-            _metaTileMap = MetaTileMap.Create(_settings, _metaTiles);
+            _metaTileScreen = MetaTileScreen.Create(screen, _settings, _metaTiles);
             
             KeyDown += OnKeyDown;
             Load += OnLoad;
@@ -146,25 +141,8 @@ namespace Seanox.Platform.Launcher
 
         private void SelectMetaTile(MetaTile metaTile)
         {
-            // When the key is held down, the input signals are very fast and
-            // the cursor is barely visible. Therefore, the signal processing
-            // is artificially slowed down. When the lock is active, new input
-            // signals are ignored.  
-            
-            if (_selectionLock
-                    || metaTile == null)
-                return;
-            _selectionLock = true;
-            if (_selection != null
-                    && _selection.X != 0
-                    && _selection.Y != 0)
-                CreateGraphics().DrawImage(_metaTileMap.PassiveBorderImage, _selection);
+            _metaTileScreen.Select(CreateGraphics(), metaTile);
             _cursor = Array.IndexOf(_metaTiles, metaTile);
-            _selection = new Point(metaTile.Location.X + _selectionOffset.X,
-                    metaTile.Location.Y + _selectionOffset.Y);
-            CreateGraphics().DrawImage(_metaTileMap.ActiveBorderImage, _selection);
-            Thread.Sleep(50);
-            _selectionLock = false;
         }
 
         private void UseMetaTile(MetaTile metaTile)
@@ -199,7 +177,7 @@ namespace Seanox.Platform.Launcher
         {
             if (message.Msg == 0x102
                     || message.Msg == 0x106)
-                UseMetaTile(_metaTileMap.Locate(Char.ToString((char)message.WParam)));
+                UseMetaTile(_metaTileScreen.Locate(Char.ToString((char)message.WParam)));
             return base.ProcessKeyMessage(ref message);
         }
         
@@ -211,6 +189,18 @@ namespace Seanox.Platform.Launcher
             if (_cursor < 0
                     && (new List<Keys> {Keys.Right, Keys.Tab, Keys.Down}).Contains(keyEventArgs.KeyCode))
                 _cursor = _metaTileGrid.Count;
+            
+            // When the key is held down, the input signals are very fast and
+            // the cursor is barely visible. Therefore, the signal processing
+            // is artificially slowed down. When the lock is active, new input
+            // signals are ignored, which concerns only the navigation buttons
+
+            var navigationKeys = (new List<Keys> {Keys.Left, Keys.Back, Keys.Right, Keys.Tab, Keys.Up, Keys.Down}); 
+            if (navigationKeys.Contains(keyEventArgs.KeyCode)
+                    && _keyEventLock)
+                return;
+            if (navigationKeys.Contains(keyEventArgs.KeyCode))
+                _keyEventLock = true;
             
             // Key combinations with Shift invert the key functions for
             // navigation. Escape, Enter and Space are excluded from this.
@@ -263,13 +253,18 @@ namespace Seanox.Platform.Launcher
 
             if (_cursor >= 0)
                 SelectMetaTile(_metaTiles[_cursor]);
+            
+            if (!navigationKeys.Contains(keyEventArgs.KeyCode)
+                    || !_keyEventLock)
+                return;
+            Thread.Sleep(50);
+            _keyEventLock = false;
         }
 
         private void OnMouseClick(object sender, MouseEventArgs mouseEventArgs)
         {
-            var location = new Point(mouseEventArgs.X - _selectionOffset.X,
-                    mouseEventArgs.Y - _selectionOffset.Y);
-            var metaTile = _metaTileMap.Locate(location);
+            var location = new Point(mouseEventArgs.X, mouseEventArgs.Y);
+            var metaTile = _metaTileScreen.Locate(location);
             SelectMetaTile(metaTile);
             if ((mouseEventArgs.Button & MouseButtons.Left) == 0
                     || metaTile.Settings == null
@@ -281,19 +276,7 @@ namespace Seanox.Platform.Launcher
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
             base.OnPaintBackground(eventArgs);
-            var screenRectangle = Screen.FromControl(this).Bounds;
-            if (_backgroundImage != null)
-            {
-                var backgroundImage = Utilities.Graphics.ImageScale(_backgroundImage, screenRectangle.Width, screenRectangle.Height);
-                var rectangle = new Rectangle((screenRectangle.Width - backgroundImage.Width) / 2,
-                        (screenRectangle.Height - backgroundImage.Height) / 2, backgroundImage.Width, backgroundImage.Height);
-                eventArgs.Graphics.DrawImage(backgroundImage, rectangle);
-            }
-            var metaTileMapImage = _metaTileMap.Image;
-            var metaTileMapPosition = new Point((screenRectangle.Width / 2) - (metaTileMapImage.Width / 2),
-                    (screenRectangle.Height / 2) - (metaTileMapImage.Height / 2));
-            eventArgs.Graphics.DrawImage(_metaTileMap.Image, metaTileMapPosition.X, metaTileMapPosition.Y);
-            _selectionOffset = metaTileMapPosition;
+            _metaTileScreen.Draw(eventArgs.Graphics);
         }
     }
 }
