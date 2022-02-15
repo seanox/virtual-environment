@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Seanox.Platform.Launcher
 {
@@ -31,13 +32,25 @@ namespace Seanox.Platform.Launcher
         /// </summary>
         private void InitializeComponent()
         {
+            this.Message = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // Message
+            // 
+            this.Message.BackColor = System.Drawing.Color.Transparent;
+            this.Message.Location = new System.Drawing.Point(0, 0);
+            this.Message.Name = "Message";
+            this.Message.TabIndex = 0;
+            this.Message.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Message.Dock = DockStyle.Fill;
+            this.Message.AutoSize = false;
             // 
             // Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ControlBox = false;
+            this.Controls.Add(this.Message);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Control";
             this.Opacity = 0.9D;
@@ -47,6 +60,8 @@ namespace Seanox.Platform.Launcher
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
         }
+        
+        private System.Windows.Forms.Label Message;
 
         #endregion
     }
