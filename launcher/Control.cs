@@ -118,6 +118,10 @@ namespace Seanox.Platform.Launcher
             Load += OnLoad;
             LostFocus += (sender, eventArgs) => Visible = false;
             MouseClick += OnMouseClick;
+            
+            // TODO: SystemEvents.UserPreferenceChanging += OnVisualSettingsChanged;
+            // TODO: SystemEvents.DisplaySettingsChanged += OnVisualSettingsChanged;
+            // TODO: OnVisualSettingsChanged(null, null);
         }
 
         private void RegisterHotKey()
@@ -141,6 +145,8 @@ namespace Seanox.Platform.Launcher
 
         private void SelectMetaTile(MetaTile metaTile)
         {
+            if (metaTile == null)
+                return;
             _metaTileScreen.Select(CreateGraphics(), metaTile);
             _cursor = Array.IndexOf(_metaTiles, metaTile);
         }
