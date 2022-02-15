@@ -100,9 +100,10 @@ namespace Seanox.Platform.Launcher.Tiles
 
             if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
                 using (var backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage))
-                    if (backgroundImage != null)
-                        graphics.DrawImage(backgroundImage, ImageCenter(screenRectangle, backgroundImage));
-
+                using (var backgroundImageScale = backgroundImage != null ? Utilities.Graphics.ImageScale(backgroundImage, screenRectangle.Width, screenRectangle.Height) : null)
+                    if (backgroundImageScale != null)
+                        graphics.DrawImage(backgroundImageScale, ImageCenter(screenRectangle, backgroundImageScale));
+            
             foreach (var metaTile in _metaTiles)
                 metaTile.Draw(graphics);
             
