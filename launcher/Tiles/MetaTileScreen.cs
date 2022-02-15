@@ -34,7 +34,7 @@ namespace Seanox.Platform.Launcher.Tiles
         private readonly Image _activeBorderImage;
         private readonly Image _passiveBorderImage;
 
-        private Point _selection;
+        private MetaTile _selection;
         
         private MetaTileScreen(Screen screen, Settings settings, params MetaTile[] metaTiles)
         {
@@ -77,17 +77,15 @@ namespace Seanox.Platform.Launcher.Tiles
                             && point.Y <= metaTile.Location.Bottom);
         }
 
-        internal void Select(Graphics graphics, MetaTile metaTile)
+        internal void Select(Graphics graphics, MetaTile metaTile, bool force = false)
         {
-            if (metaTile == null)
+            if ((metaTile == _selection && !force)
+                    || metaTile == null)
                 return;
-
-            if (_selection != null
-                    && _selection.X != 0
-                    && _selection.Y != 0)
-                graphics.DrawImage(_passiveBorderImage, _selection);
-            _selection = new Point(metaTile.Location.X, metaTile.Location.Y);
-            graphics.DrawImage(_activeBorderImage, _selection);
+            if (_selection != null)
+                graphics.DrawImage(_passiveBorderImage, new Point(_selection.Location.X, _selection.Location.Y));
+            _selection = metaTile;
+            graphics.DrawImage(_activeBorderImage, new Point(_selection.Location.X, _selection.Location.Y));
         }
 
         private static Rectangle ImageCenter(Rectangle rectangle, Image image)
@@ -107,6 +105,8 @@ namespace Seanox.Platform.Launcher.Tiles
 
             foreach (var metaTile in _metaTiles)
                 metaTile.Draw(graphics);
+            
+            Select(graphics, _selection, true);
         }
     }
 }
