@@ -41,15 +41,13 @@ namespace Seanox.Platform.Launcher
         private const int GRID_GAP     = 25;
         private const int GRID_PADDING = 10;
         
-        private const int OPACITY = 85;
+        private const int OPACITY = 90;
         
         private const string BACKGROUND_COLOR = "#000000";
         private const string FOREGROUND_COLOR = "#C8C8C8";
-        private const string BORDER_COLOR     = "#646464";
+        private const string BORDER_COLOR     = "#424242";
         private const string HIGHLIGHT_COLOR  = "#FAB400";
         
-        private const float FONT_SIZE = 9.75f;
-
         private static Regex PATTERN_HOT_KEY = new Regex(@"^0*([1248])\s*\+\s*0*(\d{1,3})$");
         private static Regex PATTERN_BYTE    = new Regex("^0*([0-1]?[0-9]?[0-9]?|2[0-4][0-9]|25[0-5])$");
         private static Regex PATTERN_COLOR   = new Regex("^(#(?:[0-9A-F]{3}){1,2})$", RegexOptions.IgnoreCase);
