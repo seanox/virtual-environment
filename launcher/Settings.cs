@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
@@ -69,7 +70,7 @@ namespace Seanox.Platform.Launcher
             _borderColor     = BORDER_COLOR;
             _highlightColor  = HIGHLIGHT_COLOR;
             
-            FontSize = FONT_SIZE;
+            FontSize = SystemFonts.DefaultFont.Size;
             
             Tiles = Array.Empty<Tile>();
         }
