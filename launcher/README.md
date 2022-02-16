@@ -9,17 +9,13 @@ TODO:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
-    <!-- 
-        System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
-        https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey#parameters
-        https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-        
-        Proven standards:
-        - Release: Win + Esc
-        - Development: Alt + Esc
-        
-        Default value: 8 + 27 
+    <!--
+        General Instructions
+        - Text values (not numeric / boolean) supported environment variables.
+        - Invalid or unset values use a defined default value.  
     -->
+
+    <!-- Hot-key to show the launcher (decimal modifiers:virtual key code) -->
     <hotKey>1 + 27</hotKey>
 
     <!-- Cell size in pixels (height and width) -->
@@ -29,51 +25,26 @@ TODO:
     <!-- Distance from the border in the cells in pixels -->
     <gridPadding>10</gridPadding>
 
-    <!-- 
-        Opacity of background in percents (100 - 0)
-        Less than 50 makes no sense, because then the UI is difficult to see.
-        
-        Default value: 90
-    -->
+    <!-- Opacity of background in percents (100 - 0) -->
     <opacity>90</opacity>
 
     <!--
         BackgroundImage is optionally a path relative to the working directory.
-        The image is centered and scaled to fit.
+        The image is centered and scaled to fit. If the image does not exist or
+        it uses an unsupported format, the image will be ignored.
     -->
     <backgroundImage></backgroundImage>
 
-    <!--
-        Coloring
-        
-            backgroundColor
-        General background color
-        Default value: #000000
-
-            foregroundColor
-        General foreground color
-        Default value: #C8C8C8
-
-            borderColor
-        Border color from grid
-        Default value: #424242
-        
-            highlightColor 
-        Color for highlighting (e.g. navigation)
-        Default value: #FAB400
-    -->
-    
-    <!-- Dark Coloring (default) -->
+    <!-- General background color -->
     <backgroundColor>#000000</backgroundColor>
+    <!-- General foreground color -->
     <foregroundColor>#C8C8C8</foregroundColor>
-    <borderColor>#424242</borderColor>
+    <!-- Border color from grid -->
+    <borderColor>#646464</borderColor>
+    <!-- Color for highlighting (e.g. navigation) -->
     <highlightColor>#FAB400</highlightColor>
 
-    <!--
-        Font size in the tiles.
-        
-        Default value: Size of the system font
-    -->
+    <!-- Font size in the tiles. -->
     <fontSize>9.75</fontSize>
 
     <tiles>

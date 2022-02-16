@@ -77,8 +77,13 @@ namespace Seanox.Platform.Launcher
         {
             if (String.IsNullOrWhiteSpace(value)
                     || !pattern.IsMatch(value))
-                return standard;
-            return value.Trim();
+                value = standard;
+            return Environment.ExpandEnvironmentVariables((value ?? "")).Trim();
+        }
+        
+        private static string NormalizeValue(string value)
+        {
+            return Environment.ExpandEnvironmentVariables((value ?? "")).Trim();
         }
 
         [XmlElement("hotKey")]
@@ -108,7 +113,11 @@ namespace Seanox.Platform.Launcher
         }
 
         [XmlElement("backgroundImage")]
-        public string BackgroundImage;
+        public string BackgroundImage
+        {
+            get => _backgroundImage;
+            set => _backgroundImage = NormalizeValue(value);
+        }
 
         [XmlElement("foregroundColor")]
         public string ForegroundColor
@@ -153,17 +162,18 @@ namespace Seanox.Platform.Launcher
             public string Title
             {
                 get => _title;
-                set => _title = value.Trim();
+                set => _title = NormalizeValue(value);
             }
             
             [XmlElement("icon")]
             public string Icon
             {
                 get => _icon;
-                set => _icon = value.Trim();
+                set => _icon = NormalizeValue(value);
             }
 
-            internal string IconFile {
+            internal string IconFile
+            {
                 get
                 {
                     var iconFile = Icon;
@@ -174,7 +184,8 @@ namespace Seanox.Platform.Launcher
                 }
             }
             
-            internal int IconIndex {
+            internal int IconIndex
+            {
                 get
                 {
                     var iconFile = Icon;
@@ -190,21 +201,21 @@ namespace Seanox.Platform.Launcher
             public string Destination
             {
                 get => _destination;
-                set => _destination = value.Trim();
+                set => _destination = NormalizeValue(value);
             }
 
             [XmlElement("arguments")]
             public string Arguments
             {
                 get => _arguments;
-                set => _arguments = value.Trim();
+                set => _arguments = NormalizeValue(value);
             }
 
             [XmlElement("workingDirectory")]
             public string WorkingDirectory
             {
                 get => _workingDirectory;
-                set => _workingDirectory = value.Trim();
+                set => _workingDirectory = NormalizeValue(value);
             }
         }
     }

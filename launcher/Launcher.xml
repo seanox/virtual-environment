@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
+  <!--
+    General Instructions
+    - Text values (not numeric / boolean) supported environment variables.
+    - Invalid or unset values use a defined default value.  
+  -->     
+  
   <!-- 
     System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
     https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey#parameters
@@ -13,24 +19,25 @@
   -->
   <hotKey>1 + 27</hotKey>
 
-  <!-- TODO -->
+  <!-- Cell size in pixels (height and width) -->
   <gridSize>99</gridSize>
-  <!-- TODO -->
+  <!-- Distance between cells in pixels -->
   <gridGap>25</gridGap>
-  <!-- TODO -->
+  <!-- Distance from the border in the cells in pixels -->
   <gridPadding>10</gridPadding>
 
   <!-- 
     Opacity of background in percents (100 - 0)
     Less than 50 makes no sense, because then the UI is difficult to see.
     
-    Default value: 85
+    Default value: 90
   -->
-  <opacity>85</opacity>
+  <opacity>90</opacity>
 
   <!--
     BackgroundImage is optionally a path relative to the working directory.
-    The image is centered and scaled to fit.
+    The image is centered and scaled to fit. If the image does not exist or it
+    uses an unsupported format, the image will be ignored.
   -->
   <backgroundImage></backgroundImage>
 
@@ -71,9 +78,9 @@
   -->
 
   <!--
-    TODO
+    Font size in the tiles.
     
-    Default value: 9.75
+    Default value: Size of the system font
   -->
   <fontSize>9.75</fontSize>
 
