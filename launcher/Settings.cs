@@ -78,12 +78,12 @@ namespace Seanox.Platform.Launcher
             if (String.IsNullOrWhiteSpace(value)
                     || !pattern.IsMatch(value))
                 value = standard;
-            return Environment.ExpandEnvironmentVariables((value ?? "")).Trim();
+            return Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
         
         private static string NormalizeValue(string value)
         {
-            return Environment.ExpandEnvironmentVariables((value ?? "")).Trim();
+            return Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
 
         [XmlElement("hotKey")]
