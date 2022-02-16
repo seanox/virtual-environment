@@ -180,7 +180,7 @@ namespace Seanox.Platform.Launcher
                     if (String.IsNullOrWhiteSpace(Icon))
                         iconFile = Destination;
                     else iconFile = iconFile = PATTERN_ICON.Replace(iconFile, "$1");
-                    return iconFile != null ? iconFile.Trim() : iconFile;
+                    return iconFile != null ? iconFile.Trim() : null;
                 }
             }
             
