@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using Seanox.Platform.Launcher.Tiles;
 
 // TODO: MessageBox does not show the correct icon in taskbar
@@ -74,7 +75,7 @@ namespace Seanox.Platform.Launcher
         
         private int _cursor = -1;
         
-        private bool _keyEventLock;
+        private bool _inputEventLock;
 
         internal Control(Settings settings)
         {
@@ -93,7 +94,10 @@ namespace Seanox.Platform.Launcher
             
             Visible = false;
             Opacity = 0;
-            
+
+            Message.Font = new Font(SystemFonts.DefaultFont.FontFamily, 24, FontStyle.Regular);
+            Message.ForeColor = ColorTranslator.FromHtml(_settings.ForegroundColor);
+                
             BackColor = ColorTranslator.FromHtml(_settings.BackgroundColor);
             
             _metaTileGrid = MetaTileGrid.Create(_settings);
@@ -118,10 +122,9 @@ namespace Seanox.Platform.Launcher
             Load += OnLoad;
             LostFocus += (sender, eventArgs) => Visible = false;
             MouseClick += OnMouseClick;
-            
-            // TODO: SystemEvents.UserPreferenceChanging += OnVisualSettingsChanged;
-            // TODO: SystemEvents.DisplaySettingsChanged += OnVisualSettingsChanged;
-            // TODO: OnVisualSettingsChanged(null, null);
+
+            SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
+            SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
         }
 
         private void RegisterHotKey()
@@ -153,11 +156,15 @@ namespace Seanox.Platform.Launcher
 
         private void UseMetaTile(MetaTile metaTile)
         {
+            if (Message.Visible)
+                return;
             SelectMetaTile(metaTile);
             if (metaTile == null
                     || metaTile.Settings == null
                     || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
                 return;
+            Visible = false;
+            MessageBox.Show("TODO");
             // TODO:
         }
         
@@ -189,6 +196,9 @@ namespace Seanox.Platform.Launcher
         
         private void OnKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
+            if (Message.Visible)
+                return;
+            
             if (_cursor < 0
                     && (new List<Keys> {Keys.Left, Keys.Back, Keys.Up}).Contains(keyEventArgs.KeyCode))
                 _cursor = 0;
@@ -203,10 +213,10 @@ namespace Seanox.Platform.Launcher
 
             var navigationKeys = (new List<Keys> {Keys.Left, Keys.Back, Keys.Right, Keys.Tab, Keys.Up, Keys.Down}); 
             if (navigationKeys.Contains(keyEventArgs.KeyCode)
-                    && _keyEventLock)
+                    && _inputEventLock)
                 return;
             if (navigationKeys.Contains(keyEventArgs.KeyCode))
-                _keyEventLock = true;
+                _inputEventLock = true;
             
             // Key combinations with Shift invert the key functions for
             // navigation. Escape, Enter and Space are excluded from this.
@@ -261,14 +271,16 @@ namespace Seanox.Platform.Launcher
                 SelectMetaTile(_metaTiles[_cursor]);
             
             if (!navigationKeys.Contains(keyEventArgs.KeyCode)
-                    || !_keyEventLock)
+                    || !_inputEventLock)
                 return;
             Thread.Sleep(50);
-            _keyEventLock = false;
+            _inputEventLock = false;
         }
 
         private void OnMouseClick(object sender, MouseEventArgs mouseEventArgs)
         {
+            if (Message.Visible)
+                return;
             var location = new Point(mouseEventArgs.X, mouseEventArgs.Y);
             var metaTile = _metaTileScreen.Locate(location);
             SelectMetaTile(metaTile);
@@ -282,7 +294,12 @@ namespace Seanox.Platform.Launcher
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
             base.OnPaintBackground(eventArgs);
-            _metaTileScreen.Draw(eventArgs.Graphics);
+            Message.Text = "";
+            if (Screen.FromControl(this).Bounds.Width < _metaTileGrid.Width + _metaTileGrid.Gap 
+                    || Screen.FromControl(this).Bounds.Height < _metaTileGrid.Height + _metaTileGrid.Gap)
+                Message.Text = "The resolution is too low to show the tiles.";
+            else _metaTileScreen.Draw(eventArgs.Graphics);
+            Message.Visible = !String.IsNullOrWhiteSpace(Message.Text);
         }
     }
 }
