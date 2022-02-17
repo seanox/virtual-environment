@@ -20,25 +20,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Seanox.Platform.Launcher.Tiles;
 
-// TODO: MessageBox does not show the correct icon in taskbar
 // TODO: Check usage dispose for a robust program
 // TODO: Global mouse move event, then hide if outside -- for more screen usage
 
 // TODO: Tiles: Matrix 4x10 with shortcuts from keyboard layout
-// TODO: Tiles: Navigation Up, Down, Left, Right
-// TODO: OnKeyDown for all shortcuts (according to the keyboard layout)
-// TODO: Rebuild when the keyboard layout changes
 // TODO: Check usage dispose for a robust program
-// TODO: Reload if the configuration file changes
-// TODO: Reload if the resolution changes
-// TODO: When resize (OnResize) the hide
 
 namespace Seanox.Platform.Launcher
 {
@@ -56,6 +51,28 @@ namespace Seanox.Platform.Launcher
     // At runtime, the launcher is opened via a system-wide HotKey combination.
     // The launcher is hidden when the focus is lost or the ESC key is pressed.
     
+    // Navigation
+    // ----
+    // Mouse, arrow keys as well as tab and backslash are supported. In
+    // combination with Shift inverts the behavior of the buttons.
+    
+    // Loss of focus
+    // ----
+    // The launcher is implemented as an overlay from the primary screen. When
+    // the launcher is no longer in the foreground, it becomes invisible.
+    // Exceptions are windows/message boxes that are opened in the context of
+    // the launcher.
+    
+    // Too low screen resolution
+    // ----
+    // If the screen resolution is too low, an error message is displayed as an
+    // overlay instead of the launcher.
+    
+    // Changes in user settings, keyboard layout or screen resolution
+    // ----
+    // In both cases, the launcher becomes invisible so that it can be redrawn
+    // by pressing the host key again.
+    
     internal partial class Control : Form
     {
         [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -63,6 +80,12 @@ namespace Seanox.Platform.Launcher
         
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+    
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         
         private const int HOTKEY_ID = 0x0;
         private const int WM_HOTKEY = 0x0312;
@@ -120,7 +143,7 @@ namespace Seanox.Platform.Launcher
             
             KeyDown += OnKeyDown;
             Load += OnLoad;
-            LostFocus += (sender, eventArgs) => Visible = false;
+            LostFocus += OnLostFocus;
             MouseClick += OnMouseClick;
 
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
@@ -160,12 +183,28 @@ namespace Seanox.Platform.Launcher
                 return;
             SelectMetaTile(metaTile);
             if (metaTile == null
-                    || metaTile.Settings == null
-                    || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
+                    || String.IsNullOrWhiteSpace(metaTile.Settings?.Destination))
                 return;
+            
+            try 
+            {
+                Process.Start(new ProcessStartInfo()
+                {
+                    WorkingDirectory = metaTile.Settings.WorkingDirectory,
+                    FileName = metaTile.Settings.Destination,
+                    Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
+                });
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
+                        + $"{Environment.NewLine}{exception.Message}"
+                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
             Visible = false;
-            MessageBox.Show("TODO");
-            // TODO:
         }
         
         protected override void WndProc(ref Message message)
@@ -184,6 +223,23 @@ namespace Seanox.Platform.Launcher
             Thread.Sleep(25);
             Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
             Visible = true;
+        }
+        
+        private static Process GetForegroundProcess()
+        {
+            uint processID = 0;
+            GetWindowThreadProcessId(GetForegroundWindow(), out processID);
+            return Process.GetProcessById(Convert.ToInt32(processID));
+        }
+        
+        private void OnLostFocus(object sender, EventArgs eventArgs)
+        {
+            // In case of an error message when opening a tile, the Launcher
+            // should continue to be displayed. If other programs get the
+            // focus, the Launcher should be invisible.
+            var process = Process.GetCurrentProcess();
+            if (!process.Id.Equals(GetForegroundProcess()?.Id))
+                Visible = false;
         }
 
         protected override bool ProcessKeyMessage(ref Message message)
@@ -285,6 +341,7 @@ namespace Seanox.Platform.Launcher
             var metaTile = _metaTileScreen.Locate(location);
             SelectMetaTile(metaTile);
             if ((mouseEventArgs.Button & MouseButtons.Left) == 0
+                    || metaTile == null
                     || metaTile.Settings == null
                     || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
                 return;

@@ -24,8 +24,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
     
-// TODO: MessageBox does not show the correct icon in taskbar
 // TODO: Check usage dispose for a robust program
+// TODO: Reload if the configuration file changes
 
 namespace Seanox.Platform.Launcher
 {
