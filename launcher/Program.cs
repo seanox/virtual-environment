@@ -56,8 +56,8 @@ namespace Seanox.Platform.Launcher
             catch (FileNotFoundException)
             {
                 MessageBox.Show("The settings file is missing:"
-                                + $"{Environment.NewLine}{applicationConfigurationFile}",
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        + $"{Environment.NewLine}{applicationConfigurationFile}",
+                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             catch (Exception exception)
@@ -65,7 +65,7 @@ namespace Seanox.Platform.Launcher
                 MessageBox.Show(("The settings file is incorrect:"
                         + $"{Environment.NewLine}{exception.Message}"
                         + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
