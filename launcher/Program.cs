@@ -19,14 +19,8 @@
 // the License.
 
 using System;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Xml.Serialization;
     
-// TODO: Check usage dispose for a robust program
-// TODO: Reload if the configuration file changes
-
 namespace Seanox.Platform.Launcher
 {
     internal static class Program
@@ -36,42 +30,25 @@ namespace Seanox.Platform.Launcher
         [STAThread]
         internal static void Main()
         {
-            // XML based configuration
-            // - based on the file name from launcher
-            // - contains: Opacity, HotKey, Apps (Tiles)
-            // - XML data is mapped to settings via serialization
-            // - here there is no validation only indirectly it is checked
-            //   during serialization whether the data types fit.
+            // The configuration preloaded. Essential errors are noticed at the
+            // program start and the start is aborted with an error message. At
+            // runtime, the last loaded configuration can be reverted to in the
+            // event of an error.
             
-            var applicationPath = Assembly.GetExecutingAssembly().Location;
-            var applicationConfigurationFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                    Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
-
             try
             {
-                var serializer = new XmlSerializer(typeof(Settings));
-                using (var reader = new StreamReader(applicationConfigurationFile))
-                    _settings = (Settings)serializer.Deserialize(reader);
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show("The settings file is missing:"
-                        + $"{Environment.NewLine}{applicationConfigurationFile}",
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                Settings.load();
             }
             catch (Exception exception)
             {
-                MessageBox.Show(("The settings file is incorrect:"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(exception.Message, "Virtual Environment Launcher",
+                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Control(_settings));
+            Application.Run(new Control());
         }
     }
 }

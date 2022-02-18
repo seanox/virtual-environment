@@ -20,11 +20,20 @@
 
 using System;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace Seanox.Platform.Launcher
 {
+    // Settings for a XML based configuration.
+    // - based on the file name from launcher
+    // - contains: opacity, hotkey, grid dimensions, colors, background, tiles
+    // - XML data is mapped to settings via serialization
+    // - here there is no validation only indirectly it is checked
+    //   during serialization whether the data types fit.
     [XmlRoot("settings")]
     public class Settings
     {
@@ -71,6 +80,35 @@ namespace Seanox.Platform.Launcher
             FontSize = SystemFonts.DefaultFont.Size;
             
             Tiles = Array.Empty<Tile>();
+        }
+
+        internal static Settings load()
+        {
+            var applicationPath = Assembly.GetExecutingAssembly().Location;
+            var applicationConfigurationFile = Path.Combine(Path.GetDirectoryName(applicationPath),
+                    Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
+            try
+            {
+                var serializer = new XmlSerializer(typeof(Settings));
+                using (var reader = new StreamReader(applicationConfigurationFile))
+                    return (Settings)serializer.Deserialize(reader);
+            }
+            catch (FileNotFoundException exception)
+            {
+                throw new SecurityException("The settings file is missing:"
+                        + $"{Environment.NewLine}{applicationConfigurationFile}", exception);
+            }
+            catch (Exception exception)
+            {
+                throw new SecurityException(("The settings file is incorrect:"
+                        + $"{Environment.NewLine}{exception.Message}"
+                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
+            }
+        }
+
+        private class SettingsException : Exception
+        {
+            SettingsException(string message, Exception cause) : base(message, cause) {}
         }
 
         private static string NormalizeValue(Regex pattern, string value, string standard)
