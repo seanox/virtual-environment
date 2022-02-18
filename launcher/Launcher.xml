@@ -54,7 +54,7 @@
 
         borderColor
     Border color from grid
-    Default value: #646464
+    Default value: #313131
     
         highlightColor 
     Color for highlighting (e.g. navigation)
@@ -65,15 +65,15 @@
   <!--
   <backgroundColor>#000000</backgroundColor>
   <foregroundColor>#C8C8C8</foregroundColor>
-  <borderColor>#646464</borderColor>
+  <borderColor>#313131</borderColor>
   <highlightColor>#FAB400</highlightColor>
   -->
   
   <!-- Light Coloring -->
-  <!--
+  <!-- TODO:
   <backgroundColor>#000000</backgroundColor>
   <foregroundColor>#C8C8C8</foregroundColor>
-  <borderColor>#646464</borderColor>
+  <borderColor>#313131</borderColor>
   <highlightColor>#FAB400</highlightColor>
   -->
 
@@ -121,7 +121,7 @@
       <title>Console</title>
       <icon>%WINDIR%\System32\cmd.exe</icon>
       <destination>%APPSPATH%\Console\Console.cmd</destination>
-      <workingDirectory>%HOMEDRIVE%\</workingDirectory>
+      <workingDirectory>%HOMEDRIVE%</workingDirectory>
     </tile>
     <tile>
       <index>38</index>
