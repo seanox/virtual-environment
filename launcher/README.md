@@ -1,6 +1,7 @@
 # Launcher
 TODO:
 
+
 ## Features
 - Full screen overlay interface  
   The tile interface is displayed as a full screen overlay on the primary screen.
@@ -25,10 +26,18 @@ TODO:
   simply terminated.  
 - Portable application without installation
 
-TODO:
 
-## Settings XML
-TODO:
+## System Requirement
+- Windows 10 or higher
+- .NET 4.7.x or higher
+
+
+## Settings
+For configuration the file `launcher.xml` (depending on the application name)
+in the working directory is used. If this file does not exist or is incorrect,
+the launcher aborts the start with an error message.
+
+The following is an example of a configuration file.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -95,3 +104,10 @@ TODO:
     </tiles>
 </settings>
 ```
+
+
+# Changes (Change Log)
+## 1.0.0 2022xxxx (summary of the upcoming version)
+NT: TODO
+
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
