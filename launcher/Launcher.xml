@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
   <!--
-    General Instructions
-    - Text values (not numeric / boolean) supported environment variables.
-    - Invalid or unset values use a defined default value.  
+    General Information
+    - Text values (not numeric / boolean) supported environment variables
+    - Invalid or unset values use a defined default value
   -->     
   
   <!-- 
@@ -97,7 +97,7 @@
         Supports many image formats and icons in exe, dll, ... files.
       -->
       <icon>%WINDIR%\system32\shell32.dll:27</icon>
-      <!-- Path of the application file -->
+      <!-- Path of the application file or `exit` to exit the launcher -->
       <destination>%PLATFORM_APP%</destination>
       <!-- Arguments for the program start -->
       <arguments>%HOMEDRIVE% detach</arguments>

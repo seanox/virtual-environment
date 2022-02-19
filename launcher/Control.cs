@@ -185,7 +185,10 @@ namespace Seanox.Platform.Launcher
             if (metaTile == null
                     || String.IsNullOrWhiteSpace(metaTile.Settings?.Destination))
                 return;
-            
+
+            if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
+                Environment.Exit(0);
+
             try 
             {
                 Process.Start(new ProcessStartInfo()

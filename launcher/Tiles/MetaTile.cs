@@ -83,6 +83,8 @@ namespace Seanox.Platform.Launcher.Tiles
             var scaleFactor = 1f;
             scaleFactor = Math.Min(iconSize / (float)iconImage.Height, scaleFactor);
             scaleFactor = Math.Min(iconSize / (float)iconImage.Width, scaleFactor);
+            if (scaleFactor <= 0)
+                return null;
             if (scaleFactor >= 1)
                 return iconImage;
             using (iconImage)
