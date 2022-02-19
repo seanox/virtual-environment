@@ -60,10 +60,9 @@ namespace Seanox.Platform.Launcher.Utilities
                 if (icon != null)
                     return icon.ToBitmap();
                 icon = Icon.ExtractAssociatedIcon(file);
-                var bitmap = new Bitmap(icon.Width, icon.Height, PixelFormat.Format32bppPArgb);
-                using (var graphics = System.Drawing.Graphics.FromImage(bitmap))
-                    graphics.DrawIcon(icon, 0, 0);
-                return bitmap;
+                if (icon != null)
+                    return icon.ToBitmap();
+                return null;
             }
             catch (Exception)
             {

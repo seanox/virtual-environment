@@ -187,7 +187,11 @@ namespace Seanox.Platform.Launcher
                 return;
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
+            {
+                _inputEventLock = true;
+                Visible = false;
                 Environment.Exit(0);
+            }
             
             // There are always situations when opening programs can become a
             // problem. Even in these cases, the interface should not block.
