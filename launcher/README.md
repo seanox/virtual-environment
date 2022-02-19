@@ -93,7 +93,7 @@ Example of a configuration file:
                 Supports many image formats and icons in exe, dll, ... files.
             -->
             <icon>%WINDIR%\system32\shell32.dll:27</icon>
-          <!-- Path of the application file or `exit` to exit the launcher -->
+            <!-- Path of the application file or `exit` to exit the launcher -->
             <destination>%PLATFORM_APP%</destination>
             <!-- Arguments for the program start -->
             <arguments>%HOMEDRIVE% detach</arguments>
