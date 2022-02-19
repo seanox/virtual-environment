@@ -57,12 +57,9 @@ namespace Seanox.Platform.Launcher.Utilities
                 if (IMAGE_FIlE_PATTERN.IsMatch(file))
                     return Image.FromFile(file);
                 var icon = ExtractIcon(file, number, large);
-                if (icon != null)
-                    return icon.ToBitmap();
-                icon = Icon.ExtractAssociatedIcon(file);
-                if (icon != null)
-                    return icon.ToBitmap();
-                return null;
+                if (icon == null)
+                    icon = Icon.ExtractAssociatedIcon(file);
+                return icon != null ? icon.ToBitmap() : null;
             }
             catch (Exception)
             {
