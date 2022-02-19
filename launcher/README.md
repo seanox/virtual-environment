@@ -1,5 +1,7 @@
 # Launcher
-TODO:
+A portable program launcher specially developed for the Seanox Virtual
+Environment with a full-screen tile look that can also be used standalone and
+independently.
 
 
 ## Features
@@ -30,6 +32,12 @@ TODO:
 ## System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
+
+## Download
+The launcher is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
+but can also be downloaded and used separately.
+
+https://github.com/seanox/virtual-environment/tree/main/launcher/Releases
 
 
 ## Settings
@@ -108,6 +116,6 @@ Example of a configuration file:
 
 # Changes (Change Log)
 ## 1.0.0 2022xxxx (summary of the upcoming version)
-NT: TODO
+NT: Release is available
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
