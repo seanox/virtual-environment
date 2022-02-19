@@ -37,7 +37,7 @@ For configuration the file `launcher.xml` (depending on the application name)
 in the working directory is used. If this file does not exist or is incorrect,
 the launcher aborts the start with an error message.
 
-The following is an example of a configuration file.
+Example of a configuration file:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
