@@ -62,6 +62,8 @@ namespace Seanox.Platform.Launcher
         private static Regex PATTERN_COLOR   = new Regex("^(#(?:[0-9A-F]{3}){1,2})$", RegexOptions.IgnoreCase);
         private static Regex PATTERN_ICON    = new Regex(@"^((?:\w\s*:\s*.*?)|(?:.*?))\s*(?::\s*([^:]*)){0,1}$");
 
+        private static DateTime _lastModifiedTime;
+        
         public Settings()
         {
             _hotKey = HOT_KEY;
@@ -82,21 +84,36 @@ namespace Seanox.Platform.Launcher
             Tiles = Array.Empty<Tile>();
         }
 
-        internal static Settings load()
+        private static string FILE
         {
-            var applicationPath = Assembly.GetExecutingAssembly().Location;
-            var applicationConfigurationFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                    Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
+            get
+            {
+                var applicationPath = Assembly.GetExecutingAssembly().Location;
+                return Path.Combine(Path.GetDirectoryName(applicationPath),
+                        Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
+            }
+        }
+
+        internal static bool IsUpdateAvailable()
+        {
+            return File.Exists(FILE) && (_lastModifiedTime == null || _lastModifiedTime < File.GetLastWriteTime(FILE));
+        }
+
+        internal static Settings Load()
+        {
+            if (File.Exists(FILE))
+                _lastModifiedTime = File.GetLastWriteTime(FILE);
+            
             try
             {
                 var serializer = new XmlSerializer(typeof(Settings));
-                using (var reader = new StreamReader(applicationConfigurationFile))
+                using (var reader = new StreamReader(FILE))
                     return (Settings)serializer.Deserialize(reader);
             }
             catch (FileNotFoundException exception)
             {
                 throw new SecurityException("The settings file is missing:"
-                        + $"{Environment.NewLine}{applicationConfigurationFile}", exception);
+                        + $"{Environment.NewLine}{FILE}", exception);
             }
             catch (Exception exception)
             {

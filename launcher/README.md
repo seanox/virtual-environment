@@ -1,9 +1,24 @@
 # Launcher
+TODO:
+
+## Features
+- Fullscreen Overlay Interface  
+  The tile interface is displayed as a fullscreen overlay on the primary screen.
+- Tile Interface
+  Interface with 40 freely configurable tiles.
+- Global HotKey combination  
+  A global HotKey combination is used to show and hide the tile interface.
+- Automatic settings update  
+  Changes in the settings are used immediately, if the settings are incorrect
+  the last settings are kept.
+- No icons and functions in the taskbar or system tray  
+  The program is optimized for the virtual environment. So that the shell is
+  not lost, the program is always present in the background and cannot be
+  simply terminated.
 
 TODO:
 
 ## Settings XML
-
 TODO:
 
 ```xml

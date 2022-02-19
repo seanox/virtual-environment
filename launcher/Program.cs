@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
     
 namespace Seanox.Platform.Launcher
@@ -30,25 +31,37 @@ namespace Seanox.Platform.Launcher
         [STAThread]
         internal static void Main()
         {
-            // The configuration preloaded. Essential errors are noticed at the
-            // program start and the start is aborted with an error message. At
-            // runtime, the last loaded configuration can be reverted to in the
-            // event of an error.
-            
-            try
-            {
-                Settings.load();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Virtual Environment Launcher",
-                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Control());
+            
+            // Settings are monitored by the main program. When changes are
+            // detected, the form is closed and set up again with the changed
+            // settings. If an error occurs when loading the settings, a
+            // message is shown and existing settings continue to be used.
+                
+            while (true)
+            {
+                if (Settings.IsUpdateAvailable())
+                {
+                    try
+                    {
+                        var settings = Settings.Load();
+                        var visible = Application.OpenForms.Count <= 0
+                                || Application.OpenForms[0].Visible;
+                        if (Application.OpenForms.Count > 0)
+                            Application.Exit();
+                        new Thread(delegate() {Application.Run(new Control(settings, visible));}).Start();
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Virtual Environment Launcher",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        if (Application.OpenForms.Count <= 0)
+                            break;
+                    }
+                }
+                Thread.Sleep(1000);
+            }
         }
     }
 }

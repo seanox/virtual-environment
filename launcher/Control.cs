@@ -31,9 +31,7 @@ using Seanox.Platform.Launcher.Tiles;
 
 // TODO: Check usage dispose for a robust program
 // TODO: Global mouse move event, then hide if outside -- for more screen usage
-
 // TODO: Tiles: Matrix 4x10 with shortcuts from keyboard layout
-// TODO: Check usage dispose for a robust program
 
 namespace Seanox.Platform.Launcher
 {
@@ -99,10 +97,12 @@ namespace Seanox.Platform.Launcher
         private int _cursor = -1;
         
         private bool _inputEventLock;
+        private bool _visible;
 
-        internal Control(Settings settings)
+        internal Control(Settings settings, bool visible = true)
         {
             _settings = settings;
+            _visible = visible;
 
             FormBorderStyle = FormBorderStyle.None;
             Bounds = Screen.PrimaryScreen.Bounds;
@@ -200,7 +200,7 @@ namespace Seanox.Platform.Launcher
                 MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
                         + $"{Environment.NewLine}{exception.Message}"
                         + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             
@@ -222,7 +222,7 @@ namespace Seanox.Platform.Launcher
             DoubleBuffered = true;
             Thread.Sleep(25);
             Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
-            Visible = true;
+            Visible = _visible;
         }
         
         private static Process GetForegroundProcess()
