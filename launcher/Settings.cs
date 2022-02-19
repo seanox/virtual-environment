@@ -46,9 +46,10 @@ namespace Seanox.Platform.Launcher
 
         private const string HOT_KEY = "1:27";
 
-        private const int GRID_SIZE    = 99;
-        private const int GRID_GAP     = 25;
-        private const int GRID_PADDING = 10;
+        private const int GRID_SIZE          = 99;
+        private const int GRID_GAP           = 25;
+        private const int GRID_PADDING       = 10;
+        private const int GRID_CORNER_RADIUS = 1;
         
         private const int OPACITY = 90;
         
@@ -68,9 +69,10 @@ namespace Seanox.Platform.Launcher
         {
             _hotKey = HOT_KEY;
             
-            GridSize    = GRID_SIZE;
-            GridGap     = GRID_GAP;
-            GridPadding = GRID_PADDING;
+            GridSize         = GRID_SIZE;
+            GridGap          = GRID_GAP;
+            GridPadding      = GRID_PADDING;
+            GridCornerRadius = GRID_CORNER_RADIUS;
             
             Opacity = OPACITY;
             
@@ -156,6 +158,9 @@ namespace Seanox.Platform.Launcher
         
         [XmlElement("gridPadding")]
         public int GridPadding;
+
+        [XmlElement("gridCornerRadius")]
+        public int GridCornerRadius;
 
         [XmlElement("opacity")]
         public int Opacity;

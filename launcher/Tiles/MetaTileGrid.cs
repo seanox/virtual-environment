@@ -18,6 +18,8 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+using System;
+
 namespace Seanox.Platform.Launcher.Tiles
 {
     internal class MetaTileGrid
@@ -28,6 +30,7 @@ namespace Seanox.Platform.Launcher.Tiles
         internal readonly int Size;
         internal readonly int Gap;
         internal readonly int Padding;
+        internal readonly int Radius;
 
         internal int Count  => Columns * Rows;
         internal int Height => ((Size + Gap) * Rows) - Gap;
@@ -42,6 +45,8 @@ namespace Seanox.Platform.Launcher.Tiles
             Size    = _settings.GridSize;
             Gap     = _settings.GridGap;
             Padding = _settings.GridPadding;
+            
+            Radius = Math.Max(Math.Min(_settings.GridCornerRadius, 0), Size /2);
         }
 
         internal static MetaTileGrid Create(Settings settings)

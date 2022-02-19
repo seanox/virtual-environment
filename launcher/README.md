@@ -10,9 +10,15 @@ TODO:
   A global HotKey combination is used to show and hide the tile interface.
 - HotKey for tiles and programs  
   Quick access via the keyboard, optimized for the used keyboard layout.  
+  Support for international keyboard layouts.
 - Automatic settings update  
   Changes in the settings are used immediately, if the settings are incorrect
   the last settings are kept.
+- Settings supports environment variables  
+  Environment variables can be used in text-based values.
+- Visual style per settings (themes support)  
+  The interface supports the configuration of colors, opacity, background color
+- and image, and the appearance of the grid.
 - No icons and functions in the taskbar or system tray  
   The program is optimized for the virtual environment. So that the shell is
   not lost, the program is always present in the background and cannot be
@@ -57,7 +63,7 @@ TODO:
     <!-- General foreground color -->
     <foregroundColor>#C8C8C8</foregroundColor>
     <!-- Border color from grid -->
-    <borderColor>#646464</borderColor>
+    <borderColor>#313131</borderColor>
     <!-- Color for highlighting (e.g. navigation) -->
     <highlightColor>#FAB400</highlightColor>
 
