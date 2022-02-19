@@ -17,7 +17,7 @@
     
     Default value: 8 + 27 
   -->
-  <hotKey>1 + 27</hotKey>
+  <hotKey>8 + 27</hotKey>
 
   <!-- Cell size in pixels (height and width) -->
   <gridSize>99</gridSize>
@@ -120,7 +120,7 @@
     </tile>
     <tile>
       <index>31</index>
-      <title>Console</title>
+      <title>Terminal</title>
       <icon>%WINDIR%\System32\cmd.exe</icon>
       <destination>%APPSPATH%\Console\Console.cmd</destination>
       <workingDirectory>%HOMEDRIVE%</workingDirectory>
@@ -136,7 +136,7 @@
       <title>Documents</title>
       <icon>%WINDIR%\system32\shell32.dll:126</icon>
       <destination>%WINDIR%\explorer.exe</destination>
-      <arguments>B:\Documents</arguments>
+      <arguments>%HOMEDRIVE%%HOMEPATH%</arguments>
     </tile>
   </tiles>
 </settings>
