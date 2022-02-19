@@ -2,12 +2,14 @@
 TODO:
 
 ## Features
-- Fullscreen Overlay Interface  
+- Fullscreen overlay interface  
   The tile interface is displayed as a fullscreen overlay on the primary screen.
-- Tile Interface
+- Tile interface
   Interface with 40 freely configurable tiles.
 - Global HotKey combination  
   A global HotKey combination is used to show and hide the tile interface.
+- HotKey for tiles and programs  
+  Quick access via the keyboard, optimized for the used keyboard layout.  
 - Automatic settings update  
   Changes in the settings are used immediately, if the settings are incorrect
   the last settings are kept.
