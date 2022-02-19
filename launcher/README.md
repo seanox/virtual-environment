@@ -43,9 +43,9 @@ Example of a configuration file:
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
     <!--
-        General Instructions
-        - Text values (not numeric / boolean) supported environment variables.
-        - Invalid or unset values use a defined default value.  
+        General Information
+        - Text values (not numeric / boolean) supported environment variables
+        - Invalid or unset values use a defined default value
     -->
 
     <!-- Hot-key to show the launcher (decimal modifiers:virtual key code) -->
