@@ -54,8 +54,12 @@ namespace Seanox.Platform.Launcher
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show(exception.Message, "Virtual Environment Launcher",
-                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        // System.IO.IOException can occur due to asynchronous
+                        // access and are ignored. 
+                        if (exception.InnerException == null
+                                || !(exception is System.IO.IOException))
+                            MessageBox.Show(exception.Message, "Virtual Environment Launcher",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         if (Application.OpenForms.Count <= 0)
                             break;
                     }

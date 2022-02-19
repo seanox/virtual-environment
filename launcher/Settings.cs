@@ -49,7 +49,7 @@ namespace Seanox.Platform.Launcher
         private const int GRID_SIZE          = 99;
         private const int GRID_GAP           = 25;
         private const int GRID_PADDING       = 10;
-        private const int GRID_CORNER_RADIUS = 1;
+        private const int GRID_CORNER_RADIUS = 4;
         
         private const int OPACITY = 90;
         
@@ -114,12 +114,12 @@ namespace Seanox.Platform.Launcher
             }
             catch (FileNotFoundException exception)
             {
-                throw new SecurityException("The settings file is missing:"
+                throw new SettingsException("The settings file is missing:"
                         + $"{Environment.NewLine}{FILE}", exception);
             }
             catch (Exception exception)
             {
-                throw new SecurityException(("The settings file is incorrect:"
+                throw new SettingsException(("The settings file is incorrect:"
                         + $"{Environment.NewLine}{exception.Message}"
                         + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
             }
@@ -127,7 +127,7 @@ namespace Seanox.Platform.Launcher
 
         private class SettingsException : Exception
         {
-            SettingsException(string message, Exception cause) : base(message, cause) {}
+            internal SettingsException(string message, Exception cause) : base(message, cause) {}
         }
 
         private static string NormalizeValue(Regex pattern, string value, string standard)
@@ -239,7 +239,7 @@ namespace Seanox.Platform.Launcher
                     var iconFile = Icon;
                     if (String.IsNullOrWhiteSpace(Icon))
                         iconFile = Destination;
-                    else iconFile = iconFile = PATTERN_ICON.Replace(iconFile, "$1");
+                    else iconFile = PATTERN_ICON.Replace(iconFile, "$1");
                     return iconFile != null ? iconFile.Trim() : null;
                 }
             }

@@ -25,6 +25,8 @@
   <gridGap>25</gridGap>
   <!-- Distance from the border in the cells in pixels -->
   <gridPadding>10</gridPadding>
+  <!-- Radius for rounding the corners from the grid in pixels -->
+  <gridCornerRadius>4</gridCornerRadius>
 
   <!-- 
     Opacity of background in percents (100 - 0)

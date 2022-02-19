@@ -46,7 +46,7 @@ namespace Seanox.Platform.Launcher.Tiles
             Gap     = _settings.GridGap;
             Padding = _settings.GridPadding;
             
-            Radius = Math.Max(Math.Min(_settings.GridCornerRadius, 0), Size /2);
+            Radius = Math.Min(Math.Max(_settings.GridCornerRadius, 0), Size /2);
         }
 
         internal static MetaTileGrid Create(Settings settings)
