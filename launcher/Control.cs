@@ -10,7 +10,7 @@
 // use this file except in compliance with the License. You may obtain a copy of
 // the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -188,26 +188,33 @@ namespace Seanox.Platform.Launcher
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
                 Environment.Exit(0);
-
-            try 
-            {
-                Process.Start(new ProcessStartInfo()
-                {
-                    WorkingDirectory = metaTile.Settings.WorkingDirectory,
-                    FileName = metaTile.Settings.Destination,
-                    Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
-                });
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
             
-            Visible = false;
+            // There are always situations when opening programs can become a
+            // problem. Even in these cases, the interface should not block.
+            
+            new Thread(delegate()
+            {
+                try 
+                {
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        WorkingDirectory = metaTile.Settings.WorkingDirectory,
+                        FileName = metaTile.Settings.Destination,
+                        Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
+                    });
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
+                                     + $"{Environment.NewLine}{exception.Message}"
+                                     + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            
+                Visible = false;
+                
+            }).Start();
         }
         
         protected override void WndProc(ref Message message)
