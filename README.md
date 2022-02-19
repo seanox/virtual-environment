@@ -122,7 +122,7 @@ specific language governing permissions and limitations under the License.
 
 
 # System Requirement
-- Windows 7 or higher as operating system
+- Windows 7 or higher
 - .NET 4.7.x or higher
 
 
@@ -134,14 +134,14 @@ specific language governing permissions and limitations under the License.
 - Download the release or [platform.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Platform.exe)
 - Rename __platform.exe__ to the name that will be used for the environment and drive
 
-When the virtual environment is created in the form of the vhdx file, it can be used as follows.
+Then the program can be used as follows::
 
 `usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
 
 Example
-- `seanox.exe B: create` to create the initial environment as vhdx
-- `seanox.exe B: shortcuts` to create the usual calls as shortcuts
-- `seanox.exe B: attach` to attach the environment
+- `platform.exe B: create` to create the initial environment as vhdx
+- `platform.exe B: shortcuts` to create the usual calls as shortcuts
+- `platform.exe B: attach` to attach the environment
 
 Configure __Startup.cmd__ in the root directory of the virtual environment and
 add the desired programs and services. It is recommended to use a launcher so
@@ -149,8 +149,8 @@ that the environment variables are available to the called programs. Detach
 should also be started via the launcher if programs and services are terminated
 when detaching and the environment variables are needed for this.
 
-- `seanox.exe B: detach` to detach the environment
-- `seanox.exe B: compact` to shrink the environment
+- `platform.exe B: detach` to detach the environment
+- `platform.exe B: compact` to shrink the environment
 
 __Module integration will come later, but will be similar.__
 
