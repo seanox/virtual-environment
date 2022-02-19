@@ -22,7 +22,8 @@ TODO:
 - No icons and functions in the taskbar or system tray  
   The program is optimized for the virtual environment. So that the shell is
   not lost, the program is always present in the background and cannot be
-  simply terminated.
+  simply terminated.  
+- Portable application without installation
 
 TODO:
 
