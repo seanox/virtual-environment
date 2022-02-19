@@ -2,8 +2,8 @@
 TODO:
 
 ## Features
-- Fullscreen overlay interface  
-  The tile interface is displayed as a fullscreen overlay on the primary screen.
+- Full screen overlay interface  
+  The tile interface is displayed as a full screen overlay on the primary screen.
 - Tile interface
   Interface with 40 freely configurable tiles.
 - Global HotKey combination  
