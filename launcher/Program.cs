@@ -27,44 +27,64 @@ namespace Seanox.Platform.Launcher
     internal static class Program
     {
         private static Settings _settings;
-        
+        private static Control  _control;
+        private static bool     _visible;
+
         [STAThread]
         internal static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
             // Settings are monitored by the main program. When changes are
-            // detected, the form is closed and set up again with the changed
-            // settings. If an error occurs when loading the settings, a
-            // message is shown and existing settings continue to be used.
-                
+            // detected, the control is closed and set up again with the
+            // changed settings. If an error occurs when loading the settings,
+            // a message is shown and existing settings continue to be used.
+            
+            // The logic for the reload is a bit more complicated, because 
+            // Application.Run blocks and the detection of changed settings
+            // runs in a separate thread. But since Windows expects a STA
+            // (Single Thread Apartment) for some functions like
+            // Icon.ExtractAssociatedIcon, the control must run in the main
+            // thread, otherwise it is an MTA (Multi Thread Apartment) and
+            // causes problems.
+            
+            new Thread(delegate()
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    if (!Settings.IsUpdateAvailable()
+                            || Application.OpenForms.Count <= 0)
+                        continue;
+                    _visible = _control.Visible;
+                    _control.Close();
+                }
+            }).Start();
+
             while (true)
             {
-                if (Settings.IsUpdateAvailable())
+                try
                 {
-                    try
-                    {
-                        var settings = Settings.Load();
-                        var visible = Application.OpenForms.Count <= 0
-                                || Application.OpenForms[0].Visible;
-                        if (Application.OpenForms.Count > 0)
-                            Application.Exit();
-                        new Thread(delegate() {Application.Run(new Control(settings, visible));}).Start();
-                    }
-                    catch (Exception exception)
-                    {
-                        // System.IO.IOException can occur due to asynchronous
-                        // access and are ignored. 
-                        if (exception.InnerException == null
-                                || !(exception is System.IO.IOException))
-                            MessageBox.Show(exception.Message, "Virtual Environment Launcher",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        if (Application.OpenForms.Count <= 0)
-                            break;
-                    }
+                    if (_control == null)
+                        _visible = true;    
+                    _settings = Settings.Load();
+                    _control = new Control(_settings, _visible);
+                    Application.Run(_control);
                 }
-                Thread.Sleep(1000);
+                catch (Exception exception)
+                {
+                    // System.IO.IOException can occur due to asynchronous
+                    // access and are ignored.
+                    if (exception.InnerException == null
+                            || _control == null
+                            || !(exception is System.IO.IOException))
+                        MessageBox.Show(exception.Message, "Virtual Environment Launcher",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    if (_control == null)
+                        Environment.Exit(0);
+                }
+                Thread.Sleep(25);
             }
         }
     }
