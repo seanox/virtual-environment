@@ -208,7 +208,7 @@ namespace Seanox.Platform.Launcher
             {
                 try
                 {
-                    using (Process.Start(new ProcessStartInfo()
+                    using (Process.Start(new ProcessStartInfo
                     {
                         WorkingDirectory = metaTile.Settings.WorkingDirectory,
                         FileName = metaTile.Settings.Destination,
