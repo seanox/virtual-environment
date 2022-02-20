@@ -26,9 +26,7 @@ namespace Seanox.Platform.Launcher
 {
     internal static class Program
     {
-        private static Settings _settings;
-        private static Control  _control;
-        private static bool     _visible;
+        private static Control _control;
 
         [STAThread]
         internal static void Main()
@@ -43,34 +41,20 @@ namespace Seanox.Platform.Launcher
             
             // The logic for the reload is a bit more complicated, because 
             // Application.Run blocks and the detection of changed settings
-            // runs in a separate thread. But since Windows expects a STA
-            // (Single Thread Apartment) for some functions like
+            // runs in the control as background timer. But since Windows
+            // expects a STA (Single Thread Apartment) for some functions like
             // Icon.ExtractAssociatedIcon, the control must run in the main
             // thread, otherwise it is an MTA (Multi Thread Apartment) and
             // causes problems.
             
-            new Thread(delegate()
-            {
-                while (true)
-                {
-                    Thread.Sleep(1000);
-                    if (!Settings.IsUpdateAvailable()
-                            || Application.OpenForms.Count <= 0)
-                        continue;
-                    _visible = _control.Visible;
-                    _control.Close();
-                }
-            }).Start();
-
             while (true)
             {
                 try
                 {
-                    if (_control == null)
-                        _visible = true;    
-                    _settings = Settings.Load();
-                    using (_control = new Control(_settings, _visible))
+                    var settings = Settings.Load();
+                    using (_control = new Control(settings, _control == null))
                         Application.Run(_control);
+                    GC.Collect();
                 }
                 catch (Exception exception)
                 {
