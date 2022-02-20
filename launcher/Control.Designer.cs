@@ -47,7 +47,7 @@ namespace Seanox.Platform.Launcher
             // 
             // Control
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(0F, 0F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ControlBox = false;
             this.Controls.Add(this.Message);
@@ -56,7 +56,6 @@ namespace Seanox.Platform.Launcher
             this.Opacity = 0.9D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
         }
