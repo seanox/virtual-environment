@@ -84,7 +84,7 @@ namespace Seanox.Platform.Launcher
         private static extern IntPtr GetForegroundWindow();
         
         [DllImport("user32.dll", SetLastError = true)]
-        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         
         private const int HOTKEY_ID = 0x0;
         private const int WM_HOTKEY = 0x0312;
@@ -101,18 +101,16 @@ namespace Seanox.Platform.Launcher
         private bool _inputEventLock;
         private bool _visible;
 
+        private static bool _initial = true;
+
         internal Control(Settings settings, bool visible = true)
         {
             _settings = settings;
-            _visible = visible;
+            _visible  = visible;
 
             FormBorderStyle = FormBorderStyle.None;
             Bounds = Screen.PrimaryScreen.Bounds;
             WindowState = FormWindowState.Maximized;
-
-            #if DEBUG
-            TopMost = false;
-            #endif
 
             InitializeComponent();
             RegisterHotKey();
@@ -171,11 +169,10 @@ namespace Seanox.Platform.Launcher
             {
                 MessageBox.Show("The settings do not contain a usable hot key."
                         + $"{Environment.NewLine}Please check the node /settings/hotKey in settings.xml file.",
-                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Environment.Exit(0);  
+                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (_initial)
+                    Environment.Exit(0);
             }
-
-            Closing += (sender, eventArgs) => UnregisterHotKey(Handle, HOTKEY_ID);
         }
 
         private void SelectMetaTile(MetaTile metaTile)
@@ -240,6 +237,8 @@ namespace Seanox.Platform.Launcher
         
         private void OnClosing(object sender, EventArgs eventArgs)
         {
+            UnregisterHotKey(Handle, HOTKEY_ID);
+            _initial = false;
             _timer?.Change(Timeout.Infinite, Timeout.Infinite);
             _timer?.Dispose();
             _metaTileScreen?.Dispose();
@@ -249,6 +248,11 @@ namespace Seanox.Platform.Launcher
         {
             // Prevents possible flickering effects when drawing from the
             // background image for the first time.            
+            
+            #if !DEBUG
+            TopMost = true;
+            #endif
+            
             DoubleBuffered = true;
             Thread.Sleep(25);
             Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
