@@ -109,7 +109,7 @@ namespace Seanox.Platform.Launcher.Tiles
             using (var rectanglePen = new Pen(new SolidBrush(borderColor)))
                 Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
                         new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
-            var iconSize = _metaTileGrid.Size - _metaTileGrid.Padding - textMeasure.Height; 
+            var iconSize = _metaTileGrid.Size - textMeasure.Height; 
             using (var iconImage = GetIconImage(iconSize, Settings.IconFile, Settings.IconIndex))
                 if (iconImage != null)
                     graphics.DrawImage(iconImage, Location.X + (_metaTileGrid.Size /2) -(iconImage.Width /2),
