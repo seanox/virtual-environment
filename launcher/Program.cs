@@ -26,8 +26,6 @@ namespace Seanox.Platform.Launcher
 {
     internal static class Program
     {
-        private static Control _control;
-
         [STAThread]
         internal static void Main()
         {
@@ -46,26 +44,32 @@ namespace Seanox.Platform.Launcher
             // Icon.ExtractAssociatedIcon, the control must run in the main
             // thread, otherwise it is an MTA (Multi Thread Apartment) and
             // causes problems.
-            
+
+            Settings settings = null;
+            Control  control  = null;
+                
             while (true)
             {
                 try
                 {
-                    var settings = Settings.Load();
-                    using (_control = new Control(settings, _control == null))
-                        Application.Run(_control);
+                    if (Settings.IsUpdateAvailable()
+                            || settings == null)
+                        settings = Settings.Load();
+                    using (control = new Control(settings, control == null))
+                        Application.Run(control);
                     GC.Collect();
                 }
                 catch (Exception exception)
                 {
                     // System.IO.IOException can occur due to asynchronous
                     // access and are ignored.
-                    if (exception.InnerException == null
-                            || _control == null
-                            || !(exception is System.IO.IOException))
+                    if (!(exception is System.IO.IOException)
+                            && control != null)
                         MessageBox.Show(exception.Message, "Virtual Environment Launcher",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    if (_control == null)
+                    // If an error occurs during the initial start, the
+                    // program is terminated.
+                    if (control == null)
                         Environment.Exit(0);
                 }
                 Thread.Sleep(25);
