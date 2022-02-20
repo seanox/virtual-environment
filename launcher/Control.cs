@@ -99,6 +99,8 @@ namespace Seanox.Platform.Launcher
         private bool _inputEventLock;
         private bool _visible;
 
+        private readonly System.Threading.Timer _timer;
+
         internal Control(Settings settings, bool visible = true)
         {
             _settings = settings;
@@ -140,7 +142,8 @@ namespace Seanox.Platform.Launcher
                     _metaTiles[tile.Index - 1] = MetaTile.Create(screen, _settings, tile);
 
             _metaTileScreen = MetaTileScreen.Create(screen, _settings, _metaTiles);
-            
+
+            Closing += OnClosing; 
             KeyDown += OnKeyDown;
             Load += OnLoad;
             LostFocus += OnLostFocus;
@@ -148,6 +151,12 @@ namespace Seanox.Platform.Launcher
 
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
             SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
+            
+            _timer = new System.Threading.Timer((state) =>
+            {
+                if (Settings.IsUpdateAvailable())
+                    Close();                
+            }, null, 1000, 1000);
         }
 
         private void RegisterHotKey()
@@ -227,6 +236,12 @@ namespace Seanox.Platform.Launcher
             if (message.Msg == WM_HOTKEY
                     && message.WParam.ToInt32() == HOTKEY_ID)
                 Visible = !Visible;
+        }
+        
+        private void OnClosing(object sender, EventArgs eventArgs)
+        {
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _metaTileScreen?.Dispose();
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
