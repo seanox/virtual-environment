@@ -105,9 +105,10 @@ namespace Seanox.Platform.Launcher.Tiles
 
             var textFont = new Font(SystemFonts.DefaultFont.FontFamily, _settings.FontSize, FontStyle.Regular);
             var textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", textFont);
-            
-            Utilities.Graphics.DrawRectangleRounded(graphics, new Pen(new SolidBrush(borderColor)),
-                    new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
+
+            using (var rectanglePen = new Pen(new SolidBrush(borderColor)))
+                Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
+                        new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
             var iconSize = _metaTileGrid.Size - (3 * _metaTileGrid.Padding) - textMeasure.Height; 
             using (var iconImage = GetIconImage(iconSize, Settings.IconFile, Settings.IconIndex))
                 if (iconImage != null)
@@ -120,10 +121,12 @@ namespace Seanox.Platform.Launcher.Tiles
 
             var titleRectangle = new Rectangle(Location.X + _metaTileGrid.Padding, Location.Y + _metaTileGrid.Size -_metaTileGrid.Padding -textMeasure.Height,
                     _metaTileGrid.Size - (2 * _metaTileGrid.Padding), textMeasure.Height);
-            graphics.DrawString(Settings.Title, textFont, new SolidBrush(foregroundColor), titleRectangle, stringFormat);
-            
-            graphics.DrawString(Symbol.ToUpper(), textFont, new SolidBrush(highlightColor),
-                    new Point(Location.X + (_metaTileGrid.Padding /2), Location.Y + (_metaTileGrid.Padding /2)));
+            using (var foregroundColorBrush = new SolidBrush(foregroundColor))
+                graphics.DrawString(Settings.Title, textFont, foregroundColorBrush, titleRectangle, stringFormat);
+
+            using (var highlightColorBrush = new SolidBrush(highlightColor))
+                graphics.DrawString(Symbol.ToUpper(), textFont, highlightColorBrush,
+                        new Point(Location.X + (_metaTileGrid.Padding /2), Location.Y + (_metaTileGrid.Padding /2)));
             
             textFont.Dispose();
         }

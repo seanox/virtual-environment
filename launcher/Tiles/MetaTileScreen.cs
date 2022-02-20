@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace Seanox.Platform.Launcher.Tiles
 {
-    internal class MetaTileScreen
+    internal class MetaTileScreen : IDisposable
     {
         private readonly MetaTile[] _metaTiles;
         private readonly Screen _screen;
@@ -39,11 +39,11 @@ namespace Seanox.Platform.Launcher.Tiles
         private MetaTileScreen(Screen screen, Settings settings, params MetaTile[] metaTiles)
         {
             _metaTiles = metaTiles;
-            _screen = screen;
-            _settings = settings;
+            _screen    = screen;
+            _settings  = settings;
 
-            var metaTileGrid = MetaTileGrid.Create(settings);
-            var borderColor = ColorTranslator.FromHtml(settings.BorderColor);
+            var metaTileGrid   = MetaTileGrid.Create(settings);
+            var borderColor    = ColorTranslator.FromHtml(settings.BorderColor);
             var highlightColor = ColorTranslator.FromHtml(settings.HighlightColor);
 
             _passiveBorderImage = new Bitmap(metaTileGrid.Size, metaTileGrid.Size, PixelFormat.Format32bppPArgb);
@@ -108,6 +108,12 @@ namespace Seanox.Platform.Launcher.Tiles
                 metaTile.Draw(graphics);
             
             Select(graphics, _selection, true);
+        }
+
+        public void Dispose()
+        {
+            _activeBorderImage?.Dispose();
+            _passiveBorderImage?.Dispose();
         }
     }
 }
