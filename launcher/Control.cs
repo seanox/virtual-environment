@@ -28,6 +28,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Seanox.Platform.Launcher.Tiles;
+using Timer = System.Threading.Timer;
 
 // TODO: Check usage dispose for a robust program
 // TODO: Global mouse move event, then hide if outside -- for more screen usage
@@ -73,10 +74,10 @@ namespace Seanox.Platform.Launcher
     
     internal partial class Control : Form
     {
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
         
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
     
         [DllImport("user32.dll")]
@@ -93,13 +94,12 @@ namespace Seanox.Platform.Launcher
         private readonly MetaTileScreen _metaTileScreen;
         
         private readonly Settings _settings;
+        private readonly Timer _timer;
         
         private int _cursor = -1;
         
         private bool _inputEventLock;
         private bool _visible;
-
-        private readonly System.Threading.Timer _timer;
 
         internal Control(Settings settings, bool visible = true)
         {
@@ -152,11 +152,11 @@ namespace Seanox.Platform.Launcher
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
             SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
             
-            _timer = new System.Threading.Timer((state) =>
+            _timer = new Timer((state) =>
             {
                 if (Settings.IsUpdateAvailable())
                     Close();                
-            }, null, 1000, 1000);
+            }, null, 5000, 5000);
         }
 
         private void RegisterHotKey()
@@ -196,38 +196,38 @@ namespace Seanox.Platform.Launcher
                 return;
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
-            {
-                _inputEventLock = true;
-                Visible = false;
                 Environment.Exit(0);
-            }
             
             // There are always situations when opening programs can become a
             // problem. Even in these cases, the interface should not block.
             
-            new Thread(delegate()
+            // Thread, System.Threading.Timer or System.Timers.Timer -- I have
+            // experimented with sharing the resources and in the end I can't
+            // say which is better. System.Timers.Timer seems thread-safe,
+            // System.Threading.Timer not ... For the asynchronous call this
+            // makes no difference here.
+            
+            new Timer((state) =>
             {
-                try 
+                try
                 {
-                    Process.Start(new ProcessStartInfo()
+                    using (Process.Start(new ProcessStartInfo()
                     {
                         WorkingDirectory = metaTile.Settings.WorkingDirectory,
                         FileName = metaTile.Settings.Destination,
                         Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
-                    });
+                    }));
                 }
                 catch (Exception exception)
                 {
                     MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
-                                     + $"{Environment.NewLine}{exception.Message}"
-                                     + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                            + $"{Environment.NewLine}{exception.Message}"
+                            + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
                         "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-            
                 Visible = false;
-                
-            }).Start();
+            }, null, 25, Timeout.Infinite);
         }
         
         protected override void WndProc(ref Message message)
@@ -241,6 +241,7 @@ namespace Seanox.Platform.Launcher
         private void OnClosing(object sender, EventArgs eventArgs)
         {
             _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer?.Dispose();
             _metaTileScreen?.Dispose();
         }
 
