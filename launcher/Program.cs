@@ -69,8 +69,8 @@ namespace Seanox.Platform.Launcher
                     if (_control == null)
                         _visible = true;    
                     _settings = Settings.Load();
-                    _control = new Control(_settings, _visible);
-                    Application.Run(_control);
+                    using (_control = new Control(_settings, _visible))
+                        Application.Run(_control);
                 }
                 catch (Exception exception)
                 {
