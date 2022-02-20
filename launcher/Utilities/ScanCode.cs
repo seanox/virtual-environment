@@ -22,8 +22,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-// TODO: Check usage dispose for a robust program
-
 namespace Seanox.Platform.Launcher.Utilities
 {
     internal static class ScanCode
