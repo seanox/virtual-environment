@@ -75,7 +75,7 @@ namespace Seanox.Platform.Launcher.Tiles
             Location = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
         }
 
-        private Image GetIconImage(int iconSize, string iconFile, int iconIndex)
+        private static Image GetIconImage(int iconSize, string iconFile, int iconIndex)
         {
             var iconImage = Utilities.Graphics.ImageOf(iconFile, iconIndex);
             if (iconImage == null)
