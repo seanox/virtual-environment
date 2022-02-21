@@ -391,7 +391,6 @@ namespace Seanox.Platform.Launcher
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
             WindowState = FormWindowState.Maximized;
-            Focus();
             base.OnPaintBackground(eventArgs);
             Message.Text = "";
             if (Screen.FromControl(this).Bounds.Width < _metaTileGrid.Width + _metaTileGrid.Gap 
@@ -399,6 +398,7 @@ namespace Seanox.Platform.Launcher
                 Message.Text = "The resolution is too low to show the tiles.";
             else _metaTileScreen.Draw(eventArgs.Graphics);
             Message.Visible = !String.IsNullOrWhiteSpace(Message.Text);
+            Focus();
         }
     }
 }
