@@ -33,7 +33,7 @@ namespace Seanox.Platform.Launcher.Utilities
                 CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         private static extern int ExtractIconEx(string lpszFile, int nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, int nIcons);
 
-        private static readonly Regex IMAGE_FIlE_PATTERN = new Regex(@"^.*\.(bmp|dib|gif|jpg|jpeg|jpe|jfif|png|tif|tiff|ico|heic|webp)$", RegexOptions.IgnoreCase);
+        private static readonly Regex IMAGE_FIlE_PATTERN = new Regex(@"^.*\.(bmp|dib|gif|jpg|jpeg|jpe|jfif|png|tif|tiff|heic|webp)$", RegexOptions.IgnoreCase);
         
         private static Icon ExtractIcon(string file, int number = 0, bool large = true)
         {
