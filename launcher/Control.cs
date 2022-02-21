@@ -30,10 +30,6 @@ using Microsoft.Win32;
 using Seanox.Platform.Launcher.Tiles;
 using Timer = System.Threading.Timer;
 
-// TODO: Check usage dispose for a robust program
-// TODO: Global mouse move event, then hide if outside -- for more screen usage
-// TODO: Tiles: Matrix 4x10 with shortcuts from keyboard layout
-
 namespace Seanox.Platform.Launcher
 {
     // System Tray Icon (NotifyIcon) + menu for show + exit
@@ -111,6 +107,10 @@ namespace Seanox.Platform.Launcher
             FormBorderStyle = FormBorderStyle.None;
             Bounds = Screen.PrimaryScreen.Bounds;
             WindowState = FormWindowState.Maximized;
+
+            #if DEBUG
+            TopMost = false;
+            #endif
 
             InitializeComponent();
             RegisterHotKey();
@@ -194,7 +194,12 @@ namespace Seanox.Platform.Launcher
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
                 Environment.Exit(0);
-            
+
+            // For a short time, TopMost must be abandoned. It may be that
+            // Windows asks for authorization or similar when starting programs
+            // and these questions should then also be in the foreground.
+            TopMost = false;
+
             // There are always situations when opening programs can become a
             // problem. Even in these cases, the interface should not block.
             
@@ -203,7 +208,7 @@ namespace Seanox.Platform.Launcher
             // say which is better. System.Timers.Timer seems thread-safe,
             // System.Threading.Timer not ... For the asynchronous call this
             // makes no difference here.
-            
+
             new Timer((state) =>
             {
                 try
@@ -220,8 +225,14 @@ namespace Seanox.Platform.Launcher
                     MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
                             + $"{Environment.NewLine}{exception.Message}"
                             + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
+                }
+                finally
+                {
+                    #if !DEBUG
+                    TopMost = true;
+                    #endif
                 }
                 Visible = false;
             }, null, 25, Timeout.Infinite);
@@ -248,11 +259,6 @@ namespace Seanox.Platform.Launcher
         {
             // Prevents possible flickering effects when drawing from the
             // background image for the first time.            
-            
-            #if !DEBUG
-            TopMost = true;
-            #endif
-            
             DoubleBuffered = true;
             Thread.Sleep(25);
             Opacity = Math.Min(Math.Max(_settings.Opacity, 0), 100) /100d;
@@ -384,6 +390,8 @@ namespace Seanox.Platform.Launcher
 
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
+            WindowState = FormWindowState.Maximized;
+            Focus();
             base.OnPaintBackground(eventArgs);
             Message.Text = "";
             if (Screen.FromControl(this).Bounds.Width < _metaTileGrid.Width + _metaTileGrid.Gap 

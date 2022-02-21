@@ -50,6 +50,7 @@ namespace Seanox.Platform.Launcher
             this.AutoScaleDimensions = new System.Drawing.SizeF(0F, 0F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ControlBox = false;
+            this.TopMost = true;
             this.Controls.Add(this.Message);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Control";
