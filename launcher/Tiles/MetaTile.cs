@@ -97,6 +97,16 @@ namespace Seanox.Platform.Launcher.Tiles
             return new MetaTile(screen, settings, tile);
         }
 
+        private static int CalculateIconSize(int iconSpace)
+        {
+            var iconSizes = new int[] {16, 24, 32, 48, 64, 128, 256, 512};
+            Array.Reverse(iconSizes);
+            foreach (var iconSize in iconSizes)
+                if (iconSpace >= iconSize)
+                    return iconSize;
+            return -1;
+        }
+
         internal void Draw(Graphics graphics)
         {
             var borderColor = ColorTranslator.FromHtml(_settings.BorderColor);
@@ -109,11 +119,11 @@ namespace Seanox.Platform.Launcher.Tiles
             using (var rectanglePen = new Pen(new SolidBrush(borderColor)))
                 Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
                         new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
-            var iconSize = _metaTileGrid.Size - textMeasure.Height; 
-            using (var iconImage = GetIconImage(iconSize, Settings.IconFile, Settings.IconIndex))
+            var iconSpace = _metaTileGrid.Size - textMeasure.Height;
+            using (var iconImage = GetIconImage(CalculateIconSize(iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex))
                 if (iconImage != null)
                     graphics.DrawImage(iconImage, Location.X + (_metaTileGrid.Size /2) -(iconImage.Width /2),
-                            Location.Y + Math.Max((iconSize /2) -(iconImage.Height /2), _metaTileGrid.Padding));
+                            Location.Y + Math.Max((iconSpace /2) -(iconImage.Height /2), _metaTileGrid.Padding));
 
             var stringFormat = new StringFormat();
             stringFormat.Alignment = StringAlignment.Center;
