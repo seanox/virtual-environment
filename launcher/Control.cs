@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -222,6 +223,11 @@ namespace Seanox.Platform.Launcher
                 }
                 catch (Exception exception)
                 {
+                    // Exception when canceling by the user (UAC) is ignored
+                    if (exception is Win32Exception
+                            && ((Win32Exception)exception).NativeErrorCode == 1223)
+                        return;
+
                     MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
                             + $"{Environment.NewLine}{exception.Message}"
                             + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
@@ -398,6 +404,11 @@ namespace Seanox.Platform.Launcher
                 Message.Text = "The resolution is too low to show the tiles.";
             else _metaTileScreen.Draw(eventArgs.Graphics);
             Message.Visible = !String.IsNullOrWhiteSpace(Message.Text);
+
+            if (!Visible)
+                return;
+
+            Activate();
             Focus();
         }
     }
