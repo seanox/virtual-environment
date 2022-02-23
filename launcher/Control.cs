@@ -107,7 +107,7 @@ namespace Seanox.Platform.Launcher
 
             FormBorderStyle = FormBorderStyle.None;
             Bounds = Screen.PrimaryScreen.Bounds;
-            WindowState = FormWindowState.Maximized;
+            WindowState = FormWindowState.Minimized;
 
             #if DEBUG
             TopMost = false;
@@ -147,15 +147,21 @@ namespace Seanox.Platform.Launcher
             Load += OnLoad;
             LostFocus += OnLostFocus;
             MouseClick += OnMouseClick;
+            VisibleChanged += OnVisibleChanged;
 
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
             SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
             
             _timer = new Timer((state) =>
             {
-                if (Settings.IsUpdateAvailable())
-                    Close();                
-            }, null, 5000, 5000);
+                if (!Settings.IsUpdateAvailable())
+                    return;
+                Invoke((MethodInvoker) delegate
+                {
+                    Close();
+                    Dispose();
+                });
+            }, null, 1000, 1000);
         }
 
         private void RegisterHotKey()
@@ -201,47 +207,35 @@ namespace Seanox.Platform.Launcher
             // and these questions should then also be in the foreground.
             TopMost = false;
 
-            // There are always situations when opening programs can become a
-            // problem. Even in these cases, the interface should not block.
-            
-            // Thread, System.Threading.Timer or System.Timers.Timer -- I have
-            // experimented with sharing the resources and in the end I can't
-            // say which is better. System.Timers.Timer seems thread-safe,
-            // System.Threading.Timer not ... For the asynchronous call this
-            // makes no difference here.
-
-            new Timer((state) =>
+            try
             {
-                try
+                using (Process.Start(new ProcessStartInfo
                 {
-                    using (Process.Start(new ProcessStartInfo
-                    {
-                        WorkingDirectory = metaTile.Settings.WorkingDirectory,
-                        FileName = metaTile.Settings.Destination,
-                        Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
-                    }));
-                }
-                catch (Exception exception)
-                {
-                    // Exception when canceling by the user (UAC) is ignored
-                    if (exception is Win32Exception
-                            && ((Win32Exception)exception).NativeErrorCode == 1223)
-                        return;
-
-                    MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
-                            + $"{Environment.NewLine}{exception.Message}"
-                            + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                            "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    WorkingDirectory = metaTile.Settings.WorkingDirectory,
+                    FileName = metaTile.Settings.Destination,
+                    Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
+                }));
+            }
+            catch (Exception exception)
+            {
+                // Exception when canceling by the user (UAC) is ignored
+                if (exception is Win32Exception
+                        && ((Win32Exception)exception).NativeErrorCode == 1223)
                     return;
-                }
-                finally
-                {
-                    #if !DEBUG
-                    TopMost = true;
-                    #endif
-                }
-                Visible = false;
-            }, null, 25, Timeout.Infinite);
+
+                MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
+                        + $"{Environment.NewLine}{exception.Message}"
+                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            finally
+            {
+                #if !DEBUG
+                TopMost = true;
+                #endif
+            }
+            Visible = false;
         }
         
         protected override void WndProc(ref Message message)
@@ -273,9 +267,9 @@ namespace Seanox.Platform.Launcher
         
         private static Process GetForegroundProcess()
         {
-            uint processID = 0;
-            GetWindowThreadProcessId(GetForegroundWindow(), out processID);
-            return Process.GetProcessById(Convert.ToInt32(processID));
+            uint processId = 0;
+            GetWindowThreadProcessId(GetForegroundWindow(), out processId);
+            return Process.GetProcessById(Convert.ToInt32(processId));
         }
         
         private void OnLostFocus(object sender, EventArgs eventArgs)
@@ -396,7 +390,6 @@ namespace Seanox.Platform.Launcher
 
         protected override void OnPaintBackground(PaintEventArgs eventArgs)
         {
-            WindowState = FormWindowState.Maximized;
             base.OnPaintBackground(eventArgs);
             Message.Text = "";
             if (Screen.FromControl(this).Bounds.Width < _metaTileGrid.Width + _metaTileGrid.Gap 
@@ -410,6 +403,11 @@ namespace Seanox.Platform.Launcher
 
             Activate();
             Focus();
+        }
+
+        private void OnVisibleChanged(object sender, EventArgs eventArgs)
+        {
+            WindowState = Visible ? FormWindowState.Maximized : FormWindowState.Minimized;
         }
     }
 }
