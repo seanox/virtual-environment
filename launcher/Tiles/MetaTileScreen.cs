@@ -28,11 +28,12 @@ namespace Seanox.Platform.Launcher.Tiles
     internal class MetaTileScreen : IDisposable
     {
         private readonly MetaTile[] _metaTiles;
-        private readonly Screen _screen;
-        private readonly Settings _settings;
+        private readonly Screen     _screen;
+        private readonly Settings   _settings;
 
         private readonly Image _activeBorderImage;
         private readonly Image _passiveBorderImage;
+        private readonly Image _backgroundImage;
 
         private MetaTile _selection;
         
@@ -55,6 +56,11 @@ namespace Seanox.Platform.Launcher.Tiles
             using (var activeBorderImageGraphics = Graphics.FromImage(_activeBorderImage))
                 Utilities.Graphics.DrawRectangleRounded(activeBorderImageGraphics, new Pen(new SolidBrush(highlightColor)),
                         new Rectangle(0, 0, metaTileGrid.Size - 1, metaTileGrid.Size - 1), metaTileGrid.Radius);
+            
+            if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
+                using (var backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage))
+                    if (backgroundImage != null)
+                        _backgroundImage = Utilities.Graphics.ImageScale(backgroundImage, _screen.Bounds.Width, _screen.Bounds.Height);
         }
 
         internal static MetaTileScreen Create(Screen screen, Settings settings, params MetaTile[] metaTiles)
@@ -96,17 +102,10 @@ namespace Seanox.Platform.Launcher.Tiles
 
         internal void Draw(Graphics graphics)
         {
-            var screenRectangle = _screen.Bounds;
-
-            if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
-                using (var backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage))
-                using (var backgroundImageScale = backgroundImage != null ? Utilities.Graphics.ImageScale(backgroundImage, screenRectangle.Width, screenRectangle.Height) : null)
-                    if (backgroundImageScale != null)
-                        graphics.DrawImage(backgroundImageScale, ImageCenter(screenRectangle, backgroundImageScale));
-            
+            if (_backgroundImage != null)
+                graphics.DrawImage(_backgroundImage, ImageCenter(_screen.Bounds, _backgroundImage));
             foreach (var metaTile in _metaTiles)
                 metaTile.Draw(graphics);
-            
             Select(graphics, _selection, true);
         }
 
@@ -114,6 +113,7 @@ namespace Seanox.Platform.Launcher.Tiles
         {
             _activeBorderImage?.Dispose();
             _passiveBorderImage?.Dispose();
+            _backgroundImage?.Dispose();
         }
     }
 }

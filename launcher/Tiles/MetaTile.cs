@@ -24,16 +24,26 @@ using System.Windows.Forms;
 
 namespace Seanox.Platform.Launcher.Tiles
 {
-    internal class MetaTile
+    internal class MetaTile : IDisposable
     {
         internal readonly Settings.Tile Settings;
-        internal readonly int Index;
-        internal readonly int ScanCode;
-        internal readonly string Symbol;
+        
+        internal readonly int       Index;
+        internal readonly int       ScanCode;
+        internal readonly string    Symbol;
         internal readonly Rectangle Location;
 
         private readonly Settings _settings;
+        
         private readonly MetaTileGrid _metaTileGrid;
+
+        private readonly Color _borderColor;
+        private readonly Color _foregroundColor;
+        private readonly Color _highlightColor;
+        private readonly Font  _textFont;
+        private readonly Size  _textMeasure;
+        private readonly int   _iconSpace;
+        private readonly Image _iconImage;
 
         private MetaTile(Screen screen, Settings settings, Settings.Tile tile)
         {
@@ -73,6 +83,15 @@ namespace Seanox.Platform.Launcher.Tiles
             var tileStartX = ((tileRasterColumn * (_metaTileGrid.Size + _metaTileGrid.Gap)));
             var tileStartY = ((tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap)));
             Location = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
+            
+            _borderColor = ColorTranslator.FromHtml(_settings.BorderColor);
+            _foregroundColor = ColorTranslator.FromHtml(_settings.ForegroundColor);
+            _highlightColor = ColorTranslator.FromHtml(_settings.HighlightColor);
+
+            _textFont = new Font(SystemFonts.DefaultFont.FontFamily, _settings.FontSize, FontStyle.Regular);
+            _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
+            _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
+            _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);
         }
 
         private static Image GetIconImage(int iconSize, string iconFile, int iconIndex)
@@ -109,36 +128,32 @@ namespace Seanox.Platform.Launcher.Tiles
 
         internal void Draw(Graphics graphics)
         {
-            var borderColor = ColorTranslator.FromHtml(_settings.BorderColor);
-            var foregroundColor = ColorTranslator.FromHtml(_settings.ForegroundColor);
-            var highlightColor = ColorTranslator.FromHtml(_settings.HighlightColor);
-
-            var textFont = new Font(SystemFonts.DefaultFont.FontFamily, _settings.FontSize, FontStyle.Regular);
-            var textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", textFont);
-
-            using (var rectanglePen = new Pen(new SolidBrush(borderColor)))
+            using (var rectanglePen = new Pen(new SolidBrush(_borderColor)))
                 Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
                         new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
-            var iconSpace = _metaTileGrid.Size - textMeasure.Height;
-            using (var iconImage = GetIconImage(CalculateIconSize(iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex))
-                if (iconImage != null)
-                    graphics.DrawImage(iconImage, Location.X + (_metaTileGrid.Size /2) -(iconImage.Width /2),
-                            Location.Y + Math.Max((iconSpace /2) -(iconImage.Height /2), _metaTileGrid.Padding));
+
+            if (_iconImage != null)
+                graphics.DrawImage(_iconImage, Location.X + (_metaTileGrid.Size /2) -(_iconImage.Width /2),
+                        Location.Y + Math.Max((_iconSpace /2) -(_iconImage.Height /2), _metaTileGrid.Padding));
 
             var stringFormat = new StringFormat();
             stringFormat.Alignment = StringAlignment.Center;
             stringFormat.LineAlignment = StringAlignment.Center;
 
-            var titleRectangle = new Rectangle(Location.X + _metaTileGrid.Padding, Location.Y + _metaTileGrid.Size -_metaTileGrid.Padding -textMeasure.Height,
-                    _metaTileGrid.Size - (2 * _metaTileGrid.Padding), textMeasure.Height);
-            using (var foregroundColorBrush = new SolidBrush(foregroundColor))
-                graphics.DrawString(Settings.Title, textFont, foregroundColorBrush, titleRectangle, stringFormat);
+            var titleRectangle = new Rectangle(Location.X + _metaTileGrid.Padding, Location.Y + _metaTileGrid.Size -_metaTileGrid.Padding -_textMeasure.Height,
+                    _metaTileGrid.Size - (2 * _metaTileGrid.Padding), _textMeasure.Height);
+            using (var foregroundColorBrush = new SolidBrush(_foregroundColor))
+                graphics.DrawString(Settings.Title, _textFont, foregroundColorBrush, titleRectangle, stringFormat);
 
-            using (var highlightColorBrush = new SolidBrush(highlightColor))
-                graphics.DrawString(Symbol.ToUpper(), textFont, highlightColorBrush,
+            using (var highlightColorBrush = new SolidBrush(_highlightColor))
+                graphics.DrawString(Symbol.ToUpper(), _textFont, highlightColorBrush,
                         new Point(Location.X + (_metaTileGrid.Padding /2), Location.Y + (_metaTileGrid.Padding /2)));
-            
-            textFont.Dispose();
+        }
+
+        public void Dispose()
+        {
+            _textFont?.Dispose();
+            _iconImage?.Dispose();
         }
     }
 }
