@@ -65,8 +65,9 @@ namespace Seanox.Platform.Launcher
                     // access and are ignored.
                     if (!(exception is System.IO.IOException)
                             && control != null)
-                        MessageBox.Show(exception.Message, "Virtual Environment Launcher",
-                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("An unexpected error has occurred."
+                                    + $"{Environment.NewLine}{Environment.NewLine}{exception}",
+                                "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     // If an error occurs during the initial start, the
                     // program is terminated.
                     if (control == null)
