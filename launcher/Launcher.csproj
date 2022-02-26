@@ -55,6 +55,7 @@
     <Compile Include="Tiles\MetaTile.cs" />
     <Compile Include="Tiles\MetaTileGrid.cs" />
     <Compile Include="Tiles\MetaTileScreen.cs" />
+    <Compile Include="Utilities\DateTime.cs" />
     <Compile Include="Utilities\Graphics.cs" />
     <Compile Include="Utilities\ScanCode.cs" />
     <Compile Include="Control.cs">

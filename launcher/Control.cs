@@ -84,7 +84,14 @@ namespace Seanox.Platform.Launcher
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         
         private const int HOTKEY_ID = 0x0;
-        private const int WM_HOTKEY = 0x0312;
+        
+        // Keyboard Input Notifications
+        // https://docs.microsoft.com/de-de/windows/win32/inputdev/keyboard-input-notifications
+        private const int WM_KEYUP    = 0x0101;
+        private const int WM_CHAR     = 0x0102;
+        private const int WM_SYSKEYUP = 0x0105;
+        private const int WM_SYSCHAR  = 0x0106;
+        private const int WM_HOTKEY   = 0x0312;
 
         private readonly MetaTile[] _metaTiles;
         private readonly MetaTileGrid _metaTileGrid;
@@ -94,7 +101,8 @@ namespace Seanox.Platform.Launcher
         private readonly Timer _timer;
         
         private int _cursor = -1;
-        
+
+        private long _inputSignalTiming;
         private bool _inputEventLock;
         private bool _visible;
 
@@ -240,10 +248,22 @@ namespace Seanox.Platform.Launcher
         
         protected override void WndProc(ref Message message)
         {
+            // The use of the HotKey is damped so that persistent signal input
+            // does not cause high-frequency redrawing. It flickers and does
+            // not look nice. For this the InputSignalTiming is used, assuming
+            // the signal inputs <= 75ms without interruption from a KeyUp is a
+            // held key. But the behavior is only used for the HotKey. 
+            
             base.WndProc(ref message);
-            if (message.Msg == WM_HOTKEY
-                    && message.WParam.ToInt32() == HOTKEY_ID)
+            if (message.Msg == WM_KEYUP
+                    || message.Msg == WM_SYSKEYUP)
+                _inputSignalTiming = 0;
+            if (message.Msg != WM_HOTKEY
+                    || message.WParam.ToInt32() != HOTKEY_ID)
+                return;
+            if (Utilities.DateTime.CurrentTimeMillis -_inputSignalTiming >= 75)
                 Visible = !Visible;
+            _inputSignalTiming = Utilities.DateTime.CurrentTimeMillis;
         }
         
         private void OnClosing(object sender, EventArgs eventArgs)
@@ -284,8 +304,11 @@ namespace Seanox.Platform.Launcher
 
         protected override bool ProcessKeyMessage(ref Message message)
         {
-            if (message.Msg == 0x102
-                    || message.Msg == 0x106)
+            if (message.Msg == WM_KEYUP
+                    || message.Msg == WM_SYSKEYUP)
+                _inputSignalTiming = 0;
+            if (message.Msg == WM_CHAR
+                    || message.Msg == WM_SYSCHAR)
                 UseMetaTile(_metaTileScreen.Locate(Char.ToString((char)message.WParam)));
             return base.ProcessKeyMessage(ref message);
         }
