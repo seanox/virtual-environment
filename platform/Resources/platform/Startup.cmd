@@ -11,7 +11,7 @@ IF "%1" == "exit" (
     REM virtual drive and are still running.
 
 REM ---- Launcher
-start "Virtual Environment Launcher" /min "%APPSPATH%\Launcher\LauncherExit.cmd"
+start "Virtual Environment Launcher" /min "%APPSPATH%\Launcher\launcherExit.cmd"
 
     REM Placeholder for automatic module integration
     REM INSERT DETACH
