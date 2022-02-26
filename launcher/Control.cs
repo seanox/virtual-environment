@@ -164,7 +164,7 @@ namespace Seanox.Platform.Launcher
             {
                 if (!Settings.IsUpdateAvailable())
                     return;
-                Invoke((MethodInvoker) delegate
+                Invoke((MethodInvoker)delegate
                 {
                     Close();
                     Dispose();
@@ -424,6 +424,7 @@ namespace Seanox.Platform.Launcher
             if (!Visible)
                 return;
 
+            BringToFront();
             Activate();
             Focus();
         }
