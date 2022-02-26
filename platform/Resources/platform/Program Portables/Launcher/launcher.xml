@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <!--
+    General Information
+    - Text values (not numeric / boolean) supported environment variables
+    - Invalid or unset values use a defined default value
+  -->     
+  
+  <!-- 
+    System-wide hot-key to show the launcher (decimal modifiers:virtual key code)
+    https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey#parameters
+    https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+    
+    Proven standards:
+    - Release: Win + Esc
+    - Development: Alt + Esc
+    
+    Default value: 8 + 27 
+  -->
+  <hotKey>8 + 27</hotKey>
+
+  <!-- Cell size in pixels (height and width) -->
+  <gridSize>99</gridSize>
+  <!-- Distance between cells in pixels -->
+  <gridGap>25</gridGap>
+  <!-- Distance from the border in the cells in pixels -->
+  <gridPadding>10</gridPadding>
+  <!-- Radius for rounding the corners from the grid in pixels -->
+  <gridCornerRadius>4</gridCornerRadius>
+
+  <!-- 
+    Opacity of background in percents (100 - 0)
+    Less than 50 makes no sense, because then the UI is difficult to see.
+    
+    Default value: 90
+  -->
+  <opacity>90</opacity>
+
+  <!--
+    BackgroundImage is optionally a path relative to the working directory.
+    The image is centered and scaled to fit. If the image does not exist or it
+    uses an unsupported format, the image will be ignored.
+  -->
+  <backgroundImage></backgroundImage>
+
+
+  <!--
+    Coloring
+    
+        backgroundColor
+    General background color
+    Default value: #000000
+
+        foregroundColor
+    General foreground color
+    Default value: #C8C8C8
+
+        borderColor
+    Border color from grid
+    Default value: #313131
+    
+        highlightColor 
+    Color for highlighting (e.g. navigation)
+    Default value: #FAB400
+  -->
+
+  <!-- Dark Coloring (default) -->
+  <!--
+  <backgroundColor>#000000</backgroundColor>
+  <foregroundColor>#C8C8C8</foregroundColor>
+  <borderColor>#313131</borderColor>
+  <highlightColor>#FAB400</highlightColor>
+  -->
+
+  <!--
+    Font size in the tiles.
+    
+    Default value: Size of the system font
+  -->
+  <fontSize>9.5</fontSize>
+
+  <tiles>
+    <tile>
+      <!-- Number of the tile (1 - 40) -->
+      <index>40</index>
+      <!-- Application name and tile title -->
+      <title>Detach</title>
+      <!--
+        Icon file, optionally with index separated by colon.
+        Supports many image formats and icons in exe, dll, ... files.
+      -->
+      <icon>%WINDIR%\system32\shell32.dll:27</icon>
+      <!-- Path of the application file or `exit` to exit the launcher -->
+      <destination>%PLATFORM_APP%</destination>
+      <!-- Arguments for the program start -->
+      <arguments>%HOMEDRIVE% detach</arguments>
+      <!-- Working directory in which the application is executed -->
+      <workingDirectory>%PLATFORM_HOME%</workingDirectory>
+    </tile>
+    <tile>
+      <index>11</index>
+      <title>Scanner</title>
+      <icon>%APPSPATH%\Scanner\Scanner_2.ico</icon>
+      <destination>%APPSPATH%\Scanner\Scanner.exe</destination>
+      <workingDirectory>%APPSPATH%\Scanner</workingDirectory>
+    </tile>
+    <tile>
+      <index>12</index>
+      <title>Terminal</title>
+      <destination>%APPSPATH%\Tabby\tabby-portable.exe</destination>
+      <workingDirectory>%APPSPATH%\Tabby</workingDirectory>
+    </tile>
+    <tile>
+      <index>13</index>
+      <title>Eclipse</title>
+      <destination>%APPSPATH%\Eclipse\eclipse.exe</destination>
+      <workingDirectory>%APPSPATH%\Eclipse</workingDirectory>
+    </tile>
+    <tile>
+      <index>16</index>
+      <title>PeaZip</title>
+      <destination>%APPSPATH%\PeaZip\PeaZip.exe</destination>      
+      <workingDirectory>%APPSPATH%\PeaZip</workingDirectory>
+    </tile>
+    <tile>
+      <index>17</index>
+      <title>hosts</title>
+      <icon>%WINDIR%\system32\imageres.dll:109</icon>
+      <destination>%WINDIR%\system32\notepad.exe</destination>
+      <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
+      <workingDirectory>%APPSPATH%\HiEditor</workingDirectory>
+    </tile>
+    <tile>
+      <index>18</index>
+      <title>IntelliJ IDEA</title>
+      <destination>%APPSPATH%\IdeaIU\bin\idea64.exe</destination>
+      <workingDirectory>%APPSPATH%\IdeaIU\bin</workingDirectory>
+    </tile>
+    <tile>
+      <index>19</index>
+      <title>Skype</title>
+      <destination>%APPSPATH%\Skype\skype-portable.exe</destination>
+      <workingDirectory>%APPSPATH%\Skype</workingDirectory>
+    </tile>
+    <tile>
+      <index>20</index>
+      <title>Postman</title>
+      <icon>%APPSPATH%\Postman\app\app.ico</icon>
+      <destination>%APPSPATH%\Postman\postman-portable.exe</destination>
+      <workingDirectory>%APPSPATH%\Postman</workingDirectory>
+    </tile>
+    <tile>
+      <index>21</index>
+      <title>TinyTask</title>
+      <destination>%APPSPATH%\TinyTask\TinyTaskPortable.exe</destination>
+      <workingDirectory>%APPSPATH%\TinyTask</workingDirectory>
+    </tile>
+    <tile>
+      <index>22</index>
+      <title>PicPick</title>
+      <destination>%APPSPATH%\PicPick\PicPickPortable.exe</destination>
+      <workingDirectory>%APPSPATH%\PicPick</workingDirectory>
+    </tile>
+    <tile>
+      <index>23</index>
+      <title>DbVisualizer</title>
+      <icon>%HOMEDRIVE%\Install\DbVisualizer\dbvis.ico</icon>      
+      <destination>%APPSPATH%\DbVisualizer\dbvis.exe</destination>
+      <workingDirectory>%APPSPATH%\DbVisualizer</workingDirectory>
+    </tile>
+    <tile>
+      <index>24</index>
+      <title>Firefox</title>
+      <destination>%APPSPATH%\Firefox\FirefoxPortable.exe</destination>
+      <workingDirectory>%APPSPATH%\Firefox</workingDirectory>
+    </tile>
+    <tile>
+      <index>25</index>
+      <title>draw.io</title>
+      <destination>%APPSPATH%\Draw.io\drawio-portable.exe</destination>
+      <workingDirectory>%APPSPATH%\Draw.io</workingDirectory>
+    </tile>
+    <tile>
+      <index>26</index>
+      <title>HiEditor</title>
+      <destination>%APPSPATH%\HiEditor\HiEditor.exe</destination>
+      <workingDirectory>%APPSPATH%\HiEditor</workingDirectory>
+    </tile>
+    <tile>
+      <index>27</index>
+      <title>Services</title>
+      <destination>%WINDIR%\system32\services.msc</destination>
+      <workingDirectory>%HOMEDRIVE%%HOMEPATH%</workingDirectory>
+    </tile>
+    <tile>
+      <index>28</index>
+      <title>Calculator</title>
+      <destination>%APPSPATH%\Tools\Calculator.exe</destination>
+      <workingDirectory>%APPSPATH%\Tools</workingDirectory>
+    </tile>
+    <tile>
+      <index>29</index>
+      <title>SmartSniff</title>
+      <destination>%APPSPATH%\SmartSniff\smsniff.exe</destination>
+      <workingDirectory>%APPSPATH%\SmartSniff</workingDirectory>
+    </tile>
+    <tile>
+      <index>30</index>
+      <title>ScreenToGif</title>
+      <destination>%APPSPATH%\Tools\ScreenToGif.exe</destination>
+      <workingDirectory>%APPSPATH%\Tools</workingDirectory>
+    </tile>
+    <tile>
+      <index>31</index>
+      <title>Console</title>
+      <icon>%WINDIR%\System32\cmd.exe</icon>
+      <destination>%APPSPATH%\Console\Console.cmd</destination>
+      <workingDirectory>%HOMEDRIVE%</workingDirectory>
+    </tile>
+    <tile>
+      <index>32</index>
+      <title>Java Decompiler</title>
+      <destination>%APPSPATH%\Java Decompiler\jd-gui.exe</destination>
+      <workingDirectory>%APPSPATH%\Java Decompiler</workingDirectory>
+    </tile>
+    <tile>
+      <index>34</index>
+      <title>Visual Code</title>
+      <destination>%APPSPATH%\VSCode\Code.exe</destination>
+      <arguments>--user-data-dir "%APPSSETTINGS%\.vscode" --extensions-dir "%APPSSETTINGS%\.vscode\extensions"</arguments>
+      <workingDirectory>%APPSPATH%\VSCode</workingDirectory>
+    </tile>
+    <tile>
+      <index>35</index>
+      <title>psql</title>
+      <destination>%APPSPATH%\Postgres\bin\psql.exe</destination>
+      <arguments>-d %PGDATABASE% -p %PGPORT% -h 127.0.0.1 -U %PGUSER%</arguments>
+      <workingDirectory>%APPSPATH%\Postgres\bin</workingDirectory>
+    </tile>
+    <tile>
+      <index>37</index>
+      <title>WinMerge</title>
+      <destination>%APPSPATH%\WinMerge\WinMergePortable.exe</destination>
+      <workingDirectory>%APPSPATH%\WinMerge</workingDirectory>
+    </tile>
+    <tile>
+      <index>38</index>
+      <title>Steps Recorder</title>
+      <destination>%WINDIR%\System32\psr.exe</destination>
+      <workingDirectory>%WINDIR%\System32</workingDirectory>
+    </tile>
+    <tile>
+      <index>39</index>
+      <title>Documents</title>
+      <icon>%WINDIR%\system32\shell32.dll:126</icon>
+      <destination>%WINDIR%\explorer.exe</destination>
+      <arguments>%HOMEDRIVE%%HOMEPATH%</arguments>
+    </tile>
+  </tiles>
+</settings>
