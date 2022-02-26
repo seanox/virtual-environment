@@ -120,7 +120,7 @@
     <EmbeddedResource Include="Resources\platform\Program Portables\Extensions\startup.exe" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.exe" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
-    <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\LauncherExit.cmd" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
     <EmbeddedResource Include="Resources\platform\Resources\drive.ico" />
     <EmbeddedResource Include="Resources\platform\Resources\drive.png" />
     <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
