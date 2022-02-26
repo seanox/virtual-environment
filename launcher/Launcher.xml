@@ -76,7 +76,7 @@
     
     Default value: Size of the system font
   -->
-  <fontSize>9.75</fontSize>
+  <fontSize>9.5</fontSize>
 
   <tiles>
     <tile>
