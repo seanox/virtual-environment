@@ -117,8 +117,13 @@
     <EmbeddedResource Include="Resources\diskpart\create" />
     <EmbeddedResource Include="Resources\diskpart\detach" />
     <EmbeddedResource Include="Resources\diskpart\list" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Extensions\startup.exe" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.exe" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
+    <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\LauncherExit.cmd" />
     <EmbeddedResource Include="Resources\platform\Resources\drive.ico" />
     <EmbeddedResource Include="Resources\platform\Resources\drive.png" />
+    <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
     <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
     <EmbeddedResource Include="Resources\platform\Startup.cmd" />
   </ItemGroup>
@@ -147,12 +152,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\Program Portables\Extensions\startup.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
