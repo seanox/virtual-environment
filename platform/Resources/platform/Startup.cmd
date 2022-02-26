@@ -10,6 +10,9 @@ IF "%1" == "exit" (
     REM unsuccessful, hard terminate all programs that were started from the
     REM virtual drive and are still running.
 
+REM ---- Launcher
+start "Virtual Environment Launcher" /min "%APPSPATH%\Launcher\LauncherExit.cmd"
+
     REM Placeholder for automatic module integration
     REM INSERT DETACH
 
@@ -109,16 +112,10 @@ REM Basically, a launcher or start menu should be started so that the programs
 REM can later use the virtual environment and the required environment
 REM variables. This is also important so that detaching works properly.
 
-REM Here, a launcher must be launched to keep the environment alive.
-REM     Examples:
-REM https://maxlauncher.sourceforge.io/
-REM https://sourceforge.net/projects/winlaunch/
-REM https://portableapps.com/download
-REM https://www.ugmfree.it/
-REM A detach function should then also be configured here.
-REM     Target:    %PLATFORM_APP%
-REM     Arguments: %HOMEDRIVE% detach
-REM     Start in:  %PLATFORM_HOME%
+REM ---- Launcher (to keep the environment alive)
+pushd "%APPSPATH%\Launcher"
+start launcher.exe
+popd
 
 REM Placeholder for automatic module integration
 REM INSERT STARTUP
