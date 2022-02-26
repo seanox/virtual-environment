@@ -27,7 +27,8 @@ application focus and bells and whistles, it's just to improve the work.__
 
 
 ## System Requirement
-- Windows 10 or higher as operating system
+
+- Windows 10 or higher
 - .NET 4.7.x or higher
 
 
