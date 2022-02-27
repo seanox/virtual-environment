@@ -8,9 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Seanox.Platform {
+namespace VirtualEnvironment.Platform {
     using System;
-    
     
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
@@ -39,7 +38,7 @@ namespace Seanox.Platform {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Seanox.Platform.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualEnvironment.Platform.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
