@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6A26CE5A-C11C-4B6D-844A-24DF30C932F7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Seanox.Platform.Launcher</RootNamespace>
+    <RootNamespace>VirtualEnvironment.Launcher</RootNamespace>
     <AssemblyName>Launcher</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\platform.ico</ApplicationIcon>
+    <ApplicationIcon>Program.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -90,7 +90,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\platform.ico" />
+    <EmbeddedResource Include="Program.ico" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Shell32">
