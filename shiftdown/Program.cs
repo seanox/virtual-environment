@@ -191,7 +191,7 @@ namespace VirtualEnvironment.ShiftDown
 
         private readonly EventLog _eventLog;
 
-        public Service()
+        internal Service()
         {
             _eventLog = new EventLog();
             _eventLog.Source = Program.ApplicationMeta.Name; 
