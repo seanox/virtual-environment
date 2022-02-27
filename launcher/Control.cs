@@ -28,10 +28,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using Seanox.Platform.Launcher.Tiles;
-using Timer = System.Threading.Timer;
+using VirtualEnvironment.Launcher.Tiles;
 
-namespace Seanox.Platform.Launcher
+namespace VirtualEnvironment.Launcher
 {
     // System Tray Icon (NotifyIcon) + menu for show + exit
     // ----
@@ -93,12 +92,15 @@ namespace Seanox.Platform.Launcher
         private const int WM_SYSCHAR  = 0x0106;
         private const int WM_HOTKEY   = 0x0312;
 
+        private const int ERROR_CANCELLED = 0x4C7;
+
         private readonly MetaTile[] _metaTiles;
         private readonly MetaTileGrid _metaTileGrid;
         private readonly MetaTileScreen _metaTileScreen;
         
         private readonly Settings _settings;
-        private readonly Timer _timer;
+        
+        private readonly System.Threading.Timer _timer;
         
         private int _cursor = -1;
 
@@ -160,7 +162,7 @@ namespace Seanox.Platform.Launcher
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
             SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
             
-            _timer = new Timer((state) =>
+            _timer = new System.Threading.Timer((state) =>
             {
                 if (!Settings.IsUpdateAvailable())
                     return;
@@ -228,7 +230,7 @@ namespace Seanox.Platform.Launcher
             {
                 // Exception when canceling by the user (UAC) is ignored
                 if (exception is Win32Exception
-                        && ((Win32Exception)exception).NativeErrorCode == 1223)
+                        && ((Win32Exception)exception).NativeErrorCode == ERROR_CANCELLED)
                     return;
 
                 MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
@@ -287,8 +289,7 @@ namespace Seanox.Platform.Launcher
         
         private static Process GetForegroundProcess()
         {
-            uint processId = 0;
-            GetWindowThreadProcessId(GetForegroundWindow(), out processId);
+            GetWindowThreadProcessId(GetForegroundWindow(), out var processId);
             return Process.GetProcessById(Convert.ToInt32(processId));
         }
         
