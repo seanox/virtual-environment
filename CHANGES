@@ -6,7 +6,7 @@
   BF: Platform: Compact per Diskpart was not executed
   CR: Platform: Optimization / enhancement of function compact
   CR: Platform: Optimization of notification message output 
-  CR: Shiftdown: Added a optional service to shift down the process priority
+  CR: ShiftDown: Added a optional service to shift down the process priority
       The service automatically downgrades the process priority of CPU-intensive processes. 
       For older Intel generations that suffer from the update of Windows and Intel.
   CR: Launcher: Switching from MaxLauncher to a self-developed one
