@@ -30,28 +30,27 @@ namespace VirtualEnvironment.Startup
     internal static class Program
     {
         [STAThread]
-        static void Main(string[] arguments)
+        private static void Main(string[] arguments)
         {
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
-            string applicationDirectory = Path.GetDirectoryName(applicationPath);
-            string applicationName = Path.GetFileNameWithoutExtension(applicationPath);
-            string scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
+            var applicationPath = Assembly.GetExecutingAssembly().Location;
+            var applicationDirectory = Path.GetDirectoryName(applicationPath);
+            var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
 
+            var scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
             if (File.Exists(Path.Combine(".", Path.GetFileName(scriptName))))
                 applicationDirectory = ".";
 
-            string scriptFile = Path.Combine(applicationDirectory, scriptName);
-
+            var scriptFile = Path.Combine(applicationDirectory, scriptName);
             if (!File.Exists(scriptFile))
             {
-                MessageBox.Show("The required " + scriptName + " file was not found", applicationName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show($"The required {scriptName} file was not found", applicationName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
             }
 
             if (new FileInfo(scriptFile).Length <= 0)
                 return;
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo()
+            var processStartInfo = new ProcessStartInfo()
             {
                 UseShellExecute = true,
                 CreateNoWindow  = true,
@@ -65,15 +64,13 @@ namespace VirtualEnvironment.Startup
                 RedirectStandardOutput = false,
             };
             
-            if (!(arguments is null)
-                    && arguments.Length > 0)
+            if (arguments?.Length > 0)
                 processStartInfo.Arguments = String.Join(" ", arguments
-                        .Select(argument => "\"" + argument  + "\""));
+                        .Select(argument => $"\"{argument}\""));
                 
-            Process process = new Process();
+            var process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
-            process.WaitForExit();
         }
     }
 }

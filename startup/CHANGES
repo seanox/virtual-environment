@@ -1,10 +1,16 @@
+1.2.1 2022xxxx
+  BF: StartUp: Optimization and corrections
+  CR: StartUp: Unification of the namespace
+  CR: StartUp: Unification of the platform icons
+  CR: StartUp: Unification of (sub) project structure
+
 1.2.0 20211126
   CR: License: Changed to Apache License Version 2.0
   CR: Project: Change to .NET
   
-1.1.0 20XXXXXX
+1.1.0 20xxxxxx
   NT: More details have been lost
   
-1.0.0 20XXXXXX
+1.0.0 20xxxxxx
   NT: More details have been lost
   NT: Release is available
