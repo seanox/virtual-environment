@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Seanox.Platform
+namespace VirtualEnvironment.Platform
 {
     internal static class Program {
 
@@ -52,7 +52,7 @@ namespace Seanox.Platform
             var drive = arguments[0].ToUpper(); 
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
+                    Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
             var workerTask = Worker.Task.Usage;
             switch (arguments[1].ToLower())
             {
