@@ -27,7 +27,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Seanox.Platform
+namespace VirtualEnvironment.Platform
 {
     internal static class Diskpart
     {
@@ -72,7 +72,7 @@ namespace Seanox.Platform
 
         private static string GetTextResource(string resourceName)
         {
-            return Encoding.ASCII.GetString(Diskpart.GetResource(resourceName));
+            return Encoding.ASCII.GetString(GetResource(resourceName));
         }
 
         private struct DiskpartResult
@@ -83,12 +83,12 @@ namespace Seanox.Platform
 
         private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartProperties diskpartProperties)
         {
-            var diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
-            var diskpartScript = Diskpart.GetTextResource(diskpartScriptName);
+            var diskpartScriptName = "" + diskpartTask.ToString().ToLower();
+            var diskpartScript = GetTextResource(diskpartScriptName);
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
                             current.Replace(String.Format("#[{0}]", field.Name.ToLower()),
-                                (field.GetValue(diskpartProperties) ?? "").ToString()));
+                                    (field.GetValue(diskpartProperties) ?? "").ToString()));
 
             // In case the cleanup does not work and not so much junk
             // accumulates in the temp directory, fixed file names are used.
@@ -111,7 +111,7 @@ namespace Seanox.Platform
                     
                     WindowStyle = ProcessWindowStyle.Hidden,
                     
-                    FileName  = "diskpart.exe",
+                    FileName  = "exe",
                     Arguments = "/s " + diskpartScriptFile,
 
                     RedirectStandardError  = true,
@@ -153,10 +153,10 @@ namespace Seanox.Platform
         internal static void CompactDisk(string drive, string diskFile)
         {
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact);
-            Diskpart.CanCompactDisk(drive, diskFile);
+            CanCompactDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.DiskpartCompactDiskpart);
-            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
+            var diskpartResult = DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
         }
@@ -174,14 +174,14 @@ namespace Seanox.Platform
             DiskpartResult diskpartResult;
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach);
-            Diskpart.CanAttachDisk(drive, diskFile);
+            CanAttachDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDiskpart);
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {File = diskFile});
+            diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDetectVolume);
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.List, new DiskpartProperties());
+            diskpartResult = DiskpartExec(DiskpartTask.List, new DiskpartProperties());
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
             var volumeNumberPattern = new Regex(@"^\s*Volume\s+(\d+)\s+([A-Z]\s+)?" + Path.GetFileNameWithoutExtension(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -190,7 +190,7 @@ namespace Seanox.Platform
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
             var volumeNumber = int.Parse(volumeNumberMatch.Groups[1].Value);
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, String.Format(Messages.DiskpartAttachAssign, volumeNumber, drive));
-            diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Assign, new DiskpartProperties()
+            diskpartResult = DiskpartExec(DiskpartTask.Assign, new DiskpartProperties()
             {
                 Number = volumeNumber,
                 Drive  = drive.Substring(0, 1)
@@ -210,10 +210,10 @@ namespace Seanox.Platform
         internal static void DetachDisk(string drive, string diskFile)
         {
             Notification.Push(Notification.Type.Trace, Messages.DiskpartDetach);
-            Diskpart.CanDetachDisk(drive, diskFile);
+            CanDetachDisk(drive, diskFile);
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartDetach, Messages.DiskpartDetachDiskpart);
-            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
+            var diskpartResult = DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
         }
@@ -230,12 +230,12 @@ namespace Seanox.Platform
 
         private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath)
         {
-            Diskpart.MigrateResourcePlatformFile(drive, resourcePlatformPath, null);
+            MigrateResourcePlatformFile(drive, resourcePlatformPath, null);
         }
 
         private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements)
         {
-            byte[] fileContent = Diskpart.GetResource(@"\platform\" + resourcePlatformPath);
+            var fileContent = GetResource(@"\platform\" + resourcePlatformPath);
             if (replacements != null)
             {
                 var fileContentText = Encoding.ASCII.GetString(fileContent);
@@ -259,7 +259,7 @@ namespace Seanox.Platform
         internal static void CreateDisk(string drive, string diskFile)
         {
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate);
-            Diskpart.CanCreateDisk(drive, diskFile);
+            CanCreateDisk(drive, diskFile);
 
             var diskpartProperties = new DiskpartProperties()
             {
@@ -272,15 +272,15 @@ namespace Seanox.Platform
             };
 
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateDiskpart);
-            var diskpartResult = Diskpart.DiskpartExec(DiskpartTask.Create, diskpartProperties);
+            var diskpartResult = DiskpartExec(DiskpartTask.Create, diskpartProperties);
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
 
-            var tempDriveLetter = Diskpart.GetNextDriveLetter();
+            var tempDriveLetter = GetNextDriveLetter();
             if (tempDriveLetter < 'A')
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartNoLetterAvailable);
             var tempDrive = tempDriveLetter.ToString() + ":";
-            Diskpart.AttachDisk(tempDrive, diskFile);
+            AttachDisk(tempDrive, diskFile);
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
             Directory.CreateDirectory(tempDrive + @"\Database");
@@ -300,14 +300,19 @@ namespace Seanox.Platform
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", String.Format("{0}.x", Assembly.GetExecutingAssembly().GetName().Version.Major));
 
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Extensions\startup.exe");
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Settings\settings.exe");
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
-            Diskpart.MigrateResourcePlatformFile(tempDrive, @"\Startup.cmd", replacements);
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Console\console.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Extensions\startup.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcher.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcher.xml");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcherExit.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
+            MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
+            MigrateResourcePlatformFile(tempDrive, @"\Settings\settings.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Settings\shiftdown.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
+            MigrateResourcePlatformFile(tempDrive, @"\Startup.cmd", replacements);
 
-            Diskpart.DetachDisk(tempDrive, diskFile);
+            DetachDisk(tempDrive, diskFile);
         }
     }
 
@@ -317,7 +322,7 @@ namespace Seanox.Platform
 
         internal DiskpartException(params string[] messages)
         {
-            this.Messages = messages;
+            Messages = messages;
         }
     }
 }
