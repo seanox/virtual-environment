@@ -30,3 +30,20 @@ when detaching and the environment variables are needed for this.
 - `seanox.exe B: compact` to shrink the environment
 
 __Module integration will come later, but will be similar.__
+
+# System Requirement
+- Windows 10 or higher
+- .NET 4.7.x or higher
+
+# Download
+Platform is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform)
+but can also be downloaded and used separately.
+
+https://github.com/seanox/virtual-environment/tree/main/platform/Releases
+
+# Changes (Change Log)
+## 3.0.0 20211126 (summary of the current version)
+CR: Platform: Added function shortcuts
+CR: Settings: Added for placeholder replacement in files
+
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/platform/CHANGES)
