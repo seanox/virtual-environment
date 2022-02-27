@@ -428,7 +428,7 @@ namespace VirtualEnvironment.ShiftDown
                     && _backgroundWorker.IsBusy)
                 return;
 
-            _eventLog.WriteEntry(VERSION, EventLogEntryType.Information);
+            _eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
 
             _backgroundWorker = CreateBackgroundWorker();
             _backgroundWorker.RunWorkerAsync();

@@ -1,3 +1,7 @@
+1.3.0 2022xxxx
+  BF: Settings: Optimization and corrections
+  CR: Settings: Unification of the namespace
+
 1.2.0 20220107
   BF: Correction of the unwanted program end when the service pauses
   BF: Correction of the EventLog
