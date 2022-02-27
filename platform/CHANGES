@@ -10,7 +10,9 @@
   CR: Platform: Unification of the namespace
   CR: Platform: Unification of the platform icons
   CR: Platform: Unification of (sub) project structure
-  CR: Shiftdown: Added a optional service to shift down the process priority
+  CR: Platform: Added Console as default command line prompt
+  CR: Platform: Added Launcher as default launcher to keep the environment alive 
+  CR: Platform: Added ShiftDown as optional service to shift down the process priority
       The service automatically downgrades the process priority of CPU-intensive processes. 
       For older Intel generations that suffer from the update of Windows and Intel.
 
