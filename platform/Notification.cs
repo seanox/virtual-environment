@@ -25,7 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Seanox.Platform
+namespace VirtualEnvironment.Platform
 {
     internal static class Notification
     {
@@ -43,8 +43,8 @@ namespace Seanox.Platform
 
             internal Message(Type type, string text)
             {
-                this.Type = type;
-                this.Text = text;
+                Type = type;
+                Text = text;
             }
         }
 
@@ -56,7 +56,7 @@ namespace Seanox.Platform
 
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                Path.GetFileNameWithoutExtension(applicationPath) + ".log");
+                    Path.GetFileNameWithoutExtension(applicationPath) + ".log");
             if (File.Exists(loggingFile)
                     && new FileInfo(loggingFile).Length > 0)
                 using (var streamWriter = File.AppendText(loggingFile))
