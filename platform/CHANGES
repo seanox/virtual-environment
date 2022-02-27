@@ -4,8 +4,12 @@
   BF: Platform Create: Correction of settings directory
       Has been moved from \Documents\Settings to \Settings.
   BF: Platform: Compact per Diskpart was not executed
+  BF: Platform: Optimization and corrections
   CR: Platform: Optimization / enhancement of function compact
   CR: Platform: Optimization of notification message output 
+  CR: Platform: Unification of the namespace
+  CR: Platform: Unification of the platform icons
+  CR: Platform: Unification of (sub) project structure
   CR: Shiftdown: Added a optional service to shift down the process priority
       The service automatically downgrades the process priority of CPU-intensive processes. 
       For older Intel generations that suffer from the update of Windows and Intel.
@@ -17,11 +21,11 @@
   CR: Settings: Added for placeholder replacement in files
       This simplifies the personalization , distribution, migrations and updates.
 
-2.0.0 2019XXXX
+2.0.0 2019xxxx
   NT: Not published
 
-2.0.0 2015XXXX
+2.0.0 2015xxxx
   NT: Not published
   
-1.0.0 20XXXXXX
+1.0.0 20xxxxxx
   NT: Not published
