@@ -32,7 +32,7 @@ application focus and bells and whistles, it's just to improve the work.__
 - .NET 4.7.x or higher
 
 
-## Download
+# Download
 
 The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
 but can also be downloaded and used separately.
@@ -40,7 +40,7 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/tree/main/shiftdown/Releases
 
 
-## Usage
+# Usage
 
 The program is installed as a service, which requires administration
 privileges.
