@@ -45,7 +45,7 @@ created.
 
 Only known placeholders are replaced, unknown ones remain.
 
-## Integration
+# Integration
 Settings is primarily used to further personalize a virtual environment. The
 idea is that the ini file with the values is stored in the working directory
 and thus outside the virtual hard disk. The Settings program is included in the
@@ -69,25 +69,6 @@ IF EXIST "%PLATFORM_HOME%\%PLATFORM_NAME%.ini" (
 REM Placeholder for automatic module integration
 REM INSERT ATTACH
 ```
-
-# Licence Agreement
-LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-
-Diese Software unterliegt der Version 2 der Apache License.
-
-Copyright (C) 2021 Seanox Software Solutions
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at
-
-https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed
-under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied. See the License for the
-specific language governing permissions and limitations under the License.
 
 # System Requirement
 - Windows 10 or higher
