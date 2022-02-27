@@ -27,7 +27,7 @@ namespace VirtualEnvironment.Launcher
     internal static class Program
     {
         [STAThread]
-        internal static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
