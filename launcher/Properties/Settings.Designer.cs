@@ -1,4 +1,4 @@
-﻿namespace Seanox.Platform.Launcher.Properties
+﻿namespace VirtualEnvironment.Launcher.Properties
 {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute(

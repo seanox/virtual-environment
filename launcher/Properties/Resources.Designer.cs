@@ -1,4 +1,4 @@
-﻿namespace Seanox.Platform.Launcher.Properties
+﻿namespace VirtualEnvironment.Launcher.Properties
 {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder",
         "4.0.0.0")]
@@ -25,7 +25,7 @@
                 if ((resourceMan == null))
                 {
                     global::System.Resources.ResourceManager temp =
-                        new global::System.Resources.ResourceManager("Seanox.Platform.Launcher.Properties.Resources",
+                        new global::System.Resources.ResourceManager("VirtualEnvironment.Launcher.Properties.Resources",
                             typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
