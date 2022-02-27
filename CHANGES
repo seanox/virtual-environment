@@ -25,14 +25,14 @@
   CR: Settings: Added for placeholder replacement in files
       This simplifies the personalization , distribution, migrations and updates.
 
-2.1.0 2019XXXX
+2.1.0 2019xxxx
   CR: Added support for VHDX and BitLocker
   NT: More details have been lost
 
-2.0.0 2015XXXX
+2.0.0 2015xxxx
   CR: Change from SUBST to virtual disk VHD
   NT: More details have been lost
   
-1.0.0 20XXXXXX
+1.0.0 20xxxxxx
   NT: More details have been lost
   NT: Release is available
