@@ -2,7 +2,6 @@
   BF: Settings: Correction of template synchronization
       If the target file is newer than the template, the template will be updated.
   BF: Settings: Optimization and corrections
-  CR: Settings: Unification of platform icons
   CR: Settings: Unification of the namespace
   CR: Settings: Unification of (sub) project structure
 
