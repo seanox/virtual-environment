@@ -22,7 +22,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Seanox.Platform.Launcher.Tiles
+namespace VirtualEnvironment.Launcher.Tiles
 {
     internal class MetaTile : IDisposable
     {
@@ -33,8 +33,6 @@ namespace Seanox.Platform.Launcher.Tiles
         internal readonly string    Symbol;
         internal readonly Rectangle Location;
 
-        private readonly Settings _settings;
-        
         private readonly MetaTileGrid _metaTileGrid;
 
         private readonly Color _borderColor;
@@ -49,7 +47,6 @@ namespace Seanox.Platform.Launcher.Tiles
         {
             Settings = tile;
 
-            _settings = settings;
             _metaTileGrid = MetaTileGrid.Create(settings);
 
             // The index for the configuration starts user-friendly with 1,
@@ -84,11 +81,11 @@ namespace Seanox.Platform.Launcher.Tiles
             var tileStartY = ((tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap)));
             Location = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
             
-            _borderColor = ColorTranslator.FromHtml(_settings.BorderColor);
-            _foregroundColor = ColorTranslator.FromHtml(_settings.ForegroundColor);
-            _highlightColor = ColorTranslator.FromHtml(_settings.HighlightColor);
+            _borderColor = ColorTranslator.FromHtml(settings.BorderColor);
+            _foregroundColor = ColorTranslator.FromHtml(settings.ForegroundColor);
+            _highlightColor = ColorTranslator.FromHtml(settings.HighlightColor);
 
-            _textFont = new Font(SystemFonts.DefaultFont.FontFamily, _settings.FontSize, FontStyle.Regular);
+            _textFont = new Font(SystemFonts.DefaultFont.FontFamily, settings.FontSize, FontStyle.Regular);
             _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
             _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
             _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);

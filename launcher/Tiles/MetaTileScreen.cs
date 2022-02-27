@@ -23,13 +23,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace Seanox.Platform.Launcher.Tiles
+namespace VirtualEnvironment.Launcher.Tiles
 {
     internal class MetaTileScreen : IDisposable
     {
         private readonly MetaTile[] _metaTiles;
         private readonly Screen     _screen;
-        private readonly Settings   _settings;
 
         private readonly Image _activeBorderImage;
         private readonly Image _passiveBorderImage;
@@ -41,7 +40,6 @@ namespace Seanox.Platform.Launcher.Tiles
         {
             _metaTiles = metaTiles;
             _screen    = screen;
-            _settings  = settings;
 
             var metaTileGrid   = MetaTileGrid.Create(settings);
             var borderColor    = ColorTranslator.FromHtml(settings.BorderColor);
@@ -57,8 +55,8 @@ namespace Seanox.Platform.Launcher.Tiles
                 Utilities.Graphics.DrawRectangleRounded(activeBorderImageGraphics, new Pen(new SolidBrush(highlightColor)),
                         new Rectangle(0, 0, metaTileGrid.Size - 1, metaTileGrid.Size - 1), metaTileGrid.Radius);
             
-            if (!String.IsNullOrWhiteSpace(_settings.BackgroundImage))
-                using (var backgroundImage = Utilities.Graphics.ImageOf(_settings.BackgroundImage))
+            if (!String.IsNullOrWhiteSpace(settings.BackgroundImage))
+                using (var backgroundImage = Utilities.Graphics.ImageOf(settings.BackgroundImage))
                     if (backgroundImage != null)
                         _backgroundImage = Utilities.Graphics.ImageScale(backgroundImage, _screen.Bounds.Width, _screen.Bounds.Height);
         }

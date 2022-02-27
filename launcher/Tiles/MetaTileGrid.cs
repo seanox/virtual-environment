@@ -20,7 +20,7 @@
 
 using System;
 
-namespace Seanox.Platform.Launcher.Tiles
+namespace VirtualEnvironment.Launcher.Tiles
 {
     internal class MetaTileGrid
     {
@@ -36,17 +36,13 @@ namespace Seanox.Platform.Launcher.Tiles
         internal int Height => ((Size + Gap) * Rows) - Gap;
         internal int Width  => ((Size + Gap) * Columns) - Gap;
         
-        private readonly Settings _settings;
-
         private MetaTileGrid(Settings settings)
         {
-            _settings = settings;
+            Size    = settings.GridSize;
+            Gap     = settings.GridGap;
+            Padding = settings.GridPadding;
             
-            Size    = _settings.GridSize;
-            Gap     = _settings.GridGap;
-            Padding = _settings.GridPadding;
-            
-            Radius = Math.Min(Math.Max(_settings.GridCornerRadius, 0), Size /2);
+            Radius = Math.Min(Math.Max(settings.GridCornerRadius, 0), Size /2);
         }
 
         internal static MetaTileGrid Create(Settings settings)
