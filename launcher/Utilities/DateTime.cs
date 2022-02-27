@@ -18,7 +18,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-namespace Seanox.Platform.Launcher.Utilities
+namespace VirtualEnvironment.Launcher.Utilities
 {
     internal static class DateTime
     {

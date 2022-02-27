@@ -25,7 +25,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace Seanox.Platform.Launcher.Utilities
+namespace VirtualEnvironment.Launcher.Utilities
 {
     internal static class Graphics
     {

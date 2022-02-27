@@ -22,7 +22,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Seanox.Platform.Launcher.Utilities
+namespace VirtualEnvironment.Launcher.Utilities
 {
     internal static class ScanCode
     {
