@@ -30,7 +30,7 @@ using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace shiftdown
+namespace VirtualEnvironment.ShiftDown
 {
     internal static class Program
     {
@@ -55,14 +55,14 @@ namespace shiftdown
         private static void Main(params string[] options)
         {
             #if DEBUG
-                var service = new Service();
-                service.OnDebug(options);
-                return;
+            var service = new Service();
+            service.OnDebug(options);
+            return;
             #endif
             
             if (Environment.UserInteractive)
             {
-                Console.WriteLine(Program.VERSION);
+                Console.WriteLine(VERSION);
                 Console.WriteLine();
 
                 bool isAdministrator;
@@ -76,18 +76,18 @@ namespace shiftdown
                 switch (command)
                 {
                     case "install":
-                        Program.BatchExec("sc.exe", "create", ApplicationMeta.Name, $"binpath=\"{Program.ApplicationMeta.Location}\"", "start=auto");
+                        BatchExec("sc.exe", "create", ApplicationMeta.Name, $"binpath=\"{ApplicationMeta.Location}\"", "start=auto");
                         break;
                     case "uninstall":
-                        Program.BatchExec(new BatchExecMeta()
+                        BatchExec(new BatchExecMeta()
                             {FileName = "net.exe", Arguments = new[] {"stop", ApplicationMeta.Name}, Output = false});
-                        Program.BatchExec("sc.exe", "delete", ApplicationMeta.Name);
+                        BatchExec("sc.exe", "delete", ApplicationMeta.Name);
                         break;
                     case "start":
                     case "pause":
                     case "continue":
                     case "stop":
-                        Program.BatchExec("net.exe", command, ApplicationMeta.Name);
+                        BatchExec("net.exe", command, ApplicationMeta.Name);
                         break;
                     default:
                         Console.WriteLine($"The program must be configured as a service ({ApplicationMeta.Name}).");
@@ -128,7 +128,7 @@ namespace shiftdown
 
         private static void BatchExec(string fileName, params string[] arguments)
         {
-            Program.BatchExec(new BatchExecMeta() {FileName = fileName, Arguments = arguments, Output = true});
+            BatchExec(new BatchExecMeta() {FileName = fileName, Arguments = arguments, Output = true});
         }
 
         private static void BatchExec(BatchExecMeta batchExecMeta)
@@ -428,7 +428,7 @@ namespace shiftdown
                     && _backgroundWorker.IsBusy)
                 return;
 
-            _eventLog.WriteEntry(Program.VERSION, EventLogEntryType.Information);
+            _eventLog.WriteEntry(VERSION, EventLogEntryType.Information);
 
             _backgroundWorker = CreateBackgroundWorker();
             _backgroundWorker.RunWorkerAsync();

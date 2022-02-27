@@ -51,5 +51,8 @@
     <ItemGroup>
       <Content Include="README.md" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Releases" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
