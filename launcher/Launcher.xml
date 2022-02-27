@@ -99,10 +99,10 @@
     <tile>
       <index>17</index>
       <title>hosts</title>
-      <icon>%WINDIR%\system32\netcenter.dll:1</icon>
+      <icon>%WINDIR%\system32\imageres.dll:256</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
       <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
-      <workingDirectory>%APPSPATH%\HiEditor</workingDirectory>
+      <workingDirectory>%WINDIR%\System32\drivers\etc</workingDirectory>
     </tile>
     <tile>
       <index>27</index>
@@ -111,10 +111,18 @@
       <workingDirectory>%HOMEDRIVE%%HOMEPATH%</workingDirectory>
     </tile>
     <tile>
+      <index>28</index>
+      <title>Settings</title>
+      <icon>%WINDIR%\system32\imageres.dll:64</icon>
+      <destination>%WINDIR%\system32\notepad.exe</destination>
+      <arguments>%APPSPATH%\Launcher\launcher.xml</arguments>
+      <workingDirectory>%APPSPATH%\Launcher</workingDirectory>
+    </tile>
+    <tile>
       <index>31</index>
       <title>Terminal</title>
       <icon>%WINDIR%\System32\cmd.exe</icon>
-      <destination>%APPSPATH%\Console\Console.cmd</destination>
+      <destination>%APPSPATH%\Console\console.cmd</destination>
       <workingDirectory>%HOMEDRIVE%</workingDirectory>
     </tile>
     <tile>
