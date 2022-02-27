@@ -22,7 +22,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
     
-namespace Seanox.Platform.Launcher
+namespace VirtualEnvironment.Launcher
 {
     internal static class Program
     {
@@ -66,7 +66,7 @@ namespace Seanox.Platform.Launcher
                     if (!(exception is System.IO.IOException)
                             && control != null)
                         MessageBox.Show("An unexpected error has occurred."
-                                    + $"{Environment.NewLine}{Environment.NewLine}{exception}",
+                                + $"{Environment.NewLine}{Environment.NewLine}{exception}",
                                 "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     // If an error occurs during the initial start, the
                     // program is terminated.
