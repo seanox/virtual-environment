@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Seanox.Platform.Launcher
+namespace VirtualEnvironment.Launcher
 {
     partial class Control
     {
