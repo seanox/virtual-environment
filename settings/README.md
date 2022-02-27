@@ -101,10 +101,10 @@ https://github.com/seanox/virtual-environment/tree/main/settings/Releases
 
 # Changes (Change Log)
 ## 1.1.0 2022xxxx (summary of the upcoming version)
-BF: Settings: Correction of template synchronization
-BF: Settings: Optimization and corrections
-CR: Settings: Unification of platform icons
-CR: Settings: Unification of the namespace
+BF: Settings: Correction of template synchronization  
+BF: Settings: Optimization and corrections  
+CR: Settings: Unification of platform icons  
+CR: Settings: Unification of the namespace  
 CR: Settings: Unification of (sub) project structure
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/settings/CHANGES)
