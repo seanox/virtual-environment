@@ -4,7 +4,7 @@
 //
 // Virtual Environment Settings
 // Starts a batch script with the same name minimized.
-// Copyright (C) 2021 Seanox Software Solutions
+// Copyright (C) 2022 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -74,11 +74,14 @@ namespace VirtualEnvironment.Settings
             File.SetLastWriteTime(templateFile, DateTime.Now);
         }
 
-        public static void Main(string[] arguments)
+        private static void Main(string[] arguments)
         {
-            Console.WriteLine("Seanox Settings [Version 1.0.1.0 20211127]");
-            Console.WriteLine("Copyright (C) 2021 Seanox Software Solutions");
-            Console.WriteLine("Placeholder replacement in files");
+            var version = typeof(Program).Assembly.GetName().Version.ToString();
+            version = Regex.Replace(version, @"(\d+(?:\.\d+){1,2})((?:\.\d+)+)", "$1");
+            
+            Console.WriteLine($"Seanox Settings [Version {version} 2022xxxx]");
+            Console.WriteLine($"Copyright (C) 2022 Seanox Software Solutions");
+            Console.WriteLine($"Placeholder replacement in files");
             
             if (arguments == null
                     || arguments.Length < 1
