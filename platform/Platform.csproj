@@ -49,7 +49,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\platform\Resources\drive.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\platform\Resources\platform.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>App.manifest</ApplicationManifest>
@@ -121,8 +121,8 @@
     <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.exe" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
     <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
-    <EmbeddedResource Include="Resources\platform\Resources\drive.ico" />
-    <EmbeddedResource Include="Resources\platform\Resources\drive.png" />
+    <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
+    <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
     <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
     <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
     <EmbeddedResource Include="Resources\platform\Startup.cmd" />
