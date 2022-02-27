@@ -25,9 +25,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Settings
+namespace VirtualEnvironment.Settings
 {
-    internal class Program
+    internal static class Program
     {
         private static readonly Regex PATTERN_SECTION_SETTINGS =
                 new Regex(@"(?:^|[\r\n])\s*\[\s*SETTINGS\s*\](([\r\n]|.)*?)\s*(?:[\r\n]\s*\[|$)", RegexOptions.IgnoreCase);
@@ -38,15 +38,15 @@ namespace Settings
         private static readonly Regex PATTERN_SECTION_FILE =
                 new Regex(@"^\s*-\s*([/\\].*?)\s*$");
         private static readonly Regex PATTERN_LINES =
-            new Regex(@"(\r\n)+|(\n\r)+|[\r\n]");
+                new Regex(@"(\r\n)+|(\n\r)+|[\r\n]");
         private static readonly Regex PATTERN_PLACEHOLDER =
-            new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
+                new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
         
         private static string ReplacePlaceholders(string text, Dictionary<string, string> settings)
         {
             return PATTERN_PLACEHOLDER.Replace(text, match =>
             {
-                string key = match.Groups[1].Value.ToLower();
+                var key = match.Groups[1].Value.ToLower();
                 if (settings.ContainsKey(key))
                     return settings[key];
                 return match.ToString();
@@ -55,20 +55,20 @@ namespace Settings
 
         private static void ReplaceFilePlaceholders(string file, Dictionary<string, string> settings)
         {
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
-            string targetFile = Path.GetPathRoot(applicationPath).Substring(0, 2) + file.Replace("/", @"\");
+            var applicationPath = Assembly.GetExecutingAssembly().Location;
+            var targetFile = Path.GetPathRoot(applicationPath).Substring(0, 2) + file.Replace("/", @"\");
             if (!File.Exists(targetFile))
                 return;
             
             Console.WriteLine("- " + targetFile);
             
-            string templateFile = targetFile + "-settings";
+            var templateFile = targetFile + "-settings";
             if (!File.Exists(templateFile)
                     || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) > 0)
                 File.Copy(targetFile, templateFile, true);
             
-            string templateContent = File.ReadAllText(templateFile);
-            string targetContent = Program.ReplacePlaceholders(templateContent, settings);
+            var templateContent = File.ReadAllText(templateFile);
+            var targetContent = Program.ReplacePlaceholders(templateContent, settings);
             File.WriteAllText(targetFile, targetContent);
 
             File.SetLastWriteTime(templateFile, DateTime.Now);
@@ -84,14 +84,14 @@ namespace Settings
                     || arguments.Length < 1
                     || !File.Exists(arguments[0]))
             {
-                string applicationPath = Assembly.GetExecutingAssembly().Location;
+                var applicationPath = Assembly.GetExecutingAssembly().Location;
                 Console.WriteLine("usage: " + Path.GetFileName(applicationPath) + " <file>");
                 return;
             }
 
-            string fileContent = File.ReadAllText(arguments[0]);
+            var fileContent = File.ReadAllText(arguments[0]);
 
-            Dictionary<string, string> settingDirectory = new Dictionary<string, string>();
+            var settingDirectory = new Dictionary<string, string>();
             foreach (var key in Environment.GetEnvironmentVariables().Keys)
             {
                 if (settingDirectory.ContainsKey(key.ToString().ToLower()))
@@ -99,31 +99,29 @@ namespace Settings
                 settingDirectory.Add(key.ToString().ToLower(), Environment.GetEnvironmentVariable(key.ToString()));
             }
 
-            Match settingsSectionMatch = PATTERN_SECTION_SETTINGS.Match(fileContent);
-            string settingsSection = "";
+            var settingsSectionMatch = PATTERN_SECTION_SETTINGS.Match(fileContent);
+            var settingsSection = "";
             if (settingsSectionMatch.Success)
                 settingsSection = settingsSectionMatch.Groups[1].Value;
-            string[] settingsLines = PATTERN_LINES.Split(settingsSection);
-            foreach (string line in settingsLines
-                .Where(line => PATTERN_SECTION_KEY_VALUE.IsMatch(line)))
+            var settingsLines = PATTERN_LINES.Split(settingsSection);
+            foreach (var line in settingsLines.Where(line => PATTERN_SECTION_KEY_VALUE.IsMatch(line)))
             {
-                string key = PATTERN_SECTION_KEY_VALUE.Replace(line, "$1").ToLower();
-                string value = Program.ReplacePlaceholders(PATTERN_SECTION_KEY_VALUE.Replace(line, "$2"), settingDirectory);
+                var key = PATTERN_SECTION_KEY_VALUE.Replace(line, "$1").ToLower();
+                var value = Program.ReplacePlaceholders(PATTERN_SECTION_KEY_VALUE.Replace(line, "$2"), settingDirectory);
                 if (settingDirectory.ContainsKey(key))
                     settingDirectory.Remove(key);
                 settingDirectory.Add(key, value);
             }
             
-            Match filesSectionMatch = PATTERN_SECTION_FILES.Match(fileContent);
-            string filesSection = "";
+            var filesSectionMatch = PATTERN_SECTION_FILES.Match(fileContent);
+            var filesSection = "";
             if (filesSectionMatch.Success)
                 filesSection = filesSectionMatch.Groups[1].Value;
-            string[] filesLines = PATTERN_LINES.Split(filesSection)
-                .Where(line => PATTERN_SECTION_FILE.IsMatch(line)).ToArray();
+            var filesLines = PATTERN_LINES.Split(filesSection).Where(line => PATTERN_SECTION_FILE.IsMatch(line)).ToArray();
             if (filesLines.Length <= 0)
                 Console.WriteLine("- no file defined");
-            foreach (string line in filesLines)
-                Program.ReplaceFilePlaceholders(PATTERN_SECTION_FILE.Replace(line, "$1"), settingDirectory);
+            foreach (var line in filesLines)
+                ReplaceFilePlaceholders(PATTERN_SECTION_FILE.Replace(line, "$1"), settingDirectory);
         }
     }
 }
