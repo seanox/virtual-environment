@@ -3,8 +3,7 @@ A portable program launcher specially developed for the Seanox Virtual
 Environment with a full-screen tile look that can also be used standalone and
 independently.
 
-
-## Features
+# Features
 - Full screen overlay interface  
   The tile interface is displayed as a full screen overlay on the primary screen.
 - Tile interface
@@ -28,19 +27,17 @@ independently.
   simply terminated.  
 - Portable application without installation
 
-
-## System Requirement
+# System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
 
-## Download
+# Download
 The launcher is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/tree/main/launcher/Releases
 
-
-## Settings
+# Settings
 For configuration the file `launcher.xml` (depending on the application name)
 in the working directory is used. If this file does not exist or is incorrect,
 the launcher aborts the start with an error message.
@@ -112,7 +109,6 @@ Example of a configuration file:
     </tiles>
 </settings>
 ```
-
 
 # Changes (Change Log)
 ## 1.0.0 2022xxxx (summary of the upcoming version)
