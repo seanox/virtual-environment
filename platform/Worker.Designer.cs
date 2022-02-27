@@ -1,4 +1,4 @@
-﻿namespace Seanox.Platform
+﻿namespace VirtualEnvironment.Platform
 {
     partial class Worker
     {
