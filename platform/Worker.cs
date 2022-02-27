@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Management;
 using System.Linq;
 
-namespace Seanox.Platform
+namespace VirtualEnvironment.Platform
 {
     public partial class Worker:Form, Notification.INotification
     {
@@ -76,21 +76,21 @@ namespace Seanox.Platform
         {
             var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
             using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-            using (var collection = searcher.Get())
-            {
-                var query = from process in Process.GetProcesses()
-                        join managementObject in collection.Cast<ManagementObject>()
-                        on process.Id equals (int)(uint)managementObject["ProcessId"]
-                        select new ProcessesInfo()
-                        {
-                            Process = process,
-                            Path = (string)managementObject["ExecutablePath"],
-                        };
-                var resultList = new List<ProcessesInfo>();
-                foreach (var process in query)
-                    resultList.Add(process);
-                return resultList;
-            }
+                using (var collection = searcher.Get())
+                {
+                    var query = from process in Process.GetProcesses()
+                            join managementObject in collection.Cast<ManagementObject>()
+                            on process.Id equals (int)(uint)managementObject["ProcessId"]
+                            select new ProcessesInfo()
+                            {
+                                Process = process,
+                                Path = (string)managementObject["ExecutablePath"],
+                            };
+                    var resultList = new List<ProcessesInfo>();
+                    foreach (var process in query)
+                        resultList.Add(process);
+                    return resultList;
+                }
         }
 
         private struct BatchResult
@@ -262,13 +262,13 @@ namespace Seanox.Platform
 
         private void Service(object payload)
         {
-            if (!this.IsHandleCreated
-                    || this.IsDisposed)
+            if (!IsHandleCreated
+                    || IsDisposed)
                 return;
 
             var workerTask = (WorkerTask)payload;
 
-            this.Invoke((MethodInvoker)delegate
+            Invoke((MethodInvoker)delegate
             {
                 // The timer should only trigger the asynchronous processing,
                 // after that it is no longer needed and will be terminated.
@@ -289,7 +289,7 @@ namespace Seanox.Platform
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
-                            batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "startup");
+                            batchResult = BatchExec(workerTask.Drive + @"\Startup.cmd", "startup");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
@@ -354,22 +354,22 @@ namespace Seanox.Platform
 
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
 
-                            batchResult = Worker.BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
+                            batchResult = BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
                                 Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
 
-                            Worker.GetProcesses()
+                            GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
                                 .ForEach(processInfo => processInfo.Process.CloseMainWindow());
                             Thread.Sleep(3000);
                             
-                            Worker.GetProcesses()
+                            GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
-                                .ForEach(processInfo => Worker.KillProcess(processInfo));
+                                .ForEach(processInfo => KillProcess(processInfo));
 
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
 
@@ -381,9 +381,9 @@ namespace Seanox.Platform
                             Notification.Push(Notification.Type.Trace, Messages.WorkerShortcutsText);
                             Thread.Sleep(1000);
                             
-                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Attach);
-                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Detach);
-                            Worker.CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Compact);
+                            CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Attach);
+                            CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Detach);
+                            CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Compact);
 
                             Notification.Push(Notification.Type.Abort, Messages.WorkerShortcuts, Messages.WorkerSuccessfullyCompleted);
                             break;
@@ -410,8 +410,8 @@ namespace Seanox.Platform
 
         void Notification.INotification.Receive(Notification.Message message)
         {
-            this.Output.Text = message.Text;
-            this.Refresh();
+            Output.Text = message.Text;
+            Refresh();
 
             if (message.Type != Notification.Type.Error
                     && message.Type != Notification.Type.Abort)
@@ -419,22 +419,22 @@ namespace Seanox.Platform
 
             if (message.Type == Notification.Type.Error)
             {
-                this.BackColor = Color.FromArgb(250, 225, 150);
-                this.Progress.BackColor = Color.FromArgb(200, 150, 75);
-                this.Label.ForeColor = this.Progress.BackColor;
+                BackColor = Color.FromArgb(250, 225, 150);
+                Progress.BackColor = Color.FromArgb(200, 150, 75);
+                Label.ForeColor = Progress.BackColor;
             }
 
-            var originSize = this.Progress.Size;
-            this.Progress.Visible = true;
+            var originSize = Progress.Size;
+            Progress.Visible = true;
             for (var width = 1; width < originSize.Width; width += 1)
             {
-                this.Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
-                this.Refresh();
+                Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
+                Refresh();
                 Thread.Sleep(message.Type == Notification.Type.Error ? 75 : 25);
             }
 
             Thread.Sleep(500);
-            this.Close();
+            Close();
         }
     }
 
@@ -444,7 +444,7 @@ namespace Seanox.Platform
 
         internal WorkerException(params string[] messages)
         {
-            this.Messages = messages;
+            Messages = messages;
         }
     }
 }
