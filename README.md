@@ -122,7 +122,7 @@ specific language governing permissions and limitations under the License.
 
 
 # System Requirement
-- Windows 7 or higher
+- Windows 10 or higher
 - .NET 4.7.x or higher
 
 
