@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace Seanox.Platform.Launcher
+namespace VirtualEnvironment.Launcher
 {
     // Settings for a XML based configuration.
     // - based on the file name from launcher
@@ -239,7 +239,7 @@ namespace Seanox.Platform.Launcher
                     if (String.IsNullOrWhiteSpace(Icon))
                         iconFile = Destination;
                     else iconFile = PATTERN_ICON.Replace(iconFile, "$1");
-                    return iconFile != null ? iconFile.Trim() : null;
+                    return iconFile?.Trim();
                 }
             }
             
