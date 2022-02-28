@@ -403,7 +403,7 @@ namespace VirtualEnvironment.Platform
                     else if (exception is DiskpartException)
                         Notification.Push(Notification.Type.Error, ((DiskpartException)exception).Messages);
                     else
-                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, "@" + exception.Message);
+                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
                 }
             });
         }

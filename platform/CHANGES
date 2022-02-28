@@ -10,6 +10,7 @@
   CR: Platform: Unification of the namespace
   CR: Platform: Unification of the platform icons
   CR: Platform: Unification of (sub) project structure
+  CR: Platform: Optimization of error logging
   CR: Platform: Added Console as default command line prompt
   CR: Platform: Added Launcher as default launcher to keep the environment alive 
   CR: Platform: Added ShiftDown as optional service to shift down the process priority
