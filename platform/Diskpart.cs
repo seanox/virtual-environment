@@ -83,7 +83,7 @@ namespace VirtualEnvironment.Platform
 
         private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartProperties diskpartProperties)
         {
-            var diskpartScriptName = "" + diskpartTask.ToString().ToLower();
+            var diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
             var diskpartScript = GetTextResource(diskpartScriptName);
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
@@ -111,7 +111,7 @@ namespace VirtualEnvironment.Platform
                     
                     WindowStyle = ProcessWindowStyle.Hidden,
                     
-                    FileName  = "exe",
+                    FileName  = "diskpart.exe",
                     Arguments = "/s " + diskpartScriptFile,
 
                     RedirectStandardError  = true,
