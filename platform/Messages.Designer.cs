@@ -11,6 +11,7 @@
 namespace VirtualEnvironment.Platform {
     using System;
     
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -60,7 +61,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment of the virtual disk.
+        ///   Looks up a localized string similar to Attaching the virtual disk.
         /// </summary>
         internal static string DiskpartAttach {
             get {
@@ -69,7 +70,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Partition #{0} will be used as drive {1}.
+        ///   Looks up a localized string similar to Partition #{0} is used as drive {1}.
         /// </summary>
         internal static string DiskpartAttachAssign {
             get {
@@ -78,7 +79,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be detected in the volumes.
+        ///   Looks up a localized string similar to Detection of the virtual disk in the volumes.
         /// </summary>
         internal static string DiskpartAttachDetectVolume {
             get {
@@ -87,7 +88,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be attached.
+        ///   Looks up a localized string similar to Assignment as a drive.
         /// </summary>
         internal static string DiskpartAttachDiskpart {
             get {
@@ -96,7 +97,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment of the virtual disk falied..
+        ///   Looks up a localized string similar to Attaching the virtual disk falied..
         /// </summary>
         internal static string DiskpartAttachFailed {
             get {
@@ -114,7 +115,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be compacted.
+        ///   Looks up a localized string similar to Virtual disk and file system are compacted.
         /// </summary>
         internal static string DiskpartCompactDiskpart {
             get {
@@ -141,7 +142,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be created.
+        ///   Looks up a localized string similar to Creating virtual disk.
         /// </summary>
         internal static string DiskpartCreateDiskpart {
             get {
@@ -159,7 +160,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup of the initial file system.
+        ///   Looks up a localized string similar to File system are initialized.
         /// </summary>
         internal static string DiskpartCreateInitializationFileSystem {
             get {
@@ -168,7 +169,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detachment of the virtual disk.
+        ///   Looks up a localized string similar to Detaching the virtual disk.
         /// </summary>
         internal static string DiskpartDetach {
             get {
@@ -177,7 +178,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk will be detached.
+        ///   Looks up a localized string similar to Unassigning the drive and detaching the virtual disk.
         /// </summary>
         internal static string DiskpartDetachDiskpart {
             get {
@@ -186,7 +187,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detachment of the virtual disk failed..
+        ///   Looks up a localized string similar to Detaching the virtual disk failed..
         /// </summary>
         internal static string DiskpartDetachFailed {
             get {
@@ -258,7 +259,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be attached..
+        ///   Looks up a localized string similar to Attaching the virtual environment.
         /// </summary>
         internal static string WorkerAttach {
             get {
@@ -276,7 +277,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be attached failed..
+        ///   Looks up a localized string similar to Attaching the virtual environment failed..
         /// </summary>
         internal static string WorkerAttachFailed {
             get {
@@ -285,7 +286,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be attached.
+        ///   Looks up a localized string similar to Attaching the virtual environment
         ///Programs and services are established..
         /// </summary>
         internal static string WorkerAttachText {
@@ -295,7 +296,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporary files will be cleaned.
+        ///   Looks up a localized string similar to Temporary files are cleaned.
         /// </summary>
         internal static string WorkerCompactCleanFilesytem {
             get {
@@ -304,8 +305,8 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be compacted.
-        ///Virtual disk and file system are optimized..
+        ///   Looks up a localized string similar to Compaction of the virtual environment
+        ///Virtual disk and file system are compacted..
         /// </summary>
         internal static string WorkerCompactText {
             get {
@@ -314,8 +315,8 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be created.
-        ///Virtual disk and file system are established..
+        ///   Looks up a localized string similar to Creation of the virtual environment
+        ///Virtual disk and file system are initialized..
         /// </summary>
         internal static string WorkerCreateText {
             get {
@@ -324,7 +325,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be detached..
+        ///   Looks up a localized string similar to Detaching the virtual environment..
         /// </summary>
         internal static string WorkerDetach {
             get {
@@ -342,7 +343,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be detached failed..
+        ///   Looks up a localized string similar to Detaching the virtual environment failed..
         /// </summary>
         internal static string WorkerDetachFailed {
             get {
@@ -351,7 +352,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual environment will be detached.
+        ///   Looks up a localized string similar to Detaching the virtual environment
         ///Programs and services are terminated..
         /// </summary>
         internal static string WorkerDetachText {
@@ -361,7 +362,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shortcuts will be created..
+        ///   Looks up a localized string similar to Creation of shortcuts.
         /// </summary>
         internal static string WorkerShortcuts {
             get {
@@ -370,8 +371,8 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shortcuts will be created.
-        ///The usual usage are established..
+        ///   Looks up a localized string similar to Creation of the shortcuts
+        ///The usual functions are initialized..
         /// </summary>
         internal static string WorkerShortcutsText {
             get {
