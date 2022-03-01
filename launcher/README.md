@@ -3,13 +3,15 @@ A portable program launcher specially developed for the Seanox Virtual
 Environment with a full-screen tile look that can also be used standalone and
 independently.
 
+
 # Features
 - Full screen overlay interface  
-  The tile interface is displayed as a full screen overlay on the primary screen.
-- Tile interface
-  Interface with 40 freely configurable tiles.
+  The tile user interface is displayed as a full screen overlay on the primary
+  screen.
+- Tile user interface
+  User interface with 40 freely configurable tiles.
 - Global HotKey combination  
-  A global HotKey combination is used to show and hide the tile interface.
+  A global HotKey combination is used to show and hide the tile user interface.
 - HotKey for tiles and programs  
   Quick access via the keyboard, optimized for the used keyboard layout.  
   Support for international keyboard layouts.
@@ -27,15 +29,18 @@ independently.
   simply terminated.  
 - Portable application without installation
 
+
 # System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
+
 
 # Download
 The launcher is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/tree/main/launcher/Releases
+
 
 # Settings
 For configuration the file `launcher.xml` (depending on the application name)
@@ -109,6 +114,7 @@ Example of a configuration file:
     </tiles>
 </settings>
 ```
+
 
 # Changes (Change Log)
 ## 1.0.0 2022xxxx (summary of the upcoming version)
