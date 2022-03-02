@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="launcher" default="usage" basedir=".">
+<project name="Launcher" default="usage" basedir=".">
   <target name="usage">
     <echo>                                                     </echo>
     <echo> the following targets are available ...             </echo>
@@ -13,11 +13,16 @@
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources" value="${basedir}/Sources"/>
   <property name="workspace.target" value="${basedir}/Target"/>
+  <property name="workspace.releases" value="${basedir}/Releases"/>
 
+  <property environment="env"/>
+  
   <property name="build" value="${workspace}/Target/build"/>
   <property name="build.sources" value="${workspace}/Target/build/Sources"/>
   <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln"/>
-
+  <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
+  <property name="build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
+  
   <macrodef name="release-info-locate">
     <sequential>
       <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
@@ -100,6 +105,38 @@
     </copy>
     <release-info-insert/>
     
-    <!-- TODO -->
+    <exec executable="${build.tool}" dir="${build}" resultproperty="build.exit.code"
+        output="${build}/output.log" error="${build}/error.log">
+      <arg line="${ant.project.name}.sln /t:Clean,Build /P:Configuration=Release"/>
+    </exec>
+    <fail message="Build failed with exit code ${build.exit.code}
+${line.separator}&#09;For more details see in the log files:
+${line.separator}${build}/output.log
+${line.separator}${build}/error.log">
+      <condition>
+        <not>
+          <equals arg1="${build.exit.code}" arg2="0"/>
+        </not>
+      </condition>
+    </fail>
+
+    <delete includeemptydirs="true">
+      <fileset dir="${build.target}" excludes="${ant.project.name}.exe"/>
+    </delete>
+    <copy todir="${build.target}" file="CHANGES"/>
+    <copy todir="${build.target}" file="LICENSE"/>
+    <copy todir="${build.target}" file="README.md"/>
+    <copy todir="${build.target}" file="${build.sources}/${ant.project.name}.xml"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd">
+      <fileset dir="${build.target}"/>
+    </touch>
+
+    <mkdir dir="${workspace.releases}"/>
+    <delete file="${workspace.releases}/launcher-${release.version}.zip"/>
+    <zip destfile="${workspace.releases}/launcher-${release.version}.zip"
+        basedir="${build.target}" compress="true" level="9" filesonly="true"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/launcher-${release.version}.zip"/>
+    <copy file="${build.target}/${ant.project.name}.exe" overwrite="true"
+        tofile="../platform/Sources/Resources/platform/Program Portables/Launcher/launcher.exe"/>
   </target>
 </project>
