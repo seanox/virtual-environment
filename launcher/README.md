@@ -8,7 +8,7 @@ independently.
 - Full screen overlay interface  
   The tile user interface is displayed as a full screen overlay on the primary
   screen.
-- Tile user interface
+- Tile user interface  
   User interface with 40 freely configurable tiles.
 - Global HotKey combination  
   A global HotKey combination is used to show and hide the tile user interface.
@@ -21,8 +21,8 @@ independently.
 - Settings supports environment variables  
   Environment variables can be used in text-based values.
 - Visual style per settings (themes support)  
-  The interface supports the configuration of colors, opacity, background color
-- and image, and the appearance of the grid.
+  The interface supports the configuration of colors, opacity, background color  
+  and image, and the appearance of the grid.
 - No icons and functions in the taskbar or system tray  
   The program is optimized for the virtual environment. So that the shell is
   not lost, the program is always present in the background and cannot be
@@ -117,7 +117,7 @@ Example of a configuration file:
 
 
 # Changes (Change Log)
-## 1.0.0 2022xxxx (summary of the upcoming version)
-NT: Release is available
+## 1.0.0 2022xxxx (summary of the upcoming version)  
+NT: Release is available  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
