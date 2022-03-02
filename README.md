@@ -28,7 +28,7 @@ creation, use and management of the virtual environment and [modules](modules)
 that then automatically download tools and programs from the Internet,
 configure them and integrated them in the virtual environment.__
 
-__In release 3.0.0 the modules are not yet supported. The software in the
+__In release 3.x the modules are not yet supported. The software in the
 virtual environment must be set up manually, but this is easy, which is a
 normal drive.__
 

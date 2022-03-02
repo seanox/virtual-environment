@@ -4,7 +4,7 @@ environment and modules that then automatically download tools and programs
 from the Internet, configure them and integrated them in the virtual
 environment.
 
-__In the upcoming release 3.0.0 the modules are not yet supported.__
+__In the upcoming release 3.x the modules are not yet supported.__
 
 
 # Usage
