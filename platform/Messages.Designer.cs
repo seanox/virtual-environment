@@ -408,7 +408,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [3.1.0 20211130].
+        ///   Looks up a localized string similar to Seanox Virtual Environment [0.0.0 00000000].
         /// </summary>
         internal static string WorkerVersion {
             get {
