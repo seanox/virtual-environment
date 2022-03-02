@@ -1,5 +1,4 @@
 # ShiftDown
-
 My computer with i5 3rd generation (i5 3320M) suffers from the updates from
 Intel and Windows since Meltdown and Spectre were fixed. When the CPU is
 loaded, various IO interfaces have problems, e.g.  access to USB devices and
@@ -26,14 +25,12 @@ tries to improve multitasking so that all programs get enough CPU time, without
 application focus and bells and whistles, it's just to improve the work.__
 
 
-## System Requirement
-
+# System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
 
 
 # Download
-
 The service is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
 but can also be downloaded and used separately.
 
@@ -41,7 +38,6 @@ https://github.com/seanox/virtual-environment/tree/main/shiftdown/Releases
 
 
 # Usage
-
 The program is installed as a service, which requires administration
 privileges.
 
@@ -66,12 +62,8 @@ When the program ends, the priority of the changed processes will be restored.
 
 
 # Changes (Change Log)
-## 1.2.0 20220107 (summary of the current version)
-BF: Correction of the unwanted program end when the service pauses  
-BF: Correction of the EventLog  
-CR: Change to use net.exe for start, pause, continue and stop  
-CR: Optimization of process scanning  
-CR: Added a multi-level priority decrease  
-CR: Change the service own priority to AboveNormal
+## 1.3.0 2022xxxx (summary of the upcoming version)  
+BF: Settings: Optimization and corrections  
+CR: Settings: Unification of the namespace  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
