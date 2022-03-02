@@ -4,8 +4,8 @@
   BF: Settings: Optimization and corrections
   CR: Settings: Unification of the namespace
   CR: Settings: Unification of (sub) project structure
+  CR: Settings: Added build script/process via ANT
 
 1.0.0 20211126
   NT: Release is available
 
-  

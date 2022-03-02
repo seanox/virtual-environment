@@ -41,7 +41,21 @@ namespace VirtualEnvironment.Settings
                 new Regex(@"(\r\n)+|(\n\r)+|[\r\n]");
         private static readonly Regex PATTERN_PLACEHOLDER =
                 new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
-        
+
+        internal static class Version
+        {
+            // Groups: 1. Number, 2. Release Date, 3. Release Year
+            private const string PATTERN = @"^\s*(\d+(?:\.\d+){2})\.((\d{4})\d{4})\s*$";
+
+            private static System.Version AssemblyVersion => typeof(Version).Assembly.GetName().Version;
+
+            internal static string Number => $"{AssemblyVersion.Major}.{AssemblyVersion.Minor}.{AssemblyVersion.Revision}";
+            
+            internal static string Date => $"{AssemblyVersion.Build}";
+            
+            internal static string Year => Regex.Replace(Date, @"^(\d{4}).*$", "$1");
+        }
+
         private static string ReplacePlaceholders(string text, Dictionary<string, string> settings)
         {
             return PATTERN_PLACEHOLDER.Replace(text, match =>
@@ -76,11 +90,8 @@ namespace VirtualEnvironment.Settings
 
         private static void Main(string[] arguments)
         {
-            var version = typeof(Program).Assembly.GetName().Version.ToString();
-            version = Regex.Replace(version, @"(\d+(?:\.\d+){1,2})((?:\.\d+)+)", "$1");
-            
-            Console.WriteLine($"Seanox Settings [Version {version} 2022xxxx]");
-            Console.WriteLine($"Copyright (C) 2022 Seanox Software Solutions");
+            Console.WriteLine($"Seanox Settings [Version 00000]");
+            Console.WriteLine($"Copyright (C) {Version.Year} Seanox Software Solutions");
             Console.WriteLine($"Placeholder replacement in files");
             
             if (arguments == null
