@@ -45,6 +45,7 @@ created.
 
 Only known placeholders are replaced, unknown ones remain.
 
+
 # Integration
 Settings is primarily used to further personalize a virtual environment. The
 idea is that the ini file with the values is stored in the working directory
@@ -70,9 +71,11 @@ REM Placeholder for automatic module integration
 REM INSERT ATTACH
 ```
 
+
 # System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
+
 
 # Download
 Settings is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Settings)
@@ -80,12 +83,12 @@ but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/tree/main/settings/Releases
 
+
 # Changes (Change Log)
-## 1.1.0 2022xxxx (summary of the upcoming version)
+## 1.1.0 2022xxxx (summary of the upcoming version)  
 BF: Settings: Correction of template synchronization  
 BF: Settings: Optimization and corrections  
-CR: Settings: Unification of platform icons  
 CR: Settings: Unification of the namespace  
-CR: Settings: Unification of (sub) project structure
+CR: Settings: Unification of (sub) project structure  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/settings/CHANGES)
