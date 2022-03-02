@@ -3,14 +3,15 @@
   CR: StartUp: Unification of the namespace
   CR: StartUp: Unification of the platform icons
   CR: StartUp: Unification of (sub) project structure
+  CR: StartUp: Added build script/process via ANT
 
 1.2.0 20211126
   CR: License: Changed to Apache License Version 2.0
   CR: Project: Change to .NET
-  
+
 1.1.0 20xxxxxx
   NT: More details have been lost
-  
+
 1.0.0 20xxxxxx
   NT: More details have been lost
   NT: Release is available
