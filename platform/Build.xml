@@ -19,7 +19,7 @@
   
   <property name="build" value="${workspace}/Target/build"/>
   <property name="build.sources" value="${workspace}/Target/build/Sources"/>
-  <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln"/>
+  <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
   <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
   <property name="build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
   
@@ -54,6 +54,8 @@
           token="Version(&quot;0.0.0&quot;)" value="Version(&quot;${release.version}&quot;)"/>
       <replace dir="${build}" includes="${build.sources.filter}"
           token="Version 0.0.0 0000000" value="Version ${release.version} ${release.date}"/>
+      <replace dir="${build}" includes="${build.sources.filter}"
+          token="&lt;assemblyIdentity version=&quot;0.0.0.0&quot;" value="&lt;assemblyIdentity version=&quot;${release.version}&quot;"/>
     </sequential>
   </macrodef>
   
