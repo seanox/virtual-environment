@@ -54,12 +54,11 @@ BF: Platform: Optimization and corrections
 BF: Platform: Optimization and corrections of the texts  
 CR: Platform: Optimization / enhancement of function compact  
 CR: Platform: Optimization of notification message output  
-CR: Platform: Unification of the namespace  
-CR: Platform: Unification of the platform icons  
-CR: Platform: Unification of (sub) project structure  
+CR: Platform: Unification of the namespace / platform icons / (sub) project structure  
+CR: Platform: Added build script/process via ANT  
 CR: Platform: Optimization of error logging  
-CR: Platform: Added Console as default command line prompt  
-CR: Platform: Added Launcher as default launcher to keep the environment alive  
-CR: Platform: Added ShiftDown as optional service to shift down the process priority  
+CR: Console: Added as default command line prompt  
+CR: Launcher: Added as default launcher to keep the environment alive  
+CR: ShiftDown: Added as optional service to shift down the process priority  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/platform/CHANGES)
