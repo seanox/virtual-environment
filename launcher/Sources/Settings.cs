@@ -124,7 +124,7 @@ namespace VirtualEnvironment.Launcher
             }
         }
 
-        private class SettingsException : Exception
+        internal class SettingsException : Exception
         {
             internal SettingsException(string message, Exception cause) : base(message, cause) {}
         }

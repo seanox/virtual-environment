@@ -4,7 +4,7 @@
     <echo>                                                     </echo>
     <echo> the following targets are available ...             </echo>
     <echo>                                                     </echo>
-    <echo>   changes    synchronizes the README.md with CHANGES</echo>
+    <echo>   changes    Synchronizes the README.md with CHANGES</echo>
     <echo>                                                     </echo>
     <echo>   release    Builds the complete release            </echo>
     <echo>              Synchronizes the version in README.md  </echo>

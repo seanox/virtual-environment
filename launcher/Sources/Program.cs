@@ -63,11 +63,18 @@ namespace VirtualEnvironment.Launcher
                 {
                     // System.IO.IOException can occur due to asynchronous
                     // access and are ignored.
-                    if (!(exception is System.IO.IOException)
+                    if (exception is System.IO.IOException
                             && control != null)
-                        MessageBox.Show("An unexpected error has occurred."
-                                + $"{Environment.NewLine}{Environment.NewLine}{exception}",
-                                "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        continue;
+                    
+                    var message = "An unexpected error has occurred."
+                            + $"{Environment.NewLine}{Environment.NewLine}{exception}";
+                    if (exception is Settings.SettingsException)
+                        message = exception.Message;
+                    
+                    MessageBox.Show(message, "Virtual Environment Launcher",
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
                     // If an error occurs during the initial start, the
                     // program is terminated.
                     if (control == null)
