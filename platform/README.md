@@ -46,8 +46,20 @@ https://github.com/seanox/virtual-environment/tree/main/platform/Releases
 
 
 # Changes (Change Log)
-## 3.0.0 20211126 (summary of the current version)
-CR: Platform: Added function shortcuts
-CR: Settings: Added for placeholder replacement in files
+## 3.1.0 2022xxxx (summary of the upcoming version)  
+BF: Settings: Correction of template synchronization  
+BF: Platform Create: Correction of settings directory  
+BF: Platform: Compact per Diskpart was not executed  
+BF: Platform: Optimization and corrections  
+BF: Platform: Optimization and corrections of the texts  
+CR: Platform: Optimization / enhancement of function compact  
+CR: Platform: Optimization of notification message output  
+CR: Platform: Unification of the namespace  
+CR: Platform: Unification of the platform icons  
+CR: Platform: Unification of (sub) project structure  
+CR: Platform: Optimization of error logging  
+CR: Platform: Added Console as default command line prompt  
+CR: Platform: Added Launcher as default launcher to keep the environment alive  
+CR: Platform: Added ShiftDown as optional service to shift down the process priority  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/platform/CHANGES)
