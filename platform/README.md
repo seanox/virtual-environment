@@ -6,6 +6,7 @@ environment.
 
 __In the upcoming release 3.0.0 the modules are not yet supported.__
 
+
 # Usage
 - Rename __platform.exe__ to the name that will be used for the environment and
   drive
@@ -31,15 +32,18 @@ when detaching and the environment variables are needed for this.
 
 __Module integration will come later, but will be similar.__
 
+
 # System Requirement
 - Windows 10 or higher
 - .NET 4.7.x or higher
+
 
 # Download
 Platform is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/tree/main/platform/Releases
+
 
 # Changes (Change Log)
 ## 3.0.0 20211126 (summary of the current version)

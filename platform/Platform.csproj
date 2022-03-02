@@ -1,41 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{ACCC1BBB-2740-490D-BEBA-CBF027A57B4B}</ProjectGuid>
-        <OutputType>WinExe</OutputType>
+        <ProjectGuid>{93A5C9F1-73F7-4425-B0BF-AB5179847A2E}</ProjectGuid>
+        <OutputType>Exe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>VirtualEnvironment.Platform</RootNamespace>
         <AssemblyName>Platform</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <Deterministic>true</Deterministic>
-        <IsWebBootstrapper>false</IsWebBootstrapper>
-        <PublishUrl>publish\</PublishUrl>
-        <Install>true</Install>
-        <InstallFrom>Disk</InstallFrom>
-        <UpdateEnabled>false</UpdateEnabled>
-        <UpdateMode>Foreground</UpdateMode>
-        <UpdateInterval>7</UpdateInterval>
-        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-        <UpdatePeriodically>false</UpdatePeriodically>
-        <UpdateRequired>false</UpdateRequired>
-        <MapFileExtensions>true</MapFileExtensions>
-        <ApplicationRevision>0</ApplicationRevision>
-        <ApplicationVersion>1.2.3.%2a</ApplicationVersion>
-        <UseApplicationTrust>false</UseApplicationTrust>
-        <BootstrapperEnabled>true</BootstrapperEnabled>
-        <ApplicationIcon>Program.ico</ApplicationIcon>
-        <ApplicationManifest>App.manifest</ApplicationManifest>
+        <ApplicationManifest>Sources\App.manifest</ApplicationManifest>
+        <ApplicationIcon>Sources\Program.ico</ApplicationIcon>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
+        <OutputPath>Target\bin\Debug\</OutputPath>
+        <IntermediateOutputPath>Target\obj\Debug\</IntermediateOutputPath>
+        <BaseIntermediateOutputPath>Target\obj\Debug\</BaseIntermediateOutputPath>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
@@ -45,7 +31,9 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
+        <OutputPath>Target\bin\Release\</OutputPath>
+        <IntermediateOutputPath>Target\obj\Release\</IntermediateOutputPath>
+        <BaseIntermediateOutputPath>Target\obj\Release\</BaseIntermediateOutputPath>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <Prefer32Bit>false</Prefer32Bit>
@@ -76,52 +64,48 @@
         </COMReference>
     </ItemGroup>    
     <ItemGroup>
-        <Compile Include="Diskpart.cs" />
-        <Compile Include="Notification.cs" />
-        <Compile Include="Worker.cs">
-            <SubType>Form</SubType>
+        <Compile Include="Sources\Diskpart.cs" />
+        <Compile Include="Sources\Messages.Designer.cs">
+          <AutoGen>True</AutoGen>
+          <DesignTime>True</DesignTime>
+          <DependentUpon>Messages.resx</DependentUpon>
         </Compile>
-        <Compile Include="Worker.Designer.cs">
-            <DependentUpon>Worker.cs</DependentUpon>
+        <Compile Include="Sources\Notification.cs" />
+        <Compile Include="Sources\Program.cs" />
+        <Compile Include="Sources\Properties\AssemblyInfo.cs" />
+        <Compile Include="Sources\Worker.cs">
+          <SubType>Form</SubType>
         </Compile>
-        <Compile Include="Messages.Designer.cs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Messages.resx</DependentUpon>
+        <Compile Include="Sources\Worker.Designer.cs">
+          <DependentUpon>Worker.cs</DependentUpon>
         </Compile>
-        <Compile Include="Program.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <EmbeddedResource Include="Worker.resx">
-            <DependentUpon>Worker.cs</DependentUpon>
+        <EmbeddedResource Include="Sources\Messages.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>Messages.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-        <EmbeddedResource Include="Messages.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+        <EmbeddedResource Include="Sources\Resources\diskpart\assign" />
+        <EmbeddedResource Include="Sources\Resources\diskpart\attach" />
+        <EmbeddedResource Include="Sources\Resources\diskpart\compact" />
+        <EmbeddedResource Include="Sources\Resources\diskpart\create" />
+        <EmbeddedResource Include="Sources\Resources\diskpart\detach" />
+        <EmbeddedResource Include="Sources\Resources\diskpart\list" />
+        <EmbeddedResource Include="Sources\Resources\platform\AutoRun.inf" />
+        <EmbeddedResource Include="Sources\Resources\platform\Program Portables\Console\console.cmd" />
+        <EmbeddedResource Include="Sources\Resources\platform\Program Portables\Extensions\startup.exe" />
+        <EmbeddedResource Include="Sources\Resources\platform\Program Portables\Launcher\launcher.exe" />
+        <EmbeddedResource Include="Sources\Resources\platform\Program Portables\Launcher\launcher.xml" />
+        <EmbeddedResource Include="Sources\Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
+        <EmbeddedResource Include="Sources\Resources\platform\Resources\platform.ico" />
+        <EmbeddedResource Include="Sources\Resources\platform\Resources\platform.png" />
+        <EmbeddedResource Include="Sources\Resources\platform\Settings\settings.exe" />
+        <EmbeddedResource Include="Sources\Resources\platform\Settings\shiftdown.exe" />
+        <EmbeddedResource Include="Sources\Resources\platform\Startup.cmd" />
+        <EmbeddedResource Include="Sources\Worker.resx">
+          <DependentUpon>Worker.cs</DependentUpon>
         </EmbeddedResource>
-        <None Include="App.manifest" />
-        <EmbeddedResource Include="Resources\diskpart\assign" />
-        <EmbeddedResource Include="Resources\diskpart\attach" />
-        <EmbeddedResource Include="Resources\diskpart\compact" />
-        <EmbeddedResource Include="Resources\diskpart\create" />
-        <EmbeddedResource Include="Resources\diskpart\detach" />
-        <EmbeddedResource Include="Resources\diskpart\list" />
-        <EmbeddedResource Include="Resources\platform\Program Portables\Console\console.cmd" />
-        <EmbeddedResource Include="Resources\platform\Program Portables\Extensions\startup.exe" />
-        <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.exe" />
-        <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
-        <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
-        <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
-        <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
-        <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
-        <EmbeddedResource Include="Resources\platform\Settings\shiftdown.exe" />
-        <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
-        <EmbeddedResource Include="Resources\platform\Startup.cmd" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Releases" />
-        <Content Include="CHANGES" />
-        <Content Include="LICENSE" />
-        <Content Include="README.md" />
+      <None Include="Sources\App.manifest" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
