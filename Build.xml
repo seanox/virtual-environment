@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<project name="Environment" default="usage" basedir=".">
+  <target name="usage">
+  </target>
+
+  <target name="changes">
+  </target>
+
+  <target name="release" depends="changes">
+    <exec executable="cmd" dir="${basedir}">
+      <arg line="/C cd launcher &amp; ant release
+          &amp; cd ..\settings &amp; ant release
+          &amp; cd ..\shiftdown &amp; ant release
+          &amp; cd ..\startup &amp; ant release
+          &amp; cd ..\platform &amp; ant release"/>
+    </exec>
+  </target>
+</project>
