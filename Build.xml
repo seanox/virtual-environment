@@ -1,18 +1,81 @@
 <?xml version="1.0" ?>
 <project name="Environment" default="usage" basedir=".">
   <target name="usage">
+    <echo>                                                     </echo>
+    <echo> the following targets are available ...             </echo>
+    <echo>                                                     </echo>
+    <echo>   changes    Synchronizes the README.md with CHANGES</echo>
+    <echo>                                                     </echo>
+    <echo>   release    Builds the complete release            </echo>
+    <echo>              Synchronizes the version in README.md  </echo>
   </target>
 
+  <property name="workspace" value="${basedir}"/>
+
+  <macrodef name="release-info-locate">
+    <sequential>
+      <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
+      <replaceregexp file="${workspace}/CHANGES.tmp"
+          match="(?s)^\s*([\d\.x]+) (\d{4})([\dx]+).*$" flags="g" byline="false"
+          replace="release.version=\1&#x000D;release.year=\2&#x000D;release.date=\2\3&#x000D;"/>
+      <replaceregexp file="${workspace}/CHANGES.tmp" match="x+" replace="0000" flags="g" byline="false"/>
+      <loadproperties srcfile="${workspace}/CHANGES.tmp"/>
+      <delete file="${workspace}/CHANGES.tmp"/>
+      <echo file="${workspace}/CHANGES.tmp" message="release.major=${release.version}"/>
+      <replaceregexp file="${workspace}/CHANGES.tmp"
+          match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.minor="/>
+      <replaceregexp file="${workspace}/CHANGES.tmp"
+          match="(?&lt;=\d+)\." byline="true" replace="&#x000D;release.patch="/>
+      <loadproperties srcfile="${workspace}/CHANGES.tmp"/>
+      <delete file="${workspace}/CHANGES.tmp"/>
+    </sequential>
+  </macrodef>
+
   <target name="changes">
+    <release-info-locate/>
+
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00E4;" replace="ae" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00C4;" replace="Ae" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00F6;" replace="oe" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00D6;" replace="Oe" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00FC;" replace="ue" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="&#x00DC;" replace="Ue" flags="g"/>
+    <replaceregexp file="${workspace}/CHANGES" match="\s+$" replace="" flags="g" byline="true"/>
+
+    <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^\s+" replace="" byline="false"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="(?s)^(.*?)[\r\n]+\d[\d\. x]+.*$" replace="\1" byline="false"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^(.*?)\s*$" replace="\1  " flags="g" byline="true"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^(\d[\.\d x]+)[^\r\n]*" replace="## \1" byline="false"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^ {0,4}([A-Z]+:.*)\s*$" replace="\1" byline="true"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="(?s)[\r\n]+ [^\r\n]+" replace="" flags="g" byline="false"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^(## \d[\.\d]+ \d+)(  )" replace="\1 (summary of the current version)\2" flags="g" byline="true"/>
+    <replaceregexp file="${workspace}/CHANGES.tmp" match="^(## \d[\.\d]+ [\dx]+)(  )" replace="\1 (summary of the upcoming version)\2" flags="g" byline="true"/>
+    <loadresource property="changes">
+      <file file="${workspace}/CHANGES.tmp"/>
+    </loadresource>
+    <delete file="${workspace}/CHANGES.tmp"/>
+    <replaceregexp file="${workspace}/README.md"
+        match="(?si)(# Changes \(Change Log\)\s+).*?(\[Read more\])" flags="g" byline="false"
+        replace="\1${changes}${line.separator}${line.separator}\2"/>
+    <tstamp>
+      <format property="now.year" pattern="yyyy"/>
+    </tstamp>
+    <replaceregexp file="${workspace}/README.md"
+        match="(?si)(?&lt;=\(C\)\s)\d{4}\b" flags="g" byline="true"
+        replace="${now.year}"/>
   </target>
 
   <target name="release" depends="changes">
-    <exec executable="cmd" dir="${basedir}">
-      <arg line="/C cd launcher &amp; ant release
-          &amp; cd ..\settings &amp; ant release
-          &amp; cd ..\shiftdown &amp; ant release
-          &amp; cd ..\startup &amp; ant release
-          &amp; cd ..\platform &amp; ant release"/>
-    </exec>
+    <ant dir="launcher" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <ant dir="settings" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <ant dir="shiftdown" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <ant dir="startup" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <ant dir="platform" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
   </target>
 </project>
