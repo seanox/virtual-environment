@@ -29,10 +29,9 @@ creation, use and management of the virtual environment and a
 [module concept](modules) for the automatic integration and configuration of
 tools and programs from any source on the Internet.__
 
-__Currently, the module concept is still a successfully tested PoC (Proof of
-Concept) and not the focus of the project. So the software has to be set up
-manually in the virtual environment, but that's easy because it's a normal
-drive.__
+__The module concept is a successful PoC (proof of concept), but is not
+currently the focus of the project. So the software has to be set up manually
+in the virtual environment, but that's easy because it's a normal drive.__
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
@@ -99,13 +98,29 @@ Often there is also software directly from the manufacturer/vendor as a
 portable version.
 
 
+# Features
+- Supports VHD, VHDX as virtual drive also with Bitlocker
+- Functions to create, launch, manage and compact the environment
+- The environment is immediately usable after creation
+- Integrated program launcher as full screen overlay with tile optics, global
+  hotkey and optimized keyboard layout support for fast access
+- Personalization of the environment and programs through the use of a separate
+  key-values file
+- Option to improve multitasking of older CPUs
+- Very small and resource-saving implementation of the platform
+- The use of the local file system and the registry is avoided
+- Easy customization according to the requirements
+- Simplifies centralized maintenance and distribution
+- Simplifies automation
+
+
 # Licence Agreement
 LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
 Folgenden Seanox Software Solutions oder kurz Seanox genannt.
 
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2021 Seanox Software Solutions
+Copyright (C) 2022 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -154,12 +169,20 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes (Change Log)
-## 3.0.0 20211126 (summary of the current version)
-CR: License: Changed to Apache License Version 2.0  
-CR: Project: Change from Ant to .NET  
-CR: Platform: Added function compact  
-CR: Platform: Added function shortcuts  
-CR: Settings: Added for Placeholder replacement in files  
+## 3.1.0 2022xxxx (summary of the upcoming version)  
+BF: Platform Create: Correction of settings directory  
+BF: Platform: Compact per Diskpart was not executed  
+BF: Platform: Optimization and corrections of the texts  
+BF: Settings: Correction of template synchronization  
+BF: Settings: Optimization and corrections  
+CR: Platform: Optimization / enhancement of function compact  
+CR: Platform: Optimization of notification message output  
+CR: Platform: Optimization of error logging  
+CR: Console: Added as default command line prompt  
+CR: Environment: Unification of namespace / platform icon / (sub) project structure  
+CR: Environment: Added build script/process via ANT  
+CR: ShiftDown: Added a optional service to shift down the process priority  
+CR: Launcher: Switching to a self-developed one  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 

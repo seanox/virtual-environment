@@ -1,13 +1,13 @@
 # Launcher
 A portable program launcher specially developed for the Seanox Virtual
-Environment with a full-screen tile look that can also be used standalone and
+Environment with a full-screen tile optics that can also be used standalone and
 independently.
 
 
 # Features
 - Full screen overlay user interface  
   The full screen overlay is displayed on the primary screen.
-- User interface in tile look
+- User interface in tile optics
   There are 40 freely configurable tiles available.
 - Global HotKey combination  
   A global HotKey combination is used to show and hide the user interface.
