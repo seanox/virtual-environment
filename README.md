@@ -70,20 +70,6 @@ used in the virtual environment.
 - A team use the same environment with the same paths and configurations, which facilitates automation.
 
 
-## List of available modules 
-https://github.com/seanox/virtual-environment/tree/main/modules
-
-More applications can be easily added for the creator or even later in the
-final virtual environment.
-
-Good sources for portable apps are:
-- https://portableapps.com/apps
-- https://portapps.io/apps
-
-Often there is also software directly from the manufacturer/vendor as a
-portable version.
-
-
 # Features
 - Supports VHD, VHDX as virtual drive also with Bitlocker
 - Functions to create, launch, manage and compact the environment
