@@ -12,29 +12,27 @@
 
 
 # Description
-Since about 2010, the project exists for a modular platform for Windows to
-create virtual environments. Based on a virtual drive, the environment can be
-started easily and provides developers with a completely preconfigured
-development environment with numerous tools, services and  programs and
-standardizes the toolset in a development team. Short setup times, uniform
-tools with uniform configuration, uniform paths in the file system, centralized
-maintenance and easy distribution and updating are some of the benefits. The
-platform is easily customizable, can be quickly switched to use for different
-projects, and the environment can be easily transferred to other machines where
-work started can be easily continued.
+Since about 2010 exists the project of the virtual environment with modular
+structure for developers and users, so that this can provide a completely
+pre-configured environment with all programs, tools and services, without the
+environment affecting the running operating system and without devouring
+resources.  
+
+Short setup times, uniform tools with uniform configuration, uniform paths in
+the file system, centralized maintenance and easy distribution and updating are
+some of the benefits. The environment is easily customizable, can be quickly
+switched to use for different projects, and the environment can be easily
+transferred to other machines where work started can be easily continued.
 
 __The project includes with [platform](platform), a tool for the initial
-creation, use and management of the virtual environment and [modules](modules)
-that then automatically download tools and programs from the Internet,
-configure them and integrated them in the virtual environment.__
+creation, use and management of the virtual environment and a
+[module concept](modules) for the automatic integration and configuration of
+tools and programs from any source on the Internet.__
 
-__In release 3.x the modules are not yet supported. The software in the
-virtual environment must be set up manually, but this is easy, which is a
-normal drive.__
-
-Complete environments can be several gigabytes in size and not all tools,
-programs and services are always needed and so everyone can decide for
-themselves and customize the environment.
+__Currently, the module concept is still a successfully tested PoC (Proof of
+Concept) and not the focus of the project. So the software has to be set up
+manually in the virtual environment, but that's easy because it's a normal
+drive.__
 
 From my own experience from large companies with strict use of BitLocker, this
 is also supported :-)
