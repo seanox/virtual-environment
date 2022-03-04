@@ -51,9 +51,10 @@ is more an exemplification of the possibilities for the integration of programs
 and services. However, it is not the intention of the project to establish a
 corresponding eco-system or repository.
 
-PortableApps.com and portapps.io complement the virtual environment perfectly
-and both release very good portable versions of programs that can be used in
-the virtual environment.
+[PortableApps.com](https://portableapps.com/apps) and
+[portapps.io](https://portapps.io/apps) complement the virtual environment
+perfectly and both release very good portable versions of programs that can be
+used in the virtual environment.
 
 
 ## Advantages
@@ -67,21 +68,6 @@ the virtual environment.
 - The use of the file system and registry from the host is avoided.
 - Environments can be maintained and distributed centrally.
 - A team use the same environment with the same paths and configurations, which facilitates automation.
-
-
-## Example
-
-Here you can download an example of a virtual environment (approx __3.2 GB__):  
-https://seanox.com/KXJ7W3TN/master-10.1.1.7z
-
-Included are various development environment and tools for Java and Node.js,
-incl. a customized Eclipse, a PostgreSQL database and much more.
-
-Start `master.exe B: attach`.
-
-The host key combination for the launcher: `Win + ESC`
-
-To exit, use the Detach button at the bottom right of the launcher.
 
 
 ## List of available modules 
@@ -141,6 +127,20 @@ specific language governing permissions and limitations under the License.
 
 # Downloads
 [Seanox Virtual Environment 3.0.0](https://github.com/seanox/virtual-environment/releases/download/3.0.0/seanox-virtual-platform-3.0.0.zip) 
+
+
+## Example
+Here you can download an example of a virtual environment (approx __3.2 GB__):  
+https://seanox.com/KXJ7W3TN/master-10.1.1.7z
+
+Included are various development environment and tools for Java and Node.js,
+incl. a customized Eclipse, a PostgreSQL database and much more.
+
+Start `master.exe B: attach`.
+
+The host key combination for the launcher: `Win + ESC`
+
+To exit, use the Detach button at the bottom right of the launcher.
 
 
 # Usage
