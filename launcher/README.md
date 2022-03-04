@@ -5,28 +5,26 @@ independently.
 
 
 # Features
-- Full screen overlay interface  
-  The tile user interface is displayed as a full screen overlay on the primary
-  screen.
-- Tile user interface  
-  User interface with 40 freely configurable tiles.
+- Full screen overlay user interface  
+  The full screen overlay is displayed on the primary screen.
+- User interface in tile look
+  There are 40 freely configurable tiles available.
 - Global HotKey combination  
-  A global HotKey combination is used to show and hide the tile user interface.
+  A global HotKey combination is used to show and hide the user interface.
 - HotKey for tiles and programs  
   Quick access via the keyboard, optimized for the used keyboard layout.  
   Support for international keyboard layouts.
 - Automatic settings update  
-  Changes in the settings are used immediately, if the settings are incorrect
-  the last settings are kept.
+  Changes in the settings are used immediately.
 - Settings supports environment variables  
   Environment variables can be used in text-based values.
 - Visual style per settings (themes support)  
-  The interface supports the configuration of colors, opacity, background color  
-  and image, and the appearance of the grid.
+  The user interface supports the configuration of colors, opacity, background
+  color and image, and the appearance of the grid.
 - No icons and functions in the taskbar or system tray  
   The program is optimized for the virtual environment. So that the shell is
   not lost, the program is always present in the background and cannot be
-  simply terminated.  
+  simply terminated, but the quit can be configured as a function via a tile.  
 - Portable application without installation
 
 
