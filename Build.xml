@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="Environment" default="usage" basedir=".">
+<project name="environment" default="usage" basedir=".">
   <target name="usage">
     <echo>                                                     </echo>
     <echo> the following targets are available ...             </echo>
