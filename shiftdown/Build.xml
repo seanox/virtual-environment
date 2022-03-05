@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="Shiftdown" default="usage" basedir=".">
+<project name="shiftdown" default="usage" basedir=".">
   <target name="usage">
     <echo>                                                     </echo>
     <echo> the following targets are available ...             </echo>
@@ -121,21 +121,24 @@ ${line.separator}${build}/error.log">
     </fail>
 
     <delete includeemptydirs="true">
-      <fileset dir="${build.target}" excludes="${ant.project.name}.exe"/>
+      <fileset casesensitive="false" dir="${build.target}" excludes="${ant.project.name}.exe"/>
     </delete>
     <copy todir="${build.target}" file="CHANGES"/>
     <copy todir="${build.target}" file="LICENSE"/>
     <copy todir="${build.target}" file="README.md"/>
+    <exec executable="cmd" dir="${build.target}">
+      <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
+    </exec>
     <touch datetime="${release.date}" pattern="yyyyMMdd">
       <fileset dir="${build.target}"/>
     </touch>
 
     <mkdir dir="${workspace.releases}"/>
-    <delete file="${workspace.releases}/shiftdown-${release.version}.zip"/>
-    <zip destfile="${workspace.releases}/shiftdown-${release.version}.zip"
+    <delete file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
+    <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}.zip"
         basedir="${build.target}" compress="true" level="9" filesonly="true"/>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/shiftdown-${release.version}.zip"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <copy file="${build.target}/${ant.project.name}.exe" overwrite="true"
-        tofile="../platform/Sources/Resources/platform/Settings/shiftdown.exe"/>
+        todir="../platform/Sources/Resources/platform/Settings"/>
   </target>
 </project>
