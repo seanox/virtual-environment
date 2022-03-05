@@ -15,8 +15,8 @@
   CR: ShiftDown: Added a optional service to shift down the process priority
       The service automatically downgrades the process priority of CPU-intensive processes.
       For older Intel generations that suffer from the update of Windows and Intel.
-  CR: Launcher: Switching from MaxLauncher to a self-developed one
-      MaxLauncher is great, many ideas were taken from there.
+  CR: Launcher: Switching to a self-developed one
+      So far MaxLauncher was preferred -- is great software, many ideas were taken from there.
       But the virtual environment should get its own, where the license fits.
 
 3.0.0 20211126

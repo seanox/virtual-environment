@@ -168,7 +168,7 @@ CR: Console: Added as default command line prompt
 CR: Environment: Unification of namespace / platform icon / (sub) project structure  
 CR: Environment: Added build script/process via ANT  
 CR: ShiftDown: Added a optional service to shift down the process priority  
-CR: Launcher: Switching from MaxLauncher to a self-developed one  
+CR: Launcher: Switching to a self-developed one  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 
