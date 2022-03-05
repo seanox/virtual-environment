@@ -11,13 +11,13 @@ __In the upcoming release 3.x the modules are not yet supported.__
 - Rename __platform.exe__ to the name that will be used for the environment and
   drive
 
-When the virtual environment is created in the form of the vhdx file, it can be
+When the virtual environment is created in the form of the VHDX file, it can be
 used as follows.
 
 `usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
 
 Example
-- `seanox.exe B: create` to create the initial environment as vhdx
+- `seanox.exe B: create` to create the initial environment as VHDX
 - `seanox.exe B: shortcuts` to create the usual calls as shortcuts
 - `seanox.exe B: attach` to attach the environment
 

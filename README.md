@@ -138,7 +138,7 @@ Then the program can be used as follows::
 `usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
 
 Example
-- `platform.exe B: create` to create the initial environment as vhdx
+- `platform.exe B: create` to create the initial environment as VHDX
 - `platform.exe B: shortcuts` to create the usual calls as shortcuts
 - `platform.exe B: attach` to attach the environment
 
