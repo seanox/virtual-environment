@@ -35,8 +35,8 @@ namespace VirtualEnvironment.ShiftDown
     internal static class Program
     {
         internal static readonly string VERSION = 
-            $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
-               + "Copyright (C) 0000 Seanox Software Solutions";
+                $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
+                        + "Copyright (C) 0000 Seanox Software Solutions";
 
         internal struct Meta
         {
@@ -214,7 +214,7 @@ namespace VirtualEnvironment.ShiftDown
             _processMonitors.Add(process.Id, new ProcessMonitor());
         }
 
-        private void ShiftDownPrioritySmart(List<ProcessMonitor> processMonitors)
+        private void DecreasePrioritySmart(List<ProcessMonitor> processMonitors)
         {
             // Processes where access to the priority is not allowed are
             // filtered and ignored (e.g. system processes)
@@ -357,7 +357,7 @@ namespace VirtualEnvironment.ShiftDown
                     }
                     
                     // Control of the known loaders.
-                    ShiftDownPrioritySmart(_processMonitorsDecreased);
+                    DecreasePrioritySmart(_processMonitorsDecreased);
 
                     // To determine only new processes Except is a nice
                     // function for deltas in lists used for this purpose.
@@ -402,7 +402,7 @@ namespace VirtualEnvironment.ShiftDown
                         }
                     }
 
-                    ShiftDownPrioritySmart(_processMonitors.Values.ToList());
+                    DecreasePrioritySmart(_processMonitors.Values.ToList());
                     
                     cpuLoadTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
