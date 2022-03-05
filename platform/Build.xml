@@ -128,6 +128,7 @@ ${line.separator}${build}/error.log">
     <copy todir="${build.target}" file="CHANGES"/>
     <copy todir="${build.target}" file="LICENSE"/>
     <copy todir="${build.target}" file="README.md"/>
+    <copy todir="${build.target}" file="${build.sources}/Resources/platform\Install/manual.txt"/>
     <exec executable="cmd" dir="${build.target}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
