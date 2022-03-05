@@ -27,9 +27,7 @@ https://github.com/seanox/virtual-environment/tree/main/startup/Releases
 # Changes (Change Log)
 ## 1.2.1 2022xxxx (summary of the upcoming version)  
 BF: StartUp: Optimization and corrections  
-CR: StartUp: Unification of the namespace  
-CR: StartUp: Unification of the platform icons  
-CR: StartUp: Unification of (sub) project structure  
+CR: StartUp: Unification of namespace / platform icon / (sub) project structure  
 CR: StartUp: Added build script/process via ANT  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/startup/CHANGES)
