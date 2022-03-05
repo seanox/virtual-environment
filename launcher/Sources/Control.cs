@@ -263,9 +263,9 @@ namespace VirtualEnvironment.Launcher
             if (message.Msg != WM_HOTKEY
                     || message.WParam.ToInt32() != HOTKEY_ID)
                 return;
-            if (Utilities.DateTime.CurrentTimeMillis -_inputSignalTiming >= 75)
+            if (DateTimeOffset.Now.ToUnixTimeMilliseconds() -_inputSignalTiming >= 75)
                 Visible = !Visible;
-            _inputSignalTiming = Utilities.DateTime.CurrentTimeMillis;
+            _inputSignalTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
         
         private void OnClosing(object sender, EventArgs eventArgs)
