@@ -64,9 +64,7 @@ When the program ends, the priority of the changed processes will be restored.
 # Changes (Change Log)
 ## 1.3.0 2022xxxx (summary of the upcoming version)  
 BF: ShiftDown: Optimization and corrections  
-CR: ShiftDown: Unification of the namespace  
-CR: ShiftDown: Unification of the platform icons  
-CR: ShiftDown: Unification of (sub) project structure  
+CR: ShiftDown: Unification of namespace / platform icon / (sub) project structure  
 CR: ShiftDown: Added build script/process via ANT  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
