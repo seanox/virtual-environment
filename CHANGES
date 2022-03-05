@@ -23,7 +23,7 @@
   CR: License: Changed to Apache License Version 2.0
   CR: Project: Change from Ant to .NET
   CR: Platform: Added function compact
-      Cleans the temp directory on the virtual disk and shrinks the disk in general.
+      Cleans the temp directory on the virtual disk and compacts the disk in general.
       e.g. platform.exe B: compact
   CR: Platform: Added function shortcuts
       Creates the usual calls as shortcuts.

@@ -28,7 +28,7 @@ should also be started via the launcher if programs and services are terminated
 when detaching and the environment variables are needed for this.
 
 - `seanox.exe B: detach` to detach the environment
-- `seanox.exe B: compact` to shrink the environment
+- `seanox.exe B: compact` to compact the virtual disk
 
 __Module integration will come later, but will be similar.__
 
