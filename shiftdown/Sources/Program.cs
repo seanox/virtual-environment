@@ -30,9 +30,9 @@ namespace VirtualEnvironment.ShiftDown
 {
     internal static class Program
     {
-        internal static readonly string VERSION = 
-                $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
-                        + "Copyright (C) 0000 Seanox Software Solutions";
+        internal static readonly string VERSION =
+            $"Seanox ShiftDown [Version 0.0.0 00000000]{Environment.NewLine}"
+                + "Copyright (C) 0000 Seanox Software Solutions";
 
         internal struct Meta
         {
