@@ -48,6 +48,8 @@
     <ItemGroup>
         <Compile Include="Sources\Program.cs" />
         <Compile Include="Sources\Properties\AssemblyInfo.cs" />
+        <Compile Include="Sources\Service.cs" />
+        <Compile Include="Sources\Settings.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
