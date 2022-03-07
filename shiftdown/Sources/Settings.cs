@@ -21,6 +21,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace VirtualEnvironment.ShiftDown
@@ -41,8 +42,8 @@ namespace VirtualEnvironment.ShiftDown
         private int _processorLoadMax;
         private int _normalizationTime;
 
-        private string _suspensions;
-        private string _isolations;
+        private string _suspension;
+        private string _decrease;
 
         public Settings()
         {
@@ -50,8 +51,8 @@ namespace VirtualEnvironment.ShiftDown
             _processorLoadMax = PROCESSOR_LOAD_MAX_PERCENT;
             _normalizationTime = NORMALIZATION_TIME_SECONDS;
             
-            _suspensions = "";
-            _isolations  = "";
+            _suspension = "";
+            _decrease   = "";
         }
         
         private static string FILE
@@ -110,17 +111,21 @@ namespace VirtualEnvironment.ShiftDown
         }
 
         [XmlElement("suspensions")]
-        public string Suspensions
+        public string Suspension
         {
-            get => _suspensions;
-            set => _suspensions = (value ?? "").Trim();
+            get => _suspension;
+            set => _suspension = (value ?? "").Trim();
+        }
+
+        internal string[] Suspensions => Regex.Split(Suspension, @"\s+");
+        
+        [XmlElement("decreases")]
+        public string Decrease
+        {
+            get => _decrease;
+            set => _decrease = (value ?? "").Trim();
         }
         
-        [XmlElement("isolations")]
-        public string Isolations
-        {
-            get => _isolations;
-            set => _isolations = (value ?? "").Trim();
-        }
+        internal string[] Decreases => Regex.Split(Decrease, @"\s+");
     }
 }

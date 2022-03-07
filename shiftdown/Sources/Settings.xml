@@ -53,5 +53,5 @@
     Compilers, interpreters and indexers work very well even with low priority.  
     The process names are separated by spaces.
   -->
-  <isolations></isolations>
+  <decreases></decreases>
 </settings>
