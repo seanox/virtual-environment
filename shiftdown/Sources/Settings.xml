@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <!--
+    General Information
+    - Settings are loaded only with the start of the service
+    - Invalid or unset values use a defined default value
+  -->
+
+  <!--
+    Number of workers who monitor the prioritization of the processes. They
+    share the monitoring to be able to react faster.
+    In practice, approx. 50 - 75 processes per worker have proven successful.
+    
+    Minimum value: 1
+    Default value: 5
+    Maximum value: 25
+  -->
+  <workers>5</workers>
+  
+  <!--
+    Threshold value from which the automatic prioritization of overactive
+    processes begins. Processes that reach the threshold are first Idle, later
+    prioritized to BelowNormal when the CPU load normalizes, if the base
+    priority is higher.
+    
+    Default value: 25
+  -->
+  <processorLoadMax>25</processorLoadMax>
+    
+  <!--
+    Minimum time in seconds that must be reached where the CPU load is below
+    the threshold (xxx) before the prioritization is changed from Idle to
+    BelowNormal.
+
+    Default value: 5  
+  -->
+  <normalizationTime>5<normalizationTime>
+    
+  <!--
+    List of process names, also called image names, which temporarily disable
+    automatic prioritization. Prioritization is only resumed when none of the
+    processes listed here are running. This is useful for games, compilers,
+    renderers and all programs that should use the CPU without restrictions.
+    The process names are separated by spaces.
+  -->
+  <suspensions></suspensions>
+  
+  <!--
+    List of process names, also called image names, whose priority is always
+    set to BelowNormal, even if they did not reach the maximum allowed CPU
+    usage before. Useful when processes are to be restricted preventively.
+    Compilers, interpreters and indexers work very well even with low priority.  
+    The process names are separated by spaces.
+  -->
+  <isolations></isolations>
+</settings>

@@ -5,6 +5,10 @@
   CR: Added build script/process via ANT
   CR: Optimization of process scanning (reimplementation)
       It creates even less load and prioritizes even faster.
+  CR: Optimization of error logging
+  CR: Added XML based settings
+      Supports among other things an automatic suspension of the prioritization
+      for freely definable process names. 
 
 1.2.0 20220107
   BF: Correction of the unwanted program end when the service pauses
