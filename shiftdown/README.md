@@ -63,8 +63,14 @@ When the program ends, the priority of the changed processes will be restored.
 
 # Changes (Change Log)
 ## 1.3.0 2022xxxx (summary of the upcoming version)  
-BF: ShiftDown: Optimization and corrections  
-CR: ShiftDown: Unification of namespace / platform icon / (sub) project structure  
-CR: ShiftDown: Added build script/process via ANT  
+BF: Optimization and corrections  
+CR: Unification of namespace / platform icon / (sub) project structure  
+CR: Added build script/process via ANT  
+CR: Optimization of process scanning (reimplementation)  
+CR: Optimization of error logging  
+CR: Added XML based settings  
+CR: Added suspension of the prioritization for freely definable process names  
+CR: Added Preventive down prioritization for freely definable process names  
+CR: Added enhancement of decreased prioritization for processes with the same name  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
