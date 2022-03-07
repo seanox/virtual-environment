@@ -11,9 +11,8 @@
     share the monitoring to be able to react faster.
     In practice, approx. 50 - 75 processes per worker have proven successful.
     
-    Minimum value: 1
+    Value Range: 1 - 25 
     Default value: 5
-    Maximum value: 25
   -->
   <workers>5</workers>
   
@@ -23,6 +22,7 @@
     prioritized to BelowNormal when the CPU load normalizes, if the base
     priority is higher.
     
+    Value Range: 0 - 100 
     Default value: 25
   -->
   <processorLoadMax>25</processorLoadMax>
@@ -32,9 +32,10 @@
     the threshold (xxx) before the prioritization is changed from Idle to
     BelowNormal.
 
+    Value Range: 1 - n 
     Default value: 5  
   -->
-  <normalizationTime>5<normalizationTime>
+  <normalizationTime>5</normalizationTime>
     
   <!--
     List of process names, also called image names, which temporarily disable
