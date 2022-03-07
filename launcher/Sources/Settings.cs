@@ -91,7 +91,7 @@ namespace VirtualEnvironment.Launcher
             {
                 var applicationPath = Assembly.GetExecutingAssembly().Location;
                 return Path.Combine(Path.GetDirectoryName(applicationPath),
-                        Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
+                    Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
             }
         }
 
