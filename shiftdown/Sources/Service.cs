@@ -35,6 +35,8 @@ namespace VirtualEnvironment.ShiftDown
         private BackgroundWorker[] _backgroundMonitoringWorkers;
         private BackgroundWorker   _backgroundCleanUpWorker;
 
+        private long _processPriorityTiming;
+        
         private volatile ProcessPriorityClass _processPriorityClass;
         private volatile Process[]            _processes;
         
@@ -197,7 +199,6 @@ namespace VirtualEnvironment.ShiftDown
                             if (IsInterrupted)
                                 return;
 
-                            var processPriorityClass = _processPriorityClass;
                             var processLoad = (int)processMonitor.ProcessLoad;
 
                             // ProcessPriorityDecreases: If strong activity has
@@ -209,9 +210,16 @@ namespace VirtualEnvironment.ShiftDown
                                 lock (_processPriorityDecreases)
                                     if (!_processPriorityDecreases.Contains(processMonitor.ProcessName))
                                         _processPriorityDecreases.Add(processMonitor.ProcessName);
+
                             if (processLoad >= _settings.ProcessLoadMax)
+                            {
+                                _processPriorityTiming = DateTimeOffset.Now.ToUnixTimeSeconds();
+                                _processPriorityClass = ProcessPriorityClass.Idle;
                                 process.PriorityClass = ProcessPriorityClass.Idle;
+                            }
                             
+                            var processPriorityClass = _processPriorityClass;
+
                             lock (_processPriorityDecreases)
                                 if (ProcessPriorityClass.Idle.Equals(processPriorityClass)
                                         && !ProcessPriorityClass.Idle.Equals(process.PriorityClass)
@@ -348,7 +356,6 @@ namespace VirtualEnvironment.ShiftDown
             {
                 using (var cpuLoad = new PerformanceCounter("Processor", "% Processor Time", "_Total"))
                 {
-                    var timing = DateTimeOffset.Now.ToUnixTimeSeconds();
                     while (!_backgroundWorker.CancellationPending)
                     {
                         Thread.Sleep(500);
@@ -357,12 +364,13 @@ namespace VirtualEnvironment.ShiftDown
 
                         _processes = Process.GetProcesses();
 
-                        var cpuLoadCurrent = cpuLoad.NextValue() / Environment.ProcessorCount; 
+                        var cpuLoadCurrent = cpuLoad.NextValue() / Environment.ProcessorCount;
                         if (cpuLoadCurrent >= _settings.ProcessLoadMax)
+                        {
+                            _processPriorityTiming = DateTimeOffset.Now.ToUnixTimeSeconds();
                             _processPriorityClass = ProcessPriorityClass.Idle;
-                        if (cpuLoadCurrent >= _settings.ProcessLoadMax)
-                            timing = DateTimeOffset.Now.ToUnixTimeSeconds();
-                        if (DateTimeOffset.Now.ToUnixTimeSeconds() -timing >= _settings.NormalizationTime
+                        }
+                        if (DateTimeOffset.Now.ToUnixTimeSeconds() -_processPriorityTiming >= _settings.NormalizationTime
                                 && ProcessPriorityClass.Idle.Equals(_processPriorityClass))
                             _processPriorityClass = ProcessPriorityClass.BelowNormal;
                     }
