@@ -6,6 +6,8 @@
     - Settings file uses the name of the application with file extension xml
     - Settings file is optional and the service works without it
     - Invalid or unset values use a defined default value
+    - Errors in the settings file cause an error message at startup  and a
+      detailed entry in the Windows event viewer 
   -->
 
   <!--
