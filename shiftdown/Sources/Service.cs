@@ -85,10 +85,26 @@ namespace VirtualEnvironment.ShiftDown
                     return measuringProcessTime * 100 / measuringTime;
                 }
             }
+
+            internal void ResetPriorityClass()
+            {
+                try
+                {
+                    if (!Process.PriorityClass.Equals(PriorityClassInitial))
+                        Process.PriorityClass = PriorityClassInitial;
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
 
         internal Service()
         {
+            CanStop = true;
+            CanPauseAndContinue = true;
+            AutoLog = false;
+
             _eventLog = new EventLog();
             _eventLog.Source = Program.ApplicationMeta.Name;
             
@@ -149,8 +165,6 @@ namespace VirtualEnvironment.ShiftDown
                     if (processList == null
                             || processList.Count <= 0)
                         continue;
-
-                    var processPriorityClass = _processPriorityClass;
                     
                     var rangeSize = Math.Ceiling(processList.Count / (decimal)_settings.Workers);
                     var rangeStart = Math.Max(segment -1, Math.Min(((segment -1) *rangeSize), processList.Count));
@@ -182,7 +196,8 @@ namespace VirtualEnvironment.ShiftDown
 
                             if (IsInterrupted)
                                 return;
-                            
+
+                            var processPriorityClass = _processPriorityClass;
                             var processorLoad = (int)processMonitor.ProcessorLoad;
 
                             // ProcessPriorityDecreases: If strong activity has
@@ -345,11 +360,11 @@ namespace VirtualEnvironment.ShiftDown
                         var cpuLoadCurrent = cpuLoad.NextValue() / Environment.ProcessorCount; 
                         if (cpuLoadCurrent >= _settings.ProcessorLoadMax)
                             _processPriorityClass = ProcessPriorityClass.Idle;
+                        if (cpuLoadCurrent >= _settings.ProcessorLoadMax)
+                            timing = DateTimeOffset.Now.ToUnixTimeSeconds();
                         if (DateTimeOffset.Now.ToUnixTimeSeconds() -timing >= _settings.NormalizationTime
                                 && ProcessPriorityClass.Idle.Equals(_processPriorityClass))
                             _processPriorityClass = ProcessPriorityClass.BelowNormal;
-                        if (cpuLoadCurrent >= _settings.ProcessorLoadMax)
-                            timing = DateTimeOffset.Now.ToUnixTimeSeconds();
                     }
                 }
             };
@@ -412,6 +427,10 @@ namespace VirtualEnvironment.ShiftDown
             while (_backgroundWorker.IsBusy)
                 Thread.Sleep(25);
             _backgroundWorker = null;
+
+            foreach (var processMonitor in _processMonitors.Values.Where(processMonitor => processMonitor != null
+                    && !processMonitor.PriorityClassInitial.Equals(processMonitor.Process.PriorityClass)))
+                processMonitor.ResetPriorityClass();
             
             _eventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
         }
