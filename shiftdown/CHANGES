@@ -8,7 +8,11 @@
   CR: Optimization of error logging
   CR: Added XML based settings
   CR: Added suspension of the prioritization for freely definable process names
+      Useful for games, compilers, renderers and all programs that should use
+      the CPU without restrictions.
   CR: Added Preventive down prioritization for freely definable process names
+      Useful when processes like compiler, interpreter and indexer work very
+      well even at low priority.
   CR: Added enhancement of decreased prioritization for processes with the same name
 
 1.2.0 20220107
