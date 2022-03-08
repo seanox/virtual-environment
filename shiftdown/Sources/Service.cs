@@ -51,6 +51,7 @@ namespace VirtualEnvironment.ShiftDown
         internal class ProcessMonitor
         {
             internal readonly Process Process;
+            internal readonly string ProcessName;
             internal readonly ProcessPriorityClass PriorityClassInitial;
 
             private long _processTimeTimestamp;
@@ -59,6 +60,7 @@ namespace VirtualEnvironment.ShiftDown
             private ProcessMonitor(Process process)
             {
                 Process = process;
+                ProcessName = process.ProcessName;
                 PriorityClassInitial = process.PriorityClass;
 
                 _processTimeTimestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -148,6 +150,8 @@ namespace VirtualEnvironment.ShiftDown
                             || processList.Count <= 0)
                         continue;
 
+                    var processPriorityClass = _processPriorityClass;
+                    
                     var rangeSize = Math.Ceiling(processList.Count / (decimal)_settings.Workers);
                     var rangeStart = Math.Max(segment -1, Math.Min(((segment -1) *rangeSize), processList.Count));
                     var rangeEnd = Math.Max(rangeStart +1, Math.Min(rangeStart +rangeSize -1, processList.Count));
@@ -163,14 +167,6 @@ namespace VirtualEnvironment.ShiftDown
                         Thread.Sleep(25);
                         if (IsInterrupted)
                             return;
-                        
-                        if (_processPrioritySuspensions.Contains(process.ProcessName.ToLower()))
-                            lock (_processPrioritySuspensionsProcesses)
-                                if (!_processPrioritySuspensionsProcesses.Contains(process.Id))
-                                    _processPrioritySuspensionsProcesses.Add(process.Id);
-
-                        if (IsInterrupted)
-                            return;
 
                         try
                         {
@@ -178,11 +174,16 @@ namespace VirtualEnvironment.ShiftDown
                             var processMonitor = AssembleProcessMonitor(process);
                             if (processMonitor == null)
                                 return;
+
+                            if (_processPrioritySuspensions.Contains(processMonitor.ProcessName.ToLower()))
+                                lock (_processPrioritySuspensionsProcesses)
+                                    if (!_processPrioritySuspensionsProcesses.Contains(process.Id))
+                                        _processPrioritySuspensionsProcesses.Add(process.Id);
+
+                            if (IsInterrupted)
+                                return;
                             
                             var processorLoad = (int)processMonitor.ProcessorLoad;
-
-                            var processPriorityClass = _processPriorityClass;
-                            var processName = process.ProcessName.ToLower();
 
                             // ProcessPriorityDecreases: If strong activity has
                             // been detected for a process, then processes with
@@ -191,15 +192,15 @@ namespace VirtualEnvironment.ShiftDown
                             
                             if (processorLoad >= _settings.ProcessorLoadMax)
                                 lock (_processPriorityDecreases)
-                                    if (!_processPriorityDecreases.Contains(processName))
-                                        _processPriorityDecreases.Add(processName);
+                                    if (!_processPriorityDecreases.Contains(processMonitor.ProcessName))
+                                        _processPriorityDecreases.Add(processMonitor.ProcessName);
                             if (processorLoad >= _settings.ProcessorLoadMax)
                                 process.PriorityClass = ProcessPriorityClass.Idle;
                             
                             lock (_processPriorityDecreases)
                                 if (ProcessPriorityClass.Idle.Equals(processPriorityClass)
                                         && !ProcessPriorityClass.Idle.Equals(process.PriorityClass)
-                                        && _processPriorityDecreases.Contains(processName))
+                                        && _processPriorityDecreases.Contains(processMonitor.ProcessName))
                                     process.PriorityClass = processPriorityClass;
                             
                             if (processorLoad < _settings.ProcessorLoadMax
@@ -212,7 +213,7 @@ namespace VirtualEnvironment.ShiftDown
                                 if (ProcessPriorityClass.BelowNormal.Equals(processPriorityClass)
                                         && !ProcessPriorityClass.BelowNormal.Equals(process.PriorityClass)
                                         && !ProcessPriorityClass.Idle.Equals(processMonitor.PriorityClassInitial)
-                                        && _processPriorityDecreases.Contains(processName))
+                                        && _processPriorityDecreases.Contains(processMonitor.ProcessName))
                                     process.PriorityClass = processPriorityClass;
                         }
                         catch (Exception)
@@ -249,18 +250,24 @@ namespace VirtualEnvironment.ShiftDown
 
         private void CleanUpProcessMonitors()
         {
-            int[] processIds;
+            // Not all processes need to be reviewed. Only the processes where
+            // an error occurred during access. Then access to the processes is
+            // denied or the processes have expired. In these cases, a null
+            // value is set for the ProcessMonitor for the process ID.
+
+            Dictionary<int, ProcessMonitor> processMonitors;
             lock (_processMonitors)
-                processIds = _processMonitors.Keys.ToArray();
-            foreach (var processId in processIds)
+                processMonitors = new Dictionary<int, ProcessMonitor>(_processMonitors);
+            
+            foreach (KeyValuePair<int, ProcessMonitor> entry in processMonitors)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(100);
                 if (IsInterrupted)
                     return;
-                if (ProcessExists(processId))
-                    continue;
-                lock (_processMonitors)
-                    _processMonitors.Remove(processId);
+                if (entry.Value == null
+                        && !ProcessExists(entry.Key))
+                    lock (_processMonitors)
+                        _processMonitors.Remove(entry.Key);
             }
         }
         
@@ -271,7 +278,7 @@ namespace VirtualEnvironment.ShiftDown
                 processIds = _processPrioritySuspensionsProcesses.ToArray();
             foreach (var processId in processIds)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(100);
                 if (_paused)
                     return;
                 if (ProcessExists(processId))
@@ -355,7 +362,7 @@ namespace VirtualEnvironment.ShiftDown
             {
                 while (!_backgroundCleanUpWorker.CancellationPending)
                 {
-                    Thread.Sleep(50);
+                    Thread.Sleep(1000);
                     if (_paused)
                         continue;
                     CleanUpProcessSuspensions();
