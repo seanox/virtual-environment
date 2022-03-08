@@ -126,6 +126,7 @@ ${line.separator}${build}/error.log">
     <copy todir="${build.target}" file="CHANGES"/>
     <copy todir="${build.target}" file="LICENSE"/>
     <copy todir="${build.target}" file="README.md"/>
+    <copy tofile="${build.target}/${ant.project.name}.xml" file="${build.sources}/Settings.xml"/>
     <exec executable="cmd" dir="${build.target}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
@@ -139,6 +140,8 @@ ${line.separator}${build}/error.log">
         basedir="${build.target}" compress="true" level="9" filesonly="true"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <copy file="${build.target}/${ant.project.name}.exe" overwrite="true"
+        todir="../platform/Sources/Resources/platform/Settings"/>
+    <copy file="${build.target}/${ant.project.name}.xml" overwrite="true"
         todir="../platform/Sources/Resources/platform/Settings"/>
   </target>
 </project>
