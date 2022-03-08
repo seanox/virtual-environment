@@ -282,15 +282,17 @@ namespace VirtualEnvironment.ShiftDown
             lock (_processMonitors)
                 processMonitors = new Dictionary<int, ProcessMonitor>(_processMonitors);
             
-            foreach (KeyValuePair<int, ProcessMonitor> entry in processMonitors)
+            foreach (var entry in processMonitors)
             {
                 Thread.Sleep(100);
-                if (IsInterrupted)
+                if (_backgroundCleanUpWorker.CancellationPending
+                        || IsInterrupted)
                     return;
-                if (entry.Value == null
-                        && !ProcessExists(entry.Key))
-                    lock (_processMonitors)
-                        _processMonitors.Remove(entry.Key);
+                if (entry.Value != null
+                        || ProcessExists(entry.Key))
+                    continue;
+                lock (_processMonitors)
+                    _processMonitors.Remove(entry.Key);
             }
         }
         
@@ -302,7 +304,8 @@ namespace VirtualEnvironment.ShiftDown
             foreach (var processId in processIds)
             {
                 Thread.Sleep(100);
-                if (_paused)
+                if (_backgroundCleanUpWorker.CancellationPending
+                        || _paused)
                     return;
                 if (ProcessExists(processId))
                     continue;
