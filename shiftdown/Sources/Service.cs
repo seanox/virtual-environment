@@ -72,7 +72,7 @@ namespace VirtualEnvironment.ShiftDown
                 return new ProcessMonitor(process);
             }
 
-            internal double ProcessorLoad
+            internal double ProcessLoad
             {
                 get
                 {
@@ -198,18 +198,18 @@ namespace VirtualEnvironment.ShiftDown
                                 return;
 
                             var processPriorityClass = _processPriorityClass;
-                            var processorLoad = (int)processMonitor.ProcessorLoad;
+                            var processLoad = (int)processMonitor.ProcessLoad;
 
                             // ProcessPriorityDecreases: If strong activity has
                             // been detected for a process, then processes with
                             // the same name are also prioritized down.
                             // For this, the process names are collected here.
                             
-                            if (processorLoad >= _settings.ProcessorLoadMax)
+                            if (processLoad >= _settings.ProcessLoadMax)
                                 lock (_processPriorityDecreases)
                                     if (!_processPriorityDecreases.Contains(processMonitor.ProcessName))
                                         _processPriorityDecreases.Add(processMonitor.ProcessName);
-                            if (processorLoad >= _settings.ProcessorLoadMax)
+                            if (processLoad >= _settings.ProcessLoadMax)
                                 process.PriorityClass = ProcessPriorityClass.Idle;
                             
                             lock (_processPriorityDecreases)
@@ -218,7 +218,7 @@ namespace VirtualEnvironment.ShiftDown
                                         && _processPriorityDecreases.Contains(processMonitor.ProcessName))
                                     process.PriorityClass = processPriorityClass;
                             
-                            if (processorLoad < _settings.ProcessorLoadMax
+                            if (processLoad < _settings.ProcessLoadMax
                                     && ProcessPriorityClass.BelowNormal.Equals(processPriorityClass)
                                     && ProcessPriorityClass.Idle.Equals(process.PriorityClass)
                                     && !processMonitor.PriorityClassInitial.Equals(process.PriorityClass))
@@ -358,9 +358,9 @@ namespace VirtualEnvironment.ShiftDown
                         _processes = Process.GetProcesses();
 
                         var cpuLoadCurrent = cpuLoad.NextValue() / Environment.ProcessorCount; 
-                        if (cpuLoadCurrent >= _settings.ProcessorLoadMax)
+                        if (cpuLoadCurrent >= _settings.ProcessLoadMax)
                             _processPriorityClass = ProcessPriorityClass.Idle;
-                        if (cpuLoadCurrent >= _settings.ProcessorLoadMax)
+                        if (cpuLoadCurrent >= _settings.ProcessLoadMax)
                             timing = DateTimeOffset.Now.ToUnixTimeSeconds();
                         if (DateTimeOffset.Now.ToUnixTimeSeconds() -timing >= _settings.NormalizationTime
                                 && ProcessPriorityClass.Idle.Equals(_processPriorityClass))

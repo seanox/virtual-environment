@@ -35,11 +35,11 @@ namespace VirtualEnvironment.ShiftDown
     public class Settings
     {
         private const int WORKERS = 5;
-        private const int PROCESSOR_LOAD_MAX_PERCENT = 25;
+        private const int PROCESS_LOAD_MAX_PERCENT = 25;
         private const int NORMALIZATION_TIME_SECONDS = 5;
 
         private int _workers;
-        private int _processorLoadMax;
+        private int _processLoadMax;
         private int _normalizationTime;
 
         private string _suspension;
@@ -48,7 +48,7 @@ namespace VirtualEnvironment.ShiftDown
         public Settings()
         {
             _workers = WORKERS;
-            _processorLoadMax = PROCESSOR_LOAD_MAX_PERCENT;
+            _processLoadMax = PROCESS_LOAD_MAX_PERCENT;
             _normalizationTime = NORMALIZATION_TIME_SECONDS;
             
             _suspension = "";
@@ -96,11 +96,11 @@ namespace VirtualEnvironment.ShiftDown
             set => _workers = Math.Max(Math.Min(value, 25), 1);
         }
         
-        [XmlElement("processorLoadMax")]
-        public int ProcessorLoadMax
+        [XmlElement("processLoadMax")]
+        public int ProcessLoadMax
         {
-            get => _processorLoadMax;
-            set => _processorLoadMax = Math.Max(Math.Min(value, 100), 0);
+            get => _processLoadMax;
+            set => _processLoadMax = Math.Max(Math.Min(value, 100), 0);
         }
         
         [XmlElement("normalizationTime")]

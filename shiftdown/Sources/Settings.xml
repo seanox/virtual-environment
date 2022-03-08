@@ -27,7 +27,7 @@
     Value Range: 0 - 100 
     Default value: 25
   -->
-  <processorLoadMax>25</processorLoadMax>
+  <processLoadMax>25</processLoadMax>
     
   <!--
     Minimum time in seconds that must be reached where the CPU load is below
