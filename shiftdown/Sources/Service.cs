@@ -404,16 +404,12 @@ namespace VirtualEnvironment.ShiftDown
 
         protected override void OnPause()
         {
-            if (_paused)
-                return;
             _paused = true;
             _eventLog.WriteEntry("Service paused.", EventLogEntryType.Information);
         }
 
         protected override void OnContinue()
         {
-            if (!_paused)
-                return;
             _paused = false;
             _eventLog.WriteEntry("Service continued.", EventLogEntryType.Information);
         }
@@ -439,8 +435,7 @@ namespace VirtualEnvironment.ShiftDown
                 Thread.Sleep(25);
             _backgroundWorker = null;
 
-            foreach (var processMonitor in _processMonitors.Values.Where(processMonitor => processMonitor != null
-                    && !processMonitor.PriorityClassInitial.Equals(processMonitor.Process.PriorityClass)))
+            foreach (var processMonitor in _processMonitors.Values.Where(processMonitor => processMonitor != null))
                 processMonitor.ResetPriorityClass();
             
             _eventLog.WriteEntry("Service stopped.", EventLogEntryType.Information);
