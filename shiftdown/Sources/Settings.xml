@@ -53,8 +53,8 @@
   <!--
     List of process names, also called image names, whose priority is always
     set to BelowNormal, even if they did not reach the maximum allowed CPU
-    usage before. Useful when processes are to be restricted preventively.
-    Compilers, interpreters and indexers work very well even with low priority.  
+    usage before. This is useful when processes like compiler, interpreter and
+    indexer work very well even at low priority.  
     The process names are separated by spaces.
   -->
   <decreases></decreases>
