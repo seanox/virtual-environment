@@ -32,11 +32,10 @@
   <processLoadMax>25</processLoadMax>
     
   <!--
-    Minimum time in seconds that must be reached where the CPU load is below
-    the threshold (xxx) before the prioritization is changed from Idle to
-    BelowNormal.
+    Minimum of seconds that must be reached where the CPU load is below the
+    threshold before the prioritization is changed from Idle to BelowNormal.
 
-    Value Range: 1 - n 
+    Value Range: 1 - ...
     Default value: 5  
   -->
   <normalizationTime>5</normalizationTime>
