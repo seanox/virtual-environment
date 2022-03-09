@@ -7,6 +7,7 @@
       It creates even less load and prioritizes even faster.
   CR: Optimization of error logging
   CR: Added XML based settings
+      Optional configuration from the service.
   CR: Added suspension of the prioritization for freely definable process names
       Useful for games, compilers, renderers and all programs that should use
       the CPU without restrictions.

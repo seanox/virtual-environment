@@ -6,24 +6,38 @@ sound stutters.
 
 What helps is to reduce the priority of the processes that generate the load.
 
-With this knowledge I tried numerous prio tools and process managers, but none
+With this in mind, I tried numerous prio tools and process managers, but none
 convinced me.
 
 Here now another attempt, which convinces at least me :-)
 
-The program does not need to be configured, because the functionality is very
-simple. 
+The program does not need to be configured, as the functionality is very simple
+-- but you can configure it.
 
-If the total CPU usage rises above 25% the program starts to evaluate the CPU
-usage of the processes. All processes with a high CPU usage are changed in
-priority to 'BelowNormal' -- the procedure has worked for me.
+There is a threshold (default value is 25%) for the maximum CPU load of the
+processes. If any processes exceed this threshold, their priority is first
+reduced to Idle and later increased to BelowNormal when the CPU load falls
+below the threshold -- the procedure has worked for me.
 
-If the program is terminated, the original priority is restored.
+If the program is ended, the original priority is restored.
 
 __Against to expectations, the program does not make the computer faster, but
 tries to improve multitasking so that all programs get enough CPU time, without
 application focus and bells and whistles, it's just to improve the work -- but
 I also received and considered your wishes.__
+
+
+# Features  (upcoming version)
+- Threshold-based two-level down-prioritization of processes
+- Extending down-prioritization to processes with the same name
+- Restoration of prioritization when the service is ended
+- Optional configuration of processes when prioritization is suspended
+- Optional configuration of processes that should always be prioritized down
+- Fast analysis and measurement of the cpu load of all processes
+- Low additional cpu load due to the service itself
+- Includes command line functions to install and uninstall the service, to
+  start, pause, continue and stop the service
+- Logging for the Windows Event Viewer
 
 
 # System Requirement
@@ -60,6 +74,11 @@ shiftdown.exe stop
 ```
 
 When the program ends, the priority of the changed processes will be restored.
+
+
+# Configuration (upcoming version)
+The program can optionally be configured via the enclosed XML file, which also
+describes the details.
 
 
 # Changes (Change Log)
