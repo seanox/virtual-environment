@@ -309,6 +309,7 @@ namespace VirtualEnvironment.Platform
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
             MigrateResourcePlatformFile(tempDrive, @"\Settings\settings.exe");
             MigrateResourcePlatformFile(tempDrive, @"\Settings\shiftdown.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Settings\shiftdown.xml");
             MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
             MigrateResourcePlatformFile(tempDrive, @"\Startup.cmd", replacements);
 
