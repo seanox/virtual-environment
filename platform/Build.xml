@@ -21,6 +21,7 @@
   <property name="build.sources" value="${workspace}/Target/build/Sources"/>
   <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
   <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
+  <property name="build.update" value="${workspace}/Target/build/Update"/>
   <property name="build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
   
   <macrodef name="release-info-locate">
@@ -128,7 +129,7 @@ ${line.separator}${build}/error.log">
     <copy todir="${build.target}" file="CHANGES"/>
     <copy todir="${build.target}" file="LICENSE"/>
     <copy todir="${build.target}" file="README.md"/>
-    <copy todir="${build.target}" file="${build.sources}/Resources/platform\Install/manual.txt"/>
+    <copy todir="${build.target}" file="${build.sources}/Resources/platform/Install/manual.txt"/>
     <exec executable="cmd" dir="${build.target}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
@@ -136,10 +137,43 @@ ${line.separator}${build}/error.log">
       <fileset dir="${build.target}"/>
     </touch>
 
+    <mkdir dir="${build.update}"/>
+    <copy file="${build.target}/${ant.project.name}.exe"
+        tofile="${build.update}/${ant.project.name}.exe_${release.version}"/>
+    <copy todir="${build.update}">
+      <fileset casesensitive="false" dir="${build.sources}/Resources/platform" includes="**"/>
+      <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>
+    </copy>
+    <echo file="${build.update}/readme.txt_${release.version}">
+The update is intended to help with the manual update of an existing
+environment. It contains all new file structures and files. The updated files
+end with the version number so that no existing files are overwritten.
+
+    Recommended Approach      
+    ----
+- Attach virtual disk manually
+- Unpack the update to the root directory of the virtual disk
+- Check all new files (with the version number in the file extension)
+- Activate what you need, delete what you don't need
+- Merge the changes if necessary in the configuration files and scripts
+- Replace the platform.exe outside of the virtual disk
+- Detach virtual disk manually
+
+That's it...
+    </echo>
+    <touch datetime="${release.date}" pattern="yyyyMMdd">
+      <fileset dir="${build.update}" includes="**"/>
+    </touch>
+    <mkdir dir="${workspace.releases}"/>
+    <delete file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
+    <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"
+      basedir="${build.update}" compress="true" level="9" filesonly="true"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
+
     <mkdir dir="${workspace.releases}"/>
     <delete file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}.zip"
         basedir="${build.target}" compress="true" level="9" filesonly="true"/>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/Platform-${release.version}.zip"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
   </target>
 </project>
