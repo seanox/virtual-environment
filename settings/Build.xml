@@ -11,15 +11,13 @@
   </target>
 
   <property name="workspace" value="${basedir}"/>
-  <property name="workspace.sources" value="${basedir}/Sources"/>
   <property name="workspace.target" value="${basedir}/Target"/>
   <property name="workspace.releases" value="${basedir}/Releases"/>
 
   <property environment="env"/>
   
   <property name="build" value="${workspace}/Target/build"/>
-  <property name="build.sources" value="${workspace}/Target/build/Sources"/>
-  <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln"/>
+  <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
   <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
   <property name="build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
   
@@ -54,6 +52,8 @@
           token="Version(&quot;0.0.0&quot;)" value="Version(&quot;${release.version}&quot;)"/>
       <replace dir="${build}" includes="${build.sources.filter}"
           token="Version 0.0.0 0000000" value="Version ${release.version} ${release.date}"/>
+      <replace dir="${build}" includes="${build.sources.filter}"
+          token="&lt;assemblyIdentity version=&quot;0.0.0.0&quot;" value="&lt;assemblyIdentity version=&quot;${release.version}&quot;"/>
     </sequential>
   </macrodef>
   
@@ -95,14 +95,10 @@
   <target name="release" depends="changes">
     <release-info-locate/>
 
-    <delete dir="${build}"/>
-    <mkdir dir="${build.sources}"/>
-    <copy todir="${build.sources}">
-      <fileset dir="${workspace.sources}"/>
-    </copy>
     <copy todir="${build}">
-      <fileset dir="${workspace}" includes="*.csproj,*.sln"/>
+      <fileset dir="${workspace}" excludes="Releases"/>
     </copy>
+
     <release-info-insert/>
     
     <exec executable="${build.tool}" dir="${build}" resultproperty="build.exit.code"
