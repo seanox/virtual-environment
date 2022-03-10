@@ -99,7 +99,7 @@ namespace VirtualEnvironment.Platform
             internal bool   Failed;
         }
 
-        private static BatchResult BatchExec(string fileName, params string[] arguments)
+        private static BatchResult BatchExec(Task task, string fileName, params string[] arguments)
         {
             // It was a long way of experiences for the small piece of code :-|
             //     What you need to know
@@ -157,17 +157,27 @@ namespace VirtualEnvironment.Platform
             var applicationName = Path.GetFileNameWithoutExtension(applicationFile);
             var diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
 
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_NAME")))
-                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_NAME", applicationName);
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_HOME")))
-                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_HOME", applicationDirectory);
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_DISK")))
-                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_DISK", diskFile);
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_PLATFORM_APP")))
-                processStartInfo.EnvironmentVariables.Add("VT_PLATFORM_APP", applicationPath);
+            // The use of environment variables only makes sense during detach,
+            // in all other cases it becomes a problem when the environment is
+            // launched from an already existing virtual environment, as is the
+            // case during platform development.
+
+            var SetEnvironmentVariableIfNecessary = new Action<string, string>( delegate(string name, string value)
+            {
+                if (processStartInfo.EnvironmentVariables.ContainsKey(name)
+                        && Task.Detach.Equals(task))
+                    return;
+                if (processStartInfo.EnvironmentVariables.ContainsKey(name))
+                    processStartInfo.EnvironmentVariables.Remove(name);
+                processStartInfo.EnvironmentVariables.Add(name, value);
+            });
+
+            SetEnvironmentVariableIfNecessary("VT_PLATFORM_NAME", applicationName);
+            SetEnvironmentVariableIfNecessary("VT_PLATFORM_HOME", applicationDirectory);
+            SetEnvironmentVariableIfNecessary("VT_PLATFORM_DISK", diskFile);
+            SetEnvironmentVariableIfNecessary("VT_PLATFORM_APP", applicationPath);
             var rootPath = Path.GetPathRoot(fileName);
-            if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("VT_HOMEDRIVE")))
-                processStartInfo.EnvironmentVariables.Add("VT_HOMEDRIVE", rootPath.Substring(0, 2));
+            SetEnvironmentVariableIfNecessary("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
             // When detaching, the drive and thus the temp directory is
             // detached before cleaning, so a fixed name of the temp file is
@@ -289,7 +299,7 @@ namespace VirtualEnvironment.Platform
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
-                            batchResult = BatchExec(workerTask.Drive + @"\Startup.cmd", "startup");
+                            batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "startup");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
@@ -354,7 +364,7 @@ namespace VirtualEnvironment.Platform
 
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
 
-                            batchResult = BatchExec(workerTask.Drive + @"\Startup.cmd", "exit");
+                            batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
@@ -369,7 +379,7 @@ namespace VirtualEnvironment.Platform
                             GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
-                                .ForEach(processInfo => KillProcess(processInfo));
+                                .ForEach(KillProcess);
 
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
 
