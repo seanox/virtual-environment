@@ -11,14 +11,12 @@
   </target>
 
   <property name="workspace" value="${basedir}"/>
-  <property name="workspace.sources" value="${basedir}/Sources"/>
   <property name="workspace.target" value="${basedir}/Target"/>
   <property name="workspace.releases" value="${basedir}/Releases"/>
 
   <property environment="env"/>
   
   <property name="build" value="${workspace}/Target/build"/>
-  <property name="build.sources" value="${workspace}/Target/build/Sources"/>
   <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
   <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
   <property name="build.update" value="${workspace}/Target/build/Update"/>
@@ -96,16 +94,13 @@
   </target>
 
   <target name="release" depends="changes">
+
     <release-info-locate/>
 
-    <delete dir="${build}"/>
-    <mkdir dir="${build.sources}"/>
-    <copy todir="${build.sources}">
-      <fileset dir="${workspace.sources}"/>
-    </copy>
     <copy todir="${build}">
-      <fileset dir="${workspace}" includes="*.csproj,*.sln"/>
+      <fileset dir="${workspace}" excludes="Releases"/>
     </copy>
+
     <release-info-insert/>
     
     <exec executable="${build.tool}" dir="${build}" resultproperty="build.exit.code"
@@ -129,7 +124,7 @@ ${line.separator}${build}/error.log">
     <copy todir="${build.target}" file="CHANGES"/>
     <copy todir="${build.target}" file="LICENSE"/>
     <copy todir="${build.target}" file="README.md"/>
-    <copy todir="${build.target}" file="${build.sources}/Resources/platform/Install/manual.txt"/>
+    <copy todir="${build.target}" file="${build}/Resources/platform/Install/manual.txt"/>
     <exec executable="cmd" dir="${build.target}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
@@ -141,7 +136,7 @@ ${line.separator}${build}/error.log">
     <copy file="${build.target}/${ant.project.name}.exe"
         tofile="${build.update}/${ant.project.name}.exe_${release.version}"/>
     <copy todir="${build.update}">
-      <fileset casesensitive="false" dir="${build.sources}/Resources/platform" includes="**"/>
+      <fileset casesensitive="false" dir="${build}/Resources/platform" includes="**"/>
       <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>
     </copy>
     <echo file="${build.update}/readme.txt_${release.version}">
