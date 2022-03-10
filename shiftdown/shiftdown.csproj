@@ -46,8 +46,8 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Sources\Program.cs" />
-        <Compile Include="Sources\Properties\AssemblyInfo.cs" />
         <Compile Include="Sources\Service.cs" />
         <Compile Include="Sources\Settings.cs" />
     </ItemGroup>
