@@ -60,7 +60,7 @@ namespace VirtualEnvironment.Platform
 
             InitializeComponent();
             
-            Output.Font = new Font(SystemFonts.DialogFont.FontFamily, 9.75f);
+            Output.Font = new Font(SystemFonts.DialogFont.FontFamily, 9.25f);
             Label.Font = new Font(SystemFonts.DialogFont.FontFamily, 8.25f);
 
             _timer = new System.Threading.Timer(Service, new WorkerTask() {Task = task, Drive = drive, DiskFile = diskFile}, 25, -1);

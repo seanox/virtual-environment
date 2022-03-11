@@ -42,18 +42,16 @@
             // 
             // Output
             // 
-            this.Output.Font = new System.Drawing.Font("", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Output.Location = new System.Drawing.Point(91, 13);
             this.Output.Margin = new System.Windows.Forms.Padding(0);
             this.Output.Name = "Output";
-            this.Output.Size = new System.Drawing.Size(294, 72);
+            this.Output.Size = new System.Drawing.Size(300, 72);
             this.Output.TabIndex = 1;
             this.Output.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Label
             // 
             this.Label.AutoSize = true;
-            this.Label.Font = new System.Drawing.Font("", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.GrayText;
             this.Label.Location = new System.Drawing.Point(328, 79);
             this.Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
