@@ -53,7 +53,7 @@
             // 
             this.Label.AutoSize = true;
             this.Label.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.Label.Location = new System.Drawing.Point(328, 79);
+            this.Label.Location = new System.Drawing.Point(332, 79);
             this.Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Label.Name = "Label";
             this.Label.Size = new System.Drawing.Size(77, 17);
@@ -77,13 +77,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(398, 98);
+            this.ClientSize = new System.Drawing.Size(400, 98);
             this.ControlBox = false;
             this.Controls.Add(this.Progress);
             this.Controls.Add(this.Label);
             this.Controls.Add(this.Output);
             this.Controls.Add(this.PictureBox);
-            this.Font = new System.Drawing.Font("", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
