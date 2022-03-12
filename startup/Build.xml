@@ -96,7 +96,10 @@
     <release-info-locate/>
 
     <copy todir="${build}">
-      <fileset dir="${workspace}" excludes="Releases"/>
+      <fileset dir="${workspace}">
+        <exclude name="Releases/**"/>
+        <exclude name="Target/**"/>
+      </fileset>
     </copy>
 
     <release-info-insert/>
