@@ -1,4 +1,4 @@
-3.1.0 2022xxxx
+3.1.0 20220401
   BF: Settings: Correction of template synchronization
       If the target file is newer than the template, the template will be updated.
   BF: Platform Create: Correction of settings directory

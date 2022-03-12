@@ -1,4 +1,4 @@
-1.3.0 2022xxxx
+1.3.0 20220401
   BF: Optimization and corrections
       Separation of classes into separate files.
   CR: Unification of namespace / platform icon / (sub) project structure

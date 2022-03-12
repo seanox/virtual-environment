@@ -1,4 +1,4 @@
-3.1.0 2022xxxx
+3.1.0 20220401
   BF: Platform: Correction of settings directory
       Has been moved from \Documents\Settings to \Settings.
   BF: Platform: Compact per Diskpart was not executed

@@ -1,4 +1,4 @@
-1.2.1 2022xxxx
+1.2.1 20220401
   BF: StartUp: Optimization and corrections
   CR: StartUp: Unification of namespace / platform icon / (sub) project structure
   CR: StartUp: Added build script/process via ANT
