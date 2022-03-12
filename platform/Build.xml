@@ -106,7 +106,10 @@
     <release-info-locate/>
 
     <copy todir="${build}">
-      <fileset dir="${workspace}" excludes="Releases"/>
+      <fileset dir="${workspace}">
+        <exclude name="Releases/**"/>
+        <exclude name="Target/**"/>
+      </fileset>
     </copy>
 
     <release-info-insert/>
@@ -170,7 +173,7 @@ That's it...
     <mkdir dir="${workspace.releases}"/>
     <delete file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
     <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"
-      basedir="${build.update}" compress="true" level="9" filesonly="true"/>
+        basedir="${build.update}" compress="true" level="9" filesonly="true"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
 
     <mkdir dir="${workspace.releases}"/>
