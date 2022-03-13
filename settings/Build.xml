@@ -138,6 +138,6 @@ ${line.separator}${build}/error.log">
         basedir="${build.target}" compress="true" level="9" filesonly="true"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <copy file="${build.target}/${ant.project.name}.exe" overwrite="true"
-        todir="../platform/Sources/Resources/platform/${ant.project.name}"/>
+        todir="../platform/Resources/platform/${ant.project.name}"/>
   </target>
 </project>
