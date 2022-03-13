@@ -47,7 +47,7 @@ https://github.com/seanox/virtual-environment/tree/main/platform/Releases
 
 # Changes (Change Log)
 ## 3.1.0 2022xxxx (summary of the upcoming version)  
-BF: Settings: Correction of template synchronization  
+BF: Platform: Correction of settings template synchronization  
 BF: Platform Create: Correction of settings directory  
 BF: Platform: Compact per Diskpart was not executed  
 BF: Platform: Optimization and corrections  
@@ -57,8 +57,8 @@ CR: Platform: Optimization of notification message output
 CR: Platform: Unification of namespace / platform icon / (sub) project structure  
 CR: Platform: Added build script/process via ANT  
 CR: Platform: Optimization of error logging  
-CR: Console: Added as default command line prompt  
-CR: Launcher: Added as default launcher to keep the environment alive  
-CR: ShiftDown: Added as optional service to shift down the process priority  
+CR: Platform: Added console as default command line prompt  
+CR: Platform: Added launcher as default launcher to keep the environment alive  
+CR: Platform: Added shiftdown as optional service to shift down the process priority  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/platform/CHANGES)
