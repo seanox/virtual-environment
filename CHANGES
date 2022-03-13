@@ -12,7 +12,7 @@
   CR: Console: Added as default command line prompt
   CR: Environment: Unification of namespace / platform icon / (sub) project structure
   CR: Environment: Added build script/process via ANT
-  CR: ShiftDown: Added a optional service to shift down the process priority
+  CR: ShiftDown: Added to improve multitasking of older CPUs
       The service automatically downgrades the process priority of CPU-intensive processes.
       For older Intel generations that suffer from the update of Windows and Intel.
   CR: Launcher: Switching to a self-developed one
