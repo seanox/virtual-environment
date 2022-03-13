@@ -74,8 +74,7 @@ used in the virtual environment.
 - Supports VHD, VHDX as virtual drive also with Bitlocker
 - Functions to create, launch, manage and compact the environment
 - The environment is immediately usable after creation
-- Integrated program launcher as full screen overlay with tile optics, global
-  hotkey and optimized keyboard layout support for fast access
+- Integrated program launcher with optimized keyboard support for fast program access
 - Personalization of the environment and programs through the use of a separate
   key-values file
 - Option to improve multitasking of older CPUs
