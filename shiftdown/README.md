@@ -29,7 +29,7 @@ I also received and considered your wishes.__
 
 # Features
 - Threshold-based two-level down-prioritization of processes
-- Extending down-prioritization to processes with the same name
+- Expanding down-prioritization to processes with the same name
 - Restoration of prioritization when the service is ended
 - Optional configuration of processes when prioritization is suspended
 - Optional configuration of processes that should always be prioritized down
@@ -91,6 +91,6 @@ CR: Optimization of error logging
 CR: Added XML based settings  
 CR: Added suspension of the prioritization for freely definable process names  
 CR: Added Preventive down prioritization for freely definable process names  
-CR: Added enhancement of decreased prioritization for processes with the same name  
+CR: Added expansion of prioritization decrease to processes with the same name  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)

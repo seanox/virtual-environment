@@ -14,7 +14,7 @@
   CR: Added Preventive down prioritization for freely definable process names
       Useful when processes like compiler, interpreter and indexer work very
       well even at low priority.
-  CR: Added enhancement of decreased prioritization for processes with the same name
+  CR: Added expansion of prioritization decrease to processes with the same name
 
 1.2.0 20220107
   BF: Correction of the unwanted program end when the service pauses
