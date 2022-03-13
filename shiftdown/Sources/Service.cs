@@ -320,8 +320,6 @@ namespace VirtualEnvironment.ShiftDown
                     && _backgroundWorker.IsBusy)
                 return;
 
-            _eventLog.WriteEntry("Service start initiated.", EventLogEntryType.Information);
-            
             _settings = Settings.Load();
             _processPriorityClass = ProcessPriorityClass.BelowNormal;
             _processMonitors = new Dictionary<int, ProcessMonitor>();
@@ -416,8 +414,6 @@ namespace VirtualEnvironment.ShiftDown
 
         protected override void OnStop()
         {
-            _eventLog.WriteEntry("Service stop initiated.", EventLogEntryType.Information);
-
             foreach (var worker in _backgroundMonitoringWorkers)
                 worker.CancelAsync();
             
