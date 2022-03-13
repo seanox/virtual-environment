@@ -167,7 +167,7 @@ CR: Platform: Optimization of error logging
 CR: Console: Added as default command line prompt  
 CR: Environment: Unification of namespace / platform icon / (sub) project structure  
 CR: Environment: Added build script/process via ANT  
-CR: ShiftDown: Added a optional service to shift down the process priority  
+CR: ShiftDown: Added to improve multitasking of older CPUs  
 CR: Launcher: Switching to a self-developed one  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
