@@ -27,7 +27,7 @@ application focus and bells and whistles, it's just to improve the work -- but
 I also received and considered your wishes.__
 
 
-# Features  (upcoming version)
+# Features
 - Threshold-based two-level down-prioritization of processes
 - Extending down-prioritization to processes with the same name
 - Restoration of prioritization when the service is ended
@@ -76,13 +76,13 @@ shiftdown.exe stop
 When the program ends, the priority of the changed processes will be restored.
 
 
-# Configuration (upcoming version)
+# Configuration
 The program can optionally be configured via the enclosed XML file, which also
 describes the details.
 
 
 # Changes (Change Log)
-## 1.3.0 2022xxxx (summary of the upcoming version)  
+## 1.3.0 20220313 (summary of the current version)  
 BF: Optimization and corrections  
 CR: Unification of namespace / platform icon / (sub) project structure  
 CR: Added build script/process via ANT  
