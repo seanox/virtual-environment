@@ -24,7 +24,7 @@ If the program is ended, the original priority is restored.
 __Against to expectations, the program does not make the computer faster, but
 tries to improve multitasking so that all programs get enough CPU time, without
 application focus and bells and whistles, it's just to improve the work -- but
-I also received and considered your wishes.__
+I also got and considered your wishes.__
 
 
 # Features
