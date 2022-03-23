@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -52,6 +53,8 @@ namespace VirtualEnvironment.Launcher.Utilities
         {
             try
             {
+                if (!File.Exists(file))
+                    return null;
                 if (String.IsNullOrWhiteSpace(file))
                     return null;
                 if (IMAGE_FIlE_PATTERN.IsMatch(file))

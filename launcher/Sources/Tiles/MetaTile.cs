@@ -20,6 +20,7 @@
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace VirtualEnvironment.Launcher.Tiles
@@ -41,7 +42,9 @@ namespace VirtualEnvironment.Launcher.Tiles
         private readonly Font  _textFont;
         private readonly Size  _textMeasure;
         private readonly int   _iconSpace;
-        private readonly Image _iconImage;
+
+        private Image _iconImage;
+        private long  _iconImageLastModified;
 
         private MetaTile(Screen screen, Settings settings, Settings.Tile tile)
         {
@@ -89,6 +92,10 @@ namespace VirtualEnvironment.Launcher.Tiles
             _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
             _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
             _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);
+
+            _iconImageLastModified = -1;
+            if (File.Exists(Settings.IconFile))
+                _iconImageLastModified = File.GetLastWriteTime(Settings.IconFile).Ticks;
         }
 
         private static Image GetIconImage(int iconSize, string iconFile, int iconIndex)
@@ -129,6 +136,17 @@ namespace VirtualEnvironment.Launcher.Tiles
                 Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
                         new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
 
+            try
+            {
+                var iconImageLastModified = File.Exists(Settings.IconFile) ? File.GetLastWriteTime(Settings.IconFile).Ticks : -1;
+                if (iconImageLastModified != _iconImageLastModified)
+                    _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);
+                _iconImageLastModified = iconImageLastModified;
+            }
+            catch (Exception)
+            {
+            }
+           
             if (_iconImage != null)
                 graphics.DrawImage(_iconImage, Location.X + (_metaTileGrid.Size /2) -(_iconImage.Width /2),
                         Location.Y + Math.Max((_iconSpace /2) -(_iconImage.Height /2), _metaTileGrid.Padding));
