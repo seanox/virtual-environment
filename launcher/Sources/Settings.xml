@@ -11,6 +11,11 @@
     https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-hotkey#parameters
     https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
     
+    MOD_ALT      0x0001
+    MOD_CONTROL  0x0002
+    MOD_SHIFT    0x0004
+    MOD_WIN      0x0008
+    
     Proven standards:
     - Release: Win + Esc
     - Development: Alt + Esc
@@ -137,6 +142,13 @@
       <icon>%WINDIR%\system32\shell32.dll:126</icon>
       <destination>%WINDIR%\explorer.exe</destination>
       <arguments>%HOMEDRIVE%%HOMEPATH%</arguments>
+    </tile>
+    <tile>
+      <index>40</index>
+      <title>Exit</title>
+      <icon>%WINDIR%\system32\shell32.dll:27</icon>
+      <destination>EXIT</destination>
+      <workingDirectory>%PLATFORM_HOME%</workingDirectory>
     </tile>
   </tiles>
 </settings>
