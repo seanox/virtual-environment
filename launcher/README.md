@@ -7,7 +7,7 @@ independently.
 # Features
 - Full screen overlay user interface  
   The full screen overlay is displayed on the primary screen.
-- User interface in tile optics
+- User interface in tile optics  
   There are 40 freely configurable tiles available.
 - Global HotKey combination  
   A global HotKey combination is used to show and hide the user interface.
@@ -115,7 +115,7 @@ Example of a configuration file:
 
 
 # Changes (Change Log)
-## 1.0.0 2022xxxx (summary of the upcoming version)  
+## 1.0.0 20220325 (summary of the current version)  
 NT: Release is available  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
