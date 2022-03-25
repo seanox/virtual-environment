@@ -120,8 +120,7 @@
       <title>Settings</title>
       <icon>%WINDIR%\system32\imageres.dll:64</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
-      <arguments>%APPSPATH%\Launcher\launcher.xml</arguments>
-      <workingDirectory>%APPSPATH%\Launcher</workingDirectory>
+      <arguments>launcher.xml</arguments>
     </tile>
     <tile>
       <index>31</index>
