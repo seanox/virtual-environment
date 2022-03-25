@@ -47,7 +47,7 @@ namespace VirtualEnvironment.Launcher.Tiles
 
             _passiveBorderImage = new Bitmap(metaTileGrid.Size, metaTileGrid.Size, PixelFormat.Format32bppPArgb);
             using (var passiveBorderImageGraphics = Graphics.FromImage(_passiveBorderImage))
-            Utilities.Graphics.DrawRectangleRounded(passiveBorderImageGraphics, new Pen(new SolidBrush(borderColor)),
+                Utilities.Graphics.DrawRectangleRounded(passiveBorderImageGraphics, new Pen(new SolidBrush(borderColor)),
                     new Rectangle(0, 0, metaTileGrid.Size - 1, metaTileGrid.Size - 1), metaTileGrid.Radius);
 
             _activeBorderImage = new Bitmap(metaTileGrid.Size, metaTileGrid.Size, PixelFormat.Format32bppPArgb);
