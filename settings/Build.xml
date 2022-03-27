@@ -51,7 +51,7 @@
       <replace dir="${build}" includes="${build.sources.filter}"
           token="Version(&quot;0.0.0&quot;)" value="Version(&quot;${release.version}&quot;)"/>
       <replace dir="${build}" includes="${build.sources.filter}"
-          token="Version 0.0.0 0000000" value="Version ${release.version} ${release.date}"/>
+          token="Version 0.0.0 00000000" value="Version ${release.version} ${release.date}"/>
       <replace dir="${build}" includes="${build.sources.filter}"
           token="&lt;assemblyIdentity version=&quot;0.0.0.0&quot;" value="&lt;assemblyIdentity version=&quot;${release.version}.0&quot;"/>
     </sequential>
@@ -95,6 +95,7 @@
   <target name="release" depends="changes">
     <release-info-locate/>
 
+    <delete dir="${build}"/> 
     <copy todir="${build}">
       <fileset dir="${workspace}">
         <exclude name="Releases/**"/>
