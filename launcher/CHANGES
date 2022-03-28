@@ -1,6 +1,8 @@
 1.0.1 20220401
-  BF: Correction of the version number
+  BF: Build: Correction of the version number
       Release date was not set correctly.
+  BF: Build: Optimization of the release info process
+  BF: Build: Optimization of the build process
 
 1.0.0 20220325
   NT: Release is available
