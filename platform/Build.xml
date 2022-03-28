@@ -123,6 +123,7 @@
     <release-info-locate/>
     <release-info-insert/>
 
+    <mkdir dir="${workspace.target.release}"/>
     <delete>
       <fileset dir="${workspace.target.release}">
         <include name="*"/>
@@ -144,7 +145,6 @@ ${line.separator}${workspace.target.release}/error.log">
     </fail>
 
     <mkdir dir="${workspace.releases}"/>
-    
     <delete includeemptydirs="true">
       <fileset casesensitive="false" dir="${workspace.target.release}" excludes="${ant.project.name}.exe"/>
     </delete>
