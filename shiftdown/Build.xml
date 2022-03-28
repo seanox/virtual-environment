@@ -113,6 +113,7 @@
     <release-info-locate/>
     <release-info-insert/>
 
+    <mkdir dir="${workspace.target.release}"/>
     <delete>
       <fileset dir="${workspace.target.release}">
         <include name="*"/>
