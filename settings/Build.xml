@@ -10,24 +10,22 @@
     <echo>              Synchronizes the version in README.md  </echo>
   </target>
 
-  <property name="workspace" value="${basedir}"/>
-  <property name="workspace.target" value="${basedir}/Target"/>
-  <property name="workspace.releases" value="${basedir}/Releases"/>
-
   <property environment="env"/>
   
-  <property name="build" value="${workspace}/Target/build"/>
-  <property name="build.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
-  <property name="build.target" value="${workspace}/Target/build/Target/bin/Release"/>
-  <property name="build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
-  
+  <property name="workspace" value="${basedir}"/>
+  <property name="workspace.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
+  <property name="workspace.target" value="${basedir}/Target"/>
+  <property name="workspace.target.release" value="${workspace.target}/bin/Release"/>
+  <property name="workspace.releases" value="${basedir}/Releases"/>
+  <property name="workspace.build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
+
   <macrodef name="release-info-locate">
     <sequential>
       <copy file="${workspace}/CHANGES" tofile="${workspace}/CHANGES.tmp" overwrite="true"/>
       <replaceregexp file="${workspace}/CHANGES.tmp"
           match="(?s)^\s*([\d\.x]+) (\d{4})([\dx]+).*$" flags="g" byline="false"
           replace="release.version=\1&#x000D;release.year=\2&#x000D;release.date=\2\3&#x000D;"/>
-      <replaceregexp file="${workspace}/CHANGES.tmp" match="x+" replace="0000" flags="g" byline="false"/>
+      <replaceregexp file="${workspace}/CHANGES.tmp" match="x" replace="0" flags="g" byline="false"/>
       <loadproperties srcfile="${workspace}/CHANGES.tmp"/>
       <delete file="${workspace}/CHANGES.tmp"/>
       <echo file="${workspace}/CHANGES.tmp" message="release.major=${release.version}"/>
@@ -41,22 +39,41 @@
   </macrodef>
 
   <macrodef name="release-info-insert">
+    <attribute name="version" default="${release.version} ${release.date}"/>
     <sequential>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="Copyright (C) 0000" value="Copyright (C) ${release.year}"/>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="Copyright &#169; 0000" value="Copyright &#169; ${release.year}"/>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="Copyright &#194;&#169; 0000" value="Copyright &#194;&#169; ${release.year}"/>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="Version(&quot;0.0.0&quot;)" value="Version(&quot;${release.version}&quot;)"/>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="Version 0.0.0 00000000" value="Version ${release.version} ${release.date}"/>
-      <replace dir="${build}" includes="${build.sources.filter}"
-          token="&lt;assemblyIdentity version=&quot;0.0.0.0&quot;" value="&lt;assemblyIdentity version=&quot;${release.version}.0&quot;"/>
+      <echo file="release-info.tmp" message="@{version}"/>
+      <replaceregexp file="release-info.tmp" match="[^\d\.\s]" replace="0" flags="g"/>
+      <replaceregexp file="release-info.tmp" match="^([^\s]+)\s+(\d{4})(\d{4})"
+          replace="release.info.version=\1&#x000D;release.info.year=\2&#x000D;release.info.date=\2\3&#x000D;"/>
+      <local name="release.info.version"/>
+      <local name="release.info.year"/>
+      <local name="release.info.date"/>
+      <loadproperties srcfile="release-info.tmp"/>
+      <delete file="release-info.tmp"/>
+      <replaceregexp match="(?&lt;!//\s+)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
+      <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
+      <replaceregexp match="(AssemblyVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
+      <replaceregexp match="(AssemblyFileVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
+      <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>      
     </sequential>
   </macrodef>
-  
+
+  <macrodef name="release-info-reset">
+    <sequential>
+      <release-info-insert version="0.0.0 00000000"/>
+    </sequential>
+  </macrodef>
+
   <target name="changes">
     <release-info-locate/>
     
@@ -94,51 +111,49 @@
 
   <target name="release" depends="changes">
     <release-info-locate/>
-
-    <delete dir="${build}"/> 
-    <copy todir="${build}">
-      <fileset dir="${workspace}">
-        <exclude name="Releases/**"/>
-        <exclude name="Target/**"/>
-      </fileset>
-    </copy>
-
     <release-info-insert/>
-    
-    <exec executable="${build.tool}" dir="${build}" resultproperty="build.exit.code"
-        output="${build}/output.log" error="${build}/error.log">
+
+    <delete>
+      <fileset dir="${workspace.target.release}">
+        <include name="*"/>
+      </fileset>
+    </delete>
+    <exec executable="${workspace.build.tool}" dir="${workspace}" resultproperty="workspace.build.exit.code"
+        output="${workspace.target.release}/output.log" error="${workspace.target.release}/error.log">
       <arg line="${ant.project.name}.sln /t:Clean,Build /P:Configuration=Release"/>
     </exec>
-    <fail message="Build failed with exit code ${build.exit.code}
+    <fail message="Build failed with exit code ${workspace.build.exit.code}
 ${line.separator}&#09;For more details see in the log files:
-${line.separator}${build}/output.log
-${line.separator}${build}/error.log">
+${line.separator}${workspace.target.release}/output.log
+${line.separator}${workspace.target.release}/error.log">
       <condition>
         <not>
-          <equals arg1="${build.exit.code}" arg2="0"/>
+          <equals arg1="${workspace.build.exit.code}" arg2="0"/>
         </not>
       </condition>
     </fail>
 
     <delete includeemptydirs="true">
-      <fileset casesensitive="false" dir="${build.target}" excludes="${ant.project.name}.exe"/>
+      <fileset casesensitive="false" dir="${workspace.target.release}" excludes="${ant.project.name}.exe"/>
     </delete>
-    <copy todir="${build.target}" file="CHANGES"/>
-    <copy todir="${build.target}" file="LICENSE"/>
-    <copy todir="${build.target}" file="README.md"/>
-    <exec executable="cmd" dir="${build.target}">
+    <copy todir="${workspace.target.release}" file="CHANGES"/>
+    <copy todir="${workspace.target.release}" file="LICENSE"/>
+    <copy todir="${workspace.target.release}" file="README.md"/>
+    <exec executable="cmd" dir="${workspace.target.release}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
     <touch datetime="${release.date}" pattern="yyyyMMdd">
-      <fileset dir="${build.target}"/>
+      <fileset dir="${workspace.target.release}"/>
     </touch>
 
     <mkdir dir="${workspace.releases}"/>
     <delete file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}.zip"
-        basedir="${build.target}" compress="true" level="9" filesonly="true"/>
+        basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
-    <copy file="${build.target}/${ant.project.name}.exe" overwrite="true"
+    <copy file="${workspace.target.release}/${ant.project.name}.exe" overwrite="true"
         todir="../platform/Resources/platform/${ant.project.name}"/>
+
+    <release-info-reset/>
   </target>
 </project>
