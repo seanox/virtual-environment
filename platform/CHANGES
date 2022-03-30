@@ -9,7 +9,7 @@
   CR: Platform: Optimization / enhancement of function compact
   CR: Platform: Optimization of notification message output
   CR: Platform: Unification of namespace / platform icon / (sub) project structure
-  CR: Platform: Added build script/process via ANT
+  CR: Platform: Added build script/process via Ant
   CR: Platform: Optimization of error logging
   CR: Platform: Added console as default command line prompt
   CR: Platform: Added launcher as default launcher to keep the environment alive

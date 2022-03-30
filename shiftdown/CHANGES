@@ -6,7 +6,7 @@
   BF: Optimization and corrections
       Separation of classes into separate files.
   CR: Unification of namespace / platform icon / (sub) project structure
-  CR: Added build script/process via ANT
+  CR: Added build script/process via Ant
   CR: Optimization of process scanning (reimplementation)
       It creates even less load and prioritizes even faster.
   CR: Optimization of error logging

@@ -3,7 +3,7 @@
       If the target file is newer than the template, the template will be updated.
   BF: Settings: Optimization and corrections
   CR: Settings: Unification of namespace / platform icon / (sub) project structure
-  CR: Settings: Added build script/process via ANT
+  CR: Settings: Added build script/process via Ant
 
 1.0.0 20211126
   NT: Release is available
