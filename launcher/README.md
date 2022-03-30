@@ -120,7 +120,9 @@ Example of a configuration file:
 
 
 # Changes (Change Log)
-## 1.0.0 20220325 (summary of the current version)  
-NT: Release is available  
+## 1.0.1 20220401 (summary of the current version)  
+BF: Build: Correction of the version number  
+BF: Build: Optimization of the release info process  
+BF: Build: Optimization of the build process  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
