@@ -85,10 +85,10 @@ https://github.com/seanox/virtual-environment/tree/main/settings/Releases
 
 
 # Changes (Change Log)
-## 1.1.0 2022xxxx (summary of the upcoming version)  
+## 1.1.0 20220401 (summary of the current version)  
 BF: Settings: Correction of template synchronization  
 BF: Settings: Optimization and corrections  
 CR: Settings: Unification of namespace / platform icon / (sub) project structure  
-CR: Settings: Added build script/process via ANT  
+CR: Settings: Added build script/process via Ant  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/settings/CHANGES)
