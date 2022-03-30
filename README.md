@@ -128,6 +128,8 @@ The host key combination for the launcher: `Win + ESC`
 
 To exit, use the Detach button at the bottom right of the launcher.
 
+<img src="resources/example.gif"/>
+
 
 # Usage
 - Download the release or [platform.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Platform.exe)
