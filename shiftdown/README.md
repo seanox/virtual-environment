@@ -82,15 +82,7 @@ describes the details.
 
 
 # Changes (Change Log)
-## 1.3.0 20220313 (summary of the current version)  
-BF: Optimization and corrections  
-CR: Unification of namespace / platform icon / (sub) project structure  
-CR: Added build script/process via ANT  
-CR: Optimization of process scanning (reimplementation)  
-CR: Optimization of error logging  
-CR: Added XML based settings  
-CR: Added suspension of the prioritization for freely definable process names  
-CR: Added Preventive down prioritization for freely definable process names  
-CR: Added expansion of prioritization decrease to processes with the same name  
+## 1.3.1 20220401 (summary of the current version)  
+BF: Correction of the version number  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
