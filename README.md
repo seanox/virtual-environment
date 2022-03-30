@@ -57,6 +57,7 @@ corresponding eco-system or repository.
 perfectly and both release very good portable versions of programs that can be
 used in the virtual environment.
 
+<img height="450" src="resources/usage.gif"/>
 
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
