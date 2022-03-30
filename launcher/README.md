@@ -3,7 +3,7 @@ A portable program launcher specially developed for the Seanox Virtual
 Environment with a full-screen tile optics that can also be used standalone and
 independently.
 
-<img height="450" src="Extras/animation.gif"/>
+<img src="Extras/animation.gif"/>
 
 Focus is fast keyboard usage -- open a program with three keys.  
 Through the global hotkey even when the launcher is not visible.
