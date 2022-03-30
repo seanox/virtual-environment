@@ -153,7 +153,7 @@ when detaching and the environment variables are needed for this.
 
 __Module integration will come later, but will be similar.__
 
-<img height="480" src="resources/usage.gif"/>
+<img src="resources/usage.gif"/>
 
 
 # Changes (Change Log)
