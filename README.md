@@ -13,17 +13,17 @@
 
 
 # Description
-Since about 2010 exists the project of the virtual environment with modular
-structure for developers and users, so that this can provide a completely
+Since about 2010, there is the project of virtual environment with modular
+structure for developers and users, so that they can use a completely
 pre-configured environment with all programs, tools and services, without the
-environment affecting the running operating system and without devouring
-resources.  
+host environment interfering with the running operating system and devouring
+resources.
 
 Short setup times, uniform tools with uniform configuration, uniform paths in
 the file system, centralized maintenance and easy distribution and updating are
 some of the benefits. The environment is easily customizable, can be quickly
 switched to use for different projects, and the environment can be easily
-transferred to other machines where work started can be easily continued.
+transferred to other machines where work started can be continued.
 
 __The project includes with [platform](platform), a tool for the initial
 creation, use and management of the virtual environment and a
@@ -34,8 +34,8 @@ __The module concept is a successful PoC (proof of concept), but is not
 currently the focus of the project. So the software has to be set up manually
 in the virtual environment, but that's easy because it's a normal drive.__
 
-From my own experience from large companies with strict use of BitLocker, this
-is also supported :-)
+Since in large companies the strict use of BitLocker is often required, this is
+also supported.
 
 __What is the difference with PortableApps.com or portapps.io?__
 
@@ -112,7 +112,7 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.1.0](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0.zip)
+[Seanox Virtual Environment 3.1.0](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0.zip)  
 [Seanox Virtual Environment 3.1.0 Update for existing environment](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0-update.zip)
 
 
@@ -133,7 +133,8 @@ To exit, use the Detach button at the bottom right of the launcher.
 
 
 # Usage
-- Download the release or [platform.exe](https://github.com/seanox/virtual-environment/raw/main/platform/Platform.exe)
+- Download the last release or [seanox-virtual-platform.zip](#downloads)
+- Extract the file to any location in the local file system
 - Rename __platform.exe__ to the name that will be used for the environment and drive
 
 Then the program can be used as follows::
