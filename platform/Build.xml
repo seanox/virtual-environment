@@ -65,7 +65,10 @@
       </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>      
+      </replaceregexp>
+      <replaceregexp match="\[\d[\.\d]+\s+\d{8}\]" replace="[${release.info.version} ${release.info.date}]">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
     </sequential>
   </macrodef>
 
@@ -112,13 +115,13 @@
 
   <target name="release" depends="changes">
     <ant dir="..\launcher" antfile="build.xml" target="release"
-         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\settings" antfile="build.xml" target="release"
-         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\shiftdown" antfile="build.xml" target="release"
-         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\startup" antfile="build.xml" target="release"
-         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
 
     <release-info-locate/>
     <release-info-insert/>
