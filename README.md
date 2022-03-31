@@ -112,7 +112,8 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.0.0](https://github.com/seanox/virtual-environment/releases/download/3.0.0/seanox-virtual-platform-3.0.0.zip) 
+[Seanox Virtual Environment 3.1.0](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0.zip)
+[Seanox Virtual Environment 3.1.0 Update for existing environment](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0-update.zip)
 
 
 ## Example
@@ -159,20 +160,28 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes (Change Log)
-## 3.1.0 2022xxxx (summary of the upcoming version)  
-BF: Platform: Correction of settings directory  
+## 3.1.0 20220401 (summary of the current version)  
+BF: Platform: Correction of settings template synchronization  
+BF: Platform Create: Correction of settings directory  
 BF: Platform: Compact per Diskpart was not executed  
+BF: Platform: Optimization and corrections  
 BF: Platform: Optimization and corrections of the texts  
 BF: Settings: Correction of template synchronization  
 BF: Settings: Optimization and corrections  
+CR: Environment: Unification of namespace / platform icon / (sub) project structure  
+CR: Environment: Added build script/process via Ant  
+CR: Launcher: Switching to a self-developed one  
 CR: Platform: Optimization / enhancement of function compact  
 CR: Platform: Optimization of notification message output  
+CR: Platform: Unification of namespace / platform icon / (sub) project structure  
+CR: Platform: Added build script/process via Ant  
 CR: Platform: Optimization of error logging  
-CR: Console: Added as default command line prompt  
-CR: Environment: Unification of namespace / platform icon / (sub) project structure  
-CR: Environment: Added build script/process via ANT  
+CR: Platform: Added console as default command line prompt  
+CR: Platform: Added launcher as default launcher to keep the environment alive  
+CR: Platform: Added shiftdown as optional service to shift down the process priority  
+CR: Settings: Unification of namespace / platform icon / (sub) project structure  
+CR: Settings: Added build script/process via Ant  
 CR: ShiftDown: Added to improve multitasking of older CPUs  
-CR: Launcher: Switching to a self-developed one  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
 
