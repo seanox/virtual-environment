@@ -64,7 +64,10 @@
       </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>      
+      </replaceregexp>
+      <replaceregexp match="\[\d[\.\d]+\s+\d{8}\]" replace="[${release.info.version} ${release.info.date}]">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
     </sequential>
   </macrodef>
 
