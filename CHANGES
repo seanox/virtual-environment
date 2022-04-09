@@ -1,3 +1,6 @@
+3.1.1 2022xxxx
+  BF: Build: Correction of the release info process
+
 3.1.0 20220401
   BF: Platform: Correction of settings template synchronization
       If the target file is newer than the template, the template will be updated.

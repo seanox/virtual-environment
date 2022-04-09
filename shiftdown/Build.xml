@@ -50,7 +50,7 @@
       <local name="release.info.date"/>
       <loadproperties srcfile="release-info.tmp"/>
       <delete file="release-info.tmp"/>
-      <replaceregexp match="(?&lt;!//\s+)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
+      <replaceregexp match="(?&lt;!//\s)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
