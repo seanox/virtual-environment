@@ -292,6 +292,32 @@ namespace VirtualEnvironment.Platform
             shortcut.IconLocation = shortcut.TargetPath; 
             shortcut.Save();
         }
+        
+        private void SetupEnvirontment(string drive)
+        {
+            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachEnvironmentSetup);
+            
+            var message = "@" + Messages.WorkerAttachEnvironmentSetup;
+            foreach (var file in Settings.Files)
+            {
+                var targetFile = Path.Combine(drive, file.Replace("/", @"\"));
+                if (!File.Exists(targetFile))
+                    return;
+                message += $"{Environment.NewLine}{targetFile}";
+            
+                var templateFile = targetFile + "-settings";
+                if (!File.Exists(templateFile)
+                        || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) > 0)
+                    File.Copy(targetFile, templateFile, true);
+                
+                var templateContent = File.ReadAllText(templateFile);
+                var targetContent = Settings.ReplacePlaceholders(templateContent);
+                File.WriteAllText(targetFile, targetContent);
+
+                File.SetLastWriteTime(templateFile, DateTime.Now);
+            }
+            Notification.Push(Notification.Type.Trace, message);
+        }
 
         private void Service(object payload)
         {
@@ -320,8 +346,9 @@ namespace VirtualEnvironment.Platform
 
                             Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
+
+                            SetupEnvirontment(workerTask.Drive);
                             
-                            // TODO: Settings (fill placeholder in files)
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "startup");
                             if (batchResult.Failed)

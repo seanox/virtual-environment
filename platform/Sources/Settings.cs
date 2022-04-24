@@ -54,6 +54,12 @@ namespace VirtualEnvironment.Platform
         private static readonly Regex PATTERN_PLACEHOLDER =
                 new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
 
+        internal static string ReplacePlaceholders(string text)
+        {
+            Settings.Initialize();
+            return Settings.ReplacePlaceholders(text, _values);
+        }
+
         private static string ReplacePlaceholders(string text, Dictionary<string, string> settings)
         {
             return PATTERN_PLACEHOLDER.Replace(text, match =>

@@ -277,6 +277,15 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration of the virtual environment..
+        /// </summary>
+        internal static string WorkerAttachEnvironmentSetup {
+            get {
+                return ResourceManager.GetString("WorkerAttachEnvironmentSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attaching the virtual environment failed..
         /// </summary>
         internal static string WorkerAttachFailed {

@@ -198,6 +198,9 @@
   <data name="WorkerAttachFailed" xml:space="preserve">
     <value>Attaching the virtual environment failed.</value>
   </data>
+  <data name="WorkerAttachEnvironmentSetup" xml:space="preserve">
+    <value>Configuration of the virtual environment.</value>
+  </data>
   <data name="WorkerAttachText" xml:space="preserve">
     <value>Attaching the virtual environment
 Programs and services are established.</value>
