@@ -157,9 +157,9 @@ ${line.separator}${workspace.target.release}/error.log">
         basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
     <copy file="${workspace.target.release}/${ant.project.name}.exe" overwrite="true"
-        todir="../platform/Resources/platform/Settings"/>
+        todir="../platform/Resources/platform/Program Portables/${ant.project.name}"/>
     <copy file="${workspace.target.release}/${ant.project.name}.xml" overwrite="true"
-        todir="../platform/Resources/platform/Settings"/>
+        todir="../platform/Resources/platform/Program Portables/${ant.project.name}"/>
 
     <release-info-reset/>
   </target>
