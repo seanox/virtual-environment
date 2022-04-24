@@ -31,7 +31,7 @@ using System.Linq;
 
 namespace VirtualEnvironment.Platform
 {
-    public partial class Worker:Form, Notification.INotification
+    public partial class Worker : Form, Notification.INotification
     {
         internal delegate void BackgroundWorkerCall(Task task);
 
@@ -162,7 +162,7 @@ namespace VirtualEnvironment.Platform
             // launched from an already existing virtual environment, as is the
             // case during platform development.
 
-            var SetEnvironmentVariableIfNecessary = new Action<string, string>( delegate(string name, string value)
+            var SetEnvironmentVariableIfNecessary = new Action<string, string>(delegate(string name, string value)
             {
                 if (processStartInfo.EnvironmentVariables.ContainsKey(name)
                         && Task.Detach.Equals(task))
@@ -172,6 +172,9 @@ namespace VirtualEnvironment.Platform
                 processStartInfo.EnvironmentVariables.Add(name, value);
             });
 
+            foreach(KeyValuePair<string, string> value in Settings.Values)
+                SetEnvironmentVariableIfNecessary(value.Key, value.Value);
+            
             SetEnvironmentVariableIfNecessary("VT_PLATFORM_NAME", applicationName);
             SetEnvironmentVariableIfNecessary("VT_PLATFORM_HOME", applicationDirectory);
             SetEnvironmentVariableIfNecessary("VT_PLATFORM_DISK", diskFile);
@@ -318,6 +321,7 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
                             
+                            // TODO: Settings (fill placeholder in files)
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "startup");
                             if (batchResult.Failed)
