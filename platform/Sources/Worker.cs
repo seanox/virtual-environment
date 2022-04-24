@@ -251,7 +251,27 @@ namespace VirtualEnvironment.Platform
             }
             finally
             {
-                processesInfo.Process.Kill();
+                // Killing the processes can block (e.g. system protection by
+                // the virus scanner). Therefore, we try up to 3 times with a
+                // small pause. After three attempts, the process is ignored
+                // and the drive is detached.
+
+                for (var index = 0; index < 3; index++)
+                {
+                    Thread.Sleep(3000);
+                    if (Process.GetProcesses().All(process => process.Id != processesInfo.Process.Id))
+                        break;
+
+                    try
+                    {
+                        processesInfo.Process.Kill();
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        Notification.Push(Notification.Type.Warning, Messages.WorkerDetachText);
+                    }
+                }
             }
         }
 
@@ -427,12 +447,16 @@ namespace VirtualEnvironment.Platform
                     && message.Type != Notification.Type.Abort)
                 return;
 
-            if (message.Type == Notification.Type.Error)
+            if (message.Type == Notification.Type.Error
+                    || message.Type == Notification.Type.Warning)
             {
                 BackColor = Color.FromArgb(250, 225, 150);
                 Progress.BackColor = Color.FromArgb(200, 150, 75);
                 Label.ForeColor = Progress.BackColor;
             }
+            
+            if (message.Type == Notification.Type.Warning)
+                return;
 
             var originSize = Progress.Size;
             Progress.Visible = true;

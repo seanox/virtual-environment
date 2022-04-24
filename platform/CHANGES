@@ -1,5 +1,8 @@
-3.1.1 2022xxxx
+3.2.0 2022xxxx
   BF: Build: Correction of the release info process
+  CR: Platform: Optimization when detaching / process termination
+      Killing of processes can be blocked by system protection.
+      It is tried up to three times and then ignored. 
 
 3.1.0 20220401
   BF: Platform: Correction of settings template synchronization

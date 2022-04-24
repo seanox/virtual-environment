@@ -32,6 +32,7 @@ namespace VirtualEnvironment.Platform
         internal enum Type
         {
             Error,
+            Warning,
             Trace,
             Batch,
             Abort
