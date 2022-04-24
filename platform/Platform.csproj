@@ -101,11 +101,10 @@
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.exe" />
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
+        <EmbeddedResource Include="Resources\platform\Program Portables\ShiftDown\shiftdown.exe" />
+        <EmbeddedResource Include="Resources\platform\Program Portables\ShiftDown\shiftdown.xml" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
-        <EmbeddedResource Include="Resources\platform\Settings\settings.exe" />
-        <EmbeddedResource Include="Resources\platform\Settings\shiftdown.exe" />
-        <EmbeddedResource Include="Resources\platform\Settings\shiftdown.xml" />
         <EmbeddedResource Include="Resources\platform\Startup.cmd" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
