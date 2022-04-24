@@ -89,11 +89,6 @@ REM ----
 
 REM Programs and service are configured and initialized here, but not started.
 
-REM ---- Settings
-IF EXIST "%PLATFORM_HOME%\%PLATFORM_NAME%.ini" (
-    "%APPSSETTINGS%\settings.exe" "%PLATFORM_HOME%\%PLATFORM_NAME%.ini"
-)
-
 REM Placeholder for automatic module integration
 REM INSERT ATTACH
 
