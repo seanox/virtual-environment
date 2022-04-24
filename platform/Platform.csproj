@@ -72,6 +72,7 @@
         </Compile>
         <Compile Include="Sources\Notification.cs" />
         <Compile Include="Sources\Program.cs" />
+        <Compile Include="Sources\Settings.cs" />
         <EmbeddedResource Include="Sources\Program.ico" />
         <Compile Include="Sources\Worker.cs">
           <SubType>Form</SubType>

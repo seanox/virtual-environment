@@ -3,6 +3,7 @@
   CR: Platform: Optimization when detaching / process termination
       Killing of processes can be blocked by system protection.
       It is tried up to three times and then ignored. 
+  CR: Platform: Integrates settings as a core component    
 
 3.1.0 20220401
   BF: Platform: Correction of settings template synchronization
