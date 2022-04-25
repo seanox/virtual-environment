@@ -373,7 +373,7 @@ namespace VirtualEnvironment.Platform
                             var applicationDirectory = Path.GetDirectoryName(applicationPath);
                             var applicationName = Path.GetFileNameWithoutExtension(applicationFile);
                             var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
-                            File.WriteAllBytes(settingsFile, Resources.GetResource(@"\platform\settings.ini"));
+                            File.WriteAllBytes(settingsFile, Resources.GetResource(@"\settings.ini"));
 
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
                             break;
