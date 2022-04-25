@@ -68,8 +68,7 @@ namespace VirtualEnvironment.Platform
             var diskpartScript = Resources.GetTextResource(diskpartScriptName);
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
-                            current.Replace(String.Format("#[{0}]", field.Name.ToLower()),
-                                    (field.GetValue(diskpartProperties) ?? "").ToString()));
+                            current.Replace($"#[{field.Name.ToLower()}]", (field.GetValue(diskpartProperties) ?? "").ToString()));
 
             // In case the cleanup does not work and not so much junk
             // accumulates in the temp directory, fixed file names are used.
@@ -209,20 +208,14 @@ namespace VirtualEnvironment.Platform
             return availableDriveLetters.FirstOrDefault();
         }
 
-        private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath)
-        {
-            MigrateResourcePlatformFile(drive, resourcePlatformPath, null);
-        }
-
-        private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements)
+        private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements = null)
         {
             var fileContent = Resources.GetResource(@"\platform\" + resourcePlatformPath);
             if (replacements != null)
             {
                 var fileContentText = Encoding.ASCII.GetString(fileContent);
                 foreach (var key in replacements.Keys)
-                    fileContentText = fileContentText.Replace(String.Format("#[{0}]", key.ToLower()),
-                            replacements[key]);
+                    fileContentText = fileContentText.Replace($"#[{key.ToLower()}]", replacements[key]);
                 fileContent = Encoding.ASCII.GetBytes(fileContentText);
             }
             var targetDirectory = Path.GetDirectoryName(drive + resourcePlatformPath);
@@ -279,7 +272,7 @@ namespace VirtualEnvironment.Platform
             var replacements = new Dictionary<string, string>();
             replacements.Add("drive", drive);
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
-            replacements.Add("version", String.Format("{0}.x", Assembly.GetExecutingAssembly().GetName().Version.Major));
+            replacements.Add("version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x");
 
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Console\console.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Extensions\startup.exe");

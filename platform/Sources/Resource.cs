@@ -18,7 +18,6 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-using System;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,7 +28,7 @@ namespace VirtualEnvironment.Platform
     {
         internal static byte[] GetResource(string resourceName)
         {
-            resourceName = String.Format("{0}.{1}.{2}", typeof(Diskpart).Namespace, "Resources", resourceName);
+            resourceName = $"{typeof(Diskpart).Namespace}.Resources.{resourceName}";
             resourceName = new Regex("[\\./\\\\]+").Replace(resourceName, ".");
             resourceName = new Regex("\\s").Replace(resourceName, "_");
             var assembly = Assembly.GetExecutingAssembly();

@@ -210,7 +210,7 @@ Programs and services are established.</value>
     <value>Compaction of the virtual environment
 Virtual disk and file system are compacted.</value>
   </data>
-  <data name="WorkerCompactCleanFilesytem" xml:space="preserve">
+  <data name="WorkerCompactCleanFilesystem" xml:space="preserve">
     <value>Temporary files are cleaned</value>
   </data> 
   

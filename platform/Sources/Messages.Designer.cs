@@ -307,9 +307,9 @@ namespace VirtualEnvironment.Platform {
         /// <summary>
         ///   Looks up a localized string similar to Temporary files are cleaned.
         /// </summary>
-        internal static string WorkerCompactCleanFilesytem {
+        internal static string WorkerCompactCleanFilesystem {
             get {
-                return ResourceManager.GetString("WorkerCompactCleanFilesytem", resourceCulture);
+                return ResourceManager.GetString("WorkerCompactCleanFilesystem", resourceCulture);
             }
         }
         

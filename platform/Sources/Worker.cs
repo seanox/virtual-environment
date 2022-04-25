@@ -293,7 +293,7 @@ namespace VirtualEnvironment.Platform
             shortcut.Save();
         }
         
-        private void SetupEnvirontment(string drive)
+        private void SetupEnvironment(string drive)
         {
             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachEnvironmentSetup);
             
@@ -350,7 +350,7 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
 
-                            SetupEnvirontment(workerTask.Drive);
+                            SetupEnvironment(workerTask.Drive);
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "startup");
@@ -386,7 +386,7 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CanAttachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.AttachDisk(workerTask.Drive, workerTask.DiskFile);
 
-                            Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesytem);
+                            Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesystem);
 
                             var tempDirectory = Path.Combine(workerTask.Drive, "Temp");
                             if (Directory.Exists(tempDirectory))
