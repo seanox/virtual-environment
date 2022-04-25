@@ -85,4 +85,4 @@ describes the details.
 ## 1.3.1 20220401 (summary of the current version)  
 BF: Correction of the version number  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/shiftdown/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/shiftdown/CHANGES)

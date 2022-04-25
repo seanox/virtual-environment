@@ -61,4 +61,4 @@ CR: Platform: Added console as default command line prompt
 CR: Platform: Added launcher as default launcher to keep the environment alive  
 CR: Platform: Added shiftdown as optional service to shift down the process priority  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/platform/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)

@@ -30,4 +30,4 @@ BF: StartUp: Optimization and corrections
 CR: StartUp: Unification of namespace / platform icon / (sub) project structure  
 CR: StartUp: Added build script/process via Ant  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/startup/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)

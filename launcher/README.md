@@ -125,4 +125,4 @@ BF: Build: Correction of the version number
 BF: Build: Optimization of the release info process  
 BF: Build: Optimization of the build process  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/launcher/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
