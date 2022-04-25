@@ -228,6 +228,10 @@ Virtual disk and file system are initialized.</value>
   <data name="WorkerDetachFailed" xml:space="preserve">
     <value>Detaching the virtual environment failed.</value>
   </data>
+  <data name="WorkerDetachBlocked" xml:space="preserve">
+    <value>Detaching is blocked by {0}
+{1}</value>
+  </data>
   <data name="WorkerDetachText" xml:space="preserve">
     <value>Detaching the virtual environment
 Programs and services are terminated.</value>

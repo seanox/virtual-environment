@@ -270,9 +270,11 @@ namespace VirtualEnvironment.Platform
                         processesInfo.Process.Kill();
                         break;
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
-                        Notification.Push(Notification.Type.Warning, Messages.WorkerDetachText);
+                        Notification.Push(Notification.Type.Warning,
+                                String.Format(Messages.WorkerDetachBlocked,
+                                        processesInfo.Process.ProcessName, exception.Message));
                     }
                 }
             }
@@ -466,10 +468,10 @@ namespace VirtualEnvironment.Platform
                 }
                 catch (Exception exception)
                 {
-                    if (exception is WorkerException)
-                        Notification.Push(Notification.Type.Error, ((WorkerException)exception).Messages);
-                    else if (exception is DiskpartException)
-                        Notification.Push(Notification.Type.Error, ((DiskpartException)exception).Messages);
+                    if (exception is WorkerException workerException)
+                        Notification.Push(Notification.Type.Error, workerException.Messages);
+                    else if (exception is DiskpartException diskpartException)
+                        Notification.Push(Notification.Type.Error, diskpartException.Messages);
                     else
                         Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
                 }

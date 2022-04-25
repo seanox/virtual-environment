@@ -352,6 +352,16 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detaching is blocked by {0}
+        ///{1}.
+        /// </summary>
+        internal static string WorkerDetachBlocked {
+            get {
+                return ResourceManager.GetString("WorkerDetachBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Detaching the virtual environment failed..
         /// </summary>
         internal static string WorkerDetachFailed {
