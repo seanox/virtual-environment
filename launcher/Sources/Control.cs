@@ -161,11 +161,15 @@ namespace VirtualEnvironment.Launcher
 
             SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
             SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
+
+            var bounds = Screen.FromControl(this).Bounds; 
             
             _timer = new System.Threading.Timer((state) =>
             {
-                if (!Settings.IsUpdateAvailable())
+                if (!Settings.IsUpdateAvailable()
+                        && Screen.FromControl(this).Bounds.Equals(bounds))
                     return;
+                
                 Invoke((MethodInvoker)delegate
                 {
                     Close();

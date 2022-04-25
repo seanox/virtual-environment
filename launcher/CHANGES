@@ -1,6 +1,8 @@
 1.0.2 2022xxxx
   BF: Build: Correction of the release info process
-
+  BF: Launcher: Correction of the behavior when the screen resolution changes
+      Triggers the update of the user interface.
+  
 1.0.1 20220401
   BF: Build: Correction of the version number
       Release date was not set correctly.
