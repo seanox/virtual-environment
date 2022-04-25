@@ -1,5 +1,7 @@
 3.2.0 2022xxxx
   BF: Build: Correction of the release info process
+  BF: Launcher: Correction of the behavior when the screen resolution changes
+      Triggers the update of the user interface.
   CR: Platform: Optimization when detaching / process termination
       Killing of processes can be blocked by system protection.
       It is tried up to three times and then ignored.
