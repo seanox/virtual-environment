@@ -184,12 +184,12 @@ CR: Settings: Unification of namespace / platform icon / (sub) project structure
 CR: Settings: Added build script/process via Ant  
 CR: ShiftDown: Added to improve multitasking of older CPUs  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment-creator/master/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/CHANGES)
 
 
 # Contact
-[Issues](https://github.com/seanox/virtual-environment-creator/issues)  
-[Requests](https://github.com/seanox/virtual-environment-creator/pulls)  
+[Issues](https://github.com/seanox/virtual-environment/issues)  
+[Requests](https://github.com/seanox/virtual-environment/pulls)  
 [Mail](http://seanox.de/contact)
 
 
