@@ -2,7 +2,7 @@
   BF: Build: Correction of the release info process
   CR: Platform: Optimization when detaching / process termination
       Killing of processes can be blocked by system protection.
-      It is tried up to three times and then ignored. 
+      It is tried up to three times and then ignored.
   CR: Platform: Integrated settings as a core component
       The key values of the settings are part of the environment variables of
       the virtual environment.

@@ -13,7 +13,7 @@
   <property environment="env"/>
   
   <property name="workspace" value="${basedir}"/>
-  <property name="workspace.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest"/>
+  <property name="workspace.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest,**/*.ini"/>
   <property name="workspace.target" value="${basedir}/Target"/>
   <property name="workspace.target.release" value="${workspace.target}/bin/Release"/>
   <property name="workspace.target.update" value="${workspace.target}/bin/Update"/>
@@ -169,6 +169,9 @@ ${line.separator}${workspace.target.release}/error.log">
     <mkdir dir="${workspace.target.update}"/>
     <copy file="${workspace.target.release}/${ant.project.name}.exe"
         tofile="${workspace.target.update}/${ant.project.name}.exe_${release.version}"/>
+    <copy file="${workspace}/Resources/settings.ini"
+        tofile="${workspace.target.update}/${ant.project.name}.ini_${release.version}"/>
+
     <copy todir="${workspace.target.update}">
       <fileset casesensitive="false" dir="${workspace}/Resources/platform" includes="**"/>
       <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>

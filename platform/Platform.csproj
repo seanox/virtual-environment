@@ -72,6 +72,7 @@
         </Compile>
         <Compile Include="Sources\Notification.cs" />
         <Compile Include="Sources\Program.cs" />
+        <Compile Include="Sources\Resource.cs" />
         <Compile Include="Sources\Settings.cs" />
         <EmbeddedResource Include="Sources\Program.ico" />
         <Compile Include="Sources\Worker.cs">
@@ -106,6 +107,7 @@
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
         <EmbeddedResource Include="Resources\platform\Startup.cmd" />
+        <EmbeddedResource Include="Resources\settings.ini" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

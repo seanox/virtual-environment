@@ -56,25 +56,6 @@ namespace VirtualEnvironment.Platform
         // It is a balancing act between notifications that work comparable to
         // a trace log and a usable exception handling.
 
-        private static byte[] GetResource(string resourceName)
-        {
-            resourceName = String.Format("{0}.{1}.{2}", typeof(Diskpart).Namespace, "Resources", resourceName);
-            resourceName = new Regex("[\\./\\\\]+").Replace(resourceName, ".");
-            resourceName = new Regex("\\s").Replace(resourceName, "_");
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                var buffer = new byte[(int)stream.Length];
-                stream.Read(buffer, 0, (int)stream.Length);
-                return buffer;
-            }
-        }
-
-        private static string GetTextResource(string resourceName)
-        {
-            return Encoding.ASCII.GetString(GetResource(resourceName));
-        }
-
         private struct DiskpartResult
         {
             internal string Output;
@@ -84,7 +65,7 @@ namespace VirtualEnvironment.Platform
         private static DiskpartResult DiskpartExec(DiskpartTask diskpartTask, DiskpartProperties diskpartProperties)
         {
             var diskpartScriptName = "diskpart." + diskpartTask.ToString().ToLower();
-            var diskpartScript = GetTextResource(diskpartScriptName);
+            var diskpartScript = Resources.GetTextResource(diskpartScriptName);
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
                             current.Replace(String.Format("#[{0}]", field.Name.ToLower()),
@@ -235,7 +216,7 @@ namespace VirtualEnvironment.Platform
 
         private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements)
         {
-            var fileContent = GetResource(@"\platform\" + resourcePlatformPath);
+            var fileContent = Resources.GetResource(@"\platform\" + resourcePlatformPath);
             if (replacements != null)
             {
                 var fileContentText = Encoding.ASCII.GetString(fileContent);
