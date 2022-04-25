@@ -81,7 +81,7 @@ namespace VirtualEnvironment.Platform
             var loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".log");
 
-            messages.Select(message =>
+            messages = messages.Select(message =>
                     Messages.DiskpartUnexpectedErrorOccurred == message
                             || Messages.WorkerUnexpectedErrorOccurred == message
                         ? String.Format(message, Path.GetFileName(loggingFile)) : message).ToArray();
