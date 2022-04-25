@@ -337,6 +337,9 @@ namespace VirtualEnvironment.Platform
                 {
                     BatchResult batchResult;
 
+                    var applicationPath = Assembly.GetExecutingAssembly().Location;
+                    var applicationFile = Path.GetFileName(applicationPath);
+
                     switch (workerTask.Task)
                     {
                         case Task.Attach:
@@ -366,6 +369,12 @@ namespace VirtualEnvironment.Platform
 
                             Diskpart.CanCreateDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.CreateDisk(workerTask.Drive, workerTask.DiskFile);
+
+                            var applicationDirectory = Path.GetDirectoryName(applicationPath);
+                            var applicationName = Path.GetFileNameWithoutExtension(applicationFile);
+                            var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
+                            File.WriteAllBytes(settingsFile, Resources.GetResource(@"\platform\settings.ini"));
+
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
@@ -450,8 +459,6 @@ namespace VirtualEnvironment.Platform
                             break;
                         
                         default:
-                            var applicationPath = Assembly.GetExecutingAssembly().Location;
-                            var applicationFile = Path.GetFileName(applicationPath);
                             Notification.Push(Notification.Type.Error, Messages.WorkerVersion,
                                     String.Format(Messages.WorkerUsage, applicationFile));
                             break;
