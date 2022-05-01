@@ -4,6 +4,7 @@
       Triggers the update of the user interface.
   CR: Launcher: Scaling of icons depending on screen resolution
       for aesthetic reasons
+  CR: Launcher: Increase from the default value of OPACITY (95)
   
 1.0.1 20220401
   BF: Build: Correction of the version number

@@ -37,9 +37,9 @@
     Opacity of background in percents (100 - 0)
     Less than 50 makes no sense, because then the UI is difficult to see.
     
-    Default value: 90
+    Default value: 95
   -->
-  <opacity>90</opacity>
+  <opacity>95</opacity>
 
   <!--
     BackgroundImage is optionally a path relative to the working directory.

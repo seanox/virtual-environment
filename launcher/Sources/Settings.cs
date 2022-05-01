@@ -50,7 +50,7 @@ namespace VirtualEnvironment.Launcher
         private const int GRID_PADDING       = 10;
         private const int GRID_CORNER_RADIUS = 4;
         
-        private const int OPACITY = 90;
+        private const int OPACITY = 95;
         
         private const string BACKGROUND_COLOR = "#000000";
         private const string FOREGROUND_COLOR = "#C8C8C8";
