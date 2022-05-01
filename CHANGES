@@ -8,6 +8,10 @@
   CR: Platform: Integrated settings as a core component
       The key values of the settings are part of the environment variables of
       the virtual environment.
+  CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)
+  CR: Launcher: Increase from the default value of OPACITY (95)
+  CR: Launcher: Added option AutoScale (default true)
+      Scales the view according to the screen resolution ot the primary screen
 
 3.1.0 20220401
   BF: Platform: Correction of settings template synchronization
