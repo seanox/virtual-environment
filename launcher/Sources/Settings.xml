@@ -32,6 +32,8 @@
   <gridPadding>10</gridPadding>
   <!-- Radius for rounding the corners from the grid in pixels -->
   <gridCornerRadius>4</gridCornerRadius>
+  
+  <autoScale>true</autoScale>
 
   <!-- 
     Opacity of background in percents (100 - 0)

@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Windows.Forms;
 
 namespace VirtualEnvironment.Launcher.Tiles
 {
@@ -31,6 +32,8 @@ namespace VirtualEnvironment.Launcher.Tiles
         internal readonly int Gap;
         internal readonly int Padding;
         internal readonly int Radius;
+        
+        internal readonly float FontSize;
 
         internal int Count  => Columns * Rows;
         internal int Height => ((Size + Gap) * Rows) - Gap;
@@ -38,11 +41,52 @@ namespace VirtualEnvironment.Launcher.Tiles
         
         private MetaTileGrid(Settings settings)
         {
-            Size    = settings.GridSize;
-            Gap     = settings.GridGap;
-            Padding = settings.GridPadding;
-            
+            var scaleFactor = 1f;
+            if (settings.AutoScale)
+            {
+                var scaleMinOffset = settings.GridGap * 6;
+                var scaleMinHeight = ((settings.GridSize + settings.GridGap) * Rows) - Gap;
+                var scaleMinWidth = ((settings.GridSize + settings.GridGap) * Columns) - Gap;
+
+                var scaleMaxOffset = (settings.GridSize + settings.GridGap) * 2; 
+                var scaleMaxHeight = scaleMinHeight + scaleMaxOffset;
+                var scaleMaxWidth = scaleMinWidth + scaleMaxOffset;
+
+                var screenBounds = Screen.PrimaryScreen.Bounds;
+                if (scaleMaxHeight > screenBounds.Height
+                        && scaleMaxWidth >= screenBounds.Width)
+                {
+                    var scaleFactorHeight = (float)screenBounds.Height / scaleMaxHeight;
+                    var scaleFactorWidth = (float)screenBounds.Width / scaleMaxWidth;
+                    scaleFactor = Math.Min(scaleFactorHeight, scaleFactorWidth);
+                }
+                else 
+                {
+                    var scaleFactorHeight = (float)screenBounds.Height / (scaleMinHeight + scaleMinOffset);
+                    var scaleFactorWidth = (float)screenBounds.Width / (scaleMinWidth + scaleMinOffset);
+                    scaleFactor = Math.Min(scaleFactorHeight, scaleFactorWidth);
+                }
+            }
+
+            Func<double, double> ScaleNumber = (number) =>
+            {
+                var scaleNumberValue = Math.Floor(number * scaleFactor);
+                if (number % 2 == 0
+                        && scaleNumberValue % 2 != 0)
+                    return scaleNumberValue + 1;
+                if (number % 2 != 0
+                        && scaleNumberValue % 2 == 0)
+                    return scaleNumberValue + 1;
+                return scaleNumberValue;
+            };
+
+            Size    = (int)ScaleNumber(settings.GridSize);
+            Gap     = (int)ScaleNumber(settings.GridGap);
+            Padding = (int)ScaleNumber(settings.GridPadding);
+                
             Radius = Math.Min(Math.Max(settings.GridCornerRadius, 0), Size /2);
+
+            FontSize = (float)ScaleNumber(settings.FontSize);
         }
 
         internal static MetaTileGrid Create(Settings settings)

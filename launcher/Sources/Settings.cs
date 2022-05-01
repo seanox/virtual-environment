@@ -81,6 +81,8 @@ namespace VirtualEnvironment.Launcher
             _highlightColor  = HIGHLIGHT_COLOR;
             
             FontSize = SystemFonts.DefaultFont.Size;
+
+            AutoScale = false;
             
             Tiles = Array.Empty<Tile>();
         }
@@ -201,6 +203,9 @@ namespace VirtualEnvironment.Launcher
         
         [XmlElement("fontSize")]
         public float FontSize;
+        
+        [XmlElement("autoScale")]
+        public bool AutoScale;
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]

@@ -80,15 +80,15 @@ namespace VirtualEnvironment.Launcher.Tiles
 
             var tileRasterColumn = Index % _metaTileGrid.Columns;
             var tileRasterRow = (int)Math.Floor((float)Index / _metaTileGrid.Columns);
-            var tileStartX = ((tileRasterColumn * (_metaTileGrid.Size + _metaTileGrid.Gap)));
-            var tileStartY = ((tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap)));
+            var tileStartX = tileRasterColumn * (_metaTileGrid.Size + _metaTileGrid.Gap);
+            var tileStartY = tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap);
             Location = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
             
             _borderColor = ColorTranslator.FromHtml(settings.BorderColor);
             _foregroundColor = ColorTranslator.FromHtml(settings.ForegroundColor);
             _highlightColor = ColorTranslator.FromHtml(settings.HighlightColor);
 
-            _textFont = new Font(SystemFonts.DefaultFont.FontFamily, settings.FontSize, FontStyle.Regular);
+            _textFont = new Font(SystemFonts.DefaultFont.FontFamily, _metaTileGrid.FontSize, FontStyle.Regular);
             _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
             _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
             _iconImage = GetIconImage(_iconSpace -(2 * _metaTileGrid.Padding), Settings.IconFile, Settings.IconIndex);
@@ -112,12 +112,13 @@ namespace VirtualEnvironment.Launcher.Tiles
             // as the smallest usable resolution in IT. With increasing
             // resolution (total number of pixels) max. 25% scaling of the icon
             // size is calculated in relation to the screen resolution.
-            
-            var scaleFactorMax = (float)(Screen.PrimaryScreen.Bounds.Width * Screen.PrimaryScreen.Bounds.Height);
+
+            var screenBounds = Screen.PrimaryScreen.Bounds;
+            var scaleFactorMax = (float)screenBounds.Width * screenBounds.Height;
             scaleFactorMax = Math.Max(scaleFactorMax / (1366 * 768), 1);
             scaleFactorMax = (scaleFactorMax / 4) +1;
             
-            var scaleFactor = Math.Max(iconSize / (float)Math.Min(iconImage.Height, iconImage.Width), 1f);
+            var scaleFactor = Math.Max(iconSize / Math.Min(iconImage.Height, iconImage.Width), 1f);
             scaleFactor = Math.Min(Math.Max(scaleFactor, 1), scaleFactorMax);
 
             using (iconImage)
