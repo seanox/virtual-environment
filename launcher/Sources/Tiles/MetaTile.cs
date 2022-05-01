@@ -91,7 +91,7 @@ namespace VirtualEnvironment.Launcher.Tiles
             _textFont = new Font(SystemFonts.DefaultFont.FontFamily, settings.FontSize, FontStyle.Regular);
             _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
             _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
-            _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);
+            _iconImage = GetIconImage(_iconSpace -(2 * _metaTileGrid.Padding), Settings.IconFile, Settings.IconIndex);
 
             _iconImageLastModified = -1;
             if (File.Exists(Settings.IconFile))
@@ -101,15 +101,25 @@ namespace VirtualEnvironment.Launcher.Tiles
         private static Image GetIconImage(int iconSize, string iconFile, int iconIndex)
         {
             var iconImage = Utilities.Graphics.ImageOf(iconFile, iconIndex);
-            if (iconImage == null)
+            if (iconImage == null
+                    || iconSize < 16)
                 return null;
-            var scaleFactor = 1f;
-            scaleFactor = Math.Min(iconSize / (float)iconImage.Height, scaleFactor);
-            scaleFactor = Math.Min(iconSize / (float)iconImage.Width, scaleFactor);
-            if (scaleFactor <= 0)
-                return null;
-            if (scaleFactor >= 1)
-                return iconImage;
+
+            iconSize = CalculateIconSize(iconSize);
+
+            // For aesthetic reasons, the scaling of the icons depends on the
+            // screen resolution. As a reference, WXGA HD (1366 x 768) is used
+            // as the smallest usable resolution in IT. With increasing
+            // resolution (total number of pixels) max. 25% scaling of the icon
+            // size is calculated in relation to the screen resolution.
+            
+            var scaleFactorMax = (float)(Screen.PrimaryScreen.Bounds.Width * Screen.PrimaryScreen.Bounds.Height);
+            scaleFactorMax = Math.Max(scaleFactorMax / (1366 * 768), 1);
+            scaleFactorMax = (scaleFactorMax / 4) +1;
+            
+            var scaleFactor = Math.Max(iconSize / (float)Math.Min(iconImage.Height, iconImage.Width), 1f);
+            scaleFactor = Math.Min(Math.Max(scaleFactor, 1), scaleFactorMax);
+
             using (iconImage)
                 return Utilities.Graphics.ImageResize(iconImage, (int)(iconImage.Width * scaleFactor),
                         (int)(iconImage.Height * scaleFactor));
@@ -140,7 +150,7 @@ namespace VirtualEnvironment.Launcher.Tiles
             {
                 var iconImageLastModified = File.Exists(Settings.IconFile) ? File.GetLastWriteTime(Settings.IconFile).Ticks : -1;
                 if (iconImageLastModified != _iconImageLastModified)
-                    _iconImage = GetIconImage(CalculateIconSize(_iconSpace -(2 * _metaTileGrid.Padding)), Settings.IconFile, Settings.IconIndex);
+                    _iconImage = GetIconImage(_iconSpace -(2 * _metaTileGrid.Padding), Settings.IconFile, Settings.IconIndex);
                 _iconImageLastModified = iconImageLastModified;
             }
             catch (Exception)
