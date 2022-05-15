@@ -43,7 +43,7 @@ namespace VirtualEnvironment.Launcher
         private string _borderColor;
         private string _highlightColor;
 
-        private const string HOT_KEY = "1:27";
+        private const string HOT_KEY = "8+27";
 
         private const int GRID_SIZE          = 99;
         private const int GRID_GAP           = 25;

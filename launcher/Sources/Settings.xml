@@ -32,7 +32,8 @@
   <gridPadding>10</gridPadding>
   <!-- Radius for rounding the corners from the grid in pixels -->
   <gridCornerRadius>4</gridCornerRadius>
-  
+
+  <!-- Scales the view according to the resolution of the primary screen. -->
   <autoScale>true</autoScale>
 
   <!-- 
