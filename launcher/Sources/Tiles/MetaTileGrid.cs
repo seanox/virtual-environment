@@ -53,8 +53,8 @@ namespace VirtualEnvironment.Launcher.Tiles
                 var scaleMaxWidth = scaleMinWidth + scaleMaxOffset;
 
                 var screenBounds = Screen.PrimaryScreen.Bounds;
-                if (scaleMaxHeight > screenBounds.Height
-                        && scaleMaxWidth >= screenBounds.Width)
+                if (screenBounds.Height >= scaleMaxHeight
+                        && screenBounds.Width >= scaleMaxWidth)
                 {
                     var scaleFactorHeight = (float)screenBounds.Height / scaleMaxHeight;
                     var scaleFactorWidth = (float)screenBounds.Width / scaleMaxWidth;
@@ -86,7 +86,7 @@ namespace VirtualEnvironment.Launcher.Tiles
                 
             Radius = Math.Min(Math.Max(settings.GridCornerRadius, 0), Size /2);
 
-            FontSize = (float)ScaleNumber(settings.FontSize);
+            FontSize = settings.FontSize * scaleFactor;
         }
 
         internal static MetaTileGrid Create(Settings settings)
