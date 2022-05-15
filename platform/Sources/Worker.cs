@@ -287,7 +287,7 @@ namespace VirtualEnvironment.Platform
             var wshShell = new IWshRuntimeLibrary.WshShell();
             var shortcutFile = Path.Combine(applicationPath, applicationName + "." + task.ToString().ToLower() + ".lnk");
             if (File.Exists(shortcutFile))
-                return;
+                File.Delete(shortcutFile);
             var shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
             shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
             shortcut.Arguments = drive + " " + task.ToString().ToLower();
