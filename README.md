@@ -113,7 +113,7 @@ specific language governing permissions and limitations under the License.
 
 # Downloads
 [Seanox Virtual Environment 3.1.0](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0.zip)  
-[Seanox Virtual Environment 3.1.0 Update for existing environment](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0-update.zip)
+[Seanox Virtual Environment 3.1.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.1.0/seanox-virtual-platform-3.1.0-update.zip) for existing environment
 
 
 ## Example
