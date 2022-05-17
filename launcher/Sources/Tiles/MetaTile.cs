@@ -91,7 +91,7 @@ namespace VirtualEnvironment.Launcher.Tiles
             _textFont = new Font(SystemFonts.DefaultFont.FontFamily, _metaTileGrid.FontSize, FontStyle.Regular);
             _textMeasure = TextRenderer.MeasureText($"{Environment.NewLine}", _textFont);
             _iconSpace = _metaTileGrid.Size - _textMeasure.Height;
-            _iconImage = GetIconImage(_iconSpace -(2 * _metaTileGrid.Padding), Settings.IconFile, Settings.IconIndex);
+            _iconImage = GetIconImage(_iconSpace -(3 * _metaTileGrid.Padding), Settings.IconFile, Settings.IconIndex);
 
             _iconImageLastModified = -1;
             if (File.Exists(Settings.IconFile))
@@ -105,8 +105,6 @@ namespace VirtualEnvironment.Launcher.Tiles
                     || iconSize < 16)
                 return null;
 
-            iconSize = CalculateIconSize(iconSize);
-
             // For aesthetic reasons, the scaling of the icons depends on the
             // screen resolution. As a reference, WXGA HD (1366 x 768) is used
             // as the smallest usable resolution in IT. With increasing
@@ -118,7 +116,7 @@ namespace VirtualEnvironment.Launcher.Tiles
             scaleFactorMax = Math.Max(scaleFactorMax / (1366 * 768), 1);
             scaleFactorMax = (scaleFactorMax / 4) +1;
             
-            var scaleFactor = Math.Max(iconSize / Math.Min(iconImage.Height, iconImage.Width), 1f);
+            var scaleFactor = Math.Max((float)iconSize / Math.Min(iconImage.Height, iconImage.Width), 1f);
             scaleFactor = Math.Min(Math.Max(scaleFactor, 1), scaleFactorMax);
 
             using (iconImage)
@@ -129,16 +127,6 @@ namespace VirtualEnvironment.Launcher.Tiles
         internal static MetaTile Create(Screen screen, Settings settings, Settings.Tile tile)
         {
             return new MetaTile(screen, settings, tile);
-        }
-
-        private static int CalculateIconSize(int iconSpace)
-        {
-            var iconSizes = new [] {16, 24, 32, 48, 64, 128, 256, 512};
-            Array.Reverse(iconSizes);
-            foreach (var iconSize in iconSizes)
-                if (iconSpace >= iconSize)
-                    return iconSize;
-            return -1;
         }
 
         internal void Draw(Graphics graphics)
