@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Management;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace VirtualEnvironment.Platform
 {
@@ -302,8 +303,11 @@ namespace VirtualEnvironment.Platform
             var message = "@" + Messages.WorkerAttachEnvironmentSetup;
             foreach (var file in Settings.Files)
             {
-                var targetFile = Path.Combine(drive, file.Replace("/", @"\"));
-                if (!File.Exists(targetFile))
+                var targetFile = file.Replace("/", @"\");
+                targetFile = Regex.Replace(targetFile, @"^\\+", "");
+                targetFile = Path.Combine(drive, targetFile);
+                if (!File.Exists(targetFile)
+                        || File.GetAttributes(targetFile).HasFlag(FileAttributes.Directory))
                     return;
                 message += $"{Environment.NewLine}{targetFile}";
             
