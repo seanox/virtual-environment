@@ -25,9 +25,7 @@ https://github.com/seanox/virtual-environment/tree/main/startup/Releases
 
 
 # Changes (Change Log)
-## 1.2.1 20220401 (summary of the current version)  
-BF: StartUp: Optimization and corrections  
-CR: StartUp: Unification of namespace / platform icon / (sub) project structure  
-CR: StartUp: Added build script/process via Ant  
+## 1.2.2 20222506 (summary of the current version)  
+BF: Build: Correction of the release info process  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)

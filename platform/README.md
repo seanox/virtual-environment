@@ -46,19 +46,15 @@ https://github.com/seanox/virtual-environment/tree/main/platform/Releases
 
 
 # Changes (Change Log)
-## 3.1.0 20220401 (summary of the current version)  
-BF: Platform: Correction of settings template synchronization  
-BF: Platform Create: Correction of settings directory  
-BF: Platform: Compact per Diskpart was not executed  
-BF: Platform: Optimization and corrections  
-BF: Platform: Optimization and corrections of the texts  
-CR: Platform: Optimization / enhancement of function compact  
-CR: Platform: Optimization of notification message output  
-CR: Platform: Unification of namespace / platform icon / (sub) project structure  
-CR: Platform: Added build script/process via Ant  
-CR: Platform: Optimization of error logging  
-CR: Platform: Added console as default command line prompt  
-CR: Platform: Added launcher as default launcher to keep the environment alive  
-CR: Platform: Added shiftdown as optional service to shift down the process priority  
+## 3.2.0 20222506 (summary of the current version)  
+BF: Build: Correction of the release info process  
+BF: Launcher: Correction of the behavior when the screen resolution changes  
+BF: Platform: Existing shortcuts are now overwritten  
+CR: Platform: Optimization when detaching / process termination  
+CR: Platform: Integrated settings as a core component  
+CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)  
+CR: Launcher: Increase from the default value of OPACITY (95)  
+CR: Launcher: Added option AutoScale (default true)  
+CR: ShiftDown: Change the location to /Program Portables/ShiftDown  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)

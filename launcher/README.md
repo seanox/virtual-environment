@@ -120,9 +120,11 @@ Example of a configuration file:
 
 
 # Changes (Change Log)
-## 1.0.1 20220401 (summary of the current version)  
-BF: Build: Correction of the version number  
-BF: Build: Optimization of the release info process  
-BF: Build: Optimization of the build process  
+## 1.1.0 20222506 (summary of the current version)  
+BF: Build: Correction of the release info process  
+BF: Launcher: Correction of the behavior when the screen resolution changes  
+CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)  
+CR: Launcher: Increase from the default value of OPACITY (95)  
+CR: Launcher: Added option AutoScale (default true)  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
