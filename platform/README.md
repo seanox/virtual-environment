@@ -46,7 +46,7 @@ https://github.com/seanox/virtual-environment/tree/main/platform/Releases
 
 
 # Changes (Change Log)
-## 3.2.0 20222506 (summary of the current version)  
+## 3.2.0 20220625 (summary of the current version)  
 BF: Build: Correction of the release info process  
 BF: Launcher: Correction of the behavior when the screen resolution changes  
 BF: Platform: Existing shortcuts are now overwritten  

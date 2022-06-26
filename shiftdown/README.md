@@ -82,7 +82,7 @@ describes the details.
 
 
 # Changes (Change Log)
-## 1.3.2 20222506 (summary of the current version)  
+## 1.3.2 20220625 (summary of the current version)  
 BF: Build: Correction of the release info process  
 CR: Platform: Change the location to /Program Portables/ShiftDown  
 

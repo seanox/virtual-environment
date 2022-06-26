@@ -120,7 +120,7 @@ Example of a configuration file:
 
 
 # Changes (Change Log)
-## 1.1.0 20222506 (summary of the current version)  
+## 1.1.0 20220625 (summary of the current version)  
 BF: Build: Correction of the release info process  
 BF: Launcher: Correction of the behavior when the screen resolution changes  
 CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)  

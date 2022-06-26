@@ -1,4 +1,4 @@
-1.1.0 20222506
+1.1.0 20220625
   BF: Build: Correction of the release info process
   BF: Launcher: Correction of the behavior when the screen resolution changes
       Triggers the update of the user interface.
