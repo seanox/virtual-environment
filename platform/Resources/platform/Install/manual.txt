@@ -141,7 +141,8 @@ supports a key-values file, placeholders and a file list where the placeholders
 are replaced. The key-values file is located outside the virtual environment
 and is reapplied with each startup.
 
-Learn more: https://github.com/seanox/virtual-environment/tree/main/settings
+More details and a description can be found in the ini file in the working
+directory of the virtual environment.
 
 
 
