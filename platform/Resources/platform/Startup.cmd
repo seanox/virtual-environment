@@ -77,6 +77,9 @@ REM for /f "usebackq delims=" %%I in (`powershell "\"%PLATFORM_NAME%\".toUpper()
 REM ---- Extensions
 SET PATH=%APPSPATH%\Extensions;%PATH%
 
+REM ---- Switch
+SET PATH=%APPSPATH%\Switch;%PATH%
+
 REM Placeholder for automatic module integration
 REM INSERT COMMONS
 
