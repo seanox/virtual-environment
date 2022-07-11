@@ -171,7 +171,7 @@ CR: Launcher: Increase from the default value of OPACITY (95)
 CR: Launcher: Added option AutoScale (default true)  
 CR: Shiftdown: Change the location to /Program Portables/ShiftDown  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
 
 # Contact
