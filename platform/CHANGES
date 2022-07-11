@@ -1,4 +1,5 @@
 3.3.0 2022xxxx
+  BF: Settings: Spaces at the end of values are now ignored
   CR: Switch: Added to temporarily change the command line configuration
 
 3.2.0 20220625

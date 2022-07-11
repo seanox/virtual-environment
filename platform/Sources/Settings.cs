@@ -40,7 +40,7 @@ namespace VirtualEnvironment.Platform
                 new Regex(@"(?:^|[\r\n])\s*\[\s*SETTINGS\s*\](([\r\n]|.)*?)\s*(?:[\r\n]\s*\[|$)", RegexOptions.IgnoreCase);
         
         private static readonly Regex PATTERN_SECTION_KEY_VALUE =
-                new Regex(@"^\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)(?:\s*[\s:=]\s*(.*))?\s*$", RegexOptions.IgnoreCase);
+                new Regex(@"^\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)(?:\s*[\s:=]\s*(.*?))?\s*$", RegexOptions.IgnoreCase);
         
         private static readonly Regex PATTERN_SECTION_FILES =
                 new Regex(@"(?:^|[\r\n])\s*\[\s*FILES\s*\](([\r\n]|.)*?)\s*(?:[\r\n]\s*\[|$)", RegexOptions.IgnoreCase);
