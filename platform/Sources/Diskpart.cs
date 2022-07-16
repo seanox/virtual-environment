@@ -281,6 +281,7 @@ namespace VirtualEnvironment.Platform
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcherExit.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\ShiftDown\shiftdown.exe");
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\ShiftDown\shiftdown.xml");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Switch\switch.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
             MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
