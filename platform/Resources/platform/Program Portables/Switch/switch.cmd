@@ -1,46 +1,45 @@
 @ECHO OFF
 
-ECHO Virtual Environment Switch [Version 1.0.0 20220722]
-ECHO Copyright (C) 2022 Seanox Software Solutions
-ECHO Temporary change of the command line configuration
-ECHO.
-
 SETLOCAL ENABLEEXTENSIONS
 SET WORKDIR=%~dp0
-SET WORKPATCH=%1
-SET WORKPATCH=%WORKPATCH:"=%.cmdx
-SET WORKTEMP=%WORKDIR%\Temp
+SET SWITCH=%1
+SET SWITCH=%SWITCH:"=%.cmd
+SET SWITCHESDIR=%WORKDIR%\switches
+
+IF NOT EXIST "%SWITCHESDIR%\%SWITCH%" MKDIR %SWITCHESDIR%
 
 PUSHD "%WORKDIR%"
 IF NOT [%1] == [] (
-    IF EXIST "%WORKDIR%\%WORKPATCH%" (
-         IF NOT EXIST "%WORKTEMP%" MKDIR "%WORKTEMP%"
-         PUSHD "%WORKTEMP%" & "%1.cmd" & POPD 
-         COPY /Y "%WORKPATCH%" "%WORKTEMP%\%1.cmd" > NUL
-         CALL "%WORKTEMP%\%1.cmd" 
+    IF EXIST "%SWITCHESDIR%\%SWITCH%" (
+         PUSHD "%SWITCHESDIR%" & "%SWITCH%" & POPD 
          ENDLOCAL   
          GOTO:EOF
     )
 )
 
-ECHO Usage: %~nx0 [patch]
+ECHO Virtual Environment Switch [Version 1.0.0 20220723]
+ECHO Copyright (C) 2022 Seanox Software Solutions
+ECHO Temporary change of the command line configuration
 ECHO.
 
-SET PATCHESEXISTS=0
-FOR %%f IN (.\*.cmdx) DO (
+ECHO Usage: %~nx0 [switch]
+ECHO.
+
+SET SWITCHESEXISTS=0
+FOR %%f IN (%SWITCHESDIR%\*.cmd) DO (
     IF NOT [%%~nxf] == [%~nx0] (
-        SET PATCHESEXISTS=1
+        SET SWITCHESEXISTS=1
     )
 )
-IF [%PATCHESEXISTS%] == [1] (
-    ECHO Available Patches:
-    FOR %%f IN (.\*.cmdx) DO (
+IF [%SWITCHESEXISTS%] == [1] (
+    ECHO Available Switches:
+    FOR %%f IN (%SWITCHESDIR%\*.cmd) DO (
         IF NOT [%%~nxf] == [%~nx0] (
             ECHO   %%~nf
         )
     )
 ) ELSE (
-    ECHO no patches available
+    ECHO no switches available
 )
 
 ENDLOCAL
