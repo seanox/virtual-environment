@@ -6,12 +6,11 @@ SET SWITCH=%1
 SET SWITCH=%SWITCH:"=%.cmd
 SET SWITCHESDIR=%WORKDIR%\switches
 
-IF NOT EXIST "%SWITCHESDIR%\%SWITCH%" MKDIR %SWITCHESDIR%
+IF NOT EXIST "%SWITCHESDIR%" MKDIR "%SWITCHESDIR%"
 
-PUSHD "%WORKDIR%"
 IF NOT [%1] == [] (
     IF EXIST "%SWITCHESDIR%\%SWITCH%" (
-         PUSHD "%SWITCHESDIR%" & "%SWITCH%" & POPD 
+         PUSHD "%SWITCHESDIR%" & "%SWITCH%" & POPD
          ENDLOCAL   
          GOTO:EOF
     )
@@ -26,14 +25,14 @@ ECHO Usage: %~nx0 [switch]
 ECHO.
 
 SET SWITCHESEXISTS=0
-FOR %%f IN (%SWITCHESDIR%\*.cmd) DO (
+FOR %%f IN ("%SWITCHESDIR%\*.cmd") DO (
     IF NOT [%%~nxf] == [%~nx0] (
         SET SWITCHESEXISTS=1
     )
 )
 IF [%SWITCHESEXISTS%] == [1] (
     ECHO Available Switches:
-    FOR %%f IN (%SWITCHESDIR%\*.cmd) DO (
+    FOR %%f IN ("%SWITCHESDIR%\*.cmd") DO (
         IF NOT [%%~nxf] == [%~nx0] (
             ECHO   %%~nf
         )
