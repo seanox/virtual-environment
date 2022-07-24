@@ -104,6 +104,7 @@
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
         <EmbeddedResource Include="Resources\platform\Program Portables\ShiftDown\shiftdown.exe" />
         <EmbeddedResource Include="Resources\platform\Program Portables\ShiftDown\shiftdown.xml" />
+        <EmbeddedResource Include="Resources\platform\Program Portables\Switch\switch.cmd" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
         <EmbeddedResource Include="Resources\platform\Startup.cmd" />
