@@ -1,6 +1,5 @@
 @ECHO OFF
 
-SETLOCAL ENABLEEXTENSIONS
 SET WORKDIR=%~dp0
 SET SWITCH=%1
 SET SWITCH=%SWITCH:"=%.cmd
@@ -15,6 +14,8 @@ IF NOT [%1] == [] (
          GOTO:EOF
     )
 )
+
+SETLOCAL ENABLEEXTENSIONS
 
 ECHO Virtual Environment Switch [Version 1.0.0 20220723]
 ECHO Copyright (C) 2022 Seanox Software Solutions
