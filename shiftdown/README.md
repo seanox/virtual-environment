@@ -81,8 +81,8 @@ The program can optionally be configured via the enclosed XML file, which also
 describes the details.
 
 
-# Changes (Change Log)
-## 1.3.2 20220625 (summary of the current version)  
+# Changes
+## 1.3.2 20220625
 BF: Build: Correction of the release info process  
 CR: Platform: Change the location to /Program Portables/ShiftDown  
 
