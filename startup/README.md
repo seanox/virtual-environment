@@ -24,8 +24,8 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/tree/main/startup/Releases
 
 
-# Changes (Change Log)
-## 1.2.2 20220625 (summary of the current version)  
+# Changes 
+## 1.2.2 20220625 
 BF: Build: Correction of the release info process  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)
