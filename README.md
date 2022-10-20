@@ -160,8 +160,8 @@ __Module integration will come later, but will be similar.__
 <img src="resources/usage.gif"/>
 
 
-# Changes (Change Log)
-## 3.2.0 20220625 (summary of the current version)  
+# Changes
+## 3.2.0 20220625  
 BF: Build: Correction of the release info process  
 BF: Launcher: Correction of the behavior when the screen resolution changes  
 CR: Platform: Optimization when detaching / process termination  
