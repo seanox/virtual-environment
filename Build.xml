@@ -11,6 +11,7 @@
   </target>
 
   <property name="workspace" value="${basedir}"/>
+  <property name="workspace.release" value="${basedir}/release"/>
 
   <macrodef name="release-info-locate">
     <sequential>
@@ -69,5 +70,11 @@
   <target name="release" depends="changes">
     <ant dir="platform" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <copy todir="${workspace.release}">
+      <fileset dir="./launcher/Release"/>
+      <fileset dir="./platform/Release"/>
+      <fileset dir="./shiftdown/Release"/>
+      <fileset dir="./startup/Release"/>
+    </copy>
   </target>
 </project>
