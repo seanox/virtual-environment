@@ -117,8 +117,8 @@ specific language governing permissions and limitations under the License.
 
 
 ## Example
-Here you can download an example of a virtual environment (approx __3.9 GB__):  
-https://seanox.com/storage/master-3.2.1.7z  
+Here you can download an example of a virtual environment (approx __3.9 GB__ / last update 2022-09-03):  
+https://seanox.com/storage/master-3.2.1.7z 
 
 Included are various development environment and tools for Java and Node.js,
 incl. a customized Eclipse, a PostgreSQL database and much more.
@@ -160,8 +160,8 @@ __Module integration will come later, but will be similar.__
 <img src="resources/usage.gif"/>
 
 
-# Changes (Change Log)
-## 3.2.0 20220625 (summary of the current version)  
+# Changes
+## 3.2.0 20220625  
 BF: Build: Correction of the release info process  
 BF: Launcher: Correction of the behavior when the screen resolution changes  
 CR: Platform: Optimization when detaching / process termination  
