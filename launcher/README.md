@@ -42,7 +42,7 @@ Through the global hotkey even when the launcher is not visible.
 The launcher is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
 but can also be downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/tree/main/launcher/Releases
+https://github.com/seanox/virtual-environment/releases
 
 
 # Settings

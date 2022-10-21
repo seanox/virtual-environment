@@ -42,7 +42,7 @@ __Module integration will come later, but will be similar.__
 Platform is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform)
 but can also be downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/tree/main/platform/Releases
+https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
