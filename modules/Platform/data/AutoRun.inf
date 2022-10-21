@@ -1,5 +1,0 @@
-[AutoRun]
-;Open   = Startup.exe
-;Action = Startup.exe
-Icon    = .\#[environment.resources]\Icons\platform.ico
-Label   = #[environment.name] #[environment.version]

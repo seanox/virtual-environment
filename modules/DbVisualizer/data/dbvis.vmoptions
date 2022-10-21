@@ -1,5 +1,0 @@
--Xmx768m
--XX:StringTableSize=1000003
--Dsun.locale.formatasdefault=true
--include-options ${USERPROFILE}\.dbvis\user.vmoptions
--Duser.home=#[environment.documents.directory]\Local
