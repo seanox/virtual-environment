@@ -17,7 +17,7 @@
   <property name="workspace.target" value="${basedir}/Target"/>
   <property name="workspace.target.release" value="${workspace.target}/bin/Release"/>
   <property name="workspace.target.update" value="${workspace.target}/bin/Update"/>
-  <property name="workspace.releases" value="${basedir}/Releases"/>
+  <property name="workspace.release" value="${basedir}/Release"/>
   <property name="workspace.build.tool" value="${env.APPSPATH}/Rider/tools/MSBuild/Current/Bin/MSBuild.exe"/>
 
   <macrodef name="release-info-locate">
@@ -145,7 +145,7 @@ ${line.separator}${workspace.target.release}/error.log">
       </condition>
     </fail>
 
-    <mkdir dir="${workspace.releases}"/>
+    <mkdir dir="${workspace.release}"/>
     <delete includeemptydirs="true">
       <fileset casesensitive="false" dir="${workspace.target.release}" excludes="${ant.project.name}.exe"/>
     </delete>
@@ -159,11 +159,11 @@ ${line.separator}${workspace.target.release}/error.log">
     <touch datetime="${release.date}" pattern="yyyyMMdd">
       <fileset dir="${workspace.target.release}"/>
     </touch>
-    <mkdir dir="${workspace.releases}"/>
-    <delete file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
-    <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}.zip"
+    <mkdir dir="${workspace.release}"/>
+    <delete file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
+    <zip destfile="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"
         basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"/>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}.zip"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
 
     <delete dir="${workspace.target.update}"/>
     <mkdir dir="${workspace.target.update}"/>
@@ -196,10 +196,10 @@ ${line.separator}${workspace.target.release}/error.log">
     <touch datetime="${release.date}" pattern="yyyyMMdd">
       <fileset dir="${workspace.target.update}" includes="**"/>
     </touch>
-    <delete file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
-    <zip destfile="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"
+    <delete file="${workspace.release}/seanox-${ant.project.name}-${release.version}-update.zip"/>
+    <zip destfile="${workspace.release}/seanox-${ant.project.name}-${release.version}-update.zip"
         basedir="${workspace.target.update}" compress="true" level="9" filesonly="true"/>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.releases}/${ant.project.name}-${release.version}-update.zip"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-${ant.project.name}-${release.version}-update.zip"/>
 
     <release-info-reset/>
   </target>

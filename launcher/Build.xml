@@ -152,10 +152,10 @@ ${line.separator}${workspace.target.release}/error.log">
     </touch>
 
     <mkdir dir="${workspace.release}"/>
-    <delete file="${workspace.release}/${ant.project.name}-${release.version}.zip"/>
-    <zip destfile="${workspace.release}/${ant.project.name}-${release.version}.zip"
+    <delete file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
+    <zip destfile="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"
         basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"/>
-    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/${ant.project.name}-${release.version}.zip"/>
+    <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
     <copy file="${workspace.target.release}/${ant.project.name}.exe" overwrite="true"
         todir="../platform/Resources/platform/Program Portables/${ant.project.name}"/>
     
