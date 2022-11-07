@@ -121,8 +121,8 @@ Here you can download an example of a virtual environment (approx __3.9 GB__ / l
 https://seanox.com/storage/master-3.2.1.7z 
 
 Included is a complete development environment with various tools for AWS,
-Kubernetes, Terraform, Java and Node.js, including a customized Eclipse
-IntelliJ a PostgreSQL database and much more.
+Kubernetes, Terraform, Java and Node.js, including a customized Eclipse, a
+PostgreSQL database and much more.
 
 Start `master.exe B: attach`.
 
