@@ -120,8 +120,9 @@ specific language governing permissions and limitations under the License.
 Here you can download an example of a virtual environment (approx __3.9 GB__ / last update 2022-09-03):  
 https://seanox.com/storage/master-3.2.1.7z 
 
-Included are various development environment and tools for Java and Node.js,
-incl. a customized Eclipse, a PostgreSQL database and much more.
+Included is a complete development environment with various tools for AWS,
+Kubernetes, Terrafor, Java and Node.js, including a customized Eclipse, IntelliJ
+a PostgreSQL database and much more.
 
 Start `master.exe B: attach`.
 
