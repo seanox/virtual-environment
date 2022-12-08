@@ -19,7 +19,7 @@ SETLOCAL ENABLEEXTENSIONS
 
 ECHO Virtual Environment Macro [Version 1.0.0 20221208]
 ECHO Copyright (C) 2022 Seanox Software Solutions
-ECHO Temporary change of the command line configuration
+ECHO Simplification of repeated processes
 ECHO.
 
 ECHO Usage: %~nx0 [macro]
