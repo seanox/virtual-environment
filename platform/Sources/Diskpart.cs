@@ -4,7 +4,7 @@
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2023 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -101,9 +101,9 @@ namespace VirtualEnvironment.Platform
                 process.WaitForExit();
 
                 var diskpartResult = new DiskpartResult();
-                diskpartResult.Output = (process.StandardError.ReadToEnd() ?? "").Trim();
+                diskpartResult.Output = (process.StandardError.ReadToEnd()).Trim();
                 if (diskpartResult.Output.Length <= 0)
-                    diskpartResult.Output = (process.StandardOutput.ReadToEnd() ?? "").Trim();
+                    diskpartResult.Output = (process.StandardOutput.ReadToEnd()).Trim();
                 else diskpartResult.Failed = true;
                 if (process.ExitCode != 0)
                     diskpartResult.Failed = true;
@@ -265,6 +265,7 @@ namespace VirtualEnvironment.Platform
             Directory.CreateDirectory(tempDrive + @"\Documents\Videos");
             Directory.CreateDirectory(tempDrive + @"\Install");
             Directory.CreateDirectory(tempDrive + @"\Program Portables");
+            Directory.CreateDirectory(tempDrive + @"\Program Portables\Macros\macros");
             Directory.CreateDirectory(tempDrive + @"\Resources");
             Directory.CreateDirectory(tempDrive + @"\Settings");
             Directory.CreateDirectory(tempDrive + @"\Temp");
@@ -281,7 +282,8 @@ namespace VirtualEnvironment.Platform
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcherExit.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\ShiftDown\shiftdown.exe");
             MigrateResourcePlatformFile(tempDrive, @"\Program Portables\ShiftDown\shiftdown.xml");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Switch\switch.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Macros\macros.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Macros\macro.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
             MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
