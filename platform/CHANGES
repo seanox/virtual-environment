@@ -1,6 +1,7 @@
 3.3.1 2023xxxx
   CR: Build: Releases are now only available on the release page
-  CR: Switch: Macro: Replacement for Switch
+  CR: Macros: Replacement for Switch
+      usage: macro [macro] or macros [macro] 
 
 3.3.0 20220809
   BF: Settings: Spaces at the end of values are now ignored
