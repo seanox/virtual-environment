@@ -117,7 +117,7 @@ specific language governing permissions and limitations under the License.
 
 
 ## Example
-Here you can download an example of a virtual environment (approx __4.1 GB__ / last update 2022-11-07):  
+Here you can download an example of a virtual environment (approx __4.1 GB__ / last update 2023-06-30):  
 https://seanox.com/storage/master-3.3.0-RC.7z  
 https://seanox.com/storage/master-proxy-3.3.0-RC.7z
 
