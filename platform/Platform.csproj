@@ -103,6 +103,7 @@
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcher.xml" />
         <EmbeddedResource Include="Resources\platform\Program Portables\Launcher\launcherExit.cmd" />
         <EmbeddedResource Include="Resources\platform\Program Portables\Macros\macro.cmd" />
+        <EmbeddedResource Include="Resources\platform\Program Portables\Macros\macros.cmd" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
         <EmbeddedResource Include="Resources\platform\Startup.cmd" />
