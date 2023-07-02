@@ -1,7 +1,9 @@
-3.3.1 2023xxxx
+3.4.1 2023xxxx
   CR: Build: Releases are now only available on the release page
   CR: Macros: Replacement for Switch
-      usage: macro [macro] or macros [macro] 
+      usage: macro [macro] or macros [macro]
+  CR: Omission of ShiftDown as standard tool
+  CR: Balancer: Renaming of ShiftDown in Balancer
 
 3.3.0 20220809
   BF: Settings: Spaces at the end of values are now ignored

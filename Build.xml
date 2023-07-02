@@ -70,9 +70,9 @@
     <ant dir="platform" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <copy todir="${workspace.release}">
+      <fileset dir="./balancer/Release"/>
       <fileset dir="./launcher/Release"/>
       <fileset dir="./platform/Release"/>
-      <fileset dir="./shiftdown/Release"/>
       <fileset dir="./startup/Release"/>
     </copy>
   </target>

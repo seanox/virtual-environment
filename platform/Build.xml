@@ -113,9 +113,9 @@
   </target>
 
   <target name="release" depends="changes">
+    <ant dir="..\balancer" antfile="build.xml" target="release"
+         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\launcher" antfile="build.xml" target="release"
-        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
-    <ant dir="..\shiftdown" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\startup" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
