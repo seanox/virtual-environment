@@ -27,8 +27,8 @@ using System.Windows.Forms;
 
 namespace VirtualEnvironment.Platform
 {
-    internal static class Program {
-
+    internal static class Program
+    {
         internal const string DISK_TYPE   = "expandable";
         internal const int    DISK_SIZE   = 128000;
         internal const string DISK_STYLE  = "GPT";
