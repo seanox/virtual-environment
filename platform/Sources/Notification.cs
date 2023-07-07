@@ -38,7 +38,8 @@ namespace VirtualEnvironment.Platform
             Abort
         }
 
-        internal readonly struct Message {
+        internal readonly struct Message
+        {
             internal Type   Type { get; }
             internal string Text { get; }
 
