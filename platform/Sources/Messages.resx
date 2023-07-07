@@ -195,6 +195,9 @@
   <data name="WorkerAttachBatchFailed" xml:space="preserve">
     <value>Batch execution has failed.</value>
   </data>
+  <data name="WorkerAttachBatchTimeout" xml:space="preserve">
+    <value>Batch execution timeout detected.</value>
+  </data>
   <data name="WorkerAttachFailed" xml:space="preserve">
     <value>Attaching the virtual environment failed.</value>
   </data>
