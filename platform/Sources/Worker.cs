@@ -34,6 +34,8 @@ namespace VirtualEnvironment.Platform
 {
     public partial class Worker : Form, Notification.INotification
     {
+        private const int BATCH_PROCESS_IDLE_TIMEOUT_SECONDS = 30;
+
         internal delegate void BackgroundWorkerCall(Task task);
 
         internal enum Task
@@ -200,9 +202,31 @@ namespace VirtualEnvironment.Platform
                 process.StartInfo = processStartInfo;
                 process.Start();
 
+                var idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
+                var idleTotalProcessorTime = process.TotalProcessorTime;
                 while (Process.GetProcesses().Any(entry => entry.Id == process.Id))
+                {
                     Thread.Sleep(25);
-
+                    var totalProcessorTime = process.TotalProcessorTime;
+                    if (totalProcessorTime <= idleTotalProcessorTime
+                            && DateTimeOffset.Now > idleTimoutSeconds)
+                    {
+                        try
+                        {
+                            process.Kill();
+                            process.Dispose();
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        throw new TimeoutException(Messages.WorkerAttachBatchTimeout);
+                    }
+                    if (totalProcessorTime == idleTotalProcessorTime)
+                        continue;
+                    idleTotalProcessorTime = totalProcessorTime; 
+                    idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
+                }
+                
                 File.Copy(outputFile, outputTempFile, true);
                 var batchResult = new BatchResult
                 {
