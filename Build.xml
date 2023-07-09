@@ -69,6 +69,8 @@
   <target name="release" depends="changes">
     <ant dir="platform" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
+    <delete dir="${workspace.release}"/>
+    <mkdir dir="${workspace.release}"/>
     <copy todir="${workspace.release}">
       <fileset dir="./launcher/Release"/>
       <fileset dir="./platform/Release"/>

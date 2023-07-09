@@ -121,12 +121,8 @@
     <release-info-locate/>
     <release-info-insert/>
 
+    <delete dir="${workspace.target.release}"/>
     <mkdir dir="${workspace.target.release}"/>
-    <delete>
-      <fileset dir="${workspace.target.release}">
-        <include name="*"/>
-      </fileset>
-    </delete>
     <exec executable="${workspace.build.tool}" dir="${workspace}" resultproperty="workspace.build.exit.code"
         output="${workspace.target.release}/output.log" error="${workspace.target.release}/error.log">
       <arg line="${ant.project.name}.sln /t:Clean,Build /P:Configuration=Release"/>
@@ -142,10 +138,8 @@ ${line.separator}${workspace.target.release}/error.log">
       </condition>
     </fail>
 
+    <delete dir="${workspace.release}"/>
     <mkdir dir="${workspace.release}"/>
-    <delete includeemptydirs="true">
-      <fileset casesensitive="false" dir="${workspace.target.release}" excludes="${ant.project.name}.exe"/>
-    </delete>
     <copy todir="${workspace.target.release}" file="CHANGES"/>
     <copy todir="${workspace.target.release}" file="LICENSE"/>
     <copy todir="${workspace.target.release}" file="README.md"/>
