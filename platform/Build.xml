@@ -153,7 +153,8 @@ ${line.separator}${workspace.target.release}/error.log">
     <mkdir dir="${workspace.release}"/>
     <delete file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
     <zip destfile="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"
-        basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"/>
+        basedir="${workspace.target.release}" compress="true" level="9" filesonly="true"
+        excludes="*.log,*.pdb"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
 
     <delete dir="${workspace.target.update}"/>
