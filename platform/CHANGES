@@ -1,19 +1,15 @@
-3.4.0 2023xxxx
+3.3.0 20230710
+  BF: Settings: Spaces at the end of values are now ignored
   CR: Build: Releases are now only available on the release page
-  CR: Macros: Replacement for Switch
-      usage: macro [macro] or macros [macro]
-  CR: ShiftDown: Omission of ShiftDown as standard tool
-  CR: ShiftDown: Renaming in Balancer
-  CR: ShiftDown: Outsourcing as a separate project
+  CR: Macros: Added to temporarily change the command line configuration
+      Create your own macros as cmd-file in Program Portables/Macros/macros.
+      Call: 'macro [macro]' or 'macros [macro]' on the command line.
   CR: Platform: Added batch processing freeze detection
       Detects freezing script on attach and detach the platform and causes
       error instead of freezing itself.
-
-3.3.0 20220809
-  BF: Settings: Spaces at the end of values are now ignored
-  CR: Switch: Added to temporarily change the command line configuration
-      Create your own switches as cmd-file in Program Portables/Switch/switches.
-      Call 'switch' or 'switch [switch]' on the command line.
+  CR: ShiftDown: Omission of ShiftDown as standard tool
+  CR: ShiftDown: Renaming in Balancer
+  CR: ShiftDown: Outsourcing as a separate project
 
 3.2.0 20220625
   BF: Build: Correction of the release info process
@@ -57,12 +53,19 @@
       e.g. platform.exe B: shortcuts
   CR: Settings: Added for placeholder replacement in files
       This simplifies the personalization , distribution, migrations and updates.
-
+  
 2.5.0 2019xxxx
+  CR: Added support for VHDX and BitLocker
   NT: No public release
+  NT: More details have been lost
 
 2.0.0 2015xxxx
-  NT: No public release
+  CR: Change from SUBST to virtual disk VHD
+  NT: No public release 
+  NT: More details have been lost
 
 1.0.0 20xxxxxx
   NT: No public release
+  NT: More details have been lost
+  NT: Release is available
+  
