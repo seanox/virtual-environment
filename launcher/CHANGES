@@ -1,4 +1,5 @@
-1.1.1 2023xxxx
+1.1.1 20230710
+  BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered
   CR: Build: Releases are now only available on the release page
 
 1.1.0 20220625

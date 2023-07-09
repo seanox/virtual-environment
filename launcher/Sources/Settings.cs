@@ -87,7 +87,7 @@ namespace VirtualEnvironment.Launcher
             Tiles = Array.Empty<Tile>();
         }
 
-        private static string FILE
+        internal static string FILE
         {
             get
             {
