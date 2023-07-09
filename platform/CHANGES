@@ -2,9 +2,12 @@
   CR: Build: Releases are now only available on the release page
   CR: Macros: Replacement for Switch
       usage: macro [macro] or macros [macro]
-  CR: Omission of ShiftDown as standard tool
-  CR: Balancer: Renaming of ShiftDown in Balancer
-  CR: Platform: Added batch processing timeout detection
+  CR: ShiftDown: Omission of ShiftDown as standard tool
+  CR: ShiftDown: Renaming in Balancer
+  CR: ShiftDown: Outsourcing as a separate project
+  CR: Platform: Added batch processing freeze detection
+      Detects freezing script on attach and detach the platform and causes
+      error instead of freezing itself.
 
 3.3.0 20220809
   BF: Settings: Spaces at the end of values are now ignored
@@ -55,11 +58,11 @@
   CR: Settings: Added for placeholder replacement in files
       This simplifies the personalization , distribution, migrations and updates.
 
-2.0.0 2019xxxx
-  NT: Not published
+2.5.0 2019xxxx
+  NT: No public release
 
 2.0.0 2015xxxx
-  NT: Not published
+  NT: No public release
 
 1.0.0 20xxxxxx
-  NT: Not published
+  NT: No public release

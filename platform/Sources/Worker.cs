@@ -219,7 +219,7 @@ namespace VirtualEnvironment.Platform
                         catch (Exception)
                         {
                         }
-                        throw new TimeoutException(Messages.WorkerAttachBatchTimeout);
+                        throw new TimeoutException(Messages.WorkerBatchFreezeDetection);
                     }
                     if (totalProcessorTime == idleTotalProcessorTime)
                         continue;

@@ -193,10 +193,7 @@
     <value>Attaching the virtual environment</value>
   </data>
   <data name="WorkerAttachBatchFailed" xml:space="preserve">
-    <value>Batch execution has failed.</value>
-  </data>
-  <data name="WorkerAttachBatchTimeout" xml:space="preserve">
-    <value>Batch execution timeout detected.</value>
+    <value>Batch processing has failed.</value>
   </data>
   <data name="WorkerAttachFailed" xml:space="preserve">
     <value>Attaching the virtual environment failed.</value>
@@ -207,6 +204,10 @@
   <data name="WorkerAttachText" xml:space="preserve">
     <value>Attaching the virtual environment
 Programs and services are established.</value>
+  </data>
+
+  <data name="WorkerBatchFreezeDetection" xml:space="preserve">
+    <value>Batch processing no longer responds.</value>
   </data>
 
   <data name="WorkerCompactText" xml:space="preserve">
@@ -226,7 +227,7 @@ Virtual disk and file system are initialized.</value>
     <value>Detaching the virtual environment.</value>
   </data>
   <data name="WorkerDetachBatchFailed" xml:space="preserve">
-    <value>Batch execution has failed.</value>
+    <value>Batch processing has failed.</value>
   </data>
   <data name="WorkerDetachFailed" xml:space="preserve">
     <value>Detaching the virtual environment failed.</value>
