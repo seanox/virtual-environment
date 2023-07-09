@@ -53,7 +53,7 @@
       e.g. platform.exe B: shortcuts
   CR: Settings: Added for placeholder replacement in files
       This simplifies the personalization , distribution, migrations and updates.
-  
+
 2.5.0 2019xxxx
   CR: Added support for VHDX and BitLocker
   NT: No public release
@@ -61,11 +61,10 @@
 
 2.0.0 2015xxxx
   CR: Change from SUBST to virtual disk VHD
-  NT: No public release 
+  NT: No public release
   NT: More details have been lost
 
 1.0.0 20xxxxxx
   NT: No public release
   NT: More details have been lost
   NT: Release is available
-  
