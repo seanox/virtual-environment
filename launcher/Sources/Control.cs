@@ -189,7 +189,7 @@ namespace VirtualEnvironment.Launcher
             catch (Exception)
             {
                 MessageBox.Show("The settings do not contain a usable hot key."
-                        + $"{Environment.NewLine}Please check node /settings/hotKey in {Settings.FILE}.",
+                        + $"{Environment.NewLine}Please check the node /settings/hotKey in file {Settings.FILE.Replace(" ", "\u00A0")}.",
                         "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 if (_initial)
                     Environment.Exit(0);
