@@ -1,6 +1,6 @@
 @ECHO OFF
 
-REM Environment will be terminated
+REM Environment termination
 REM ----
 IF "%1" == "exit" (
 
@@ -23,7 +23,7 @@ start "Virtual Environment Launcher" /min "%APPSPATH%\Launcher\launcherExit.cmd"
 
 
 
-REM Environment will be configured
+REM Environment configuration
 REM ----
 
 SET OS_APPDATA=%APPDATA%
@@ -87,7 +87,7 @@ REM INSERT COMMONS
 
 
 
-REM Environment will be prepared
+REM Environment preparation
 REM ----
 
 REM Programs and service are configured and initialized here, but not started.
@@ -99,7 +99,7 @@ REM INSERT ATTACH
 
 
 
-REM Environment will be started
+REM Environment starting
 REM ----
 
 REM Programs and services are finally started here.
