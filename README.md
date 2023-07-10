@@ -76,10 +76,8 @@ used in the virtual environment.
 - Functions to create, launch, manage and compact the environment
 - The environment is immediately usable after creation
 - Integrated program launcher with optimized keyboard support for fast program access
-- Personalization of the environment and programs through the use of a separate
-  key-values file
-- Option to improve multitasking of older CPUs
-- Very small and resource-saving implementation of the platform
+- Personalization of environment and programs through a separate key values file
+- Very small and resource-efficient implementation of the platform
 - The use of the local file system and the registry is avoided
 - Easy customization according to the requirements
 - Simplifies centralized maintenance and distribution
@@ -92,7 +90,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
 
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2022 Seanox Software Solutions
+Copyright (C) 2023 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -112,8 +110,8 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.2.0](https://github.com/seanox/virtual-environment/releases/download/3.2.0/seanox-virtual-platform-3.2.0.zip)  
-[Seanox Virtual Environment 3.2.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.2.0/seanox-virtual-platform-3.2.0-update.zip) for existing environment
+[Seanox Virtual Environment 3.3.0](https://github.com/seanox/virtual-environment/releases/download/3.3.0/seanox-virtual-platform-3.3.0.zip)  
+[Seanox Virtual Environment 3.3.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.3.0/seanox-virtual-platform-3.3.0-update.zip) for existing environment
 
 
 ## Example
@@ -163,15 +161,15 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes
-## 3.2.0 20220625  
-BF: Build: Correction of the release info process  
-BF: Launcher: Correction of the behavior when the screen resolution changes  
-CR: Platform: Optimization when detaching / process termination  
-CR: Platform: Integrated settings as a core component  
-CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)  
-CR: Launcher: Increase from the default value of OPACITY (95)  
-CR: Launcher: Added option AutoScale (default true)  
-CR: Shiftdown: Change the location to /Program Portables/ShiftDown  
+## 3.3.0 20230710  
+BF: Settings: Spaces at the end of values are now ignored  
+BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered  
+CR: Build: Releases are now only available on the release page  
+CR: Macros: Added to temporarily change the command line configuration  
+CR: Platform: Added batch processing freeze detection  
+CR: ShiftDown: Omission of ShiftDown as standard tool  
+CR: ShiftDown: Renaming in Balancer  
+CR: ShiftDown: Outsourcing as a separate project  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
