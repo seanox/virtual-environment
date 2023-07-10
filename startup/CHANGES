@@ -1,23 +1,20 @@
-1.2.3 2023xxxx
-  CR: Build: Releases are now only available on the release page
-
 1.2.2 20220625
-  BF: Build: Correction of the release info process
+BF: Build: Correction of the release info process
 
 1.2.1 20220401
-  BF: StartUp: Optimization and corrections
-  CR: StartUp: Unification of namespace / platform icon / (sub) project structure
-  CR: StartUp: Added build script/process via Ant
+BF: StartUp: Optimization and corrections
+CR: StartUp: Unification of namespace / platform icon / (sub) project structure
+CR: StartUp: Added build script/process via Ant
 
 1.2.0 20211126
-  CR: License: Changed to Apache License Version 2.0
-  CR: Project: Change to .NET
+CR: License: Changed to Apache License Version 2.0
+CR: Project: Change to .NET
 
 1.1.0 20xxxxxx
-  NT: No public release
-  NT: More details have been lost
+NT: No public release
+NT: More details have been lost
 
 1.0.0 20xxxxxx
-  NT: No public release
-  NT: More details have been lost
-  NT: Release is available
+NT: No public release
+NT: More details have been lost
+NT: Release is available
