@@ -4,7 +4,9 @@ environment and modules that then automatically download tools and programs
 from the Internet, configure them and integrated them in the virtual
 environment.
 
-__In the upcoming release 3.x the modules are not yet supported.__
+__The module concept is implemented and usable, but no modules have been
+released yet because there is currently not enough time to maintain the
+packages -- your support is welcome :-)__
 
 
 # Usage
@@ -46,15 +48,14 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 3.2.0 20220625 
-BF: Build: Correction of the release info process  
-BF: Launcher: Correction of the behavior when the screen resolution changes  
-BF: Platform: Existing shortcuts are now overwritten  
-CR: Platform: Optimization when detaching / process termination  
-CR: Platform: Integrated settings as a core component  
-CR: Launcher: Scaling of icons depending on screen resolution (aesthetic reasons)  
-CR: Launcher: Increase from the default value of OPACITY (95)  
-CR: Launcher: Added option AutoScale (default true)  
-CR: ShiftDown: Change the location to /Program Portables/ShiftDown  
+## 3.3.0 20230710  
+BF: Settings: Spaces at the end of values are now ignored  
+BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered  
+CR: Build: Releases are now only available on the release page  
+CR: Macros: Added to temporarily change the command line configuration  
+CR: Platform: Added batch processing freeze detection  
+CR: ShiftDown: Omission of ShiftDown as standard tool  
+CR: ShiftDown: Renaming in Balancer  
+CR: ShiftDown: Outsourcing as a separate project  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)
