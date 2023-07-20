@@ -120,9 +120,9 @@ specific language governing permissions and limitations under the License.
 
 
 ## Example
-Here you can download an example of a virtual environment (approx __4.3 GB__ / last update 2023-07-19):  
+Here you can download an example of a virtual environment (approx __4.1 GB__ / last update 2023-07-19):  
 https://seanox.com/storage/master-3.3.0.7z  
-https://seanox.com/storage/master-proxy-3.3.0-RC.7z
+https://seanox.com/storage/master-proxy-3.3.0.7z
 
 Included is a complete development environment with various tools for AWS,
 Kubernetes, Terraform, Java and Node.js, including a customized Eclipse, a
