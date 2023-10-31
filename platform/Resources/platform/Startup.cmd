@@ -78,7 +78,7 @@ REM ---- Extensions
 SET PATH=%APPSPATH%\Extensions;%PATH%
 
 REM ---- Macros
-SET PATH=%APPSPATH%\Macros;%PATH%
+SET PATH=%APPSPATH%\Macros;%PATH%;%APPSPATH%\Macros\macros
 
 REM Placeholder for automatic module integration
 REM INSERT COMMONS
