@@ -1,6 +1,7 @@
 3.4.0 2024xxxx
 CR: Macros: Optimization of the use of WORKDIR
 CR: Macros: Usable as direct short commands
+CR: Project: Updated TargetFrameworkVersion to v4.8
 
 3.3.0 20230710
 BF: Settings: Spaces at the end of values are now ignored
