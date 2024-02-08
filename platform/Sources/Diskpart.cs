@@ -257,7 +257,7 @@ namespace VirtualEnvironment.Platform
             AttachDisk(tempDrive, diskFile);
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
-            Directory.CreateDirectory(tempDrive + @"\Database");
+            Directory.CreateDirectory(tempDrive + @"\Datasource");
             Directory.CreateDirectory(tempDrive + @"\Documents");
             Directory.CreateDirectory(tempDrive + @"\Documents\Music");
             Directory.CreateDirectory(tempDrive + @"\Documents\Pictures");
