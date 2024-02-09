@@ -13,8 +13,8 @@ Arguments are also supported and passed to the batch script.
 
 
 # System Requirement
-- Windows 10 or higher
-- .NET 4.7.x or higher
+- Microsoft Windows 10 or higher
+- Microsoft .NET 6.0.x or higher
 
 
 # Download

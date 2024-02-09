@@ -34,8 +34,8 @@ Through the global hotkey even when the launcher is not visible.
 
 
 # System Requirement
-- Windows 10 or higher
-- .NET 4.7.x or higher
+- Microsoft Windows 10 or higher
+- Microsoft .NET 6.0.x or higher
 
 
 # Download
