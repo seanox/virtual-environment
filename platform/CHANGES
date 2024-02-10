@@ -1,4 +1,5 @@
 3.4.0 2024xxxx
+BF: Platform: Optimization and corrections
 CR: Macros: Optimization of the use of WORKDIR
 CR: Macros: Usable as direct short commands
 CR: Project: Updated TargetFrameworkVersion to v4.8

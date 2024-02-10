@@ -250,7 +250,7 @@ Programs and services are terminated.</value>
   </data>
   
   <data name="WorkerUsage" xml:space="preserve">
-    <value>{0} A-Z: [create|attach|detach|...]</value>
+    <value>{0} [A-Z]: [create|attach|detach|...]</value>
   </data>
   
   <data name="WorkerVersion" xml:space="preserve">
