@@ -11,7 +11,13 @@ IF "%1" == "exit" (
     REM virtual drive and are still running.
 
 REM ---- Launcher
-start "Virtual Environment Launcher" /min "%APPSPATH%\Launcher\launcherExit.cmd"
+
+    REM Workaround and part of the concept. In the launcher an exit function can
+    REM be mapped, but the virtual environment is kept alive by the launcher and
+    REM therefore it does not exist as a default and so the launcher should be
+    REM terminated via taskkill on detach.
+
+    taskkill /t /im launcher.exe
 
     REM Placeholder for automatic module integration
     REM INSERT DETACH
