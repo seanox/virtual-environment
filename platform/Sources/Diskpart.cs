@@ -257,17 +257,15 @@ namespace VirtualEnvironment.Platform
             AttachDisk(tempDrive, diskFile);
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
-            Directory.CreateDirectory(tempDrive + @"\Datasource");
             Directory.CreateDirectory(tempDrive + @"\Documents");
             Directory.CreateDirectory(tempDrive + @"\Documents\Music");
             Directory.CreateDirectory(tempDrive + @"\Documents\Pictures");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Projects");
             Directory.CreateDirectory(tempDrive + @"\Documents\Videos");
-            Directory.CreateDirectory(tempDrive + @"\Install");
-            Directory.CreateDirectory(tempDrive + @"\Program Portables");
-            Directory.CreateDirectory(tempDrive + @"\Program Portables\Macros\macros");
+            Directory.CreateDirectory(tempDrive + @"\Programs");
+            Directory.CreateDirectory(tempDrive + @"\Programs\Macros\macros");
             Directory.CreateDirectory(tempDrive + @"\Resources");
             Directory.CreateDirectory(tempDrive + @"\Settings");
+            Directory.CreateDirectory(tempDrive + @"\Storage");
             Directory.CreateDirectory(tempDrive + @"\Temp");
 
             var replacements = new Dictionary<string, string>();
@@ -275,13 +273,12 @@ namespace VirtualEnvironment.Platform
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x");
 
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Console\console.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Extensions\startup.exe");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcher.exe");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcher.xml");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Launcher\launcherExit.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Macros\macros.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Program Portables\Macros\macro.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Console\console.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Extensions\startup.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Launcher\launcher.exe");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Launcher\launcher.xml");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Macros\macros.cmd");
+            MigrateResourcePlatformFile(tempDrive, @"\Programs\Macros\macro.cmd");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
             MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
             MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
