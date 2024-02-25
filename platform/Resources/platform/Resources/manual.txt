@@ -1,16 +1,16 @@
     Introduction
     ----
-Since about 2010 exists the project of the virtual environment with modular
-structure for developers and users, so that this can provide a completely
+Since about 2010, there is the project of virtual environment with modular
+structure for developers and users, so that they can use a completely
 pre-configured environment with all programs, tools and services, without the
-environment affecting the running operating system and without devouring
+host environment interfering with the running operating system and devouring
 resources.
 
 Short setup times, uniform tools with uniform configuration, uniform paths in
 the file system, centralized maintenance and easy distribution and updating are
 some of the benefits. The environment is easily customizable, can be quickly
 switched to use for different projects, and the environment can be easily
-transferred to other machines where work started can be easily continued.
+transferred to other machines where work started can be continued.
 
 The project includes with platform, a tool for the initial creation, use and
 management of the virtual environment and a module concept for the automatic
@@ -89,8 +89,8 @@ Good sources are:
 - https://portableapps.com
 - https://portapps.io
 
-But also otherwise many manufacturers offer portable versions or portable use
-of the software.
+But also otherwise many manufacturers offer portable versions or portable use of
+the software.
 
 With attaching and detaching of the virtual environment Startup.cmd is called,
 where the environment can be configured and the programs can be installed,
@@ -115,8 +115,8 @@ be started, which then inherit the environment variables as exclusive copy.
 
 A program launcher is recommended to keep this process alive, as it is started
 when the virtual environment is started and ends only when the virtual
-environment is detached. And so should the quitting and detaching of the
-virtual environment should be initiated via the launcher.
+environment is detached. And so should the quitting and detaching of the virtual
+environment should be initiated via the launcher.
 
 Detachment can be invoked in the environment via environment variables.
 
@@ -138,8 +138,8 @@ Even though a virtual environment can be configured very well, in some cases
 further data of user, computer and environment are still needed. For this
 purpose, the virtual environment contains the settings component. Settings
 supports a key-values file, placeholders and a file list where the placeholders
-are replaced. The key-values file is located outside the virtual environment
-and is reapplied with each startup.
+are replaced. The key-values file is located outside the virtual environment and
+is reapplied with each startup.
 
 More details and a description can be found in the ini file in the working
 directory of the virtual environment.
