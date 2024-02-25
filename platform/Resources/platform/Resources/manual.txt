@@ -122,7 +122,7 @@ Detachment can be invoked in the environment via environment variables.
 
 %PLATFORM_APP% %HOMEDRIVE% detach
 
-Or it can also be called with the plarform program.
+Or it can also be called with the platform program.
 
 e.g. seanox.exe B: detach
 
