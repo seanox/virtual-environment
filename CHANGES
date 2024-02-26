@@ -5,7 +5,8 @@ BF: Platform: Optimization and corrections
 CR: Platform: Optimization of macros for the use of WORKDIR
 CR: Platform: Macros usable as direct short commands
 CR: Platform: Refactoring of the standard directory structure
-    - Spaces in the path have been omitted*
+    - Spaces in the path have been omitted
+    - Formerly Database is now part of Storage
     - Formerly Install is now part of Resources
     + Documents
       + Music
