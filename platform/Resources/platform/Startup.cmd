@@ -53,7 +53,7 @@ SET VT_USERPROFILE=%VT_HOMEDRIVE%\Settings
 SET VT_APPDATA=%VT_USERPROFILE%\Roaming
 SET VT_LOCALAPPDATA=%VT_USERPROFILE%\Local
 SET VT_PUBLIC=%VT_HOMEDRIVE%\Documents\Public
-SET VT_APPSPATH=%VT_HOMEDRIVE%\Program Portables
+SET VT_APPSPATH=%VT_HOMEDRIVE%\Programs
 SET VT_TEMP=%VT_HOMEDRIVE%\Temp
 
 REM Relevant system variables are rewritten
@@ -80,8 +80,8 @@ REM Please do not set program starts here, that will come later.
 REM Changes the platform name to uppercase, e.g. as a prefix for services.
 REM for /f "usebackq delims=" %%I in (`powershell "\"%PLATFORM_NAME%\".toUpper()"`) do set "PLATFORM_NAME=%%~I"
 
-REM ---- Extensions
-SET PATH=%APPSPATH%\Extensions;%PATH%
+REM ---- Platform
+SET PATH=%APPSPATH%\Platform;%PATH%
 
 REM ---- Macros
 SET PATH=%APPSPATH%\Macros;%PATH%;%APPSPATH%\Macros\macros
