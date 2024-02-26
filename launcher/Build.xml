@@ -153,7 +153,7 @@ ${line.separator}${workspace.target.release}/error.log">
         excludes="*.log,*.pdb"/>
     <touch datetime="${release.date}" pattern="yyyyMMdd" file="${workspace.release}/seanox-${ant.project.name}-${release.version}.zip"/>
     <copy file="${workspace.target.release}/${ant.project.name}.exe" overwrite="true"
-        todir="../platform/Resources/platform/Program Portables/${ant.project.name}"/>
+        todir="../platform/Resources/platform/Programs/Platform"/>
     
     <release-info-reset/>
   </target>
