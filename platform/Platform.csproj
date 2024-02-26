@@ -75,9 +75,9 @@
         <Compile Include="Sources\Resource.cs" />
         <Compile Include="Sources\Settings.cs" />
         <EmbeddedResource Include="Sources\Program.ico" />
-        <Compile Include="Sources\Worker.cs">
           <SubType>Form</SubType>
         </Compile>
+        <Compile Include="Sources\Worker.cs">
         <Compile Include="Sources\Worker.Designer.cs">
           <DependentUpon>Worker.cs</DependentUpon>
         </Compile>
@@ -97,10 +97,10 @@
         <EmbeddedResource Include="Resources\diskpart\detach" />
         <EmbeddedResource Include="Resources\diskpart\list" />
         <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
-        <EmbeddedResource Include="Resources\platform\Programs\Console\console.cmd" />
-        <EmbeddedResource Include="Resources\platform\Programs\Extensions\startup.exe" />
-        <EmbeddedResource Include="Resources\platform\Programs\Launcher\launcher.exe" />
-        <EmbeddedResource Include="Resources\platform\Programs\Launcher\launcher.xml" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\console.cmd" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.exe" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.xml" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macro.cmd" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macros.cmd" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
