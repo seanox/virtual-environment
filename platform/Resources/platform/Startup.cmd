@@ -118,7 +118,7 @@ REM can later use the virtual environment and the required environment
 REM variables. This is also important so that detaching works properly.
 
 REM ---- Launcher (to keep the environment alive)
-pushd "%APPSPATH%\Launcher"
+pushd "%APPSPATH%\Platform"
 start launcher.exe
 popd
 

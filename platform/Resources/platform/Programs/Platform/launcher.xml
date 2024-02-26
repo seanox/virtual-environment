@@ -123,14 +123,14 @@
       <title>Settings</title>
       <icon>%WINDIR%\system32\imageres.dll:64</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
-      <arguments>%APPSPATH%\Launcher\launcher.xml</arguments>
-      <workingDirectory>%APPSPATH%\Launcher</workingDirectory>
+      <arguments>%APPSPATH%\Platform\launcher.xml</arguments>
+      <workingDirectory>%APPSPATH%\Platform</workingDirectory>
     </tile>
     <tile>
       <index>31</index>
       <title>Terminal</title>
       <icon>%WINDIR%\System32\cmd.exe</icon>
-      <destination>%APPSPATH%\Console\console.cmd</destination>
+      <destination>%APPSPATH%\Platform\console.cmd</destination>
       <workingDirectory>%HOMEDRIVE%</workingDirectory>
     </tile>
     <tile>
