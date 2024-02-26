@@ -1,5 +1,6 @@
 1.1.2 2024xxxx
 CR: Project: Updated TargetFrameworkVersion to v4.8
+CR: Platform: Refactoring of the standard directory structure
 
 1.1.1 20230710
 BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered
