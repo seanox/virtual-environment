@@ -1,3 +1,27 @@
+3.4.0 2024xxxx
+CR: Launcher: Updated TargetFrameworkVersion to v4.8
+CR: Startup: Updated TargetFrameworkVersion to v4.8
+BF: Platform: Optimization and corrections
+CR: Platform: Optimization of macros for the use of WORKDIR
+CR: Platform: Macros usable as direct short commands
+CR: Platform: Refactoring of the standard directory structure
+    - Spaces in the path have been omitted*
+    - Formerly Install is now part of Resources
+    + Documents
+      + Music
+      + Pictures
+      + Videos
+    + Programs
+      + Launcher
+      + Programs
+        + Macros
+          + macros
+      + Startup
+    + Resources
+    + Settings
+    + Storage
+    + Temp
+
 3.3.0 20230710
 BF: Settings: Spaces at the end of values are now ignored
 BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered

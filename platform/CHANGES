@@ -4,7 +4,22 @@ CR: Macros: Optimization of the use of WORKDIR
 CR: Macros: Usable as direct short commands
 CR: Project: Updated TargetFrameworkVersion to v4.8
 CR: Platform: Refactoring of the standard directory structure
-    - \Database -> \Datasource
+    - Spaces in the path have been omitted*
+    - Formerly Install is now part of Resources
+    + Documents
+      + Music
+      + Pictures
+      + Videos
+    + Programs
+      + Launcher
+      + Programs
+        + Macros
+          + macros
+      + Startup
+    + Resources
+    + Settings
+    + Storage
+    + Temp
 
 3.3.0 20230710
 BF: Settings: Spaces at the end of values are now ignored
