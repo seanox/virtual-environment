@@ -8,16 +8,15 @@ CR: Platform: Refactoring of the standard directory structure
     - Spaces in the path have been omitted
     - Formerly Database is now part of Storage
     - Formerly Install is now part of Resources
+    - Core components of the platform are located in /Programs/Platform
     + Documents
       + Music
       + Pictures
       + Videos
     + Programs
-      + Launcher
-      + Programs
-        + Macros
-          + macros
-      + Startup
+      + Macros
+        + macros
+      + Platform
     + Resources
     + Settings
     + Storage
