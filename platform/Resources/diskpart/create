@@ -3,6 +3,6 @@ select vdisk file="#[file]"
 attach vdisk
 convert #[style]
 create partition primary
-format FS=NTFS LABEL="#[name]" COMPRESS
+format FS=NTFS LABEL="#[name]" QUICK COMPRESS
 detach vdisk
 exit
