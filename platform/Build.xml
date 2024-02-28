@@ -143,7 +143,7 @@ ${line.separator}${workspace.target.release}/error.log">
     <copy todir="${workspace.target.release}" file="CHANGES"/>
     <copy todir="${workspace.target.release}" file="LICENSE"/>
     <copy todir="${workspace.target.release}" file="README.md"/>
-    <copy todir="${workspace.target.release}" file="${workspace}/Resources/platform/Install/manual.txt"/>
+    <copy todir="${workspace.target.release}" file="${workspace}/Resources/platform/Resources/manual.txt"/>
     <exec executable="cmd" dir="${workspace.target.release}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
