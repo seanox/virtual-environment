@@ -75,9 +75,9 @@
         <Compile Include="Sources\Resource.cs" />
         <Compile Include="Sources\Settings.cs" />
         <EmbeddedResource Include="Sources\Program.ico" />
+        <Compile Include="Sources\Worker.cs">
           <SubType>Form</SubType>
         </Compile>
-        <Compile Include="Sources\Worker.cs">
         <Compile Include="Sources\Worker.Designer.cs">
           <DependentUpon>Worker.cs</DependentUpon>
         </Compile>
