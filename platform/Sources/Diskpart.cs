@@ -38,6 +38,7 @@ namespace VirtualEnvironment.Platform
             Compact,
             Create,
             Detach,
+            Detail,
             List
         }
         
@@ -164,7 +165,15 @@ namespace VirtualEnvironment.Platform
             diskpartResult = DiskpartExec(DiskpartTask.List, new DiskpartProperties());
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-            var volumeNumberPattern = new Regex(@"^\s*Volume\s+(\d+)\s+([A-Z]\s+)?" + Path.GetFileNameWithoutExtension(diskFile), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var diskNumberPattern = new Regex(@"^.*?(\d+)\D+?" + Regex.Escape(diskFile) + @"\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var diskNumberMatch = diskNumberPattern.Match(diskpartResult.Output);
+            if (!diskNumberMatch.Success)
+                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
+            var diskNumber = int.Parse(diskNumberMatch.Groups[1].Value);
+            diskpartResult = DiskpartExec(DiskpartTask.Detail, new DiskpartProperties() {Number = diskNumber});
+            if (diskpartResult.Failed)
+                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            var volumeNumberPattern = new Regex(@"^\s+volume\s+(\d+)\s+" + Regex.Escape(Path.GetFileNameWithoutExtension(diskFile)) + @".*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             var volumeNumberMatch = volumeNumberPattern.Match(diskpartResult.Output);
             if (!volumeNumberMatch.Success)
                 throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
