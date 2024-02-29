@@ -152,46 +152,52 @@ namespace VirtualEnvironment.Platform
 
         internal static void AttachDisk(string drive, string diskFile)
         {
-            DiskpartResult diskpartResult;
-
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach);
-            CanAttachDisk(drive, diskFile);
-
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDiskpart);
-            diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {File = diskFile});
-            if (diskpartResult.Failed)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDetectVolume);
-            diskpartResult = DiskpartExec(DiskpartTask.List, new DiskpartProperties());
-            if (diskpartResult.Failed)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-            var diskNumberPattern = new Regex(@"^.*?(\d+)\D+?" + Regex.Escape(diskFile) + @"\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var diskNumberMatch = diskNumberPattern.Match(diskpartResult.Output);
-            if (!diskNumberMatch.Success)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
-            var diskNumber = int.Parse(diskNumberMatch.Groups[1].Value);
-            diskpartResult = DiskpartExec(DiskpartTask.Detail, new DiskpartProperties() {Number = diskNumber});
-            if (diskpartResult.Failed)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-            var volumeNumberPattern = new Regex(@"^\s+volume\s+(\d+)\s+" + Regex.Escape(Path.GetFileNameWithoutExtension(diskFile)) + @".*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var volumeNumberMatch = volumeNumberPattern.Match(diskpartResult.Output);
-            if (!volumeNumberMatch.Success)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
-            var volumeNumber = int.Parse(volumeNumberMatch.Groups[1].Value);
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, String.Format(Messages.DiskpartAttachAssign, volumeNumber, drive));
-            diskpartResult = DiskpartExec(DiskpartTask.Assign, new DiskpartProperties()
+            try
             {
-                Number = volumeNumber,
-                Drive  = drive.Substring(0, 1)
-            });
-            if (diskpartResult.Failed)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                DiskpartResult diskpartResult;
+
+                Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach);
+                CanAttachDisk(drive, diskFile);
+
+                Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDiskpart);
+                diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {File = diskFile});
+                if (diskpartResult.Failed)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, Messages.DiskpartAttachDetectVolume);
+                diskpartResult = DiskpartExec(DiskpartTask.List, new DiskpartProperties());
+                if (diskpartResult.Failed)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                var diskNumberPattern = new Regex(@"^.*?(\d+)\D+?" + Regex.Escape(diskFile) + @"\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                var diskNumberMatch = diskNumberPattern.Match(diskpartResult.Output);
+                if (!diskNumberMatch.Success)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
+                var diskNumber = int.Parse(diskNumberMatch.Groups[1].Value);
+                diskpartResult = DiskpartExec(DiskpartTask.Detail, new DiskpartProperties() {Number = diskNumber});
+                if (diskpartResult.Failed)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                var volumeNumberPattern = new Regex(@"^\s+volume\s+(\d+)(?:\s+\w+)?\s+" + Regex.Escape(Path.GetFileNameWithoutExtension(diskFile)) + @".*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                var volumeNumberMatch = volumeNumberPattern.Match(diskpartResult.Output);
+                if (!volumeNumberMatch.Success)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartVolumeNotFound, "@" + diskpartResult.Output);
+                var volumeNumber = int.Parse(volumeNumberMatch.Groups[1].Value);
+                Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, String.Format(Messages.DiskpartAttachAssign, volumeNumber, drive));
+                diskpartResult = DiskpartExec(DiskpartTask.Assign, new DiskpartProperties()
+                {
+                    Number = volumeNumber,
+                    Drive  = drive.Substring(0, 1)
+                });
+                if (diskpartResult.Failed)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            }
+            catch (Exception exception)
+            {
+                DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
+                throw exception;
+            }
         }
 
         internal static void CanDetachDisk(string drive, string diskFile)
         {
-            if (!Directory.Exists(drive))
-                throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartDriveNotExists);
             if (!File.Exists(diskFile))
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartFileNotExists);
         }

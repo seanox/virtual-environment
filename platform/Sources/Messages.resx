@@ -170,9 +170,6 @@
   <data name="DiskpartDriveAlreadyExists" xml:space="preserve">
     <value>Drive already exists</value>
   </data>
-  <data name="DiskpartDriveNotExists" xml:space="preserve">
-    <value>Drive does not exist</value>
-  </data>
   <data name="DiskpartFileAlreadyExists" xml:space="preserve">
     <value>Virtual disk already exists as a file</value>
   </data>

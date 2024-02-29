@@ -204,15 +204,6 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drive does not exist.
-        /// </summary>
-        internal static string DiskpartDriveNotExists {
-            get {
-                return ResourceManager.GetString("DiskpartDriveNotExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Virtual disk already exists as a file.
         /// </summary>
         internal static string DiskpartFileAlreadyExists {
