@@ -131,7 +131,7 @@
     <value>Assignment as a drive</value>
   </data>
   <data name="DiskpartAttachFailed" xml:space="preserve">
-    <value>Attaching the virtual disk falied.</value>
+    <value>Attaching the virtual disk failed</value>
   </data>
   
   <data name="DiskpartCompact" xml:space="preserve">
@@ -141,7 +141,7 @@
     <value>Virtual disk and file system are compacted</value>
   </data>
   <data name="DiskpartCompactFailed" xml:space="preserve">
-    <value>Compaction of the virtual disk failed.</value>
+    <value>Compaction of the virtual disk failed</value>
   </data>
   
   <data name="DiskpartCreate" xml:space="preserve">
@@ -151,7 +151,7 @@
     <value>Creating virtual disk</value>
   </data>
   <data name="DiskpartCreateFailed" xml:space="preserve">
-    <value>Creation of the virtual disk failed.</value>
+    <value>Creation of the virtual disk failed</value>
   </data>
   <data name="DiskpartCreateInitializationFileSystem" xml:space="preserve">
     <value>File system are initialized</value>
@@ -164,7 +164,7 @@
     <value>Unassigning the drive and detaching the virtual disk</value>
   </data>
   <data name="DiskpartDetachFailed" xml:space="preserve">
-    <value>Detaching the virtual disk failed.</value>
+    <value>Detaching the virtual disk failed</value>
   </data>
   
   <data name="DiskpartDriveAlreadyExists" xml:space="preserve">
@@ -174,7 +174,7 @@
     <value>Drive does not exist</value>
   </data>
   <data name="DiskpartFileAlreadyExists" xml:space="preserve">
-    <value>A file already exists for the virtual disk</value>
+    <value>Virtual disk already exists as a file</value>
   </data>
   <data name="DiskpartFileNotExists" xml:space="preserve">
     <value>No file can be found for the virtual disk</value>
@@ -183,7 +183,7 @@
     <value>No free drive letter is available</value>
   </data>
   <data name="DiskpartUnexpectedErrorOccurred" xml:space="preserve">
-    <value>An unexpected error has occurred.</value>
+    <value>An unexpected error has occurred</value>
   </data>
   <data name="DiskpartVolumeNotFound" xml:space="preserve">
     <value>Volume of the virtual disk was not found</value>
@@ -193,26 +193,26 @@
     <value>Attaching the virtual environment</value>
   </data>
   <data name="WorkerAttachBatchFailed" xml:space="preserve">
-    <value>Batch processing has failed.</value>
+    <value>Batch processing has failed</value>
   </data>
   <data name="WorkerAttachFailed" xml:space="preserve">
-    <value>Attaching the virtual environment failed.</value>
+    <value>Attaching the virtual environment failed</value>
   </data>
   <data name="WorkerAttachEnvironmentSetup" xml:space="preserve">
-    <value>Configuration of the virtual environment.</value>
+    <value>Configuration of the virtual environment</value>
   </data>
   <data name="WorkerAttachText" xml:space="preserve">
     <value>Attaching the virtual environment
-Programs and services are established.</value>
+Programs and services are established</value>
   </data>
 
   <data name="WorkerBatchFreezeDetection" xml:space="preserve">
-    <value>Batch processing no longer responds.</value>
+    <value>Batch processing no longer responds</value>
   </data>
 
   <data name="WorkerCompactText" xml:space="preserve">
     <value>Compaction of the virtual environment
-Virtual disk and file system are compacted.</value>
+Virtual disk and file system are compacted</value>
   </data>
   <data name="WorkerCompactCleanFilesystem" xml:space="preserve">
     <value>Temporary files are cleaned</value>
@@ -220,17 +220,17 @@ Virtual disk and file system are compacted.</value>
   
   <data name="WorkerCreateText" xml:space="preserve">
     <value>Creation of the virtual environment
-Virtual disk and file system are initialized.</value>
+Virtual disk and file system are initialized</value>
   </data>
 
   <data name="WorkerDetach" xml:space="preserve">
-    <value>Detaching the virtual environment.</value>
+    <value>Detaching the virtual environment</value>
   </data>
   <data name="WorkerDetachBatchFailed" xml:space="preserve">
-    <value>Batch processing has failed.</value>
+    <value>Batch processing has failed</value>
   </data>
   <data name="WorkerDetachFailed" xml:space="preserve">
-    <value>Detaching the virtual environment failed.</value>
+    <value>Detaching the virtual environment failed</value>
   </data>
   <data name="WorkerDetachBlocked" xml:space="preserve">
     <value>Detaching is blocked by {0}
@@ -238,7 +238,7 @@ Virtual disk and file system are initialized.</value>
   </data>
   <data name="WorkerDetachText" xml:space="preserve">
     <value>Detaching the virtual environment
-Programs and services are terminated.</value>
+Programs and services are terminated</value>
   </data>
   
   <data name="WorkerSuccessfullyCompleted" xml:space="preserve">
@@ -246,7 +246,7 @@ Programs and services are terminated.</value>
   </data>
   
   <data name="WorkerUnexpectedErrorOccurred" xml:space="preserve">
-    <value>An unexpected error has occurred.</value>
+    <value>An unexpected error has occurred</value>
   </data>
   
   <data name="WorkerUsage" xml:space="preserve">
@@ -262,6 +262,6 @@ Programs and services are terminated.</value>
   </data>
   <data name="WorkerShortcutsText" xml:space="preserve">
     <value>Creation of the shortcuts
-The usual functions are initialized.</value>
+The usual functions are initialized</value>
   </data>
 </root>
