@@ -35,7 +35,9 @@ Through the global hotkey even when the launcher is not visible.
 
 # System Requirement
 - Microsoft Windows 10 or higher
-- Microsoft .NET 6.0.x or higher
+- Microsoft .NET 4.8.x or higher (for runtime)
+- [Microsoft .NET 8.0.x or higher](
+      https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
 
 
 # Download
@@ -120,8 +122,8 @@ Example of a configuration file:
 
 
 # Changes 
-## 1.1.1 20230710  
-BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered  
-CR: Build: Releases are now only available on the release page  
+## 1.1.2 2024xxxx (upcoming version)  
+CR: Project: Updated TargetFrameworkVersion to v4.8  
+CR: Platform: Refactoring of the standard directory structure  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)

@@ -14,7 +14,9 @@ Arguments are also supported and passed to the batch script.
 
 # System Requirement
 - Microsoft Windows 10 or higher
-- Microsoft .NET 6.0.x or higher
+- Microsoft .NET 4.8.x or higher (for runtime)
+- [Microsoft .NET 8.0.x or higher](
+      https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
 
 
 # Download
@@ -25,7 +27,8 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 1.2.2 20220625 
-BF: Build: Correction of the release info process  
+## 1.2.3 2024xxxx (upcoming version)  
+CR: Project: Updated TargetFrameworkVersion to v4.8  
+CR: Platform: Refactoring of the standard directory structure  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)

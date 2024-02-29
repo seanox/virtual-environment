@@ -50,14 +50,13 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 3.3.0 20230710  
-BF: Settings: Spaces at the end of values are now ignored  
-BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered  
-CR: Build: Releases are now only available on the release page  
-CR: Macros: Added to temporarily change the command line configuration  
-CR: Platform: Added batch processing freeze detection  
-CR: ShiftDown: Omission of ShiftDown as standard tool  
-CR: ShiftDown: Renaming in Balancer  
-CR: ShiftDown: Outsourcing as a separate project  
+## 3.4.0 2024xxxx (upcoming version)  
+BF: Platform: Optimization and corrections  
+BF: DiskPart: Optimization when attaching disks with the same label  
+BF: DiskPart: Correction when creating with Windows 11  
+CR: Macros: Optimization of the use of WORKDIR  
+CR: Macros: Usable as direct short commands  
+CR: Project: Updated TargetFrameworkVersion to v4.8  
+CR: Platform: Refactoring of the standard directory structure  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)
