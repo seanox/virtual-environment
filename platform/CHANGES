@@ -1,4 +1,4 @@
-3.4.0 2024xxxx
+3.4.0 20240302
 BF: Review: Optimization and corrections
 BF: DiskPart: Optimization when attaching disks with the same label
 BF: DiskPart: Correction when creating with Windows 11
