@@ -27,7 +27,7 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 1.2.3 2024xxxx (upcoming version)  
+## 1.2.3 20240302  
 CR: Project: Updated TargetFrameworkVersion to v4.8  
 CR: Platform: Refactoring of the standard directory structure  
 

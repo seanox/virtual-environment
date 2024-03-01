@@ -122,7 +122,7 @@ Example of a configuration file:
 
 
 # Changes 
-## 1.1.2 2024xxxx (upcoming version)  
+## 1.1.2 20240302  
 CR: Project: Updated TargetFrameworkVersion to v4.8  
 CR: Platform: Refactoring of the standard directory structure  
 

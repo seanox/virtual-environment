@@ -50,7 +50,7 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 3.4.0 2024xxxx (upcoming version)  
+## 3.4.0 20240302  
 BF: Review: Optimization and corrections  
 BF: DiskPart: Optimization when attaching disks with the same label  
 BF: DiskPart: Correction when creating with Windows 11  
