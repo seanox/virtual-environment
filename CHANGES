@@ -1,9 +1,11 @@
 3.4.0 2024xxxx
-CR: Launcher: Updated TargetFrameworkVersion to v4.8
-CR: Startup: Updated TargetFrameworkVersion to v4.8
-BF: Platform: Optimization and corrections
-CR: Platform: Optimization of macros for the use of WORKDIR
-CR: Platform: Macros usable as direct short commands
+BF: Review: Optimization and corrections
+BF: DiskPart: Optimization when attaching disks with the same label
+BF: DiskPart: Correction when creating with Windows 11
+CR: DiskPart: Optimization of detach if an error occurs
+CR: Macros: Optimization of the use of WORKDIR
+CR: Macros: Usable as direct short commands
+CR: Project: Updated TargetFrameworkVersion to v4.8
 CR: Platform: Refactoring of the standard directory structure
     - Spaces in the path have been omitted
     - Formerly Database is now part of Storage
@@ -21,6 +23,8 @@ CR: Platform: Refactoring of the standard directory structure
     + Settings
     + Storage
     + Temp
+CR: Launcher: Updated TargetFrameworkVersion to v4.8
+CR: Startup: Updated TargetFrameworkVersion to v4.8
 
 3.3.0 20230710
 BF: Settings: Spaces at the end of values are now ignored

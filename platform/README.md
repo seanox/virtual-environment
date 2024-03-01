@@ -51,9 +51,10 @@ https://github.com/seanox/virtual-environment/releases
 
 # Changes 
 ## 3.4.0 2024xxxx (upcoming version)  
-BF: Platform: Optimization and corrections  
+BF: Review: Optimization and corrections  
 BF: DiskPart: Optimization when attaching disks with the same label  
 BF: DiskPart: Correction when creating with Windows 11  
+CR: DiskPart: Optimization of detach if an error occurs  
 CR: Macros: Optimization of the use of WORKDIR  
 CR: Macros: Usable as direct short commands  
 CR: Project: Updated TargetFrameworkVersion to v4.8  

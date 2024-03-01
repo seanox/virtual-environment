@@ -95,7 +95,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
 
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2023 Seanox Software Solutions
+Copyright (C) 2024 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -111,7 +111,9 @@ specific language governing permissions and limitations under the License.
 
 # System Requirement
 - Microsoft Windows 10 or higher
-- Microsoft .NET 6.0.x or higher
+- Microsoft .NET 4.8.x or higher (for runtime)
+- [Microsoft .NET 8.0.x or higher](
+      https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
 
 
 # Downloads
@@ -166,15 +168,17 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes
-## 3.3.0 20230710  
-BF: Settings: Spaces at the end of values are now ignored  
-BF: Launcher: Correction/optimization of the output if the HotKey cannot be registered  
-CR: Build: Releases are now only available on the release page  
-CR: Macros: Added to temporarily change the command line configuration  
-CR: Platform: Added batch processing freeze detection  
-CR: ShiftDown: Omission of ShiftDown as standard tool  
-CR: ShiftDown: Renaming in Balancer  
-CR: ShiftDown: Outsourcing as a separate project  
+## 3.4.0 2024xxxx (upcoming version)  
+BF: Review: Optimization and corrections  
+BF: DiskPart: Optimization when attaching disks with the same label  
+BF: DiskPart: Correction when creating with Windows 11  
+CR: DiskPart: Optimization of detach if an error occurs  
+CR: Macros: Optimization of the use of WORKDIR  
+CR: Macros: Usable as direct short commands  
+CR: Project: Updated TargetFrameworkVersion to v4.8  
+CR: Platform: Refactoring of the standard directory structure  
+CR: Launcher: Updated TargetFrameworkVersion to v4.8  
+CR: Startup: Updated TargetFrameworkVersion to v4.8  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
