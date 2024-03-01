@@ -81,7 +81,7 @@
         match="(Seanox Virtual Environment )\d+(\.\d+)*" flags="g" byline="false"
         replace="\1${release.version}"/>
     <replaceregexp file="${workspace}/README.md"
-        match="(seanox-virtual-platform-)\d+(?:\.\d+)*((?:-update)*\.zip)" flags="g" byline="false"
+        match="(seanox-platform-)\d+(?:\.\d+)*((?:-update)*\.zip)" flags="g" byline="false"
         replace="\1${release.version}\2"/>
     <replaceregexp file="${workspace}/README.md"
         match="(https://github.com/seanox/virtual-environment/releases/download/)\d+(?:\.\d+)*" flags="g" byline="false"
