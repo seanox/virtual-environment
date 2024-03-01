@@ -85,6 +85,17 @@
     Default value: Size of the system font
   -->
   <fontSize>9.5</fontSize>
+  
+  <!--
+  
+    Sources for system icons: %WINDIR%\system32 *.cpl, *.dll, *.exe, *.msc 
+    - %WINDIR%\system32\imageres.dll
+    - %WINDIR%\system32\shell32.dll
+    - %WINDIR%\system32\services.msc
+    - %WINDIR%\system32\inetcpl.cpl
+    - ...
+  
+  -->
 
   <tiles>
     <tile>
@@ -107,7 +118,7 @@
     <tile>
       <index>17</index>
       <title>hosts</title>
-      <icon>%WINDIR%\system32\imageres.dll:257</icon>
+      <icon>%WINDIR%\system32\inetcpl.cpl:26</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
       <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
       <workingDirectory>%WINDIR%\System32\drivers\etc</workingDirectory>
@@ -121,7 +132,7 @@
     <tile>
       <index>28</index>
       <title>Settings</title>
-      <icon>%WINDIR%\system32\imageres.dll:64</icon>
+      <icon>%WINDIR%\system32\inetcpl.cpl:46</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
       <arguments>%APPSPATH%\Platform\launcher.xml</arguments>
       <workingDirectory>%APPSPATH%\Platform</workingDirectory>
