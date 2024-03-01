@@ -140,7 +140,7 @@ To exit, use the Detach button at the bottom right of the launcher.
 
 
 # Usage
-- Download the last release of [seanox-virtual-platform.zip](#downloads)
+- Download the last release of [seanox-platform.zip](#downloads)
 - Extract the file to any location in the local file system
 - Rename __platform.exe__ to the name that will be used for the environment and drive
 
