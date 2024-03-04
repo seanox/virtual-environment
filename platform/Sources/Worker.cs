@@ -418,24 +418,35 @@ namespace VirtualEnvironment.Platform
 
                             Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesystem);
 
-                            var tempDirectory = Path.Combine(workerTask.Drive, "Temp");
-                            if (Directory.Exists(tempDirectory))
+                            void DeleteFileEntry(string path)
                             {
-                                Directory.Delete(tempDirectory, true);
-                                Directory.CreateDirectory(tempDirectory);
+                                try
+                                {
+                                    var fileAttributes = File.GetAttributes(path);
+                                    if (fileAttributes.HasFlag(FileAttributes.Directory)
+                                            && Directory.Exists(path))
+                                        Directory.Delete(path, true);
+                                    if (!fileAttributes.HasFlag(FileAttributes.Directory)
+                                            && File.Exists(path))
+                                        File.Delete(path);
+                                }
+                                catch
+                                {
+                                }
                             }
 
+                            var tempDirectory = Path.Combine(workerTask.Drive, "Temp");
+                            DeleteFileEntry(tempDirectory);
+                            Directory.CreateDirectory(tempDirectory);
+
                             var recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
-                            if (Directory.Exists(recycleDirectory))
-                                Directory.Delete(recycleDirectory, true);
+                            DeleteFileEntry(recycleDirectory);
 
                             var startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
-                            if (File.Exists(startupExitFile))
-                                File.Delete(startupExitFile);
+                            DeleteFileEntry(startupExitFile);
 
                             var startupStartupFile = Path.Combine(workerTask.Drive, "Startup.startup");
-                            if (File.Exists(startupStartupFile))
-                                File.Delete(startupStartupFile);
+                            DeleteFileEntry(startupStartupFile);
                             
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
@@ -500,8 +511,10 @@ namespace VirtualEnvironment.Platform
                         Notification.Push(Notification.Type.Error, workerException.Messages);
                     else if (exception is DiskpartException diskpartException)
                         Notification.Push(Notification.Type.Error, diskpartException.Messages);
-                    else
-                        Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
+                    else Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
+
+                    if (new []{Task.Attach, Task.Create, Task.Compact}.Contains(workerTask.Task))
+                        Diskpart.AbortDisk(workerTask.Drive, workerTask.DiskFile);
                 }
             });
         }
