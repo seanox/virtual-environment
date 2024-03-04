@@ -89,12 +89,9 @@ namespace VirtualEnvironment.Platform
                 {
                     UseShellExecute = false,
                     CreateNoWindow  = true,
-                    
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    
                     FileName  = "diskpart.exe",
                     Arguments = "/s " + diskpartScriptFile,
-
                     RedirectStandardError  = true,
                     RedirectStandardOutput = true
                 };
