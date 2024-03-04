@@ -98,6 +98,7 @@ namespace VirtualEnvironment.Platform
 
         private struct BatchResult
         {
+            internal string Message;
             internal string Output;
             internal bool   Failed;
         }
@@ -108,16 +109,15 @@ namespace VirtualEnvironment.Platform
             //     What you need to know
             // What is the plan: In the virtual environment, the batch file
             // Startup.cmd is used to start and stop the environment. The batch
-            // file then contains all the commands to set up the environment
-            // and start the required programs.
-            // For this purpose, a process is started in C#. If other programs
-            // are started in this process and run in the background, they are
-            // child processes. Now the parent process -- like cmd.exe here --
-            // can end with the end of the batch file and is then no longer
-            // included in the list of active processes. But since child
-            // processes are still active, the resources remain active and so
-            // does the stdout/stderr. Therefore you can not access them, the
-            // access will block.
+            // file then contains all the commands to set up the environment and
+            // start the required programs. For this purpose, a process is
+            // started in C#. If other programs are started in this process and
+            // run in the background, they are child processes. Now the parent
+            // process -- like cmd.exe here -- can end with the end of the batch
+            // file and is then no longer included in the list of active
+            // processes. But since child processes are still active, the
+            // resources remain active and so does the stdout/stderr. Therefore
+            // you can not access them, the access will block.
             //
             // Why should it be accessed?
             // So that possible errors and outputs can be written into the log
@@ -128,28 +128,30 @@ namespace VirtualEnvironment.Platform
             // not have to be used by the process. If the batch script was run
             // to the end, the parent process will end and the PID from the
             // parent process is no longer in the list of active processes,
-            // which is interpreted as an end signal.
-            // Now stdout/stderr can be read from the redirected file. However,
-            // the file is still exclusively open when child processes are
-            // still running.Therefore the file is copied and the data is read
-            // from the copy. The copy is then deleted. 
+            // which is interpreted as an end signal. Now stdout/stderr can be
+            // read from the redirected file. However, the file is still
+            // exclusively open when child processes are still running.Therefore
+            // the file is copied and the data is read from the copy. The copy
+            // is then deleted. 
 
-            var outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + (arguments[0] ?? "output"));
-            
+            var outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + ".log");
             arguments = (new [] {fileName}).Concat(arguments).ToArray();
-            arguments = new [] {"/A", "/C", String.Join(" ", arguments), ">", outputFile};
+            arguments = new [] {"/A", "/C", String.Join(" ", arguments), ">", outputFile, "2>&1"};
+
+            // At runtime, the output file is locked for the C# process.
+            // Therefore, the output file is copied to a temporary file by the
+            // operating system, which can then be read and deleted at the end
+            // of the batch process.
+            var outputTempFile = Path.GetTempFileName();
 
             var processStartInfo = new ProcessStartInfo()
             {
                 UseShellExecute = false,
                 CreateNoWindow  = true,
-
                 WindowStyle = ProcessWindowStyle.Minimized,
-
                 FileName  = "cmd.exe",
                 Arguments = String.Join(" ", arguments),
                 WorkingDirectory = Path.GetDirectoryName(fileName),
-
                 RedirectStandardError  = false,
                 RedirectStandardOutput = false
             };
@@ -185,17 +187,6 @@ namespace VirtualEnvironment.Platform
             var rootPath = Path.GetPathRoot(fileName);
             SetEnvironmentVariableIfNecessary("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
-            // When detaching, the drive and thus the temp directory is
-            // detached before cleaning, so a fixed name of the temp file is
-            // used so that not so much garbage accumulates in the temp
-            // directory.
-
-            var tempFile = Path.GetTempFileName();
-            var tempDirectory = Path.GetDirectoryName(tempFile);
-            var outputTempFile = Path.Combine(tempDirectory, "stdout");
-            File.Delete(outputTempFile);
-            File.Move(tempFile, outputTempFile);
-
             try
             {
                 var process = new Process();
@@ -216,31 +207,31 @@ namespace VirtualEnvironment.Platform
                             process.Kill();
                             process.Dispose();
                         }
-                        catch (Exception)
+                        catch
                         {
                         }
                         throw new TimeoutException(Messages.WorkerBatchFreezeDetection);
                     }
                     if (totalProcessorTime == idleTotalProcessorTime)
                         continue;
-                    idleTotalProcessorTime = totalProcessorTime; 
+                    idleTotalProcessorTime = totalProcessorTime;
                     idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
                 }
-                
+
                 File.Copy(outputFile, outputTempFile, true);
-                var batchResult = new BatchResult
+                return new BatchResult
                 {
                     Output = File.ReadAllText(outputTempFile),
                     Failed = process.ExitCode != 0
                 };
-
-                return batchResult;
             }
             catch (Exception exception)
             {
+                File.Copy(outputFile, outputTempFile, true);
                 return new BatchResult()
                 {
-                    Output = exception.Message,
+                    Message = exception.Message,
+                    Output = File.ReadAllText(outputTempFile),
                     Failed = true
                 };
             }
@@ -265,16 +256,14 @@ namespace VirtualEnvironment.Platform
                 {
                     UseShellExecute = true,
                     CreateNoWindow  = true,
-
                     WindowStyle = ProcessWindowStyle.Hidden,
-
                     FileName = "taskkill.exe ",
                     Arguments = "/t /pid " + processesInfo.Process.Id
                 };
                 process.Start();
                 process.WaitForExit();
             }
-            catch (Exception)
+            catch
             {
             }
             finally
@@ -384,10 +373,10 @@ namespace VirtualEnvironment.Platform
                             
                             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "startup");
-                            if (batchResult.Failed)
-                                throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
                                 Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
+                            if (batchResult.Failed)
+                                throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
 
                             Notification.Push(Notification.Type.Abort, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
                             break;
@@ -441,12 +430,6 @@ namespace VirtualEnvironment.Platform
 
                             var recycleDirectory = Path.Combine(workerTask.Drive, "$RECYCLE.BIN");
                             DeleteFileEntry(recycleDirectory);
-
-                            var startupExitFile = Path.Combine(workerTask.Drive, "Startup.exit");
-                            DeleteFileEntry(startupExitFile);
-
-                            var startupStartupFile = Path.Combine(workerTask.Drive, "Startup.startup");
-                            DeleteFileEntry(startupStartupFile);
                             
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
@@ -466,10 +449,10 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
 
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "exit");
-                            if (batchResult.Failed)
-                                throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerDetachBatchFailed, "@" + batchResult.Output);
                             if (batchResult.Output.Length > 0)
                                 Notification.Push(Notification.Type.Batch, "@" + batchResult.Output);
+                            if (batchResult.Failed)
+                                throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
 
                             GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
