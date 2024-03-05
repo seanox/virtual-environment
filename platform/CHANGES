@@ -1,8 +1,9 @@
-3.5.0 2024xxxx
+3.5.0 20240404
 BF: DiskPart: Optimization of detach if an error occurs
 BF: DiskPart: Optimization of compact
-CR: Platform: Optimization of the output/logging if an error occurs 
-    - Output of the batch processes (Startup / Exit) is output in the log file
+CR: Platform: Optimization of output/logging
+    - if an error occurs
+    - batch processes (Startup / Exit) is output in the log file
 
 3.4.0 20240302
 BF: Review: Optimization and corrections
