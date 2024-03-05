@@ -33,9 +33,7 @@ namespace VirtualEnvironment.Platform
         {
             Error,
             Warning,
-            Trace,
-            Batch,
-            Abort
+            Trace
         }
 
         internal readonly struct Message
@@ -81,12 +79,16 @@ namespace VirtualEnvironment.Platform
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".log");
-
+            while (messages.Length > 0
+                   && Regex.IsMatch(messages[0], "^((@+)|(\\s+))$"))
+                messages = messages.Skip(1).ToArray();
+            while (messages.Length > 0
+                   && Regex.IsMatch(messages[messages.Length -1], "^((@+)|(\\s+))$"))
+                messages = messages.Take(messages.Length -1).ToArray();
             messages = messages.Select(message =>
                     Messages.DiskpartUnexpectedErrorOccurred == message
                             || Messages.WorkerUnexpectedErrorOccurred == message
                         ? String.Format(message, Path.GetFileName(loggingFile)) : message).ToArray();
-
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
             output = $"{timestamp} {type.ToString().ToUpper()} " + output;
