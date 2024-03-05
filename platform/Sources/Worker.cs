@@ -312,8 +312,8 @@ namespace VirtualEnvironment.Platform
         private void SetupEnvironment(string drive)
         {
             Notification.Push(Notification.Type.Trace, Messages.WorkerAttachEnvironmentSetup);
-            
-            var message = "@" + Messages.WorkerAttachEnvironmentSetup;
+
+            var message = "";
             foreach (var file in Settings.Files)
             {
                 var targetFile = file.Replace("/", @"\");
@@ -335,7 +335,10 @@ namespace VirtualEnvironment.Platform
 
                 File.SetLastWriteTime(templateFile, DateTime.Now);
             }
-            Notification.Push(Notification.Type.Trace, message);
+
+            if (!string.IsNullOrWhiteSpace(message))
+                Notification.Push(Notification.Type.Trace,
+                        $"@{Messages.WorkerAttachEnvironmentSetup}{message}");
         }
 
         private void Service(object payload)
