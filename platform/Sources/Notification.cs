@@ -33,7 +33,8 @@ namespace VirtualEnvironment.Platform
         {
             Error,
             Warning,
-            Trace
+            Trace,
+            Abort
         }
 
         internal readonly struct Message
