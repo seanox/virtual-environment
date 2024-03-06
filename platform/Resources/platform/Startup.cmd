@@ -17,7 +17,8 @@ REM ---- Launcher
     REM therefore it does not exist as a default and so the launcher should be
     REM terminated via taskkill on detach.
 
-    taskkill /t /im launcher.exe
+    SET APPSPATHLAUNCHER=%APPSPATH%\Platform\launcher.exe
+    wmic process where ExecutablePath="%APPSPATHLAUNCHER:\=\\%" delete
 
     REM Placeholder for automatic module integration
     REM INSERT DETACH
