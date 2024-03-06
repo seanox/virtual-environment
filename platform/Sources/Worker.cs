@@ -105,55 +105,16 @@ namespace VirtualEnvironment.Platform
 
         private static BatchResult BatchExec(Task task, string fileName, params string[] arguments)
         {
-            // It was a long way of experiences for the small piece of code :-|
-            //     What you need to know
-            // What is the plan: In the virtual environment, the batch file
-            // Startup.cmd is used to start and stop the environment. The batch
-            // file then contains all the commands to set up the environment and
-            // start the required programs. For this purpose, a process is
-            // started in C#. If other programs are started in this process and
-            // run in the background, they are child processes. Now the parent
-            // process -- like cmd.exe here -- can end with the end of the batch
-            // file and is then no longer included in the list of active
-            // processes. But since child processes are still active, the
-            // resources remain active and so does the stdout/stderr. Therefore
-            // you can not access them, the access will block.
-            //
-            // Why should it be accessed?
-            // So that possible errors and outputs can be written into the log
-            // file.
-            //
-            // As a workaround, cmd.exe /A was used. The outputs are redirected
-            // to a file with the operating system. Therefore stdout/stderr do
-            // not have to be used by the process. If the batch script was run
-            // to the end, the parent process will end and the PID from the
-            // parent process is no longer in the list of active processes,
-            // which is interpreted as an end signal. Now stdout/stderr can be
-            // read from the redirected file. However, the file is still
-            // exclusively open when child processes are still running.Therefore
-            // the file is copied and the data is read from the copy. The copy
-            // is then deleted. 
-
-            var outputFile = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + ".log");
-            arguments = (new [] {fileName}).Concat(arguments).ToArray();
-            arguments = new [] {"/A", "/C", String.Join(" ", arguments), ">", outputFile, "2>&1"};
-
-            // At runtime, the output file is locked for the C# process.
-            // Therefore, the output file is copied to a temporary file by the
-            // operating system, which can then be read and deleted at the end
-            // of the batch process.
-            var outputTempFile = Path.GetTempFileName();
-
             var processStartInfo = new ProcessStartInfo()
             {
                 UseShellExecute = false,
                 CreateNoWindow  = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
                 FileName  = "cmd.exe",
-                Arguments = String.Join(" ", arguments),
+                Arguments = $"/C {fileName} {String.Join(" ", arguments)}",
                 WorkingDirectory = Path.GetDirectoryName(fileName),
-                RedirectStandardError  = false,
-                RedirectStandardOutput = false
+                RedirectStandardError  = true,
+                RedirectStandardOutput = true
             };
                         
             var applicationPath = Assembly.GetExecutingAssembly().Location;
@@ -187,12 +148,18 @@ namespace VirtualEnvironment.Platform
             var rootPath = Path.GetPathRoot(fileName);
             SetEnvironmentVariableIfNecessary("VT_HOMEDRIVE", rootPath.Substring(0, 2));
 
+            var batchResult = new BatchResult() {Output = ""};
+            
             try
             {
-                var process = new Process();
-                process.StartInfo = processStartInfo;
-                process.Start();
-
+                var process = Process.Start(processStartInfo);
+                process.OutputDataReceived += (object sender, DataReceivedEventArgs eventArgs) =>
+                    batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
+                process.BeginOutputReadLine();
+                process.ErrorDataReceived += (object sender, DataReceivedEventArgs eventArgs) =>
+                    batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
+                process.BeginErrorReadLine();
+                
                 var idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
                 var idleTotalProcessorTime = process.TotalProcessorTime;
                 while (Process.GetProcesses().Any(entry => entry.Id == process.Id))
@@ -218,27 +185,14 @@ namespace VirtualEnvironment.Platform
                     idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
                 }
 
-                File.Copy(outputFile, outputTempFile, true);
-                return new BatchResult
-                {
-                    Output = File.ReadAllText(outputTempFile),
-                    Failed = process.ExitCode != 0
-                };
+                batchResult.Failed = process.ExitCode != 0;
+                return batchResult;
             }
             catch (Exception exception)
             {
-                File.Copy(outputFile, outputTempFile, true);
-                return new BatchResult()
-                {
-                    Message = exception.Message,
-                    Output = File.ReadAllText(outputTempFile),
-                    Failed = true
-                };
-            }
-            finally
-            {
-                if (File.Exists(outputTempFile))
-                    File.Delete(outputTempFile);
+                batchResult.Message = exception.Message;
+                batchResult.Failed = true;
+                return batchResult;
             }
         }
 
@@ -278,7 +232,6 @@ namespace VirtualEnvironment.Platform
                     Thread.Sleep(3000);
                     if (Process.GetProcesses().All(process => process.Id != processesInfo.Process.Id))
                         break;
-
                     try
                     {
                         processesInfo.Process.Kill();

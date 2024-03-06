@@ -92,7 +92,7 @@ namespace VirtualEnvironment.Platform
                         ? String.Format(message, Path.GetFileName(loggingFile)) : message).ToArray();
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
-            output = $"{timestamp} {type.ToString().ToUpper()} " + output;
+            output = $"{timestamp} {(Type.Abort.Equals(type) ? Type.Trace : type).ToString().ToUpper()} " + output;
             var prefix = $"{timestamp}  ...  ";
             output = Regex.Replace(output, @"[^\S\r\n]*((\r\n)|(\n\r)|[\r\n])[^\S\r\n]*", "\r\n" + prefix);
             using (var streamWriter = File.AppendText(loggingFile))
