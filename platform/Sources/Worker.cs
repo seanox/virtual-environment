@@ -383,7 +383,7 @@ namespace VirtualEnvironment.Platform
                                 throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
                             }
 
-                            Notification.Push(Notification.Type.Trace, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
+                            Notification.Push(Notification.Type.Abort, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
                             break;
 
                         case Task.Create:
@@ -399,7 +399,7 @@ namespace VirtualEnvironment.Platform
                             var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
                             File.WriteAllBytes(settingsFile, Resources.GetResource(@"\settings.ini"));
 
-                            Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
+                            Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
                         case Task.Compact:
@@ -442,7 +442,7 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CanCompactDisk(workerTask.Drive, workerTask.DiskFile);
                             Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
                             
-                            Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
+                            Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
                             
                             break;
                         
@@ -474,7 +474,7 @@ namespace VirtualEnvironment.Platform
 
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
 
-                            Notification.Push(Notification.Type.Trace, Messages.WorkerDetach, Messages.WorkerSuccessfullyCompleted);
+                            Notification.Push(Notification.Type.Abort, Messages.WorkerDetach, Messages.WorkerSuccessfullyCompleted);
                             break;
                      
                         case Task.Shortcuts:
@@ -486,7 +486,7 @@ namespace VirtualEnvironment.Platform
                             CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Detach);
                             CreateShortcut(workerTask.Drive, workerTask.DiskFile, Task.Compact);
 
-                            Notification.Push(Notification.Type.Trace, Messages.WorkerShortcuts, Messages.WorkerSuccessfullyCompleted);
+                            Notification.Push(Notification.Type.Abort, Messages.WorkerShortcuts, Messages.WorkerSuccessfullyCompleted);
                             break;
                         
                         default:
@@ -515,7 +515,7 @@ namespace VirtualEnvironment.Platform
             Refresh();
 
             if (message.Type != Notification.Type.Error
-                    && message.Type != Notification.Type.Trace)
+                    && message.Type != Notification.Type.Abort)
                 return;
 
             if (message.Type == Notification.Type.Error
