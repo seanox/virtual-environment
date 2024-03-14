@@ -122,7 +122,7 @@ specific language governing permissions and limitations under the License.
 
 
 ## Example
-Here you can download the master templates as an example of a virtual environment
+Here you can download the master templates as virtual environments
 (approx __4 GB__ / last update 2024-03-14):  
 https://seanox.com/storage/master-3.5.0.7z  
 https://seanox.com/storage/master-proxy-3.5.0.7z
