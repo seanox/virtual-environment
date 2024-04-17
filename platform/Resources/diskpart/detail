@@ -1,3 +1,0 @@
-select disk #[number]
-detail disk
-exit

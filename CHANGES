@@ -1,6 +1,7 @@
 3.5.0 2024xxxx
 BF: DiskPart: Optimization of detach if an error occurs
 BF: DiskPart: Optimization of compact
+BF: DiskPart: Optimization of attach
 CR: Platform: Optimization of output/logging
     - if an error occurs
     - batch processes (Startup / Exit) is output in the log file

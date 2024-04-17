@@ -1,3 +1,0 @@
-select volume #[number]
-assign letter=#[drive]
-exit
