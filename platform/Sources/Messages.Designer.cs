@@ -69,25 +69,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Partition #{0} is used as drive {1}.
-        /// </summary>
-        internal static string DiskpartAttachAssign {
-            get {
-                return ResourceManager.GetString("DiskpartAttachAssign", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Detection of the virtual disk in the volumes.
-        /// </summary>
-        internal static string DiskpartAttachDetectVolume {
-            get {
-                return ResourceManager.GetString("DiskpartAttachDetectVolume", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Assignment as a drive.
+        ///   Looks up a localized string similar to Assignment as a drive {0}.
         /// </summary>
         internal static string DiskpartAttachDiskpart {
             get {
@@ -236,15 +218,6 @@ namespace VirtualEnvironment.Platform {
         internal static string DiskpartUnexpectedErrorOccurred {
             get {
                 return ResourceManager.GetString("DiskpartUnexpectedErrorOccurred", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume of the virtual disk was not found.
-        /// </summary>
-        internal static string DiskpartVolumeNotFound {
-            get {
-                return ResourceManager.GetString("DiskpartVolumeNotFound", resourceCulture);
             }
         }
         

@@ -121,14 +121,8 @@
   <data name="DiskpartAttach" xml:space="preserve">
     <value>Attaching the virtual disk</value>
   </data>
-  <data name="DiskpartAttachAssign" xml:space="preserve">
-    <value>Partition #{0} is used as drive {1}</value>
-  </data>
-  <data name="DiskpartAttachDetectVolume" xml:space="preserve">
-    <value>Detection of the virtual disk in the volumes</value>
-  </data>
   <data name="DiskpartAttachDiskpart" xml:space="preserve">
-    <value>Assignment as a drive</value>
+    <value>Assignment as a drive {0}</value>
   </data>
   <data name="DiskpartAttachFailed" xml:space="preserve">
     <value>Attaching the virtual disk failed</value>
@@ -181,9 +175,6 @@
   </data>
   <data name="DiskpartUnexpectedErrorOccurred" xml:space="preserve">
     <value>An unexpected error has occurred</value>
-  </data>
-  <data name="DiskpartVolumeNotFound" xml:space="preserve">
-    <value>Volume of the virtual disk was not found</value>
   </data>
   
   <data name="WorkerAttach" xml:space="preserve">
