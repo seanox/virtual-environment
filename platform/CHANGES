@@ -1,8 +1,8 @@
 3.5.0 20240404
+BF: DiskPart: Optimization of attach
+    - Name of the volume is no longer relevant
 BF: DiskPart: Optimization of detach if an error occurs
 BF: DiskPart: Optimization of compact
-BF: DiskPart: Optimization of attach
-    - Name of the volume is no longer relevant.
 CR: Platform: Optimization of output/logging
     - If an error occurs
     - Batch processes (startup / exit) is output in the log file
