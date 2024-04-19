@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace VirtualEnvironment.Platform
 {
@@ -48,7 +47,6 @@ namespace VirtualEnvironment.Platform
             internal string Format;
             internal string Name;
             internal string Drive;
-            internal int    Number;
         }
 
         // It is a balancing act between notifications that work comparable to
