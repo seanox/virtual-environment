@@ -122,7 +122,7 @@
     <value>Attaching the virtual disk</value>
   </data>
   <data name="DiskpartAttachDiskpart" xml:space="preserve">
-    <value>Assignment as a drive {0}</value>
+    <value>Assignment as drive {0}</value>
   </data>
   <data name="DiskpartAttachFailed" xml:space="preserve">
     <value>Attaching the virtual disk failed</value>
@@ -169,9 +169,6 @@
   </data>
   <data name="DiskpartFileNotExists" xml:space="preserve">
     <value>No file can be found for the virtual disk</value>
-  </data>
-  <data name="DiskpartNoLetterAvailable" xml:space="preserve">
-    <value>No free drive letter is available</value>
   </data>
   <data name="DiskpartUnexpectedErrorOccurred" xml:space="preserve">
     <value>An unexpected error has occurred</value>

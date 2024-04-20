@@ -94,9 +94,9 @@ namespace VirtualEnvironment.Platform
                 process.WaitForExit();
 
                 var diskpartResult = new DiskpartResult();
-                diskpartResult.Output = (process.StandardError.ReadToEnd()).Trim();
+                diskpartResult.Output = process.StandardError.ReadToEnd().Trim();
                 if (diskpartResult.Output.Length <= 0)
-                    diskpartResult.Output = (process.StandardOutput.ReadToEnd()).Trim();
+                    diskpartResult.Output = process.StandardOutput.ReadToEnd().Trim();
                 else diskpartResult.Failed = true;
                 if (process.ExitCode != 0)
                     diskpartResult.Failed = true;
@@ -144,6 +144,10 @@ namespace VirtualEnvironment.Platform
 
         internal static void AttachDisk(string drive, string diskFile)
         {
+            // Because of the GPT used, it is important when attaching:
+            // - The first partition is preserve partition, it cannot be mount
+            // - The second partition is the real data partition 
+            
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach);
             CanAttachDisk(drive, diskFile);
             
@@ -206,6 +210,8 @@ namespace VirtualEnvironment.Platform
 
         internal static void CanCreateDisk(string drive, string diskFile)
         {
+            if (Directory.Exists(drive))
+                throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartDriveAlreadyExists);
             if (File.Exists(diskFile))
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartFileAlreadyExists);
         }
@@ -230,41 +236,35 @@ namespace VirtualEnvironment.Platform
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
 
-            var tempDriveLetter = GetNextDriveLetter();
-            if (tempDriveLetter < 'A')
-                throw new DiskpartException(Messages.DiskpartCreateFailed, Messages.DiskpartNoLetterAvailable);
-            var tempDrive = tempDriveLetter.ToString() + ":";
-            AttachDisk(tempDrive, diskFile);
+            AttachDisk(drive, diskFile);
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartCreate, Messages.DiskpartCreateInitializationFileSystem);
-            Directory.CreateDirectory(tempDrive + @"\Documents");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Music");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Pictures");
-            Directory.CreateDirectory(tempDrive + @"\Documents\Videos");
-            Directory.CreateDirectory(tempDrive + @"\Programs");
-            Directory.CreateDirectory(tempDrive + @"\Programs\Macros\macros");
-            Directory.CreateDirectory(tempDrive + @"\Resources");
-            Directory.CreateDirectory(tempDrive + @"\Settings");
-            Directory.CreateDirectory(tempDrive + @"\Storage");
-            Directory.CreateDirectory(tempDrive + @"\Temp");
+            Directory.CreateDirectory(drive + @"\Documents\Music");
+            Directory.CreateDirectory(drive + @"\Documents\Pictures");
+            Directory.CreateDirectory(drive + @"\Documents\Videos");
+            Directory.CreateDirectory(drive + @"\Programs\Macros\macros");
+            Directory.CreateDirectory(drive + @"\Resources");
+            Directory.CreateDirectory(drive + @"\Settings");
+            Directory.CreateDirectory(drive + @"\Storage");
+            Directory.CreateDirectory(drive + @"\Temp");
 
             var replacements = new Dictionary<string, string>();
             replacements.Add("drive", drive);
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x");
 
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Platform\console.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Platform\startup.exe");
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Platform\launcher.exe");
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Platform\launcher.xml");
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Macros\macros.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Programs\Macros\macro.cmd");
-            MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.ico");
-            MigrateResourcePlatformFile(tempDrive, @"\Resources\platform.png");
-            MigrateResourcePlatformFile(tempDrive, @"\AutoRun.inf", replacements);
-            MigrateResourcePlatformFile(tempDrive, @"\Startup.cmd", replacements);
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\console.cmd");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.exe");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.xml");
+            MigrateResourcePlatformFile(drive, @"\Programs\Macros\macros.cmd");
+            MigrateResourcePlatformFile(drive, @"\Programs\Macros\macro.cmd");
+            MigrateResourcePlatformFile(drive, @"\Resources\platform.ico");
+            MigrateResourcePlatformFile(drive, @"\Resources\platform.png");
+            MigrateResourcePlatformFile(drive, @"\AutoRun.inf", replacements);
+            MigrateResourcePlatformFile(drive, @"\Startup.cmd", replacements);
 
-            DetachDisk(tempDrive, diskFile);
+            DetachDisk(drive, diskFile);
         }
     }
 
