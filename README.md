@@ -140,7 +140,8 @@ To exit, use the Detach button at the bottom right of the launcher.
 <img src="resources/example.gif"/>
 
 ## Use the examples as a template for your own environment
-- Rename master.exe, master.ini and master.vhdx to your name
+- Download the example(s)
+- Rename `master.exe`, `master.ini` and `master.vhdx` to your name
 
 Next steps are optional and after attaching
 
