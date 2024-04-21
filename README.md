@@ -123,7 +123,7 @@ specific language governing permissions and limitations under the License.
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
-last update 2024-04-14):  
+last update 2024-04-21):  
 https://seanox.com/storage/master-3.5.0.7z  
 https://seanox.com/storage/master-proxy-3.5.0.7z
 
@@ -138,6 +138,12 @@ The host key combination for the launcher: `Win + ESC`
 To exit, use the Detach button at the bottom right of the launcher.
 
 <img src="resources/example.gif"/>
+
+## Use the examples as a template for your own environment
+- Rename master.exe, master.ini and master.vhdx to your name
+- Next steps are optional and after attaching
+- Change the label of the virtual disk (properties of disk)
+- Change the name of the virtual volume in AutoRun.inf
 
 
 # Usage
