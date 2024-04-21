@@ -1,19 +1,19 @@
 <p>
   <!--
-  <a href="https://github.com/seanox/process-balancer/pulls">
-    <img src="https://img.shields.io/badge/development-active-green?style=for-the-badge">
-  </a>
+  <a href="https://github.com/seanox/process-balancer/pulls"
+    ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
+  ></a>
   --> 
   <a href="https://github.com/seanox/process-balancer/pulls"
-      title="Development is waiting for new issues / requests / ideas">
-    <img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge">
-  </a>
-  <a href="https://github.com/seanox/process-balancer/issues">
-    <img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge">
-  </a>
-  <a href="http://seanox.de/contact">
-    <img src="https://img.shields.io/badge/support-active-green?style=for-the-badge">
-  </a>
+      title="Development is waiting for new issues / requests / ideas"
+    ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
+  ></a>
+  <a href="https://github.com/seanox/process-balancer/issues"
+    ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
+  ></a>
+  <a href="http://seanox.de/contact"
+    ><img src="https://img.shields.io/badge/support-active-green?style=for-the-badge"
+  ></a>
 </p>
 
 __The tool was outsourced to a separate project. Please use
@@ -67,6 +67,8 @@ also got and considered your wishes.__
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8 or higher
+- [Microsoft .NET 4.8.x Developer Pack or higher](
+      https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
 
 
 # Download
