@@ -146,7 +146,7 @@ To exit, use the Detach button at the bottom right of the launcher.
 Next steps are optional and after attaching
 
 - Change the label of the virtual disk (properties of disk)
-- Change the name of the virtual volume in AutoRun.inf
+- Change the name of the virtual volume in `AutoRun.inf`
 
 
 # Usage
