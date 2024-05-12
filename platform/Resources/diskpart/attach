@@ -1,5 +1,5 @@
 select vdisk file="#[file]"
 attach vdisk
-select partition 1
+select partition 2
 assign letter=#[drive]
 exit

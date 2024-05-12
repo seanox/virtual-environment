@@ -38,7 +38,7 @@ __Module integration will come later, but will be similar.__
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
-- [Microsoft .NET 8.0.x or higher](
+- [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
 
 

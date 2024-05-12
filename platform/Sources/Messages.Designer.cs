@@ -69,7 +69,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assignment as a drive {0}.
+        ///   Looks up a localized string similar to Assignment as drive {0}.
         /// </summary>
         internal static string DiskpartAttachDiskpart {
             get {
@@ -200,15 +200,6 @@ namespace VirtualEnvironment.Platform {
         internal static string DiskpartFileNotExists {
             get {
                 return ResourceManager.GetString("DiskpartFileNotExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No free drive letter is available.
-        /// </summary>
-        internal static string DiskpartNoLetterAvailable {
-            get {
-                return ResourceManager.GetString("DiskpartNoLetterAvailable", resourceCulture);
             }
         }
         

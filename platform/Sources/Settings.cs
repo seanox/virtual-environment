@@ -140,6 +140,8 @@ namespace VirtualEnvironment.Platform
             get
             {
                 Settings.Initialize();
+                if (_values == null)
+                    return new Dictionary<string, string>();
                 return _values.ToDictionary(entry => entry.Key,
                     entry => entry.Value);
             }
@@ -150,6 +152,8 @@ namespace VirtualEnvironment.Platform
             get
             {
                 Settings.Initialize();
+                if (_files == null)
+                    return Array.Empty<String>();
                 return (string[])_files.Clone();
             }
         }
