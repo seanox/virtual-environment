@@ -68,7 +68,7 @@ also got and considered your wishes.__
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8 or higher
 - [Microsoft .NET 4.8.x Developer Pack or higher](
-      https://dotnet.microsoft.com/en-us/download/dotnet) (for development only)
+      https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 
 # Download

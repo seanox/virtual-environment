@@ -112,7 +112,7 @@ specific language governing permissions and limitations under the License.
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
-- [Microsoft .NET 4.8.x or higher](
+- [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 
