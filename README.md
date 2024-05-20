@@ -123,7 +123,7 @@ specific language governing permissions and limitations under the License.
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
-last update 2024-05-18):  
+last update 2024-05-20):  
 https://seanox.com/storage/master-3.5.0.7z  
 https://seanox.com/storage/master-proxy-3.5.0.7z
 
