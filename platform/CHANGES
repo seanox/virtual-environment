@@ -1,3 +1,9 @@
+3.6.0 2024xxxx
+BF: Settings: Correction to ignore invalid paths in section [FILES]
+    Previously, the replacement of the placeholders was terminated without
+    error after the first incorrect path and the initialization of the platform
+    continued.
+
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
     - Name of the volume is no longer relevant
@@ -5,10 +11,6 @@ BF: DiskPart: Optimization of detach if an error occurs
 BF: DiskPart: Optimization of compact
 BF: Platform: Correction if no platform.ini file exists
     - Caused an ArgumentNullException during attachment
-BF: Settings: Correction to ignore invalid paths in section [FILES]
-    Previously, the replacement of the placeholders was terminated without
-    error after the first incorrect path and the initialization of the platform
-    continued.
 CR: Platform: Optimization of output/logging
     - If an error occurs
     - Batch processes (startup / exit) is output in the log file
