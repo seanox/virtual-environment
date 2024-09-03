@@ -50,14 +50,11 @@ https://github.com/seanox/virtual-environment/releases
 
 
 # Changes 
-## 3.4.0 20240302  
-BF: Review: Optimization and corrections  
-BF: DiskPart: Optimization when attaching disks with the same label  
-BF: DiskPart: Correction when creating with Windows 11  
-CR: DiskPart: Optimization of detach if an error occurs  
-CR: Macros: Optimization of the use of WORKDIR  
-CR: Macros: Usable as direct short commands  
-CR: Project: Updated TargetFrameworkVersion to v4.8  
-CR: Platform: Refactoring of the standard directory structure  
+## 3.5.0 20240706  
+BF: DiskPart: Optimization of attach  
+BF: DiskPart: Optimization of detach if an error occurs  
+BF: DiskPart: Optimization of compact  
+BF: Platform: Correction if no platform.ini file exists  
+CR: Platform: Optimization of output/logging  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)

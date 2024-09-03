@@ -117,13 +117,13 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.4.0](https://github.com/seanox/virtual-environment/releases/download/3.4.0/seanox-platform-3.4.0.zip)  
-[Seanox Virtual Environment 3.4.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.4.0/seanox-platform-3.4.0-update.zip) for existing environment
+[Seanox Virtual Environment 3.5.0](https://github.com/seanox/virtual-environment/releases/download/3.5.0/seanox-platform-3.5.0.zip)  
+[Seanox Virtual Environment 3.5.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.5.0/seanox-platform-3.5.0-update.zip) for existing environment
 
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
-last update 2024-05-12):  
+last update 2024-05-20):  
 https://seanox.com/storage/master-3.5.0.7z  
 https://seanox.com/storage/master-proxy-3.5.0.7z
 
@@ -178,17 +178,12 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes
-## 3.4.0 20240302  
-BF: Review: Optimization and corrections  
-BF: DiskPart: Optimization when attaching disks with the same label  
-BF: DiskPart: Correction when creating with Windows 11  
-CR: DiskPart: Optimization of detach if an error occurs  
-CR: Macros: Optimization of the use of WORKDIR  
-CR: Macros: Usable as direct short commands  
-CR: Project: Updated TargetFrameworkVersion to v4.8  
-CR: Platform: Refactoring of the standard directory structure  
-CR: Launcher: Updated TargetFrameworkVersion to v4.8  
-CR: Startup: Updated TargetFrameworkVersion to v4.8  
+## 3.5.0 20240706  
+BF: DiskPart: Optimization of attach  
+BF: DiskPart: Optimization of detach if an error occurs  
+BF: DiskPart: Optimization of compact  
+BF: Platform: Correction if no <platform>.ini file exists  
+CR: Platform: Optimization of output/logging  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
