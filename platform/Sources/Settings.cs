@@ -125,6 +125,10 @@ namespace VirtualEnvironment.Platform
                     continue;
                 var file = PATTERN_FILE.Replace(line, "$1");
                 file = Environment.ExpandEnvironmentVariables(file);
+                if (!File.Exists(file))
+                    continue;
+                if (File.GetAttributes(file).HasFlag(FileAttributes.Directory))
+                    continue;
                 file = Settings.ReplacePlaceholders(file, settingsDictionary);
                 files.Add(file);
             }
