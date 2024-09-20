@@ -191,4 +191,4 @@ CR: Platform: Optimization of output/logging
 # Contact
 [Issues](https://github.com/seanox/virtual-environment/issues)  
 [Requests](https://github.com/seanox/virtual-environment/pulls)  
-[Mail](http://seanox.de/contact)
+[Mail](https://seanox.com/contact)
