@@ -95,7 +95,6 @@
         <EmbeddedResource Include="Resources\diskpart\create" />
         <EmbeddedResource Include="Resources\diskpart\detach" />
         <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
-        <EmbeddedResource Include="Resources\platform\Programs\Platform\console.cmd" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.xml" />

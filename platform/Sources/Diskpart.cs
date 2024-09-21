@@ -253,7 +253,6 @@ namespace VirtualEnvironment.Platform
             replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
             replacements.Add("version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x");
 
-            MigrateResourcePlatformFile(drive, @"\Programs\Platform\console.cmd");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.xml");
