@@ -237,7 +237,7 @@ namespace VirtualEnvironment.Launcher
                         && ((Win32Exception)exception).NativeErrorCode == ERROR_CANCELLED)
                     return;
 
-                MessageBox.Show(($"Error opening file: {metaTile.Settings.Destination}"
+                MessageBox.Show(($"Error opening action: {metaTile.Settings.Destination}"
                         + $"{Environment.NewLine}{exception.Message}"
                         + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
                         "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
