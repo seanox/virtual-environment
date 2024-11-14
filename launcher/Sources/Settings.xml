@@ -25,7 +25,7 @@
   <hotKey>8 + 27</hotKey>
 
   <!-- Cell size in pixels (height and width) -->
-  <gridSize>99</gridSize>
+  <gridSize>101</gridSize>
   <!-- Distance between cells in pixels -->
   <gridGap>25</gridGap>
   <!-- Distance from the border in the cells in pixels -->
@@ -88,28 +88,20 @@
 
   <tiles>
     <tile>
-      <!-- Number of the tile (1 - 40) -->
-      <index>40</index>
+      <!-- Number of the tile (1 - 40) --> 
+      <index>17</index>
       <!-- Application name and tile title -->
-      <title>Detach</title>
+      <title>hosts</title>
       <!--
         Icon file, optionally with index separated by colon.
         Supports many image formats and icons in exe, dll, ... files.
       -->
-      <icon>%WINDIR%\system32\shell32.dll:27</icon>
+      <icon>%WINDIR%\system32\inetcpl.cpl:26</icon>
       <!-- Path of the application file or `exit` to exit the launcher -->
-      <destination>%PLATFORM_APP%</destination>
-      <!-- Arguments for the program start -->
-      <arguments>%HOMEDRIVE% detach</arguments>
-      <!-- Working directory in which the application is executed -->
-      <workingDirectory>%PLATFORM_HOME%</workingDirectory>
-    </tile>
-    <tile>
-      <index>17</index>
-      <title>hosts</title>
-      <icon>%WINDIR%\system32\imageres.dll:256</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
+      <!-- Arguments for the program start -->
       <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
+      <!-- Working directory in which the application is executed -->
       <workingDirectory>%WINDIR%\System32\drivers\etc</workingDirectory>
     </tile>
     <tile>
@@ -121,22 +113,15 @@
     <tile>
       <index>28</index>
       <title>Settings</title>
-      <icon>%WINDIR%\system32\imageres.dll:64</icon>
+      <icon>%WINDIR%\system32\inetcpl.cpl:46</icon>
       <destination>%WINDIR%\system32\notepad.exe</destination>
       <arguments>launcher.xml</arguments>
     </tile>
     <tile>
       <index>31</index>
       <title>Terminal</title>
-      <icon>%WINDIR%\System32\cmd.exe</icon>
-      <destination>%APPSPATH%\Console\console.cmd</destination>
-      <workingDirectory>%HOMEDRIVE%</workingDirectory>
-    </tile>
-    <tile>
-      <index>38</index>
-      <title>Steps Recorder</title>
-      <destination>%WINDIR%\System32\psr.exe</destination>
-      <workingDirectory>%WINDIR%\System32</workingDirectory>
+      <destination>%ComSpec%</destination>
+      <workingDirectory>%HOMEDRIVE%\</workingDirectory>
     </tile>
     <tile>
       <index>39</index>
