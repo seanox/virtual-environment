@@ -1,7 +1,5 @@
 select vdisk file="#[file]"
 attach vdisk readonly
 compact vdisk
-compact vdisk
-compact vdisk
 detach vdisk
 exit
