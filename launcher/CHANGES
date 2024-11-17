@@ -1,3 +1,11 @@
+1.2.0 2025xxxx
+BF: Launcher: Correction/optimization
+BF: Launcher: Correction when using custom scaling
+    Correction of the possibly incorrect calculation of
+    FormWindowState.Maximized for custom scaling.
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
+CR: Platform: Simplification of the terminal action
+
 1.1.2 20240302
 CR: Project: Updated TargetFrameworkVersion to v4.8
 CR: Platform: Refactoring of the standard directory structure

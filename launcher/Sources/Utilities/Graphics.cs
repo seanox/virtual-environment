@@ -25,6 +25,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 namespace VirtualEnvironment.Launcher.Utilities
 {
@@ -98,7 +99,7 @@ namespace VirtualEnvironment.Launcher.Utilities
             return destImage;
         }
 
-        public static Image ImageScale(Image image, int width, int height)
+        internal static Image ImageScale(Image image, int width, int height)
         {
             if (image.Height == height
                     && image.Width == width)
@@ -134,6 +135,164 @@ namespace VirtualEnvironment.Launcher.Utilities
         
                 graphics.DrawPath(pen, path);
             }
+        }
+
+        [DllImport("shcore.dll")]
+        private static extern int GetScaleFactorForMonitor(IntPtr hMonitor, out int pScale);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetDC(IntPtr hWnd);
+
+        [DllImport("gdi32.dll")]
+        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        // Constants of the Windows-GDI API
+        private const int LOGPIXELSX = 88;
+        private const int LOGPIXELSY = 90;
+
+        private static int GetDpiForPrimaryMonitor()
+        {
+            var hdc = GetDC(IntPtr.Zero);
+            var dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+            var dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
+            ReleaseDC(IntPtr.Zero, hdc);
+            return (int)Math.Round((dpiX + dpiY) / 2.0);
+        }
+
+        private static float GetScalingFactorFromRegistry()
+        {
+            const string userRoot = "HKEY_CURRENT_USER";
+            const string subkey = @"Control Panel\Desktop";
+            const string keyName = userRoot + "\\" + subkey;
+
+            var defaultDpi = GetDpiForPrimaryMonitor();
+            var registryValue = Registry.GetValue(keyName, "LogPixels", defaultDpi);
+            var dpi = (registryValue != null) ? (int)registryValue : defaultDpi;
+            
+            return dpi / (float)defaultDpi * 100;
+        }
+
+        private static float GetScalingFactorForPrimaryMonitor()
+        {
+            var primaryMonitor = MonitorFromWindow(IntPtr.Zero, 0);
+            GetScaleFactorForMonitor(primaryMonitor, out var scaleFactor);
+            return scaleFactor;
+        }   
+        
+        internal static float GetDisplayScalingFactor()
+        {
+            var scalingFactor = GetScalingFactorFromRegistry();
+            if (Math.Abs(scalingFactor - 100) < 0.01)
+                scalingFactor = GetScalingFactorForPrimaryMonitor();
+            return scalingFactor;
+        }
+        
+        [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        private static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        private static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        private struct DISPLAY_DEVICE
+        {
+            [MarshalAs(UnmanagedType.U4)]
+            public int cb;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string DeviceName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceString;
+            [MarshalAs(UnmanagedType.U4)]
+            public int StateFlags;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceID;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceKey;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal struct DEVMODE
+        {
+            private const int CCHDEVICENAME = 32;
+            private const int CCHFORMNAME = 32;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)]
+            public string dmDeviceName;
+            [MarshalAs(UnmanagedType.U2)]
+            public ushort dmSpecVersion;
+            [MarshalAs(UnmanagedType.U2)]
+            public ushort dmDriverVersion;
+            [MarshalAs(UnmanagedType.U2)]
+            public ushort dmSize;
+            [MarshalAs(UnmanagedType.U2)]
+            public ushort dmDriverExtra;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmFields;
+            [MarshalAs(UnmanagedType.I4)]
+            public int dmPositionX;
+            [MarshalAs(UnmanagedType.I4)]
+            public int dmPositionY;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmDisplayOrientation;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmDisplayFixedOutput;
+            [MarshalAs(UnmanagedType.I2)]
+            public short dmColor;
+            [MarshalAs(UnmanagedType.I2)]
+            public short dmDuplex;
+            [MarshalAs(UnmanagedType.I2)]
+            public short dmYResolution;
+            [MarshalAs(UnmanagedType.I2)]
+            public short dmTTOption;
+            [MarshalAs(UnmanagedType.I2)]
+            public short dmCollate;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)]
+            public string dmFormName;
+            [MarshalAs(UnmanagedType.U2)]
+            public ushort dmLogPixels;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmBitsPerPel;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmPelsWidth;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmPelsHeight;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmDisplayFlags;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmDisplayFrequency;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmICMMethod;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmICMIntent;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmMediaType;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmDitherType;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmReserved1;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmReserved2;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmPanningWidth;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint dmPanningHeight;
+        }
+
+        internal static DEVMODE? GetDisplaySettings()
+        {
+            var displayDevice = new DISPLAY_DEVICE();
+            displayDevice.cb = Marshal.SizeOf(displayDevice);
+            if (!EnumDisplayDevices(null, 0, ref displayDevice, 0))
+                return null;
+            var devMode = new DEVMODE();
+            if (EnumDisplaySettings(displayDevice.DeviceName, -1, ref devMode))
+                return devMode;
+            return null;
         }
     }
 }
