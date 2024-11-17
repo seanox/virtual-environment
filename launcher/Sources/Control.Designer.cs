@@ -54,7 +54,7 @@ namespace VirtualEnvironment.Launcher
             this.Controls.Add(this.Message);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Control";
-            this.Opacity = 0.9D;
+            this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
