@@ -117,6 +117,22 @@ namespace VirtualEnvironment.Launcher
 
             FormBorderStyle = FormBorderStyle.None;
             Bounds = Screen.PrimaryScreen.Bounds;
+
+            // FormWindowState.Maximized can miscalculate when using custom
+            // scaling. This error is corrected here.
+            var devMode = Utilities.Graphics.GetDisplaySettings();
+            if (devMode.HasValue)
+            {
+                var primaryScreenBounds = devMode.Value;
+                var displayScalingFactor = Utilities.Graphics.GetDisplayScalingFactor() /100;
+                var boundsWidthDiff = primaryScreenBounds.dmPelsWidth - Math.Floor(Bounds.Width * displayScalingFactor);
+                if (boundsWidthDiff != 0)
+                    Bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width +(int)boundsWidthDiff, Bounds.Height);
+                var boundsHeightDiff = primaryScreenBounds.dmPelsHeight - Math.Floor(Bounds.Height * displayScalingFactor);
+                if (boundsHeightDiff != 0)
+                    Bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width +(int)boundsHeightDiff, Bounds.Height);
+            }
+            
             WindowState = FormWindowState.Minimized;
 
             #if DEBUG
@@ -436,7 +452,7 @@ namespace VirtualEnvironment.Launcher
 
         private void OnVisibleChanged(object sender, EventArgs eventArgs)
         {
-            WindowState = Visible ? FormWindowState.Maximized : FormWindowState.Minimized;
+            WindowState = Visible ? FormWindowState.Normal : FormWindowState.Minimized;
         }
     }
 }
