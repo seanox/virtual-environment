@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,14 +61,14 @@ namespace VirtualEnvironment.Platform
             return Settings.ReplacePlaceholders(text, _values);
         }
 
-        private static string ReplacePlaceholders(string text, Dictionary<string, string> settings)
+        private static string ReplacePlaceholders(string text,
+            IReadOnlyDictionary<string, string> settings)
         {
             return PATTERN_PLACEHOLDER.Replace(text, match =>
             {
-                var key = match.Groups[1].Value.ToLower();
-                if (settings.ContainsKey(key))
-                    return settings[key];
-                return match.ToString();
+                var key = match.Groups[1].Value;
+                return settings.TryGetValue(key, value: out var expression)
+                    ? expression : match.ToString();
             });
         }
 
@@ -82,14 +83,10 @@ namespace VirtualEnvironment.Platform
             if (!File.Exists(iniFile))
                 return;
             
-            var settingsDictionary = new Dictionary<string, string>();
-            foreach (var key in Environment.GetEnvironmentVariables().Keys)
-            {
-                if (settingsDictionary.ContainsKey(key.ToString().ToLower()))
-                    settingsDictionary.Remove(key.ToString().ToLower());
-                settingsDictionary.Add(key.ToString().ToLower(), Environment.GetEnvironmentVariable(key.ToString()));
-            }
-
+            var settingsDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
+                settingsDictionary[(string)entry.Key] = (string)entry.Value;
+            
             var fileContent = File.ReadAllText(iniFile);
             fileContent = PATTERN_COMMENT.Replace(fileContent, "");
 
@@ -101,16 +98,12 @@ namespace VirtualEnvironment.Platform
             var settingsLines = PATTERN_LINES.Split(settingsSection);
             foreach (var line in settingsLines.Where(line => PATTERN_SECTION_KEY_VALUE.IsMatch(line)))
             {
-                var key = PATTERN_SECTION_KEY_VALUE.Replace(line, "$1").ToLower();
                 var value = PATTERN_SECTION_KEY_VALUE.Replace(line, "$2");
                 value = Environment.ExpandEnvironmentVariables(value);
                 value = Settings.ReplacePlaceholders(value, settingsDictionary);
-                if (settingsDictionary.ContainsKey(key))
-                    settingsDictionary.Remove(key);
-                settingsDictionary.Add(key, value);
-                if (values.ContainsKey(key))
-                    values.Remove(key);
-                values.Add(key, value);
+                var key = PATTERN_SECTION_KEY_VALUE.Replace(line, "$1");
+                settingsDictionary[key] = value;
+                values[key] = value;
             }
 
             var files = new List<string>();

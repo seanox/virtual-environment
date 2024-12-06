@@ -133,9 +133,7 @@ namespace VirtualEnvironment.Platform
                 if (processStartInfo.EnvironmentVariables.ContainsKey(name)
                         && Task.Detach.Equals(task))
                     return;
-                if (processStartInfo.EnvironmentVariables.ContainsKey(name))
-                    processStartInfo.EnvironmentVariables.Remove(name);
-                processStartInfo.EnvironmentVariables.Add(name, value);
+                processStartInfo.EnvironmentVariables[name] = value;
             });
 
             foreach(KeyValuePair<string, string> value in Settings.Values)
