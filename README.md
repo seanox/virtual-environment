@@ -18,7 +18,7 @@
 
 
 # Description
-Since about 2010, there is the project of virtual environment with modular
+Since about 2010, there is the project of a virtual environment with modular
 structure for developers and users, so that they can use a completely
 pre-configured environment with all programs, tools and services, without the
 host environment interfering with the running operating system and devouring
