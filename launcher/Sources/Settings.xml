@@ -86,7 +86,7 @@
   -->
   <fontSize>9.5</fontSize>
 
-  <!-- Instructions for events --> 
+  <!-- Optional actions for Windows events --> 
   <!--
   <events>
     <session>

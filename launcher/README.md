@@ -94,8 +94,19 @@ Example of a configuration file:
     <!-- Color for highlighting (e.g. navigation) -->
     <highlightColor>#FAB400</highlightColor>
 
-    <!-- Font size in the tiles. -->
+    <!-- Font size in the tiles -->
     <fontSize>9.75</fontSize>
+
+    <!-- Optional actions for Windows events -->
+    <events>
+      <session>
+        <ending>
+          <destination>...</destination>
+          <arguments>...</arguments>
+          <workingDirectory>...</workingDirectory>
+        </ending>
+      </session>
+    </events>
 
     <tiles>
         <tile>
