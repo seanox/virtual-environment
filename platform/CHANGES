@@ -1,9 +1,11 @@
-3.6.0 2024xxxx
+3.6.0 20241230
 BF: Settings: Correction to ignore invalid paths in section [FILES]
-    Previously, the replacement of the placeholders was terminated without
-    error after the first incorrect path and the initialization of the platform
+    Previously, the replacement of the placeholders was terminated without error
+    after the first incorrect path and the initialization of the platform
     continued.
-BF: Platform: Names of environment variables are case-sensitive    
+BF: Platform: Names of environment variables are case-sensitive
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
+CR: Platform: Simplification of the terminal action
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
