@@ -188,6 +188,9 @@ namespace VirtualEnvironment.Launcher
                 
                 Invoke((MethodInvoker)delegate
                 {
+                    _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                    _timer?.Dispose();
+                    
                     Close();
                     Dispose();
                 });
@@ -239,12 +242,7 @@ namespace VirtualEnvironment.Launcher
 
             try
             {
-                using (Process.Start(new ProcessStartInfo
-                {
-                    WorkingDirectory = metaTile.Settings.WorkingDirectory,
-                    FileName = metaTile.Settings.Destination,
-                    Arguments = String.Join(" ", metaTile.Settings.Arguments ?? "")
-                }));
+                metaTile.Settings.Start();
             }
             catch (Exception exception)
             {
@@ -292,8 +290,6 @@ namespace VirtualEnvironment.Launcher
         {
             UnregisterHotKey(Handle, HOTKEY_ID);
             _initial = false;
-            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
-            _timer?.Dispose();
             _metaTileScreen?.Dispose();
         }
 

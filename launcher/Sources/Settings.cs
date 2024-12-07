@@ -19,6 +19,7 @@
 // the License.
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -99,7 +100,7 @@ namespace VirtualEnvironment.Launcher
 
         internal static bool IsUpdateAvailable()
         {
-            return File.Exists(FILE) && (_lastModifiedTime == null || _lastModifiedTime < File.GetLastWriteTime(FILE));
+            return File.Exists(FILE) && _lastModifiedTime < File.GetLastWriteTime(FILE);
         }
 
         internal static Settings Load()
@@ -131,7 +132,7 @@ namespace VirtualEnvironment.Launcher
             internal SettingsException(string message, Exception cause) : base(message, cause) {}
         }
 
-        private static string NormalizeValue(Regex pattern, string value, string standard)
+        internal static string NormalizeValue(Regex pattern, string value, string standard)
         {
             if (String.IsNullOrWhiteSpace(value)
                     || !pattern.IsMatch(value))
@@ -139,7 +140,7 @@ namespace VirtualEnvironment.Launcher
             return Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
         
-        private static string NormalizeValue(string value)
+        internal static string NormalizeValue(string value)
         {
             return Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
@@ -206,18 +207,18 @@ namespace VirtualEnvironment.Launcher
         
         [XmlElement("autoScale")]
         public bool AutoScale;
+        
+        [XmlElement(ElementName = "events")]
+        public Events Events { get; set; }
 
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
         public Tile[] Tiles;
         
-        public class Tile
+        public class Tile : Action
         {
             private string _title;
             private string _icon;
-            private string _destination;
-            private string _arguments;
-            private string _workingDirectory;
             
             [XmlElement("index")]
             public int Index;
@@ -260,27 +261,62 @@ namespace VirtualEnvironment.Launcher
                     return iconIndex;
                 }
             }
+        }
+    }
+    
+    public class Events
+    {
+        [XmlElement("session")]
+        public Session Session { get; set; }
+    }
+    
+    public class Session
+    {
+        [XmlElement("ending")]
+        public Ending Ending { get; set; }
+    }
+    
+    public class Ending : Action
+    {
+    }
 
-            [XmlElement("destination")]
-            public string Destination
-            {
-                get => _destination;
-                set => _destination = NormalizeValue(value);
-            }
+    public class Action
+    {
+        private string _destination;
+        private string _arguments;
+        private string _workingDirectory;
+        
+        [XmlElement("destination")]
+        public string Destination
+        {
+            get => _destination;
+            set => _destination = Settings.NormalizeValue(value);
+        }
 
-            [XmlElement("arguments")]
-            public string Arguments
-            {
-                get => _arguments;
-                set => _arguments = NormalizeValue(value);
-            }
+        [XmlElement("arguments")]
+        public string Arguments
+        {
+            get => _arguments;
+            set => _arguments = Settings.NormalizeValue(value);
+        }
 
-            [XmlElement("workingDirectory")]
-            public string WorkingDirectory
+        [XmlElement("workingDirectory")]
+        public string WorkingDirectory
+        {
+            get => _workingDirectory;
+            set => _workingDirectory = Settings.NormalizeValue(value);
+        }
+
+        public void Start()
+        {
+            if (String.IsNullOrWhiteSpace(Destination))
+                return;
+            using (Process.Start(new ProcessStartInfo
             {
-                get => _workingDirectory;
-                set => _workingDirectory = NormalizeValue(value);
-            }
+                WorkingDirectory = WorkingDirectory,
+                FileName = Destination,
+                Arguments = String.Join(" ", Arguments ?? "")
+            }));
         }
     }
 }

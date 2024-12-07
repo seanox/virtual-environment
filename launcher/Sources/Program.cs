@@ -19,18 +19,27 @@
 // the License.
 
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
-    
+using Microsoft.Win32;
+
 namespace VirtualEnvironment.Launcher
 {
     internal static class Program
     {
+        private const int ERROR_CANCELLED = 0x4C7;
+
+        private static Settings Settings;
+        
         [STAThread]
         private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            // Handle the Windows shutdown event
+            SystemEvents.SessionEnding += OnSessionEnding;            
 
             // Settings are monitored by the main program. When changes are
             // detected, the control is closed and set up again with the
@@ -55,6 +64,7 @@ namespace VirtualEnvironment.Launcher
                     if (Settings.IsUpdateAvailable()
                             || settings == null)
                         settings = Settings.Load();
+                    Program.Settings = settings;
                     using (control = new Control(settings, control == null))
                         Application.Run(control);
                     GC.Collect();
@@ -81,6 +91,31 @@ namespace VirtualEnvironment.Launcher
                         Environment.Exit(0);
                 }
                 Thread.Sleep(25);
+            }
+        }
+        
+        private static void OnSessionEnding(object sender, SessionEndingEventArgs eventArgs)
+        {
+            SystemEvents.SessionEnding -= OnSessionEnding;
+            
+            if (String.IsNullOrWhiteSpace(Settings?.Events?.Session?.Ending?.Destination))
+                return;
+            
+            try
+            {
+                Settings.Events.Session.Ending.Start();
+            }
+            catch (Exception exception)
+            {
+                // Exception when canceling by the user (UAC) is ignored
+                if (exception is Win32Exception
+                        && ((Win32Exception)exception).NativeErrorCode == ERROR_CANCELLED)
+                    return;
+
+                MessageBox.Show(($"Error opening action: {Settings.Events.Session.Ending.Destination}"
+                        + $"{Environment.NewLine}{exception.Message}"
+                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
+                    "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
     }
