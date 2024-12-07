@@ -76,7 +76,7 @@ Example of a configuration file:
     <gridCornerRadius>4</gridCornerRadius>
 
     <!-- Opacity of background in percents (100 - 0) -->
-    <opacity>90</opacity>
+    <opacity>95</opacity>
 
     <!--
         BackgroundImage is optionally a path relative to the working directory.
