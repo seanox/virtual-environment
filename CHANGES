@@ -1,10 +1,16 @@
 3.6.0 20241230
+BF: Launcher: Correction/optimization
+BF: Launcher: Correction when using custom scaling
+    Correction of the possibly incorrect calculation of
+    FormWindowState.Maximized for custom scaling.
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
     after the first incorrect path and the initialization of the platform
     continued.
+BF: Platform: Names of environment variables are case-sensitive
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
 CR: Platform: Simplification of the terminal action
+CR: Launcher: Added events (SessionEndingReason)
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
