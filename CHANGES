@@ -1,4 +1,5 @@
 3.6.0 20241230
+BF: Platform: Optimization and corrections
 BF: Launcher: Correction/optimization
 BF: Launcher: Correction when using custom scaling
     Correction of the possibly incorrect calculation of
