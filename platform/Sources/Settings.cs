@@ -35,16 +35,16 @@ namespace VirtualEnvironment.Platform
         private static string[] _files;
         
         private static readonly Regex PATTERN_COMMENT =
-            new Regex(@"(?:^|[\r\n])\s*;[^\r\n]*\S*");
+                new Regex(@"\s*(;.*)\s*$", RegexOptions.Multiline);
 
-        private static readonly Regex PATTERN_SECTION_SETTINGS =
-                new Regex(@"(?:^|[\r\n])\s*\[\s*SETTINGS\s*\](([\r\n]|.)*?)\s*(?:[\r\n]\s*\[|$)", RegexOptions.IgnoreCase);
+        private static readonly Regex PATTERN_EMPTY_LINE =
+                new Regex(@"[\r\n]+\s*[\r\n]+", RegexOptions.Singleline);
+        
+        private static readonly Regex PATTERN_SECTIONS =
+                new Regex(@"(?<=(^|[\r\n]))\s*\[\s*([^\r\n\]]+?)\s*\]\s*[\r\n]+\s*(.*?)\s*(?=$|([\r\n]\s*\[))", RegexOptions.Singleline);
         
         private static readonly Regex PATTERN_SECTION_KEY_VALUE =
                 new Regex(@"^\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)(?:\s*[\s:=]\s*(.*?))?\s*$", RegexOptions.IgnoreCase);
-        
-        private static readonly Regex PATTERN_SECTION_FILES =
-                new Regex(@"(?:^|[\r\n])\s*\[\s*FILES\s*\](([\r\n]|.)*?)\s*(?:[\r\n]\s*\[|$)", RegexOptions.IgnoreCase);
         
         private static readonly Regex PATTERN_FILE =
                 new Regex(@"^\s*([/\\].*?)\s*$");
@@ -89,30 +89,30 @@ namespace VirtualEnvironment.Platform
             
             var fileContent = File.ReadAllText(iniFile);
             fileContent = PATTERN_COMMENT.Replace(fileContent, "");
+            fileContent = PATTERN_EMPTY_LINE.Replace(fileContent, "\r\n");
 
-            var values = new Dictionary<string, string>();
-            var settingsSectionMatch = PATTERN_SECTION_SETTINGS.Match(fileContent);
-            var settingsSection = "";
-            if (settingsSectionMatch.Success)
-                settingsSection = settingsSectionMatch.Groups[1].Value;
-            var settingsLines = PATTERN_LINES.Split(settingsSection);
-            foreach (var line in settingsLines.Where(line => PATTERN_SECTION_KEY_VALUE.IsMatch(line)))
+            var sectionsDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (Match match in PATTERN_SECTIONS.Matches(fileContent))
+                sectionsDictionary[match.Groups[2].Value] = match.Groups[3].Value;
+
+            var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            
+            var settingsSection = sectionsDictionary.TryGetValue("settings", out var settingsContent) ? settingsContent : string.Empty;
+            foreach (var settingsLine in PATTERN_LINES.Split(settingsSection))
             {
-                var value = PATTERN_SECTION_KEY_VALUE.Replace(line, "$2");
+                if (!PATTERN_SECTION_KEY_VALUE.IsMatch(settingsLine))
+                    continue;
+                var key = PATTERN_SECTION_KEY_VALUE.Replace(settingsLine, "$1");
+                var value = PATTERN_SECTION_KEY_VALUE.Replace(settingsLine, "$2");
                 value = Environment.ExpandEnvironmentVariables(value);
                 value = Settings.ReplacePlaceholders(value, settingsDictionary);
-                var key = PATTERN_SECTION_KEY_VALUE.Replace(line, "$1");
                 settingsDictionary[key] = value;
                 values[key] = value;
             }
 
             var files = new List<string>();
-            var filesSectionMatch = PATTERN_SECTION_FILES.Match(fileContent);
-            var filesSection = "";
-            if (filesSectionMatch.Success)
-                filesSection = filesSectionMatch.Groups[1].Value;
-            var filesLines = PATTERN_LINES.Split(filesSection);
-            foreach (var line in filesLines)
+            var filesSection = sectionsDictionary.TryGetValue("files", out var filesContent) ? filesContent : string.Empty;
+            foreach (var line in PATTERN_LINES.Split(filesSection))
             {
                 if (!PATTERN_FILE.Match(line).Success)
                     continue;
