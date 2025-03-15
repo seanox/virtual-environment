@@ -12,13 +12,15 @@ IF "%1" == "exit" (
 
 REM ---- Launcher
 
-    REM Workaround and part of the concept. In the launcher an exit function can
-    REM be mapped, but the virtual environment is kept alive by the launcher and
-    REM therefore it does not exist as a default and so the launcher should be
-    REM terminated via taskkill on detach.
+    REM Part of the concept: The environment is based on a command line with
+    REM customized standard environment variables for Windows and the
+    REM applications. This command line is kept alive by the launcher, as it can
+    REM start the programs on the basis of its command line and thus on the
+    REM basis of the environment variables available there. The launcher
+    REM therefore has no implemented function for terminating and must be
+    REM terminated hard via taskkill on detach, which the platform does itself.
 
-    SET APPSPATHLAUNCHER=%APPSPATH%\Platform\launcher.exe
-    wmic process where ExecutablePath="%APPSPATHLAUNCHER:\=\\%" delete
+REM ---- Custom
 
     REM Placeholder for automatic module integration
     REM INSERT DETACH
