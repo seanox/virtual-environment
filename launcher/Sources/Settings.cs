@@ -307,16 +307,23 @@ namespace VirtualEnvironment.Launcher
             set => _workingDirectory = Settings.NormalizeValue(value);
         }
 
-        public void Start()
+        public void Start(bool asynchron = true)
         {
             if (String.IsNullOrWhiteSpace(Destination))
                 return;
-            using (Process.Start(new ProcessStartInfo
+            using (var process = new Process())
             {
-                WorkingDirectory = WorkingDirectory,
-                FileName = Destination,
-                Arguments = String.Join(" ", Arguments ?? "")
-            }));
+                process.StartInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = WorkingDirectory,
+                    FileName = Destination,
+                    Arguments = String.Join(" ", Arguments ?? "")
+                };
+                process.Start();
+                if (asynchron)
+                    return;
+                process.WaitForExit();
+            }
         }
     }
 }

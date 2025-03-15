@@ -103,7 +103,7 @@ namespace VirtualEnvironment.Launcher
             
             try
             {
-                Settings.Events.Session.Ending.Start();
+                Settings.Events.Session.Ending.Start(false);
             }
             catch (Exception exception)
             {
