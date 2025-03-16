@@ -227,7 +227,7 @@ namespace VirtualEnvironment.Platform
 
                 for (var index = 0; index < 3; index++)
                 {
-                    Thread.Sleep(3000);
+                    Thread.Sleep(2500);
                     if (Process.GetProcesses().All(process => process.Id != processesInfo.Process.Id))
                         break;
                     try
@@ -394,7 +394,6 @@ namespace VirtualEnvironment.Platform
                             Diskpart.CompactDisk(workerTask.Drive, workerTask.DiskFile);
                             
                             Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
-                            
                             break;
                         
                         case Task.Detach:
@@ -416,7 +415,7 @@ namespace VirtualEnvironment.Platform
                                 .FindAll(processInfo => processInfo.Path != null)
                                 .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
                                 .ForEach(processInfo => processInfo.Process.CloseMainWindow());
-                            Thread.Sleep(3000);
+                            Thread.Sleep(5000);
                             
                             GetProcesses()
                                 .FindAll(processInfo => processInfo.Path != null)
