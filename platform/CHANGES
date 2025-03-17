@@ -1,4 +1,4 @@
-3.6.0 20241230
+3.6.0 2025xxxx
 BF: Review: Optimization and corrections
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
@@ -7,6 +7,11 @@ BF: Settings: Correction to ignore invalid paths in section [FILES]
 BF: Platform: Names of environment variables are case-sensitive
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
 CR: Platform: Simplification of the terminal action
+CR: Platform: Optimization for resumption if the drive already exists
+    If the drive is recognized as attached, it is used directly instead of the
+    error message that the drive already exists and the ejection. This usually
+    concerns the situation after shutting down and logging off if the virtual
+    environment has not been closed beforehand. 
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach

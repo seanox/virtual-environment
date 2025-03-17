@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Reflection;
 using System.Text;
 
@@ -133,13 +134,40 @@ namespace VirtualEnvironment.Platform
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartCompactFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
         }
+        
+        private static List<Process> GetProcesses(string drive)
+        {
+            var wmiQueryString = "SELECT ProcessId, ExecutablePath FROM Win32_Process";
+            using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+            using (var collection = searcher.Get())
+            {
+                var query = from process in Process.GetProcesses()
+                    join managementObject in collection.Cast<ManagementObject>()
+                        on process.Id equals (int)(uint)managementObject["ProcessId"]
+                    where managementObject["ExecutablePath"] != null
+                          && ((string)managementObject["ExecutablePath"])
+                          .StartsWith(drive, StringComparison.OrdinalIgnoreCase)
+                    select process;
+                return query.ToList();
+            }
+        }
 
         internal static void CanAttachDisk(string drive, string diskFile)
         {
+            var volume = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
+            var driveInfo = new DriveInfo(drive);
+            if (driveInfo.IsReady)
+            {
+                if (!driveInfo.VolumeLabel.Equals(volume, StringComparison.OrdinalIgnoreCase)
+                        || GetProcesses(drive).Any())
+                    throw new DiskpartAbortException(Messages.DiskpartAttachAbort, Messages.DiskpartDriveAlreadyUsed);
+                return;
+            }
+            
             if (Directory.Exists(drive))
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartDriveAlreadyExists);
+                throw new DiskpartAbortException(Messages.DiskpartAttachAbort, Messages.DiskpartDriveAlreadyExists);
             if (!File.Exists(diskFile))
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartFileNotExists);
+                throw new DiskpartAbortException(Messages.DiskpartAttachAbort, Messages.DiskpartFileNotExists);
         }
 
         internal static void AttachDisk(string drive, string diskFile)
@@ -150,14 +178,26 @@ namespace VirtualEnvironment.Platform
             
             Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach);
             CanAttachDisk(drive, diskFile);
-            
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartAttach, String.Format(Messages.DiskpartAttachDiskpart, drive));
-            var diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {
-                File = diskFile,
-                Drive = drive.Substring(0, 1)
-            });
-            if (diskpartResult.Failed)
-                throw new DiskpartException(Messages.DiskpartAttachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+            if (!Directory.Exists(drive))
+            {
+                Notification.Push(Notification.Type.Trace,
+                    Messages.DiskpartAttach,
+                    String.Format(Messages.DiskpartAttachDiskpart, drive));
+                var diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {
+                    File = diskFile,
+                    Drive = drive.Substring(0, 1)
+                });
+                if (diskpartResult.Failed)
+                    throw new DiskpartException(Messages.DiskpartAttachFailed,
+                        Messages.DiskpartUnexpectedErrorOccurred,
+                        "@" + diskpartResult.Output);
+            }
+            else
+            {
+                Notification.Push(Notification.Type.Trace,
+                    Messages.DiskpartAttach,
+                    String.Format(Messages.DiskpartAttachExistingDrive, drive));
+            }
         }
 
         internal static void CanDetachDisk(string drive, string diskFile)
@@ -180,16 +220,6 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Messages.DiskpartDetachFailed, Messages.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
-        }
-
-        private static char GetNextDriveLetter()
-        {
-            var availableDriveLetters = new List<char>();
-            for (var letter = 'A'; letter < 'Z'; letter++)
-                availableDriveLetters.Add(letter);
-            foreach (var driveInfo in DriveInfo.GetDrives())
-                availableDriveLetters.Remove(driveInfo.Name.ToUpper().ToCharArray()[0]);
-            return availableDriveLetters.FirstOrDefault();
         }
 
         private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements = null)
@@ -276,4 +306,14 @@ namespace VirtualEnvironment.Platform
             Messages = messages;
         }
     }
+    
+    internal class DiskpartAbortException : DiskpartException
+    {
+        internal string[] Messages { get; }
+
+        internal DiskpartAbortException(params string[] messages)
+        {
+            Messages = messages;
+        }
+    }    
 }
