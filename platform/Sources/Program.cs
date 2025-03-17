@@ -42,7 +42,7 @@ namespace VirtualEnvironment.Platform
                     || !new Regex("^[A-Z]:$", RegexOptions.IgnoreCase).IsMatch(arguments[0])
                     || Enum.GetValues(typeof(Worker.Task)).Cast<Worker.Task>()
                             .Where(task => !Worker.Task.Usage.Equals(task))
-                            .All(task => string.Equals(task.ToString(), arguments[1], StringComparison.OrdinalIgnoreCase))) {
+                            .All(task => String.Equals(task.ToString(), arguments[1], StringComparison.OrdinalIgnoreCase))) {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Worker(Worker.Task.Usage, null, null));
