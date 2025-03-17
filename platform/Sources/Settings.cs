@@ -97,7 +97,7 @@ namespace VirtualEnvironment.Platform
 
             var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             
-            var settingsSection = sectionsDictionary.TryGetValue("settings", out var settingsContent) ? settingsContent : string.Empty;
+            var settingsSection = sectionsDictionary.TryGetValue("settings", out var settingsContent) ? settingsContent : String.Empty;
             foreach (var settingsLine in PATTERN_LINES.Split(settingsSection))
             {
                 if (!PATTERN_SECTION_KEY_VALUE.IsMatch(settingsLine))
@@ -111,7 +111,7 @@ namespace VirtualEnvironment.Platform
             }
 
             var files = new List<string>();
-            var filesSection = sectionsDictionary.TryGetValue("files", out var filesContent) ? filesContent : string.Empty;
+            var filesSection = sectionsDictionary.TryGetValue("files", out var filesContent) ? filesContent : String.Empty;
             foreach (var line in PATTERN_LINES.Split(filesSection))
             {
                 if (!PATTERN_FILE.Match(line).Success)

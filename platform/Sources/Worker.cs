@@ -32,7 +32,7 @@ using System.Text.RegularExpressions;
 
 namespace VirtualEnvironment.Platform
 {
-    public partial class Worker : Form, Notification.INotification
+    internal partial class Worker : Form, Notification.INotification
     {
         private const int BATCH_PROCESS_IDLE_TIMEOUT_SECONDS = 30;
 
@@ -68,32 +68,22 @@ namespace VirtualEnvironment.Platform
 
             _timer = new System.Threading.Timer(Service, new WorkerTask() {Task = task, Drive = drive, DiskFile = diskFile}, 25, -1);
         }
-
-        private struct ProcessesInfo
+        
+        private static List<Process> GetProcesses(string drive)
         {
-            internal Process Process;
-            internal string  Path;
-        }
-
-        private static List<ProcessesInfo> GetProcesses()
-        {
-            var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+            var wmiQueryString = "SELECT ProcessId, ExecutablePath FROM Win32_Process";
             using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-                using (var collection = searcher.Get())
-                {
-                    var query = from process in Process.GetProcesses()
-                            join managementObject in collection.Cast<ManagementObject>()
-                            on process.Id equals (int)(uint)managementObject["ProcessId"]
-                            select new ProcessesInfo()
-                            {
-                                Process = process,
-                                Path = (string)managementObject["ExecutablePath"],
-                            };
-                    var resultList = new List<ProcessesInfo>();
-                    foreach (var process in query)
-                        resultList.Add(process);
-                    return resultList;
-                }
+            using (var collection = searcher.Get())
+            {
+                var query = from process in Process.GetProcesses()
+                    join managementObject in collection.Cast<ManagementObject>()
+                        on process.Id equals (int)(uint)managementObject["ProcessId"]
+                    where managementObject["ExecutablePath"] != null
+                          && ((string)managementObject["ExecutablePath"])
+                                  .StartsWith(drive, StringComparison.OrdinalIgnoreCase)
+                    select process;
+                return query.ToList();
+            }
         }
 
         private struct BatchResult
@@ -151,10 +141,10 @@ namespace VirtualEnvironment.Platform
             try
             {
                 var process = Process.Start(processStartInfo);
-                process.OutputDataReceived += (object sender, DataReceivedEventArgs eventArgs) =>
+                process.OutputDataReceived += (sender, eventArgs) =>
                     batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
                 process.BeginOutputReadLine();
-                process.ErrorDataReceived += (object sender, DataReceivedEventArgs eventArgs) =>
+                process.ErrorDataReceived += (sender, eventArgs) =>
                     batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
                 process.BeginErrorReadLine();
                 
@@ -194,7 +184,7 @@ namespace VirtualEnvironment.Platform
             }
         }
 
-        private static void KillProcess(ProcessesInfo processesInfo)
+        private static void KillProcess(Process process)
         {
             // The process is completed in three stages. First friendly, then
             // gentle, then hard. Here, gentle and hard are implemented.
@@ -203,17 +193,19 @@ namespace VirtualEnvironment.Platform
             
             try
             {
-                var process = new Process();
-                process.StartInfo = new ProcessStartInfo()
+                var taskkill = new Process()
                 {
-                    UseShellExecute = true,
-                    CreateNoWindow  = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "taskkill.exe ",
-                    Arguments = "/t /pid " + processesInfo.Process.Id
+                    StartInfo = new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        FileName = "taskkill.exe ",
+                        Arguments = $"/t /pid {process.Id}"
+                    }
                 };
-                process.Start();
-                process.WaitForExit();
+                taskkill.Start();
+                taskkill.WaitForExit();
             }
             catch
             {
@@ -222,24 +214,25 @@ namespace VirtualEnvironment.Platform
             {
                 // Killing the processes can block (e.g. system protection by
                 // the virus scanner). Therefore, we try up to 3 times with a
-                // small pause. After three attempts, the process is ignored
-                // and the drive is detached.
+                // small pause. After three attempts, the process is ignored and
+                // the drive is detached.
 
                 for (var index = 0; index < 3; index++)
                 {
                     Thread.Sleep(2500);
-                    if (Process.GetProcesses().All(process => process.Id != processesInfo.Process.Id))
-                        break;
                     try
                     {
-                        processesInfo.Process.Kill();
+                        Process.GetProcessById(process.Id);
+                        process.Kill();
                         break;
                     }
                     catch (Exception exception)
                     {
+                        if (exception is ArgumentException)
+                            break;
                         Notification.Push(Notification.Type.Warning,
                                 String.Format(Messages.WorkerDetachBlocked,
-                                        processesInfo.Process.ProcessName, exception.Message));
+                                        process.ProcessName, exception.Message));
                     }
                 }
             }
@@ -287,7 +280,7 @@ namespace VirtualEnvironment.Platform
                 File.SetLastWriteTime(templateFile, DateTime.Now);
             }
 
-            if (!string.IsNullOrWhiteSpace(message))
+            if (!String.IsNullOrWhiteSpace(message))
                 Notification.Push(Notification.Type.Trace,
                         $"@{Messages.WorkerAttachEnvironmentSetup}{message}");
         }
@@ -375,7 +368,7 @@ namespace VirtualEnvironment.Platform
                                             && File.Exists(path))
                                         File.Delete(path);
                                 }
-                                catch
+                                catch (Exception)
                                 {
                                 }
                             }
@@ -402,7 +395,6 @@ namespace VirtualEnvironment.Platform
                             Thread.Sleep(1000);
 
                             Diskpart.CanDetachDisk(workerTask.Drive, workerTask.DiskFile);
-
                             batchResult = BatchExec(workerTask.Task, workerTask.Drive + @"\Startup.cmd", "exit");
                             if (batchResult.Failed)
                             {
@@ -411,15 +403,11 @@ namespace VirtualEnvironment.Platform
                                 throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
                             }
                             
-                            GetProcesses()
-                                .FindAll(processInfo => processInfo.Path != null)
-                                .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
-                                .ForEach(processInfo => processInfo.Process.CloseMainWindow());
+                            GetProcesses(workerTask.Drive)
+                                .ForEach(process => process.CloseMainWindow());
                             Thread.Sleep(5000);
                             
-                            GetProcesses()
-                                .FindAll(processInfo => processInfo.Path != null)
-                                .FindAll(processInfo => processInfo.Path.StartsWith(workerTask.Drive))
+                            GetProcesses(workerTask.Drive)
                                 .ForEach(KillProcess);
 
                             Diskpart.DetachDisk(workerTask.Drive, workerTask.DiskFile);
@@ -449,9 +437,14 @@ namespace VirtualEnvironment.Platform
                 {
                     if (exception is WorkerException workerException)
                         Notification.Push(Notification.Type.Error, workerException.Messages);
+                    else if (exception is DiskpartAbortException diskpartAbortException)
+                        Notification.Push(Notification.Type.Error, diskpartAbortException.Messages);
                     else if (exception is DiskpartException diskpartException)
                         Notification.Push(Notification.Type.Error, diskpartException.Messages);
                     else Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
+
+                    if (exception is DiskpartAbortException)
+                        return;
 
                     if (new []{Task.Attach, Task.Create, Task.Compact}.Contains(workerTask.Task))
                         Diskpart.AbortDisk(workerTask.Drive, workerTask.DiskFile);
