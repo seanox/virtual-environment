@@ -69,11 +69,29 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attaching the virtual disk was aborted.
+        /// </summary>
+        internal static string DiskpartAttachAbort {
+            get {
+                return ResourceManager.GetString("DiskpartAttachAbort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assignment as drive {0}.
         /// </summary>
         internal static string DiskpartAttachDiskpart {
             get {
                 return ResourceManager.GetString("DiskpartAttachDiskpart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assignment of the existing drive {0}.
+        /// </summary>
+        internal static string DiskpartAttachExistingDrive {
+            get {
+                return ResourceManager.GetString("DiskpartAttachExistingDrive", resourceCulture);
             }
         }
         
@@ -182,6 +200,15 @@ namespace VirtualEnvironment.Platform {
         internal static string DiskpartDriveAlreadyExists {
             get {
                 return ResourceManager.GetString("DiskpartDriveAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drive already used.
+        /// </summary>
+        internal static string DiskpartDriveAlreadyUsed {
+            get {
+                return ResourceManager.GetString("DiskpartDriveAlreadyUsed", resourceCulture);
             }
         }
         

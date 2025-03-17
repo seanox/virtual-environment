@@ -124,8 +124,14 @@
   <data name="DiskpartAttachDiskpart" xml:space="preserve">
     <value>Assignment as drive {0}</value>
   </data>
+  <data name="DiskpartAttachExistingDrive" xml:space="preserve">
+    <value>Assignment of the existing drive {0}</value>
+  </data>
   <data name="DiskpartAttachFailed" xml:space="preserve">
     <value>Attaching the virtual disk failed</value>
+  </data>
+  <data name="DiskpartAttachAbort" xml:space="preserve">
+    <value>Attaching the virtual disk was aborted</value>
   </data>
   
   <data name="DiskpartCompact" xml:space="preserve">
@@ -160,7 +166,10 @@
   <data name="DiskpartDetachFailed" xml:space="preserve">
     <value>Detaching the virtual disk failed</value>
   </data>
-  
+
+  <data name="DiskpartDriveAlreadyUsed" xml:space="preserve">
+    <value>Drive already used</value>
+  </data>
   <data name="DiskpartDriveAlreadyExists" xml:space="preserve">
     <value>Drive already exists</value>
   </data>
