@@ -152,6 +152,39 @@ namespace VirtualEnvironment.Platform
             }
         }
 
+        private static bool IsVirtualDisk(string drive)
+        {
+            var query = "SELECT * FROM Win32_DiskDrive";
+            using (var disks = new ManagementObjectSearcher(query))
+            {
+                foreach (ManagementObject disk in disks.Get())
+                {
+                    var partitions = disk.GetRelated("Win32_DiskPartition");
+                    foreach (ManagementObject partition in partitions)
+                    {
+                        var logicalDisks = partition.GetRelated("Win32_LogicalDisk");
+                        foreach (ManagementObject logicalDisk in logicalDisks)
+                        {
+                            var logicalDrive = logicalDisk["DeviceID"]?.ToString();
+                            if (!drive.Equals(logicalDrive, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            
+                            var pnpDeviceId = disk["PNPDeviceID"]?.ToString();
+                            if (pnpDeviceId != null
+                                    && pnpDeviceId.IndexOf("VIRTUAL_DISK", StringComparison.OrdinalIgnoreCase) >= 0)
+                                return true;
+                            
+                            var mediaType = disk["MediaType"]?.ToString();
+                            if (mediaType != null
+                                    && mediaType.IndexOf("VIRTUAL", StringComparison.OrdinalIgnoreCase) >= 0)
+                                return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         internal static void CanAttachDisk(string drive, string diskFile)
         {
             var volume = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
@@ -159,7 +192,8 @@ namespace VirtualEnvironment.Platform
             if (driveInfo.IsReady)
             {
                 if (!driveInfo.VolumeLabel.Equals(volume, StringComparison.OrdinalIgnoreCase)
-                        || GetProcesses(drive).Any())
+                        || GetProcesses(drive).Any()
+                        || !IsVirtualDisk(drive))
                     throw new DiskpartAbortException(Messages.DiskpartAttachAbort, Messages.DiskpartDriveAlreadyUsed);
                 return;
             }
