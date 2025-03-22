@@ -1,6 +1,6 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
+﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
+// hereinafter referred to as Seanox Software Solutions or Seanox for short.
+// This software is subject to version 2 of the Apache License.
 //
 // Virtual Environment Launcher
 // Program starter for the virtual environment.
@@ -208,9 +208,6 @@ namespace VirtualEnvironment.Launcher
         [XmlElement("autoScale")]
         public bool AutoScale;
         
-        [XmlElement(ElementName = "events")]
-        public Events Events { get; set; }
-
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
         public Tile[] Tiles;
@@ -263,22 +260,6 @@ namespace VirtualEnvironment.Launcher
             }
         }
     }
-    
-    public class Events
-    {
-        [XmlElement("session")]
-        public Session Session { get; set; }
-    }
-    
-    public class Session
-    {
-        [XmlElement("ending")]
-        public Ending Ending { get; set; }
-    }
-    
-    public class Ending : Action
-    {
-    }
 
     public class Action
     {
@@ -307,7 +288,7 @@ namespace VirtualEnvironment.Launcher
             set => _workingDirectory = Settings.NormalizeValue(value);
         }
 
-        public void Start(bool asynchron = true)
+        internal void Start()
         {
             if (String.IsNullOrWhiteSpace(Destination))
                 return;
@@ -320,9 +301,6 @@ namespace VirtualEnvironment.Launcher
                     Arguments = String.Join(" ", Arguments ?? "")
                 };
                 process.Start();
-                if (asynchron)
-                    return;
-                process.WaitForExit();
             }
         }
     }
