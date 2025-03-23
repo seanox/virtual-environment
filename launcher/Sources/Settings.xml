@@ -86,19 +86,6 @@
   -->
   <fontSize>9.5</fontSize>
 
-  <!-- Optional actions for Windows events --> 
-  <!--
-  <events>
-    <session>
-      <ending>
-        <destination>...</destination>
-        <arguments>...</arguments>
-        <workingDirectory>...</workingDirectory>
-      </ending>
-    </session>
-  </events>
-  -->  
-
   <tiles>
     <tile>
       <!-- Number of the tile (1 - 40) --> 
