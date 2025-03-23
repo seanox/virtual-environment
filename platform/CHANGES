@@ -87,7 +87,7 @@ BF: Platform: Correction of settings template synchronization
     If the target file is newer than the template, the template will be updated.
 BF: Platform Create: Correction of settings directory
     Has been moved from \Documents\Settings to \Settings.
-BF: Platform: Compact per Diskpart was not executed
+BF: Platform: Compact per DiskPart was not executed
 BF: Platform: Optimization and corrections
 BF: Platform: Optimization and corrections of the texts
 CR: Platform: Optimization / enhancement of function compact
