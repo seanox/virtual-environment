@@ -13,6 +13,7 @@
   
   <property name="workspace" value="${basedir}"/>
   <property name="workspace.sources.filter" value="**/*.cs,**/*.resx,**/*.csproj,**/*.sln,**/*.manifest,**/*.ini"/>
+  <property name="workspace.resources" value="${basedir}/Resources"/>
   <property name="workspace.target" value="${basedir}/Target"/>
   <property name="workspace.target.release" value="${workspace.target}/bin/Release"/>
   <property name="workspace.target.update" value="${workspace.target}/bin/Update"/>
@@ -50,10 +51,10 @@
       <local name="release.info.date"/>
       <loadproperties srcfile="release-info.tmp"/>
       <delete file="release-info.tmp"/>
-      <replaceregexp match="(?&lt;!//\s)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
+      <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
+      <replaceregexp match="(AssemblyCopyright\(&quot;.*?\s)\d{4}(\s.*?&quot;\))" replace="\1${release.info.year}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(AssemblyVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
@@ -121,10 +122,43 @@
     <release-info-locate/>
     <release-info-insert/>
 
+    <replaceregexp match="(Copyright\s+[\x21-\x7E]+)\s+\d+" replace="\1 ${release.year}">
+      <fileset dir="${workspace}" includes="**/*.cs"/>
+    </replaceregexp>
+
+    <replaceregexp file="${workspace}/${ant.project.name}.csproj" flags="g"
+        match="&lt;OutputType&gt;WinExe&lt;/OutputType&gt;"
+        replace="&lt;OutputType&gt;Library&lt;/OutputType&gt;"/>
+    <exec executable="${workspace.build.tool}"
+        dir="${workspace}"
+        output="${workspace.target.release}/output.log"
+        error="${workspace.target.release}/error.log"
+        resultproperty="workspace.build.exit.code">
+      <arg line="${ant.project.name}.sln /t:Clean,Build /P:Configuration=Release"/>
+    </exec>
+    <replaceregexp file="${workspace}/${ant.project.name}.csproj" flags="g"
+        match="&lt;OutputType&gt;Library&lt;/OutputType&gt;"
+        replace="&lt;OutputType&gt;WinExe&lt;/OutputType&gt;"/>
+    <fail message="Build failed with exit code ${workspace.build.exit.code}
+${line.separator}&#09;For more details see in the log files:
+${line.separator}${workspace.target.release}/output.log
+${line.separator}${workspace.target.release}/error.log">
+      <condition>
+        <not>
+          <equals arg1="${workspace.build.exit.code}" arg2="0"/>
+        </not>
+      </condition>
+    </fail>
+    <copy todir="${workspace.resources}/platform/Programs/Platform"
+        file="${workspace.target.release}/${ant.project.name}.dll"/>
+
     <delete dir="${workspace.target.release}"/>
     <mkdir dir="${workspace.target.release}"/>
-    <exec executable="${workspace.build.tool}" dir="${workspace}" resultproperty="workspace.build.exit.code"
-        output="${workspace.target.release}/output.log" error="${workspace.target.release}/error.log">
+    <exec executable="${workspace.build.tool}"
+        dir="${workspace}"
+        output="${workspace.target.release}/output.log"
+        error="${workspace.target.release}/error.log"
+        resultproperty="workspace.build.exit.code">
       <arg line="${ant.project.name}.sln /t:Clean,Build /P:Configuration=Release"/>
     </exec>
     <fail message="Build failed with exit code ${workspace.build.exit.code}
@@ -143,7 +177,7 @@ ${line.separator}${workspace.target.release}/error.log">
     <copy todir="${workspace.target.release}" file="CHANGES"/>
     <copy todir="${workspace.target.release}" file="LICENSE"/>
     <copy todir="${workspace.target.release}" file="README.md"/>
-    <copy todir="${workspace.target.release}" file="${workspace}/Resources/platform/Resources/manual.txt"/>
+    <copy todir="${workspace.target.release}" file="${workspace.resources}/platform/Resources/manual.txt"/>
     <exec executable="cmd" dir="${workspace.target.release}">
       <arg line="/C ren ${ant.project.name}.* ${ant.project.name}.*"/>
     </exec>
@@ -161,11 +195,11 @@ ${line.separator}${workspace.target.release}/error.log">
     <mkdir dir="${workspace.target.update}"/>
     <copy file="${workspace.target.release}/${ant.project.name}.exe"
         tofile="${workspace.target.update}/${ant.project.name}.exe_${release.version}"/>
-    <copy file="${workspace}/Resources/settings.ini"
+    <copy file="${workspace.resources}/settings.ini"
         tofile="${workspace.target.update}/${ant.project.name}.ini_${release.version}"/>
 
     <copy todir="${workspace.target.update}">
-      <fileset casesensitive="false" dir="${workspace}/Resources/platform" includes="**"/>
+      <fileset casesensitive="false" dir="${workspace.resources}/platform" includes="**"/>
       <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>
     </copy>
     <echo file="${workspace.target.update}/readme.txt_${release.version}">
