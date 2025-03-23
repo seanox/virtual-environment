@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
+        <ProjectGuid>{ACCC1BBB-2740-490D-BEBA-CBF027A57B4B}</ProjectGuid>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{ACCC1BBB-2740-490D-BEBA-CBF027A57B4B}</ProjectGuid>
         <OutputType>WinExe</OutputType>
         <RootNamespace>VirtualEnvironment.Platform</RootNamespace>
         <AssemblyName>Platform</AssemblyName>
@@ -73,6 +73,7 @@
         <Compile Include="Sources\Notification.cs" />
         <Compile Include="Sources\Program.cs" />
         <Compile Include="Sources\Resource.cs" />
+        <Compile Include="Sources\Service.cs" />
         <Compile Include="Sources\Settings.cs" />
         <EmbeddedResource Include="Sources\Program.ico" />
         <Compile Include="Sources\Worker.cs">
@@ -94,10 +95,13 @@
         <EmbeddedResource Include="Resources\diskpart\compact" />
         <EmbeddedResource Include="Resources\diskpart\create" />
         <EmbeddedResource Include="Resources\diskpart\detach" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(OutputType)' == 'WinExe'">
         <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.xml" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\platform.dll" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macro.cmd" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macros.cmd" />
         <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
