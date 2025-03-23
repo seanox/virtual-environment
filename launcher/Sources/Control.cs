@@ -1,10 +1,10 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
+﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
+// hereinafter referred to as Seanox Software Solutions or Seanox for short.
+// This software is subject to version 2 of the Apache License.
 //
 // Virtual Environment Launcher
 // Program starter for the virtual environment.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -82,6 +84,9 @@ namespace VirtualEnvironment.Launcher
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool ShutdownBlockReasonCreate(IntPtr hWnd, string pwszReason);
+        
         private const int HOTKEY_ID = 0x0;
         
         // Keyboard Input Notifications
@@ -112,6 +117,15 @@ namespace VirtualEnvironment.Launcher
 
         internal Control(Settings settings, bool visible = true)
         {
+            // Handle the Windows ShutdownBlockReason, but only if the launcher
+            // is running in the context of the virtual environment. It is not
+            // necessary to undo this, as the launcher ends and Windows then
+            // automatically cleans up the ShutdownBlockReason. 
+            var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
+            var platformDrive = Environment.GetEnvironmentVariable("VT_HOMEDRIVE");
+            if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
+                ShutdownBlockReasonCreate(this.Handle, "Virtual environment must be shut down.");
+            
             _settings = settings;
             _visible  = visible;
 
