@@ -349,11 +349,8 @@ namespace VirtualEnvironment.Platform
     
     internal class DiskpartAbortException : DiskpartException
     {
-        internal string[] Messages { get; }
-
-        internal DiskpartAbortException(params string[] messages)
+        internal DiskpartAbortException(params string[] messages) : base(messages)
         {
-            Messages = messages;
         }
     }    
 }
