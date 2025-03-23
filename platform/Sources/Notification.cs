@@ -50,17 +50,33 @@ namespace VirtualEnvironment.Platform
         }
 
         private static readonly List<INotification> _subscriptions;
+        
+        private static string OutputFilePath
+        {
+            get
+            {
+                // In the context of the virtual environment e.g. platform.dll,
+                // the log file of the virtual environment (platform) should be
+                // used for output.
+                var platformApp = Environment.GetEnvironmentVariable("PLATFORM_APP");
+                if (!string.IsNullOrEmpty(platformApp)
+                        && File.Exists(platformApp))
+                    return Path.Combine(Path.GetDirectoryName(platformApp),
+                        Path.GetFileNameWithoutExtension(Path.GetFileName(platformApp)) + ".log");
+                
+                var applicationPath = Assembly.GetExecutingAssembly().Location;
+                return Path.Combine(Path.GetDirectoryName(applicationPath),
+                    Path.GetFileNameWithoutExtension(Path.GetFileName(applicationPath)) + ".log");
+            }
+        }
 
         static Notification()
         {
             _subscriptions = new List<INotification>();
-
-            var applicationPath = Assembly.GetExecutingAssembly().Location;
-            var loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                    Path.GetFileNameWithoutExtension(applicationPath) + ".log");
-            if (File.Exists(loggingFile)
-                    && new FileInfo(loggingFile).Length > 0)
-                using (var streamWriter = File.AppendText(loggingFile))
+            var outputFilePath = Notification.OutputFilePath;
+            if (File.Exists(outputFilePath)
+                    && new FileInfo(outputFilePath).Length > 0)
+                using (var streamWriter = File.AppendText(outputFilePath))
                     streamWriter.WriteLine();
         }
 
@@ -77,9 +93,7 @@ namespace VirtualEnvironment.Platform
                 _subscriptions.ForEach(recipient =>
                         recipient.Receive(new Message(type, publication)));
 
-            var applicationPath = Assembly.GetExecutingAssembly().Location;
-            var loggingFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                    Path.GetFileNameWithoutExtension(applicationPath) + ".log");
+            var outputFilePath = Notification.OutputFilePath;
             while (messages.Length > 0
                    && Regex.IsMatch(messages[0], "^((@+)|(\\s+))$"))
                 messages = messages.Skip(1).ToArray();
@@ -89,13 +103,13 @@ namespace VirtualEnvironment.Platform
             messages = messages.Select(message =>
                     Messages.DiskpartUnexpectedErrorOccurred == message
                             || Messages.WorkerUnexpectedErrorOccurred == message
-                        ? String.Format(message, Path.GetFileName(loggingFile)) : message).ToArray();
+                        ? String.Format(message, Path.GetFileName(outputFilePath)) : message).ToArray();
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
             output = $"{timestamp} {(Type.Abort.Equals(type) ? Type.Trace : type).ToString().ToUpper()} " + output;
             var prefix = $"{timestamp}  ...  ";
             output = Regex.Replace(output, @"[^\S\r\n]*((\r\n)|(\n\r)|[\r\n])[^\S\r\n]*", "\r\n" + prefix);
-            using (var streamWriter = File.AppendText(loggingFile))
+            using (var streamWriter = File.AppendText(outputFilePath))
                 streamWriter.WriteLine(output);
         }
 

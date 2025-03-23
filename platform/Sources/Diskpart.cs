@@ -1,10 +1,10 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
+﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
+// hereinafter referred to as Seanox Software Solutions or Seanox for short.
+// This software is subject to version 2 of the Apache License.
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2023 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -31,6 +31,11 @@ namespace VirtualEnvironment.Platform
 {
     internal static class Diskpart
     {
+        internal const string DISK_TYPE   = "expandable";
+        internal const int    DISK_SIZE   = 128000;
+        internal const string DISK_STYLE  = "GPT";
+        internal const string DISK_FORMAT = "NTFS";
+
         private enum DiskpartTask
         {
             Attach,
@@ -288,10 +293,10 @@ namespace VirtualEnvironment.Platform
             var diskpartProperties = new DiskpartProperties()
             {
                 File   = diskFile,
-                Type   = Program.DISK_TYPE,
-                Size   = Program.DISK_SIZE,
-                Style  = Program.DISK_STYLE,
-                Format = Program.DISK_FORMAT,
+                Type   = DISK_TYPE,
+                Size   = DISK_SIZE,
+                Style  = DISK_STYLE,
+                Format = DISK_FORMAT,
                 Name   = Path.GetFileNameWithoutExtension(diskFile)
             };
 
@@ -320,6 +325,7 @@ namespace VirtualEnvironment.Platform
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.xml");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\platform.dll");
             MigrateResourcePlatformFile(drive, @"\Programs\Macros\macros.cmd");
             MigrateResourcePlatformFile(drive, @"\Programs\Macros\macro.cmd");
             MigrateResourcePlatformFile(drive, @"\Resources\platform.ico");

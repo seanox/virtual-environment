@@ -1,10 +1,10 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
+﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
+// hereinafter referred to as Seanox Software Solutions or Seanox for short.
+// This software is subject to version 2 of the Apache License.
 //
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -29,32 +29,25 @@ namespace VirtualEnvironment.Platform
 {
     internal static class Program
     {
-        internal const string DISK_TYPE   = "expandable";
-        internal const int    DISK_SIZE   = 128000;
-        internal const string DISK_STYLE  = "GPT";
-        internal const string DISK_FORMAT = "NTFS";
-
         [STAThread]
         private static void Main (params string[] arguments)
         {
-            if (arguments == null
-                    || arguments.Length < 2
-                    || !new Regex("^[A-Z]:$", RegexOptions.IgnoreCase).IsMatch(arguments[0])
-                    || Enum.GetValues(typeof(Worker.Task)).Cast<Worker.Task>()
-                            .Where(task => !Worker.Task.Usage.Equals(task))
-                            .All(task => String.Equals(task.ToString(), arguments[1], StringComparison.OrdinalIgnoreCase))) {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Worker(Worker.Task.Usage, null, null));
-                return;
-            }
-
-            var drive = arguments[0].ToUpper(); 
+            if (arguments == null)
+                arguments = new string[] {};
+            var task = (arguments.ElementAtOrDefault(1) ?? "").ToLower();
+            var drive = (arguments.ElementAtOrDefault(0) ?? "").ToUpper();
+            if (!new Regex("^[A-Z]:$").IsMatch(drive))
+                task = "";
+            
+            if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly()
+                    && !new Regex("^(compact|attach|detach|shortcuts)$", RegexOptions.IgnoreCase).IsMatch(task))
+                throw new InvalidOperationException("Requires a drive letter (A-Z) and a method: [compact|attach|detach|shortcuts].");
+            
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
             var workerTask = Worker.Task.Usage;
-            switch (arguments[1].ToLower())
+            switch (task)
             {
                 case "create":
                     workerTask = Worker.Task.Create;
@@ -72,9 +65,20 @@ namespace VirtualEnvironment.Platform
                     workerTask = Worker.Task.Shortcuts;
                     break;
             }
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Worker(workerTask, drive, diskFile));
+
+            // In the case that the main method is called as a DLL. If a window
+            // from the calling program already exists, no new one should or may
+            // be established as an application, as this will otherwise cause an
+            // InvalidOperationException. 
+            
+            if (!Application.MessageLoop
+                    && Application.OpenForms.Count <= 0)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Worker(workerTask, drive, diskFile));
+            }
+            else new Worker(workerTask, drive, diskFile).Show();
         }
     }
 }
