@@ -49,9 +49,6 @@
       <local name="release.info.date"/>
       <loadproperties srcfile="release-info.tmp"/>
       <delete file="release-info.tmp"/>
-      <replaceregexp match="(?&lt;!//\s)(Copyright\s+[^\s]+)\s+\d+" replace="\1 ${release.info.year}">
-        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>
       <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
@@ -114,7 +111,9 @@
   <target name="release" depends="changes">
     <release-info-locate/>
     <release-info-insert/>
-
+    <replaceregexp match="(Copyright\s+[\x21-\x7E]+)\s+\d+" replace="\1 ${release.year}">
+      <fileset dir="${workspace}" includes="**/*.cs"/>
+    </replaceregexp>
     <delete dir="${workspace.target.release}"/>
     <mkdir dir="${workspace.target.release}"/>
     <exec executable="${workspace.build.tool}" dir="${workspace}" resultproperty="workspace.build.exit.code"
