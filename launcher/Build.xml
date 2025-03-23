@@ -52,6 +52,9 @@
       <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
+      <replaceregexp match="(AssemblyCopyright\(&quot;.*?\s)\d{4}(\s.*?&quot;\))" replace="\1${release.info.year}\2">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>      
       <replaceregexp match="(AssemblyVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
