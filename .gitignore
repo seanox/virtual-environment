@@ -1,3 +1,5 @@
-/.idea/
-/release/
-.project
+/**/.idea/
+/**/Release/
+/**/Target/
+
+/Platform/Resources/platform/Programs/Platform/platform.dll
