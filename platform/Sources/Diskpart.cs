@@ -31,10 +31,10 @@ namespace VirtualEnvironment.Platform
 {
     internal static class Diskpart
     {
-        internal const string DISK_TYPE   = "expandable";
-        internal const int    DISK_SIZE   = 128000;
-        internal const string DISK_STYLE  = "GPT";
-        internal const string DISK_FORMAT = "NTFS";
+        private const string DISK_TYPE   = "expandable";
+        private const int    DISK_SIZE   = 128000;
+        private const string DISK_STYLE  = "GPT";
+        private const string DISK_FORMAT = "NTFS";
 
         private enum DiskpartTask
         {
