@@ -116,14 +116,14 @@ namespace VirtualEnvironment.Launcher
             }
             catch (FileNotFoundException exception)
             {
-                throw new SettingsException("The settings file is missing:"
-                        + $"{Environment.NewLine}{FILE}", exception);
+                throw new SettingsException("Settings file is missing:"
+                    + $"{Environment.NewLine}{FILE}", exception);
             }
             catch (Exception exception)
             {
-                throw new SettingsException(("The settings file is incorrect:"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
+                throw new SettingsException(("Settings file is incorrect:"
+                    + $"{Environment.NewLine}{exception.Message}"
+                    + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
             }
         }
 
