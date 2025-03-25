@@ -35,12 +35,13 @@ namespace VirtualEnvironment.Startup
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var applicationDirectory = Path.GetDirectoryName(applicationPath);
             var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
-
+            
+            var scriptDirectory = applicationDirectory;
             var scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
             if (File.Exists(Path.Combine(".", Path.GetFileName(scriptName))))
-                applicationDirectory = ".";
+                scriptDirectory = ".";
 
-            var scriptFile = Path.Combine(applicationDirectory, scriptName);
+            var scriptFile = Path.Combine(scriptDirectory, scriptName);
             if (!File.Exists(scriptFile))
             {
                 MessageBox.Show($"The required {scriptName} file was not found", applicationName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -58,7 +59,7 @@ namespace VirtualEnvironment.Startup
                 WindowStyle = ProcessWindowStyle.Minimized,
 
                 FileName = scriptFile,
-                WorkingDirectory = applicationDirectory,
+                WorkingDirectory = scriptDirectory,
 
                 RedirectStandardError  = false,
                 RedirectStandardOutput = false,
