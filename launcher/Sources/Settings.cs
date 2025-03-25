@@ -287,6 +287,25 @@ namespace VirtualEnvironment.Launcher
             get => _workingDirectory;
             set => _workingDirectory = Settings.NormalizeValue(value);
         }
+        
+        [XmlArray("environment")]
+        [XmlArrayItem("variable", typeof(Variable))]
+        public Variable[] Environment { get; set; }
+
+        public class Variable
+        {
+            private string _value;
+
+            [XmlElement("name")]
+            public string Name { get; set; }
+
+            [XmlElement("value")]
+            public string Value
+            {
+                get => _value;
+                set => _value = Settings.NormalizeValue(value);
+            }
+        }
 
         internal void Start()
         {
@@ -300,6 +319,9 @@ namespace VirtualEnvironment.Launcher
                     FileName = Destination,
                     Arguments = String.Join(" ", Arguments ?? "")
                 };
+                if (Environment != null)
+                    foreach (var variable in Environment)
+                        process.StartInfo.EnvironmentVariables[variable.Name] = variable.Value;
                 process.Start();
             }
         }

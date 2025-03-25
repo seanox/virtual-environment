@@ -103,6 +103,22 @@
       <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
       <!-- Working directory in which the application is executed -->
       <workingDirectory>%WINDIR%\System32\drivers\etc</workingDirectory>
+      <!-- 
+        Optionally, environment variables can be added for the action of the
+        tile. These also support the syntax of other environment variables.
+      -->
+      <!--
+      <environment>
+        <variable>
+          <name>USERPROFILE</name>
+          <value>%APPSSETTINGS%</value>
+        </variable>
+        <variable>
+          <name>PATH</name>
+          <value>%APPSPATH%\example;%PATH%</value>
+        </variable>
+      </environment>
+      -->
     </tile>
     <tile>
       <index>27</index>

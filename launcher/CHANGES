@@ -1,4 +1,4 @@
-1.2.0 20250401
+1.2.0 20250501
 BF: Launcher: Correction/optimization
 BF: Launcher: Correction when using custom scaling
     Correction of the possibly incorrect calculation of
@@ -6,6 +6,9 @@ BF: Launcher: Correction when using custom scaling
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
 CR: Platform: Simplification of the terminal action
 CR: Launcher: Optimization for shutdown and session ending
+CR: Launcher: Added additional environment variables for the tile action
+    For details, see the documentation/comments in the Settings.xml
+    settings -> tiles -> tile -> environment
 
 1.1.2 20240302
 CR: Project: Updated TargetFrameworkVersion to v4.8
