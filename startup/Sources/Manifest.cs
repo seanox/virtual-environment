@@ -39,15 +39,15 @@ namespace VirtualEnvironment.Startup
         private string[] _settings;
 
         private static readonly Regex REGISTRY_HKCR_KEY_PATTERN =
-            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\\w+)*$");
+            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKCU_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\\w+)*$");
+            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKLM_KEY_PATTERN =
-            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\\w+)*$");
+            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKU_KEY_PATTERN =
-            new Regex(@"^(HKEY_USERS|HKU)(\\\w+)*$");
+            new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKCC_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\\w+)*$");
+            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*$");
 
         private static readonly Regex ENVIRONMENT_VARIABLE_ANTI_PATTERN =
             new Regex(@"=");
@@ -64,46 +64,50 @@ namespace VirtualEnvironment.Startup
                     Path.GetFileNameWithoutExtension(applicationPath) + ".xml");
             }
         }
-
-        internal class ValidationException : Exception
-        {
-            private string[] _messages;
-
-            internal ValidationException(string[] messages)
-            {
-                _messages = messages;
-            }
-        }
-        
+  
         private static bool ValidatePath(string path)
         {
-            try { Path.GetFullPath(path); return true; }
-            catch { return false; }
+            try
+            {
+                if (path.Length == 0)
+                    return true;
+                Path.GetFullPath(path);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private static Manifest Validate(Manifest manifest)
         {
-            var messages = new List<string>();
+            var issues = new List<string>();
+            
+            Func<string, string, string> formatMessage = (message, value) =>
+                string.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
 
             if (!ValidatePath(NormalizeValue(manifest.DataStore)))
-                messages.Add($"Invalid datastore: {manifest.DataStore}");
+                issues.Add(formatMessage("Invalid datastore", manifest.DataStore));
 
-            if (!ValidatePath(NormalizeValue(manifest.Destination)))
-                messages.Add($"Invalid destination: {manifest.Destination}");
+            var destinationNormal = NormalizeValue(manifest.Destination); 
+            if (!ValidatePath(destinationNormal)
+                    || String.IsNullOrWhiteSpace(Path.GetFileNameWithoutExtension(destinationNormal)))
+                issues.Add(formatMessage("Invalid destination", manifest.Destination));
 
             if (!ValidatePath(NormalizeValue(manifest.WorkingDirectory)))
-                messages.Add($"Invalid working directory: {manifest.WorkingDirectory}");
+                issues.Add(formatMessage("Invalid working directory", manifest.WorkingDirectory));
 
             if (manifest.Environment != null)
-                messages.AddRange(
+                issues.AddRange(
                     from variable in manifest.Environment
                     let nameNormal = NormalizeValue(variable.Name)
                     where nameNormal.Length > ENVIRONMENT_MAX_VARIABLE
                           || ENVIRONMENT_VARIABLE_ANTI_PATTERN.IsMatch(nameNormal)
-                    select $"Invalid environment variable: {variable.Name}");
+                    select formatMessage("Invalid environment variable", variable.Name));
 
             if (manifest.Registry != null)
-                messages.AddRange(
+                issues.AddRange(
                     from registryKey in manifest.Registry
                     let registryKeyNormal = NormalizeValue(registryKey)
                     where !REGISTRY_HKCR_KEY_PATTERN.IsMatch(registryKeyNormal)
@@ -111,18 +115,18 @@ namespace VirtualEnvironment.Startup
                           && !REGISTRY_HKLM_KEY_PATTERN.IsMatch(registryKeyNormal)
                           && !REGISTRY_HKU_KEY_PATTERN.IsMatch(registryKeyNormal)
                           && !REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyNormal)
-                    select $"Invalid registry key: {registryKey}");
+                    select formatMessage("Invalid registry key", registryKey));
 
             if (manifest.Settings != null)
-                messages.AddRange(
+                issues.AddRange(
                     from location in manifest.Settings
                     let locationNormal = NormalizeValue(location)
                     where (!ValidatePath(locationNormal)
-                           || new Regex(@"^[a-zA-Z]:\\").IsMatch(locationNormal))
-                    select $"Invalid settings location: {location}");
+                           || !new Regex(@"^[a-zA-Z]:\\").IsMatch(locationNormal))
+                    select formatMessage("Invalid settings location", location));
 
-            if (messages.Count > 0)
-                throw new ValidationException(messages.ToArray());
+            if (issues.Count > 0)
+                throw new ManifestValidationException(issues.ToArray());
 
             return manifest;
         }
@@ -135,10 +139,10 @@ namespace VirtualEnvironment.Startup
                 using (var reader = new StreamReader(File))
                     return Validate((Manifest)serializer.Deserialize(reader));
             }
-            catch (FileNotFoundException exception)
+            catch (FileNotFoundException)
             {
                 throw new ManifestException("Manifest file is missing:"
-                    + $"{System.Environment.NewLine}{File}", exception);
+                    + $"{System.Environment.NewLine}{File}");
             }
             catch (Exception exception)
             {
@@ -147,15 +151,35 @@ namespace VirtualEnvironment.Startup
                     + $"{System.Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
             }
         }
-
-        internal static string NormalizeValue(string value)
-        {
-            return System.Environment.ExpandEnvironmentVariables(value ?? "").Trim();
-        }
         
         internal class ManifestException : Exception
         {
-            internal ManifestException(string message, Exception cause) : base(message, cause) {}
+            internal ManifestException()
+            {
+            }
+
+            internal ManifestException(string message) : base(message)
+            {
+            }
+            
+            internal ManifestException(string message, Exception innerException) : base(message, innerException)
+            {
+            }
+        }
+    
+        internal class ManifestValidationException : ManifestException
+        {
+            internal ManifestValidationException(string[] issues)
+            {
+                Issues = issues;
+            }
+        
+            internal string[] Issues { get; }
+        }
+
+        private static string NormalizeValue(string value)
+        {
+            return System.Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
 
         [XmlElement("destination")]
