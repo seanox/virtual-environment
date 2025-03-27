@@ -221,42 +221,57 @@ namespace VirtualEnvironment.Startup
             File.Move(tempDestination, destination);
         }
 
+        private static string NormalizePath(string path)
+        {
+            var directorySeparator = Path.DirectorySeparatorChar.ToString();
+            path = Regex.Replace(path, "[\\/]+", directorySeparator).Trim();
+
+            var queue = new Queue<string>();
+            foreach (var part in path.Split(Path.DirectorySeparatorChar))
+            {
+                if (part == "..")
+                     if (queue.Count > 0)
+                         queue.Dequeue();
+                 if (!String.IsNullOrWhiteSpace(part)
+                         && part != ".")
+                     queue.Enqueue(part);
+            }
+
+            return String.Join(Path.DirectorySeparatorChar.ToString(), queue);
+        }
+
         private void MirrorSettingsLocation(string location)
         {
-            location = Path.GetFullPath(location);
+            location = NormalizePath(location);
             if (location.Length > FILE_SYSTEM_MAX_PATH
-                    || location.Length + _datastore.Length > FILE_SYSTEM_MAX_PATH +3)
+                    || location.Length + _datastore.Length > FILE_SYSTEM_MAX_PATH)
                 return;
             
-            var destination = Path.GetFullPath(Path.Combine(_datastore, location.Substring(3)));
+            if (Regex.IsMatch(location, @"^[a-zA-Z]:\\"))
+                location = location.Substring(3);
+            var destination = Path.GetFullPath(Path.Combine(_datastore, location));
+            var locationNormal = NormalizeValue(location);
             
             // References to the data store / mirror directory are excluded in
             // order to avoid possible recursion issues.
-            var canonicalLocation = Path.GetFullPath(location);
+            var canonicalLocation = Path.GetFullPath(locationNormal);
             canonicalLocation = canonicalLocation.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             canonicalLocation += Path.DirectorySeparatorChar;
-            var canonicalDataStore = Path.GetFullPath(_datastore);
-            canonicalDataStore = canonicalDataStore.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var canonicalDataStore = _datastore.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             canonicalDataStore += Path.DirectorySeparatorChar;
             if (canonicalLocation.StartsWith(canonicalDataStore,StringComparison.OrdinalIgnoreCase))
                 return;
             
-            if (Directory.Exists(location))
+            if (Directory.Exists(locationNormal))
             {
                 if (!Directory.Exists(destination))
                     Directory.CreateDirectory(destination);
-                foreach (var file in Directory.GetFiles(location))
-                    MirrorSettingsLocation(file);
-                foreach (var subDirectory in Directory.GetDirectories(location))
-                    MirrorSettingsLocation(subDirectory);
-            } else if (File.Exists(location))
-                File.Copy(location, destination, overwrite: true);
-        }
-
-        private void MirrorSettings(string[] locations)
-        {
-            foreach (var location in locations)
-                MirrorSettingsLocation(location);
+                foreach (var file in Directory.GetFiles(locationNormal))
+                    MirrorSettingsLocation(Path.Combine(location, Path.GetFileName(file)));
+                foreach (var subDirectory in Directory.GetDirectories(locationNormal))
+                    MirrorSettingsLocation(Path.Combine(location, Path.GetFileName(subDirectory)));
+            } else if (File.Exists(locationNormal))
+                File.Copy(locationNormal, destination, overwrite: true);
         }
         
         internal void MirrorMissingSettings()
@@ -271,14 +286,16 @@ namespace VirtualEnvironment.Startup
                         && !Directory.Exists(mirrorLocation))
                     locations.Add(location);
             }
-            MirrorSettings(locations.ToArray());
+            foreach (var location in locations.ToArray())
+                MirrorSettingsLocation(location);
         }
 
         internal void MirrorSettings()
         {
             if (_settings == null)
                 return;
-            MirrorSettings(_settings);
+            foreach (var location in _settings)
+                MirrorSettingsLocation(location);
         }
     }
     
