@@ -34,7 +34,7 @@ namespace VirtualEnvironment.Startup
         private string _destination;
         private string _arguments;
         private string _workingDirectory;
-        private string _dataStore;
+        private string _datastore;
                 
         private string[] _settings;
 
@@ -87,8 +87,8 @@ namespace VirtualEnvironment.Startup
             Func<string, string, string> formatMessage = (message, value) =>
                 string.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
 
-            if (!ValidatePath(NormalizeValue(manifest.DataStore)))
-                issues.Add(formatMessage("Invalid datastore", manifest.DataStore));
+            if (!ValidatePath(NormalizeValue(manifest.Datastore)))
+                issues.Add(formatMessage("Invalid datastore", manifest.Datastore));
 
             var destinationNormal = NormalizeValue(manifest.Destination); 
             if (!ValidatePath(destinationNormal)
@@ -103,7 +103,7 @@ namespace VirtualEnvironment.Startup
                     from variable in manifest.Environment
                     let nameNormal = NormalizeValue(variable.Name)
                     where nameNormal.Length > ENVIRONMENT_MAX_VARIABLE
-                          || ENVIRONMENT_VARIABLE_ANTI_PATTERN.IsMatch(nameNormal)
+                        || ENVIRONMENT_VARIABLE_ANTI_PATTERN.IsMatch(nameNormal)
                     select formatMessage("Invalid environment variable", variable.Name));
 
             if (manifest.Registry != null)
@@ -111,10 +111,10 @@ namespace VirtualEnvironment.Startup
                     from registryKey in manifest.Registry
                     let registryKeyNormal = NormalizeValue(registryKey)
                     where !REGISTRY_HKCR_KEY_PATTERN.IsMatch(registryKeyNormal)
-                          && !REGISTRY_HKCU_KEY_PATTERN.IsMatch(registryKeyNormal)
-                          && !REGISTRY_HKLM_KEY_PATTERN.IsMatch(registryKeyNormal)
-                          && !REGISTRY_HKU_KEY_PATTERN.IsMatch(registryKeyNormal)
-                          && !REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyNormal)
+                        && !REGISTRY_HKCU_KEY_PATTERN.IsMatch(registryKeyNormal)
+                        && !REGISTRY_HKLM_KEY_PATTERN.IsMatch(registryKeyNormal)
+                        && !REGISTRY_HKU_KEY_PATTERN.IsMatch(registryKeyNormal)
+                        && !REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyNormal)
                     select formatMessage("Invalid registry key", registryKey));
 
             if (manifest.Settings != null)
@@ -122,13 +122,15 @@ namespace VirtualEnvironment.Startup
                     from location in manifest.Settings
                     let locationNormal = NormalizeValue(location)
                     where (!ValidatePath(locationNormal)
-                            || !Regex.IsMatch(locationNormal, @"^[a-zA-Z]:\\"))
+                        || !Regex.IsMatch(locationNormal, @"^[a-zA-Z]:\\"))
                     select formatMessage("Invalid settings location", location));
 
-            if (issues.Count > 0)
-                throw new ManifestValidationException(issues.ToArray());
-
-            return manifest;
+            if (issues.Count <= 0)
+                return manifest;
+            
+            foreach (var issue in issues)
+                Console.WriteLine($"ERROR: {issue}");
+            throw new ManifestValidationException();
         }
         
         internal static Manifest Load()
@@ -143,12 +145,6 @@ namespace VirtualEnvironment.Startup
             {
                 throw new ManifestException("Manifest file is missing:"
                     + $"{System.Environment.NewLine}{File}");
-            }
-            catch (Exception exception)
-            {
-                throw new ManifestException(("Manifest file is incorrect:"
-                    + $"{System.Environment.NewLine}{exception.Message}"
-                    + $"{System.Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(), exception);
             }
         }
         
@@ -169,12 +165,9 @@ namespace VirtualEnvironment.Startup
     
         internal class ManifestValidationException : ManifestException
         {
-            internal ManifestValidationException(string[] issues)
+            internal ManifestValidationException()
             {
-                Issues = issues;
             }
-        
-            internal string[] Issues { get; }
         }
 
         private static string NormalizeValue(string value)
@@ -204,10 +197,10 @@ namespace VirtualEnvironment.Startup
         }
 
         [XmlElement("datastore")]
-        public string DataStore
+        public string Datastore
         {
-            get => _dataStore;
-            set => _dataStore = value?.Trim();
+            get => _datastore;
+            set => _datastore = value?.Trim();
         }
 
         [XmlArray("environment")]

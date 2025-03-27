@@ -28,8 +28,21 @@ using Microsoft.Win32;
 
 namespace VirtualEnvironment.Startup
 {
-    internal class DataStore
+    internal class Datastore
     {
+        // NOTE: HKEY_CURRENT_USER is an alias that refers to the specific user
+        // branch in HKEY_USERS. Windows synchronizes both root keys in real
+        // time. Therefore changes, incl. creation, modification and deletion of
+        // keys, are only required on one of the root keys.
+
+        // NOTE: Registry access and exception handling in relation to
+        // asynchronous changes in real time and authorizations. There are many
+        // reasons why registry access can fail. In addition, multiple accesses
+        // are often required that cannot be atomized. Nevertheless, the errors
+        // are not caught because the assumption is that the target application
+        // is not active when mirroring and deploying and therefore the
+        // resources should not change.  
+        
         private const string REGISTRY_DATA = "registry.data";
 
         // https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
@@ -63,11 +76,11 @@ namespace VirtualEnvironment.Startup
         private readonly string[] _registry;  
         private readonly string[] _settings;  
 
-        internal DataStore(Manifest manifest)
+        internal Datastore(Manifest manifest)
         {
             _registry = manifest.Registry?.ToArray() ?? Array.Empty<string>();
             _settings = manifest.Settings?.ToArray() ?? Array.Empty<string>();
-            _datastore = NormalizeValue(manifest.DataStore);
+            _datastore = NormalizeValue(manifest.Datastore);
             if (String.IsNullOrWhiteSpace(_datastore))
                 _datastore = ".";
             _datastore = Path.GetFullPath(_datastore);
@@ -86,10 +99,55 @@ namespace VirtualEnvironment.Startup
 
         internal void DeleteExistingRegistry()
         {
+            if (_registry == null)
+                return;
+            foreach (var registryKey in _registry)
+            {
+                Func<string, string, string> formatMessage = (message, value) =>
+                    String.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
+
+                var registryKeyNormal = NormalizeValue(registryKey);
+
+                RegistryKey registryRootKey;
+                if (REGISTRY_HKCR_KEY_PATTERN.IsMatch(registryKeyNormal))
+                    registryRootKey = Registry.ClassesRoot;
+                else if (REGISTRY_HKCU_KEY_PATTERN.IsMatch(registryKeyNormal))
+                    registryRootKey = Registry.CurrentUser;
+                else if (REGISTRY_HKLM_KEY_PATTERN.IsMatch(registryKeyNormal))
+                    registryRootKey = Registry.LocalMachine;
+                else if (REGISTRY_HKU_KEY_PATTERN.IsMatch(registryKeyNormal))
+                    registryRootKey = Registry.Users;
+                else if (REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyNormal))
+                    registryRootKey = Registry.CurrentConfig;
+                else continue;
+
+                var registrySubKeyNormal = REGISTRY_KEY_PATTERN.Match(registryKeyNormal).Groups[2].Value;
+                if (String.IsNullOrEmpty(registrySubKeyNormal))
+                    throw new DataException(formatMessage("Unexpected registry key", registryKeyNormal)) ;
+                registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
+                if (String.IsNullOrEmpty(registrySubKeyNormal))
+                    throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
+
+                if (registryRootKey.OpenSubKey(registrySubKeyNormal) == null)
+                    continue;
+                var registryBaseKey = registryRootKey.OpenSubKey("", true);
+                if (registryBaseKey != null)
+                    registryBaseKey.DeleteSubKeyTree(registrySubKeyNormal);
+            }
         }
 
         internal void DeleteExistingSettings()
         {
+            if (_settings == null)
+                return;
+            foreach (var location in _settings)
+            {
+                var locationNormal = NormalizeValue(location);
+                if (File.Exists(locationNormal))
+                    File.Delete(locationNormal);
+                if (Directory.Exists(locationNormal))
+                    Directory.Delete(locationNormal, true);
+            }
         }
 
         internal void RestoreRegistry()
@@ -98,18 +156,6 @@ namespace VirtualEnvironment.Startup
 
         internal void RestoreSettings()
         {
-        }
-        
-        private static T RegistryAccess<T>(Func<T> registryAction, T defaultValue = default)
-        {
-            try
-            {
-                return registryAction();
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
         }
 
         private static void MirrorRegistryKey(string destination, string registryKey)
@@ -142,33 +188,23 @@ namespace VirtualEnvironment.Startup
             if (String.IsNullOrEmpty(registrySubKeyNormal))
                 throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
             
-            var registrySubKey = RegistryAccess(() => registryRootKey.OpenSubKey(registrySubKeyNormal));
+            var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal);
             if (registrySubKey == null)
                 return;
             
-            foreach (var valueName in RegistryAccess(() => registrySubKey.GetValueNames(), Array.Empty<string>()))
+            foreach (var valueName in registrySubKey.GetValueNames())
             {
-                try
-                {
-                    var value = registrySubKey.GetValue(valueName);
-                    var type = registrySubKey.GetValueKind(valueName);
-                    File.AppendAllText(destination,
-                        $"{formatRegistryKeyValueName(registryKey, valueName)} :: {type}{Environment.NewLine}"
-                            + $"{value}{Environment.NewLine}"
-                            + $"{Environment.NewLine}");
-                }
-                catch (Exception)
-                {
-                    // Asynchronous changes in real time and authorizations.
-                    // There are many reasons why access can fail. In addition,
-                    // there are two calls that cannot be atomized. 
-                }
+                var value = registrySubKey.GetValue(valueName);
+                var type = registrySubKey.GetValueKind(valueName);
+                File.AppendAllText(destination,
+                    $"{formatRegistryKeyValueName(registryKey, valueName)} :: {type}{Environment.NewLine}"
+                        + $"{value}{Environment.NewLine}"
+                        + $"{Environment.NewLine}");
             }
             
-            foreach (var subKeyName in RegistryAccess(() =>
-                         registrySubKey.GetSubKeyNames(), Array.Empty<string>()))
+            foreach (var subKeyName in registrySubKey.GetSubKeyNames())
             {
-                var subKey = RegistryAccess(() => registrySubKey.OpenSubKey(subKeyName));
+                var subKey = registrySubKey.OpenSubKey(subKeyName);
                 if (subKey != null)
                     MirrorRegistryKey(destination, $@"{registryKey}\{subKeyName}");
             }
@@ -257,9 +293,9 @@ namespace VirtualEnvironment.Startup
             var canonicalLocation = Path.GetFullPath(locationNormal);
             canonicalLocation = canonicalLocation.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             canonicalLocation += Path.DirectorySeparatorChar;
-            var canonicalDataStore = _datastore.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            canonicalDataStore += Path.DirectorySeparatorChar;
-            if (canonicalLocation.StartsWith(canonicalDataStore,StringComparison.OrdinalIgnoreCase))
+            var canonicalDatastore = _datastore.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            canonicalDatastore += Path.DirectorySeparatorChar;
+            if (canonicalLocation.StartsWith(canonicalDatastore,StringComparison.OrdinalIgnoreCase))
                 return;
             
             if (Directory.Exists(locationNormal))
@@ -281,7 +317,10 @@ namespace VirtualEnvironment.Startup
             var locations = new List<string>();
             foreach (var location in _settings)
             {
-                var mirrorLocation= Path.Combine(_datastore, location.Substring(3));
+                var path = location;
+                if (Regex.IsMatch(path, @"^[a-zA-Z]:\\"))
+                    path = path.Substring(3);
+                var mirrorLocation= Path.Combine(_datastore, path);
                 if (!File.Exists(mirrorLocation)
                         && !Directory.Exists(mirrorLocation))
                     locations.Add(location);
@@ -299,9 +338,9 @@ namespace VirtualEnvironment.Startup
         }
     }
     
-    internal class DataStoreException : Exception
+    internal class DatastoreException : Exception
     {
-        internal DataStoreException(string message) : base(message)
+        internal DatastoreException(string message) : base(message)
         {
         }
     }
