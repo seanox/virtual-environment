@@ -122,7 +122,7 @@ namespace VirtualEnvironment.Startup
                     from location in manifest.Settings
                     let locationNormal = NormalizeValue(location)
                     where (!ValidatePath(locationNormal)
-                           || !new Regex(@"^[a-zA-Z]:\\").IsMatch(locationNormal))
+                            || !Regex.IsMatch(locationNormal, @"^[a-zA-Z]:\\"))
                     select formatMessage("Invalid settings location", location));
 
             if (issues.Count > 0)
