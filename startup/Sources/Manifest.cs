@@ -85,7 +85,7 @@ namespace VirtualEnvironment.Startup
             var issues = new List<string>();
             
             Func<string, string, string> formatMessage = (message, value) =>
-                string.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
+                String.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
 
             if (!ValidatePath(NormalizeValue(manifest.Datastore)))
                 issues.Add(formatMessage("Invalid datastore", manifest.Datastore));
