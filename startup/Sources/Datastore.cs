@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -71,6 +72,9 @@ namespace VirtualEnvironment.Startup
             new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKCC_KEY_PATTERN =
             new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*$");
+        
+        private static readonly Regex ENCODING_BASE64_PATTERN =
+            new Regex(@"^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$");
 
         private readonly string _datastore;  
         private readonly string[] _registry;  
@@ -128,11 +132,12 @@ namespace VirtualEnvironment.Startup
                 if (String.IsNullOrEmpty(registrySubKeyNormal))
                     throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
 
-                if (registryRootKey.OpenSubKey(registrySubKeyNormal) == null)
-                    continue;
-                var registryBaseKey = registryRootKey.OpenSubKey("", true);
-                if (registryBaseKey != null)
-                    registryBaseKey.DeleteSubKeyTree(registrySubKeyNormal);
+                using (var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal))
+                    if (registrySubKey == null)
+                        continue;
+                using (var registryBaseKey = registryRootKey.OpenSubKey("", true))
+                    if (registryBaseKey != null)
+                        registryBaseKey.DeleteSubKeyTree(registrySubKeyNormal);
             }
         }
 
@@ -152,6 +157,82 @@ namespace VirtualEnvironment.Startup
 
         internal void RestoreRegistry()
         {
+            var location = Path.Combine(_datastore, REGISTRY_DATA);
+            if (File.Exists(location))
+            {
+                Func<string, string, string> formatMessage = (message, value) =>
+                    String.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
+
+                Func<char, Queue<string>, string> fetchQueueEntry = (assignment, queue) =>
+                    assignment == '1' && queue.Count > 0 ? queue.Dequeue() : "";
+
+                Func<string, RegistryValueKind, object> convertRegistryKeyValue = (value, type) =>
+                {
+                    if (RegistryValueKind.DWord == type)
+                        return Convert.ToInt32(value);
+                    if (RegistryValueKind.QWord == type)
+                        return Convert.ToInt64(value);
+                    if (RegistryValueKind.Binary == type)
+                        return Convert.FromBase64String(value);
+                    if (RegistryValueKind.MultiString != type)
+                        return value;
+                    return "";
+                };
+
+                var registryMirrorContent = File.ReadAllText(location).Trim();
+                var registryMirrorParts = Regex.Split(registryMirrorContent, @"(?:\r\n){2}|(?:\n\r){2}|(?:\r){2}|(?:\n){2}");
+                foreach (var part in registryMirrorParts)
+                {
+                    var lines = new Queue<string>(
+                        part.Split(new[] { "\r\n", "\n", "\r" },
+                            StringSplitOptions.None));
+                    if (lines.Count <= 0)
+                        continue;
+                    var assignment  = lines.ToArray()[lines.Count -1];
+                    if (!Regex.IsMatch(assignment, "^[01]{4}$"))
+                        continue;
+                    var registryKeyPath = fetchQueueEntry(assignment[0], lines);
+                    var registryKeyValueName = fetchQueueEntry(assignment[1], lines);
+                    var registryKeyValueTypeText = fetchQueueEntry(assignment[2], lines);
+                    var registryKeyValue = fetchQueueEntry(assignment[3], lines);
+
+                    var registryKeyValueType = RegistryValueKind.None;
+                    if (!String.IsNullOrWhiteSpace(registryKeyValueTypeText))
+                        registryKeyValueType = (RegistryValueKind)Enum.Parse(
+                            typeof(RegistryValueKind), registryKeyValueTypeText, ignoreCase: true);
+
+                    var registryKeyPathNormal = NormalizeValue(registryKeyPath);
+                    
+                    RegistryKey registryRootKey;
+                    if (REGISTRY_HKCR_KEY_PATTERN.IsMatch(registryKeyPathNormal))
+                        registryRootKey = Registry.ClassesRoot;
+                    else if (REGISTRY_HKCU_KEY_PATTERN.IsMatch(registryKeyPathNormal))
+                        registryRootKey = Registry.CurrentUser;
+                    else if (REGISTRY_HKLM_KEY_PATTERN.IsMatch(registryKeyPathNormal))
+                        registryRootKey = Registry.LocalMachine;
+                    else if (REGISTRY_HKU_KEY_PATTERN.IsMatch(registryKeyPathNormal))
+                        registryRootKey = Registry.Users;
+                    else if (REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyPathNormal))
+                        registryRootKey = Registry.CurrentConfig;
+                    else return;
+
+                    var registrySubKeyNormal = REGISTRY_KEY_PATTERN.Match(registryKeyPathNormal).Groups[2].Value;
+                    if (String.IsNullOrEmpty(registrySubKeyNormal))
+                        throw new DataException(formatMessage("Unexpected registry key", registryKeyPathNormal)) ;
+                    registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
+                    if (String.IsNullOrEmpty(registrySubKeyNormal))
+                        throw new DataException(formatMessage("Unexpected empty registry key", registryKeyPathNormal)) ;
+                    
+                    using (var registryKey = registryRootKey.CreateSubKey(registrySubKeyNormal))
+                    {
+                        if (RegistryValueKind.None == registryKeyValueType)
+                            continue;
+                        registryKey.SetValue(registryKeyValueName,
+                            convertRegistryKeyValue(registryKeyValue, registryKeyValueType),
+                            registryKeyValueType);
+                    }
+                }
+            }
         }
 
         internal void RestoreSettings()
@@ -163,8 +244,35 @@ namespace VirtualEnvironment.Startup
             Func<string, string, string> formatMessage = (message, value) =>
                 String.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
 
-            Func<string, string, string> formatRegistryKeyValueName = (key, name) =>
-                String.IsNullOrEmpty(name) ? key : $@"{key}::{name}";
+            Func<object, RegistryValueKind, string> formatRegistryKeyValue = (value, type) =>
+            {
+                if (RegistryValueKind.None == type
+                        || value == null)
+                    return "";
+                if (RegistryValueKind.DWord == type)
+                    return ((int)value).ToString();
+                if (RegistryValueKind.QWord == type)
+                    return ((long)value).ToString();                
+                if (RegistryValueKind.Binary == type)
+                    return Convert.ToBase64String((byte[])value);
+                if (RegistryValueKind.MultiString == type)
+                {
+                    var block = String.Join(Environment.NewLine, (string[])value);
+                    var bytes = Encoding.UTF8.GetBytes(block);
+                    return Convert.ToBase64String(bytes);
+                }
+                if (RegistryValueKind.String != type)
+                    return value.ToString();
+                var valueText = (string)value;
+                if (String.IsNullOrEmpty(valueText))
+                    return "";
+                if (ENCODING_BASE64_PATTERN.IsMatch(valueText))
+                {
+                    var bytes = Encoding.UTF8.GetBytes(valueText);
+                    return Convert.ToBase64String(bytes);
+                }
+                return valueText;
+            };
 
             var registryKeyNormal = NormalizeValue(registryKey);
 
@@ -187,36 +295,45 @@ namespace VirtualEnvironment.Startup
             registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
             if (String.IsNullOrEmpty(registrySubKeyNormal))
                 throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
-            
-            var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal);
-            if (registrySubKey == null)
-                return;
-            
-            foreach (var valueName in registrySubKey.GetValueNames())
+
+            using (var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal))
             {
-                var value = registrySubKey.GetValue(valueName);
-                var type = registrySubKey.GetValueKind(valueName);
-                File.AppendAllText(destination,
-                    $"{formatRegistryKeyValueName(registryKey, valueName)} :: {type}{Environment.NewLine}"
-                        + $"{value}{Environment.NewLine}"
-                        + $"{Environment.NewLine}");
-            }
+                if (registrySubKey == null)
+                    return;
+                
+                foreach (var valueName in registrySubKey.GetValueNames())
+                {
+                    var valueType = registrySubKey.GetValueKind(valueName);
+                    var valueValue = formatRegistryKeyValue(registrySubKey.GetValue(valueName), valueType);
+                 
+                    var assignment = "";
+                    assignment += !String.IsNullOrEmpty(registryKey) ? 1 : 0;
+                    assignment += !String.IsNullOrEmpty(valueName) ? 1 : 0;
+                    assignment += valueType != null ? 1 : 0;
+                    assignment += !String.IsNullOrEmpty(valueValue) ? 1 : 0;
+                    
+                    var payload = $"{registryKey}{Environment.NewLine}";
+                    if (!String.IsNullOrEmpty(valueName))
+                        payload += $"{valueName}{Environment.NewLine}";
+                    if (valueType != null)
+                        payload += $"{valueType}{Environment.NewLine}";
+                    if (!String.IsNullOrEmpty(valueValue))
+                        payload += $"{valueValue}{Environment.NewLine}";
+                    payload += $"{assignment}{Environment.NewLine}";
+                    payload += Environment.NewLine;
+
+                    File.AppendAllText(destination, payload);
+                }
             
-            foreach (var subKeyName in registrySubKey.GetSubKeyNames())
-            {
-                var subKey = registrySubKey.OpenSubKey(subKeyName);
-                if (subKey != null)
-                    MirrorRegistryKey(destination, $@"{registryKey}\{subKeyName}");
+                foreach (var subKeyName in registrySubKey.GetSubKeyNames())
+                    using (var subKey = registrySubKey.OpenSubKey(subKeyName))
+                        if (subKey != null)
+                            MirrorRegistryKey(destination, $@"{registryKey}\{subKeyName}");
             }
         }
 
         internal void MirrorMissingRegistry()
         {
-            // NOTE: HKEY_CURRENT_USER is an alias that refers to the specific
-            // user branch in HKEY_USERS. Windows synchronizes both root keys in
-            // real time. Therefore changes, including creation, modification
-            // and deletion of keys, are only required on one of the root keys.
-            
             if (_registry == null)
                 return;
             var destination = Path.Combine(_datastore, REGISTRY_DATA);
@@ -227,7 +344,7 @@ namespace VirtualEnvironment.Startup
                 registryMirrorContent = Regex.Replace(registryMirrorContent, @"[\r\n]+", "\n");
                 registryKeys.AddRange(_registry.Where(registryKey =>
                     !Regex.IsMatch(registryMirrorContent,
-                        $@"^{Regex.Escape(registryKey)}(\\[\s\w-]+)*(::[^\x00-\x1F\\]+)*\s::\s[a-zA-Z]+\s*$",
+                        $@"^{Regex.Escape(registryKey)}(\\[\s\w\-%]+)*(::[^\x00-\x1F\\]+)*\s::\s[a-zA-Z]+\s*$",
                         RegexOptions.Multiline)));
             } else registryKeys.AddRange(_registry);
             foreach (var registryKey in registryKeys.ToArray())
@@ -266,11 +383,11 @@ namespace VirtualEnvironment.Startup
             foreach (var part in path.Split(Path.DirectorySeparatorChar))
             {
                 if (part == "..")
-                     if (queue.Count > 0)
-                         queue.Dequeue();
-                 if (!String.IsNullOrWhiteSpace(part)
-                         && part != ".")
-                     queue.Enqueue(part);
+                    if (queue.Count > 0)
+                        queue.Dequeue();
+                if (!String.IsNullOrWhiteSpace(part)
+                        && part != ".")
+                    queue.Enqueue(part);
             }
 
             return String.Join(Path.DirectorySeparatorChar.ToString(), queue);
