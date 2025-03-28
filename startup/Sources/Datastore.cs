@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
@@ -31,6 +32,50 @@ namespace VirtualEnvironment.Startup
 {
     internal class Datastore
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool CreateSymbolicLink(
+            string lpSymlinkFileName,
+            string lpTargetFileName,
+            int dwFlags
+        );
+        
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern int FormatMessage(
+            int dwFlags,
+            IntPtr lpSource,
+            int dwMessageId,
+            int dwLanguageId,
+            [Out] System.Text.StringBuilder lpBuffer,
+            int nSize,
+            IntPtr Arguments);
+        
+        private static string GetErrorMessage(int code)
+        {
+            const int FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000;
+            const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x00000200;
+            const int LANG_ENGLISH = 0x09;
+            const int SUBLANG_ENGLISH_US = 0x01;
+            const int BUFFER_SIZE = 512;
+            
+            Func<int, int, int> makeLanguageId = (primaryLanguage, subLanguage) => 
+                ((subLanguage << 10) | primaryLanguage);
+            
+            var buffer = new StringBuilder(BUFFER_SIZE);
+            var result = FormatMessage(
+                FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                IntPtr.Zero,
+                code,
+                makeLanguageId(LANG_ENGLISH, SUBLANG_ENGLISH_US),
+                buffer,
+                buffer.Capacity,
+                IntPtr.Zero
+            );
+            
+            if (result > 0)
+                return buffer.ToString();
+            return null;
+        }
+        
         // NOTE: HKEY_CURRENT_USER is an alias that refers to the specific user
         // branch in HKEY_USERS. Windows synchronizes both root keys in real
         // time. Therefore changes, incl. creation, modification and deletion of
@@ -235,8 +280,51 @@ namespace VirtualEnvironment.Startup
             }
         }
 
+        private void RestoreSettingsLocation(string location)
+        {
+            var locationLength = NormalizePath(location).Length;
+            if (locationLength > FILE_SYSTEM_MAX_PATH
+                    || locationLength + _datastore.Length > FILE_SYSTEM_MAX_PATH)
+                return;
+            
+            var destination = location;
+            if (Regex.IsMatch( destination, @"^[a-zA-Z]:\\"))
+                destination =  destination.Substring(3);
+            destination = Path.GetFullPath(Path.Combine(_datastore,  destination));
+            
+            var locationNormal = NormalizeValue(location);
+            
+            // References to the data store / mirror directory are excluded in
+            // order to avoid possible recursion issues.
+            var canonicalLocation = Path.GetFullPath(locationNormal);
+            canonicalLocation = canonicalLocation.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            canonicalLocation += Path.DirectorySeparatorChar;
+            var canonicalDatastore = _datastore.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            canonicalDatastore += Path.DirectorySeparatorChar;
+            if (canonicalLocation.StartsWith(canonicalDatastore, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var linkType = 0;
+            if (Directory.Exists(destination))
+                linkType = 1;
+            else if (!File.Exists(destination))
+                return;
+
+            if (CreateSymbolicLink(canonicalLocation, destination, linkType))
+                return;
+            
+            var code = Marshal.GetLastWin32Error();
+            var message = GetErrorMessage(code);
+            var context = "Symbolic link cannot be created";
+            if (message != null)
+                throw new DataException($"{context}: {message}");
+            throw new DataException($"{context} (code {code})");
+        }
+
         internal void RestoreSettings()
         {
+            foreach (var location in _settings)
+                RestoreSettingsLocation(location);
         }
 
         private static void MirrorRegistryKey(string destination, string registryKey)
@@ -395,14 +483,16 @@ namespace VirtualEnvironment.Startup
 
         private void MirrorSettingsLocation(string location)
         {
-            location = NormalizePath(location);
-            if (location.Length > FILE_SYSTEM_MAX_PATH
-                    || location.Length + _datastore.Length > FILE_SYSTEM_MAX_PATH)
+            var locationLength = NormalizePath(location).Length;
+            if (locationLength > FILE_SYSTEM_MAX_PATH
+                    || locationLength + _datastore.Length > FILE_SYSTEM_MAX_PATH)
                 return;
+
+            var destination = location;
+            if (Regex.IsMatch( destination, @"^[a-zA-Z]:\\"))
+                destination =  destination.Substring(3);
+            destination = Path.GetFullPath(Path.Combine(_datastore,  destination));
             
-            if (Regex.IsMatch(location, @"^[a-zA-Z]:\\"))
-                location = location.Substring(3);
-            var destination = Path.GetFullPath(Path.Combine(_datastore, location));
             var locationNormal = NormalizeValue(location);
             
             // References to the data store / mirror directory are excluded in
