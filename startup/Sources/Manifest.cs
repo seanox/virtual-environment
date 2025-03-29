@@ -31,13 +31,6 @@ namespace VirtualEnvironment.Startup
     [XmlRoot("manifest")]
     public class Manifest
     {
-        private string _destination;
-        private string _arguments;
-        private string _workingDirectory;
-        private string _datastore;
-                
-        private string[] _settings;
-
         private static readonly Regex REGISTRY_HKCR_KEY_PATTERN =
             new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*$");
         private static readonly Regex REGISTRY_HKCU_KEY_PATTERN =
@@ -89,14 +82,26 @@ namespace VirtualEnvironment.Startup
 
             if (!ValidatePath(NormalizeValue(manifest.Datastore)))
                 issues.Add(formatMessage("Invalid datastore", manifest.Datastore));
+            
+            if (manifest.Applications == null
+                    || manifest.Applications.Length <= 0)
+                issues.Add("Missing applications");
+            if (manifest.Applications != null)
+                foreach (var application in manifest.Applications)
+                {
+                    var destinationNormal = NormalizeValue(application.Destination); 
+                    if (!ValidatePath(destinationNormal)
+                            || String.IsNullOrWhiteSpace(Path.GetFileNameWithoutExtension(destinationNormal)))
+                        issues.Add(formatMessage("Invalid destination", application.Destination));
 
-            var destinationNormal = NormalizeValue(manifest.Destination); 
-            if (!ValidatePath(destinationNormal)
-                    || String.IsNullOrWhiteSpace(Path.GetFileNameWithoutExtension(destinationNormal)))
-                issues.Add(formatMessage("Invalid destination", manifest.Destination));
-
-            if (!ValidatePath(NormalizeValue(manifest.WorkingDirectory)))
-                issues.Add(formatMessage("Invalid working directory", manifest.WorkingDirectory));
+                    if (!ValidatePath(NormalizeValue(application.WorkingDirectory)))
+                        issues.Add(formatMessage("Invalid working directory", application.WorkingDirectory));
+                }
+            
+            if (manifest.Applications != null
+                    && manifest.Applications.Length > 1
+                    && !manifest.Applications.Any(application => application.WaitForExit))
+                issues.Add("Invalid applications, missing use of WaitForExit");
 
             if (manifest.Environment != null)
                 issues.AddRange(
@@ -175,27 +180,8 @@ namespace VirtualEnvironment.Startup
             return System.Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
 
-        [XmlElement("destination")]
-        public string Destination
-        {
-            get => _destination;
-            set => _destination = value?.Trim();
-        }
-
-        [XmlElement("arguments")]
-        public string Arguments
-        {
-            get => _arguments;
-            set => _arguments = value?.Trim();
-        }
-
-        [XmlElement("workingDirectory")]
-        public string WorkingDirectory
-        {
-            get => _workingDirectory;
-            set => _workingDirectory = value?.Trim();
-        }
-
+        private string _datastore;
+        
         [XmlElement("datastore")]
         public string Datastore
         {
@@ -203,13 +189,25 @@ namespace VirtualEnvironment.Startup
             set => _datastore = value?.Trim();
         }
 
+        [XmlArray("applications")]
+        [XmlArrayItem("application")]
+        public Application[] Applications { get; set; }
+
         [XmlArray("environment")]
         [XmlArrayItem("variable")]
         public Variable[] Environment { get; set; }
 
+        private string[] _registry;
+        
         [XmlArray("registry")]
         [XmlArrayItem("key")]
-        public string[] Registry { get; set; }
+        public string[] Registry
+        {
+            get => _registry;
+            set => _registry = value?.Select(entry => entry?.Trim()).ToArray();
+        }
+        
+        private string[] _settings;
 
         [XmlArray("settings")]
         [XmlArrayItem("location")]
@@ -238,5 +236,36 @@ namespace VirtualEnvironment.Startup
             get => _value;
             set => _value = value?.Trim();
         }
-    }    
+    }
+    
+    public class Application
+    {
+        private string _destination;
+        private string _arguments;
+        private string _workingDirectory;
+
+        [XmlElement("destination")]
+        public string Destination
+        {
+            get => _destination;
+            set => _destination = value?.Trim();
+        }
+
+        [XmlElement("arguments")]
+        public string Arguments
+        {
+            get => _arguments;
+            set => _arguments = value?.Trim();
+        }
+
+        [XmlElement("workingDirectory")]
+        public string WorkingDirectory
+        {
+            get => _workingDirectory;
+            set => _workingDirectory = value?.Trim();
+        }
+        
+        [XmlElement("waitForExit")]
+        public bool WaitForExit { get; set; }
+    }
 }
