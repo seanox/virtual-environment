@@ -27,8 +27,6 @@ using System.Management;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
-using IWshRuntimeLibrary;
-using File = System.IO.File;
 
 namespace VirtualEnvironment.Platform
 {
@@ -392,11 +390,11 @@ namespace VirtualEnvironment.Platform
         {
             var applicationPath = Path.GetDirectoryName(diskFile);
             var applicationName = Path.GetFileNameWithoutExtension(diskFile);
-            var wshShell = new WshShell();
+            var wshShell = new IWshRuntimeLibrary.WshShell();
             var shortcutFile = Path.Combine(applicationPath, applicationName + "." + type.ToString().ToLower() + ".lnk");
             if (File.Exists(shortcutFile))
                 File.Delete(shortcutFile);
-            var shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFile);
+            var shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
             shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
             shortcut.Arguments = drive + " " + type.ToString().ToLower();
             shortcut.IconLocation = shortcut.TargetPath; 
