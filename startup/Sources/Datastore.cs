@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -131,7 +132,7 @@ namespace VirtualEnvironment.Startup
             _settings = manifest.Settings?.ToArray() ?? Array.Empty<string>();
             _datastore = NormalizeValue(manifest.Datastore);
             if (String.IsNullOrWhiteSpace(_datastore))
-                _datastore = ".";
+                _datastore = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             _datastore = Path.GetFullPath(_datastore);
         }
         
