@@ -2,7 +2,7 @@
 // hereinafter referred to as Seanox Software Solutions or Seanox for short.
 // This software is subject to version 2 of the Apache License.
 //
-// Virtual Environment Launcher
+// Virtual Environment Startup
 // Program starter for the virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
 //
