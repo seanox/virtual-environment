@@ -25,14 +25,14 @@ namespace VirtualEnvironment.Startup
 {
     internal static class Messages
     {
-        private static readonly List<INotification> _subscriptions;
+        private static readonly List<ISubscriber> _subscriptions;
         
         static Messages()
         {
-            _subscriptions = new List<INotification>();
+            _subscriptions = new List<ISubscriber>();
         }
         
-        internal static void Subscribe(INotification recipient)
+        internal static void Subscribe(ISubscriber recipient)
         {
             if (recipient == null)
                 throw new ArgumentNullException();
@@ -40,7 +40,7 @@ namespace VirtualEnvironment.Startup
                 _subscriptions.Add(recipient);
         }
 
-        internal static void UnSubscribe(INotification recipient)
+        internal static void Unsubscribe(ISubscriber recipient)
         {
             if (recipient == null)
                 throw new ArgumentNullException();
@@ -48,7 +48,7 @@ namespace VirtualEnvironment.Startup
                 _subscriptions.Remove(recipient);
         }
         
-        internal interface INotification
+        internal interface ISubscriber
         {
             void Receive(Message message);
         }
@@ -77,6 +77,7 @@ namespace VirtualEnvironment.Startup
         internal readonly struct Message
         {
             internal Type Type { get; }
+            
             internal string Content { get; }
 
             internal Message(Type type, string content)
