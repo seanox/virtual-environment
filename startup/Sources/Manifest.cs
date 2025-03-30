@@ -134,7 +134,7 @@ namespace VirtualEnvironment.Startup
                 return manifest;
             
             foreach (var issue in issues)
-                Messages.Push(Messages.Type.Error, $"ERROR: {issue}");
+                Messages.Push(Messages.Type.Error, issue);
             throw new ManifestValidationException();
         }
         
