@@ -103,7 +103,6 @@ namespace VirtualEnvironment.Startup
         //                        Total  258 Chars
         // HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem -> LongPathsEnabled
         // Possible customizations is ignored. That's too much :-|
-
         private const int FILE_SYSTEM_MAX_PATH = 258;
 
         private static readonly Regex REGISTRY_KEY_PATTERN =
