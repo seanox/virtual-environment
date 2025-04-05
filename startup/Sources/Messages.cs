@@ -60,9 +60,9 @@ namespace VirtualEnvironment.Startup
                     recipient.Receive(message);
         }
         
-        internal static Message Push(Type type, string content)
+        internal static void Push(Type type, string content)
         {
-            return new Message(type, content);
+            Push(new Message(type, content));
         }
 
         internal enum Type
