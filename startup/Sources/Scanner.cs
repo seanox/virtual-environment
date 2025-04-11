@@ -50,6 +50,8 @@ namespace VirtualEnvironment.Startup
         private static readonly string SYSTEM_RECYCLE_BIN_PATH;
         private static readonly string SYSTEM_TEMP_PATH;
         private static readonly string SYSTEM_VOLUME_INFORMATION_PATH;
+        private static readonly string SYSTEM_WINREAGENT;
+            
         private static readonly string SYSTEM_ROOT_PATH;
         private static readonly string SYSTEM_WINDOWS_CSC_PATH;
         private static readonly string SYSTEM_WINDOWS_DEBUG_PATH;
@@ -61,7 +63,12 @@ namespace VirtualEnvironment.Startup
         private static readonly string SYSTEM_WINDOWS_UUS_PATH;
         private static readonly string SYSTEM_WINDOWS_WAAS_PATH;
         private static readonly string SYSTEM_WINDOWS_WINSXS_PATH;
-            
+        
+        private static readonly string SYSTEM_PROGRAM_FILES_PATH;
+        private static readonly string SYSTEM_PROGRAM_FILES_X86_PATH;
+        private static readonly string SYSTEM_PROGRAM_DATA_PATH;
+        
+        private static readonly string USER_PROFILE_PATH;
         private static readonly string USER_LOCAL_TEMP_PATH;
         private static readonly string USER_LOCALLOW_TEMP_PATH;
         private static readonly string USER_ROAMING_TEMP_PATH;
@@ -74,57 +81,65 @@ namespace VirtualEnvironment.Startup
 
         static Scanner()
         {
+            Func<string, string> PathNormalize = path =>
+                path.EndsWith(@"\") ? path : path + @"\";
+
             var systemDrive = Environment.GetEnvironmentVariable("SystemDrive");
             if (String.IsNullOrEmpty(systemDrive))
                systemDrive = "C:";
-            if (!systemDrive.EndsWith(@"\"))
-                systemDrive += @"\";
-            SYSTEM_DRIVE = systemDrive.ToLower();
-            SYSTEM_MSO_CACHE_PATH = Path.Combine(SYSTEM_DRIVE, "MSOCache");
-            SYSTEM_RECYCLE_BIN_PATH = Path.Combine(SYSTEM_DRIVE, "$Recycle.Bin");
-            SYSTEM_TEMP_PATH = Path.Combine(SYSTEM_DRIVE, "Temp");
-            SYSTEM_VOLUME_INFORMATION_PATH = Path.Combine(SYSTEM_DRIVE, "System Volume Information");
-
-            SYSTEM_ROOT_PATH = Environment.GetEnvironmentVariable("SystemRoot");
-            SYSTEM_WINDOWS_CSC_PATH = Path.Combine(SYSTEM_ROOT_PATH, "CSC");
-            SYSTEM_WINDOWS_DEBUG_PATH = Path.Combine(SYSTEM_ROOT_PATH, "Debug");
-            SYSTEM_WINDOWS_INSTALLER_PATH = Path.Combine(SYSTEM_ROOT_PATH, "Installer");
-            SYSTEM_WINDOWS_LOGS_PATH = Path.Combine(SYSTEM_ROOT_PATH, "Logs");
-            SYSTEM_WINDOWS_PREFETCH_PATH = Path.Combine(SYSTEM_ROOT_PATH, "Prefetch");
-            SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH = Path.Combine(SYSTEM_ROOT_PATH, "SoftwareDistribution");
-            SYSTEM_WINDOWS_TEMP_PATH = Path.Combine(SYSTEM_ROOT_PATH, "Temp");
-            SYSTEM_WINDOWS_UUS_PATH = Path.Combine(SYSTEM_ROOT_PATH, "UUS");
-            SYSTEM_WINDOWS_WAAS_PATH = Path.Combine(SYSTEM_ROOT_PATH, "WaaS");
-            SYSTEM_WINDOWS_WINSXS_PATH = Path.Combine(SYSTEM_ROOT_PATH, "WinSxS");
+            SYSTEM_DRIVE = PathNormalize(systemDrive).ToUpper();
             
-            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            USER_LOCAL_TEMP_PATH = Path.Combine(userProfile, @"AppData\Local\Temp");
-            USER_LOCALLOW_TEMP_PATH = Path.Combine(userProfile, @"AppData\LocalLow\Temp");
-            USER_ROAMING_TEMP_PATH = Path.Combine(userProfile, @"AppData\Roaming\Temp");
-            USER_DOWNLOADS_PATH = Path.Combine(userProfile, @"Downloads");
+            SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "MSOCache"));
+            SYSTEM_RECYCLE_BIN_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "$Recycle.Bin"));
+            SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "Temp"));
+            SYSTEM_VOLUME_INFORMATION_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "System Volume Information"));
+            SYSTEM_WINREAGENT = PathNormalize(Path.Combine(SYSTEM_DRIVE, "$WinREAgent"));
+           
+            SYSTEM_PROGRAM_FILES_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles"));
+            SYSTEM_PROGRAM_FILES_X86_PATH= PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
+            SYSTEM_PROGRAM_DATA_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramData"));
+
+            SYSTEM_ROOT_PATH = PathNormalize(Environment.GetEnvironmentVariable("SystemRoot"));
+            SYSTEM_WINDOWS_CSC_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "CSC"));
+            SYSTEM_WINDOWS_DEBUG_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Debug"));
+            SYSTEM_WINDOWS_INSTALLER_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Installer"));
+            SYSTEM_WINDOWS_LOGS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Logs"));
+            SYSTEM_WINDOWS_PREFETCH_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Prefetch"));
+            SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "SoftwareDistribution"));
+            SYSTEM_WINDOWS_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Temp"));
+            SYSTEM_WINDOWS_UUS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "UUS"));
+            SYSTEM_WINDOWS_WAAS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WaaS"));
+            SYSTEM_WINDOWS_WINSXS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WinSxS"));
+            
+            USER_PROFILE_PATH = PathNormalize(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+            USER_LOCAL_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Local\Temp"));
+            USER_LOCALLOW_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\LocalLow\Temp"));
+            USER_ROAMING_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Roaming\Temp"));
+            USER_DOWNLOADS_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"Downloads"));
 
             SYSTEM_NOT_RELEVANT_DIRECTORIES = new List<string>
             {
-                $@"{SYSTEM_MSO_CACHE_PATH}\".ToLower(),
-                $@"{SYSTEM_RECYCLE_BIN_PATH}\".ToLower(),
-                $@"{SYSTEM_TEMP_PATH}\".ToLower(),
-                $@"{SYSTEM_VOLUME_INFORMATION_PATH}\".ToLower(),
+                SYSTEM_MSO_CACHE_PATH.ToLower(),
+                SYSTEM_RECYCLE_BIN_PATH.ToLower(),
+                SYSTEM_TEMP_PATH.ToLower(),
+                SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
+                SYSTEM_WINREAGENT.ToLower(),
 
-                $@"{SYSTEM_WINDOWS_CSC_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_DEBUG_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_INSTALLER_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_LOGS_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_PREFETCH_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_TEMP_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_UUS_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_WAAS_PATH}\".ToLower(),
-                $@"{SYSTEM_WINDOWS_WINSXS_PATH}\".ToLower(),
+                SYSTEM_WINDOWS_CSC_PATH.ToLower(),
+                SYSTEM_WINDOWS_DEBUG_PATH.ToLower(),
+                SYSTEM_WINDOWS_INSTALLER_PATH.ToLower(),
+                SYSTEM_WINDOWS_LOGS_PATH.ToLower(),
+                SYSTEM_WINDOWS_PREFETCH_PATH.ToLower(),
+                SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH.ToLower(),
+                SYSTEM_WINDOWS_TEMP_PATH.ToLower(),
+                SYSTEM_WINDOWS_UUS_PATH.ToLower(),
+                SYSTEM_WINDOWS_WAAS_PATH.ToLower(),
+                SYSTEM_WINDOWS_WINSXS_PATH.ToLower(),
                 
-                $@"{USER_LOCAL_TEMP_PATH}\".ToLower(),
-                $@"{USER_LOCALLOW_TEMP_PATH}\".ToLower(),
-                $@"{USER_ROAMING_TEMP_PATH}\".ToLower(),
-                $@"{USER_DOWNLOADS_PATH}\".ToLower()
+                USER_LOCAL_TEMP_PATH.ToLower(),
+                USER_LOCALLOW_TEMP_PATH.ToLower(),
+                USER_ROAMING_TEMP_PATH.ToLower(),
+                USER_DOWNLOADS_PATH.ToLower()
             };
         }
 
@@ -153,13 +168,8 @@ namespace VirtualEnvironment.Startup
             var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
             SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}\");
-            var systemDrive = Environment.GetEnvironmentVariable("SystemDrive");
-            if (String.IsNullOrEmpty(systemDrive))
-                systemDrive = "C:";
-            if (!systemDrive.EndsWith(@"\"))
-                systemDrive += @"\";
             Messages.Push(Messages.Type.Trace, "Scan file system");
-            ScanFileSystem(systemDrive, depth, scanFileSystemOutput);
+            ScanFileSystem(SYSTEM_DRIVE, depth, scanFileSystemOutput);
 
             // PerformanceData and Users are ignored. PerformanceData should
             // only be used read-only and Users is a real-time copy/reference to
@@ -250,20 +260,20 @@ namespace VirtualEnvironment.Startup
             if (Directory.Exists(path))
             {
                 var collectionBuilder = new StringBuilder();
-                Action<string> collectionBuilderAppendLine = value =>
+                Action<string> CollectionBuilderAppendLine = value =>
                 {
                     lock (collectionBuilder)
                         collectionBuilder.AppendLine(value);
                 };
                 
-                collectionBuilderAppendLine($"{Path.GetFullPath(path)}"
+                CollectionBuilderAppendLine($"{Path.GetFullPath(path)}"
                         + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}");
                 foreach (var subDirectory in Directory.GetDirectories(path))
-                    collectionBuilderAppendLine(subDirectory.Length <= FILE_SYSTEM_MAX_PATH
+                    CollectionBuilderAppendLine(subDirectory.Length <= FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(subDirectory)
                         : subDirectory);
                 foreach (var file in Directory.GetFiles(path))
-                    collectionBuilderAppendLine(file.Length <= FILE_SYSTEM_MAX_PATH
+                    CollectionBuilderAppendLine(file.Length <= FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(file)
                         : file);
                 return collectionBuilder.ToString();
@@ -278,7 +288,24 @@ namespace VirtualEnvironment.Startup
                 return;
             if (File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
-            
+         
+            Func<string, string> AbstractPath = normalPath =>
+            {
+                if (normalPath.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%SystemRoot%" + normalPath.Substring(SYSTEM_ROOT_PATH.Length -1);
+                if (normalPath.StartsWith(USER_PROFILE_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%UserProfile%" + normalPath.Substring(USER_PROFILE_PATH.Length -1);
+
+                if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%ProgramFiles%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_PATH.Length -1);
+                if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_X86_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%ProgramFiles(x86)%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_X86_PATH.Length -1);
+                if (normalPath.StartsWith(SYSTEM_PROGRAM_DATA_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%ProgramData%" + normalPath.Substring(SYSTEM_PROGRAM_DATA_PATH.Length -1);
+
+                return normalPath;
+            };
+
             try
             {
                 var currentDepth = path.Count(symbol => symbol == '\\');
@@ -293,13 +320,15 @@ namespace VirtualEnvironment.Startup
                         var hashBytes = sha256.ComputeHash(inputBytes);
                         filesystemInfos = Convert.ToBase64String(hashBytes);
                     }
-                    var scanRecord = $"{path}\t{filesystemInfos}\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
+                    var scanRecord = $"{AbstractPath(path)}"
+                            + $"\t{filesystemInfos}"
+                            + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
                 }
                 else if (File.Exists(path))
                 {
                     var fileInfo = new FileInfo(path);
-                    var scanRecord = $"{fileInfo.FullName}"
+                    var scanRecord = $"{AbstractPath(fileInfo.FullName)}"
                             + $"\t{fileInfo.LastWriteTime:yyyyMMddHHmmss}"
                             + $"\t{fileInfo.Length}"
                             + $"\t{ComputeDateTimeHash(fileInfo.LastWriteTime)}";
@@ -307,7 +336,7 @@ namespace VirtualEnvironment.Startup
                 }
                 else if (Directory.Exists(path))
                 {
-                    var scanRecord = $"{Path.GetFullPath(path)}"
+                    var scanRecord = $"{AbstractPath(Path.GetFullPath(path))}"
                             + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}"
                             + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
@@ -316,11 +345,11 @@ namespace VirtualEnvironment.Startup
                     foreach (var file in Directory.GetFiles(path))
                         ScanFileSystem(file, depth, output);
                 }
-                else WriteScanRecord(output, $"{path}\t0000");
+                else WriteScanRecord(output, $"{AbstractPath(path)}\t0000");
             }
             catch (UnauthorizedAccessException)
             {
-                WriteScanRecord(output, $"{path}\t0000");
+                WriteScanRecord(output, $"{AbstractPath(path)}\t0000");
             }
         }
 
@@ -330,7 +359,7 @@ namespace VirtualEnvironment.Startup
                 return path;
 
             var collectionBuilder = new StringBuilder();
-            Action<string> collectionBuilderAppendLine = value =>
+            Action<string> CollectionBuilderAppendLine = value =>
             {
                 lock (collectionBuilder)
                     collectionBuilder.AppendLine(value);
@@ -339,17 +368,17 @@ namespace VirtualEnvironment.Startup
             var collector = registryKey.GetValueNames()
                 .Select(valueName => $"{valueName}:{registryKey.GetValue(valueName)}")
                 .ToList();
-            collectionBuilderAppendLine(String.Join(";", collector));
+            CollectionBuilderAppendLine(String.Join(";", collector));
             
             foreach (var subKeyName in registryKey.GetSubKeyNames())
                 try
                 {
                     using (var subKey = registryKey.OpenSubKey(subKeyName))
-                        collectionBuilderAppendLine(CollectRegistryKeys(subKey, $@"{path}\{subKeyName}"));
+                        CollectionBuilderAppendLine(CollectRegistryKeys(subKey, $@"{path}\{subKeyName}"));
                 }
                 catch (SecurityException)
                 {
-                    collectionBuilderAppendLine(path);
+                    CollectionBuilderAppendLine(path);
                 }
             
             return collectionBuilder.ToString();
@@ -450,7 +479,8 @@ namespace VirtualEnvironment.Startup
                     foreach (var line in compareLines)
                         if (!previousLines.Contains(line))
                             collector.Add(line.Split('\t')[0]);
-                    DeleteFiles(new [] {previousHashes[hash]});
+                    if (previousHashes.ContainsKey(hash))
+                        DeleteFiles(new [] {previousHashes[hash]});
                     previousHashes.Remove(hash);
                     DeleteFiles(new [] {compareHashes[hash]});
                     compareHashes.Remove(hash);
@@ -461,11 +491,14 @@ namespace VirtualEnvironment.Startup
                 DeleteFiles(previousHashes.Values);
                 DeleteFiles(compareHashes.Values);
             }
-
+            
+            if (collector.Count <= 0)
+                return;
             collector.Sort();
-            using (var writer = new StreamWriter(output.FullName))
+            using (var writer = new StreamWriter(output.FullName, true))
             {
-                writer.Write("");
+                if (new FileInfo(output.FullName).Length > 0)
+                    writer.WriteLine("");
                 foreach (var line in collector)
                     writer.WriteLine(line);
             }
