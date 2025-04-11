@@ -291,18 +291,16 @@ namespace VirtualEnvironment.Startup
          
             Func<string, string> AbstractPath = normalPath =>
             {
-                if (normalPath.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%SystemRoot%" + normalPath.Substring(SYSTEM_ROOT_PATH.Length -1);
                 if (normalPath.StartsWith(USER_PROFILE_PATH, StringComparison.OrdinalIgnoreCase))
                     return "%UserProfile%" + normalPath.Substring(USER_PROFILE_PATH.Length -1);
-
                 if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_PATH, StringComparison.OrdinalIgnoreCase))
                     return "%ProgramFiles%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_PATH.Length -1);
                 if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_X86_PATH, StringComparison.OrdinalIgnoreCase))
                     return "%ProgramFiles(x86)%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_X86_PATH.Length -1);
                 if (normalPath.StartsWith(SYSTEM_PROGRAM_DATA_PATH, StringComparison.OrdinalIgnoreCase))
                     return "%ProgramData%" + normalPath.Substring(SYSTEM_PROGRAM_DATA_PATH.Length -1);
-
+                if (normalPath.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
+                    return "%SystemRoot%" + normalPath.Substring(SYSTEM_ROOT_PATH.Length -1);
                 return normalPath;
             };
 
