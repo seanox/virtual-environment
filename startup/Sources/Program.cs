@@ -42,6 +42,15 @@ namespace VirtualEnvironment.Startup
         private const int SW_RESTORE = 9;
 
         private static Mutex Mutex;
+        
+        private static readonly Regex COMMAND_PATTERN = new Regex(
+            @"^(?:(sync)|(?:(scan)(?::(\d{1-8}))?))$", 
+            RegexOptions.IgnoreCase | RegexOptions.Compiled
+        );
+        
+        // Standard depth is based on this path:
+        // C:\Users\<Account>\AppData\Local\Packages\<Application>
+        private const int SCAN_DEPTH_DEFAULT = 6;
 
         static Program()
         {
@@ -79,6 +88,35 @@ namespace VirtualEnvironment.Startup
                 var applicationPath = Assembly.GetExecutingAssembly().Location;
                 var applicationDirectory = Path.GetDirectoryName(applicationPath);
                 var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
+
+                if (arguments.Length > 0)
+                {
+                    var match = COMMAND_PATTERN.Match(arguments[0]);
+                    if (!match.Success)
+                        Messages.Push(Messages.Type.Exit,
+                            $"usage: {Path.GetFileName(applicationPath)} sync|scan(:depth)");
+                    var command = match.Groups[match.Groups[1].Success ? 1 : 2].Value;
+                    var depth = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : SCAN_DEPTH_DEFAULT;
+                    if (String.Equals(command, "sync", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!File.Exists(Manifest.File))
+                            Messages.Push(Messages.Type.Exit, $"Missing manifest file: {Manifest.File}");
+                        Messages.Push(Messages.Type.Trace, "Read manifest file");
+                        var manifest = Manifest.Load();
+                        var datastore = new Datastore(manifest);
+                        Messages.Push(Messages.Type.Trace, "Create mirror directory");
+                        datastore.CreateMirrorDirectory();
+                        Messages.Push(Messages.Type.Trace, "Mirror registry");
+                        datastore.MirrorRegistry();
+                        Messages.Push(Messages.Type.Trace, "Mirror file system");
+                        datastore.MirrorFileSystem();
+                    }
+                    else
+                    {
+                        Scanner.Scan(depth);
+                    }
+                    return;
+                }
                 
                 // The startup manifest (startup file) must be in the same
                 // directory as the assembly (assembly location). Possible start
@@ -89,10 +127,10 @@ namespace VirtualEnvironment.Startup
                     // Only one instance is supported for the target
                     // application(s). This is identified by the process via the
                     // execution name. The path is ignored. This is to ensure
-                    // that the settings and registry are not unintentionally
-                    // overwritten and shared. If a process with the same name
-                    // is already running, an attempt is made to set the focus
-                    // on it. Startup will end after.
+                    // that the file system locations and registry are not
+                    // unintentionally overwritten and shared. If a process with
+                    // the same name is already running, an attempt is made to
+                    // set the focus on it. Startup will end after.
 
                     var manifest = Manifest.Load();
                     var mutexIdentifier = Regex.Replace(typeof(Program).Namespace, @"\W+", "_");
@@ -113,22 +151,22 @@ namespace VirtualEnvironment.Startup
                     datastore.CreateMirrorDirectory();
                     // Step 02
                     // Migrate registry keys that are not yet mirrored
-                    datastore.MirrorMissingRegistry();
+                    datastore.MirrorMissingRegistryKeys();
                     // Step 03
-                    // Migrate setting location that are not yet mirrored
-                    datastore.MirrorMissingSettings();
+                    // Migrate file system locations that are not yet mirrored
+                    datastore.MirrorMissingFileSystemLocations();
                     // Step 04
                     // - Delete existing registry keys
                     datastore.DeleteExistingRegistry();
                     // Step 05
-                    // - Delete existing settings
-                    datastore.DeleteExistingSettings();
+                    // - Delete existing file system locations
+                    datastore.DeleteExistingFileSystemLocations();
                     // Step 06
                     // - Insert mirrored/saved registry keys
                     datastore.RestoreRegistry();
                     // Step 07
-                    // - Create mirrored/saved settings
-                    datastore.RestoreSettings();
+                    // - Create mirrored/saved file system locations
+                    datastore.RestoreFileSystem();
                     // Step 08
                     // - Start target application
                     // - Wait for the end of the target application, incl. kill
@@ -138,10 +176,10 @@ namespace VirtualEnvironment.Startup
                     datastore.MirrorRegistry();
                     // Step 10
                     // - Delete existing registry keys
-                    datastore.DeleteExistingRegistry();
+//                  datastore.DeleteExistingRegistry();
                     // Step 11
-                    // - Delete existing settings
-                    datastore.DeleteExistingSettings();
+                    // - Delete existing file system locations
+//                  datastore.DeleteExistingSettings();
 
                     // The reference is intended to prevent the garbage
                     // collector from cleaning up the mutex instance too early
@@ -188,21 +226,30 @@ namespace VirtualEnvironment.Startup
                 var process = new Process();
                 process.StartInfo = processStartInfo;
                 process.Start();
+
+                // TODO: Session Ending
+                // TODO: Windows Shutdown
             }
             catch (Exception exception)
             {
                 Messages.Push(Messages.Type.Error, exception.ToString());
             }
         }
-        
+
         private class Subscription : Messages.ISubscriber
         {
+            private static readonly Messages.Type[] MESSAGES_TYPE_ACCEPTED = new[]
+            {
+                Messages.Type.Error,
+                Messages.Type.Warn,
+                Messages.Type.Trace,
+                Messages.Type.Message,
+                Messages.Type.Exit
+            };
+
             public void Receive(Messages.Message message)
             {
-                if (Messages.Type.Error != message.Type
-                        && Messages.Type.Warn != message.Type
-                        && Messages.Type.Trace != message.Type
-                        && Messages.Type.Exit != message.Type)
+                if (!MESSAGES_TYPE_ACCEPTED.Contains(message.Type))
                     return;
                 
                 var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -210,11 +257,18 @@ namespace VirtualEnvironment.Startup
                 var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".log");
 
-                var content = $"{timestamp} {message.Type} {message.Content}";
-                Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t");
-                File.AppendAllText(logfilePath, content);
+                var content = $"{timestamp} {message.Type.ToString().ToUpper()} {message.Content}";
+                if (Messages.Type.Message != message.Type)
+                    content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t");
+                content = content.Trim();
+                if (!String.IsNullOrEmpty(content))
+                {
+                    Console.WriteLine(content);
+                    File.AppendAllText(logfilePath, content);
+                }
                 
-                if (Messages.Type.Exit != message.Type)
+                if (Messages.Type.Exit == message.Type
+                        || message.Exit)
                     Environment.Exit(0);
             }
         }
