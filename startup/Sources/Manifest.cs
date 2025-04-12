@@ -122,13 +122,13 @@ namespace VirtualEnvironment.Startup
                         && !REGISTRY_HKCC_KEY_PATTERN.IsMatch(registryKeyNormal)
                     select formatMessage("Invalid registry key", registryKey));
 
-            if (manifest.Settings != null)
+            if (manifest.FileSystem != null)
                 issues.AddRange(
-                    from location in manifest.Settings
+                    from location in manifest.FileSystem
                     let locationNormal = NormalizeValue(location)
                     where (!ValidatePath(locationNormal)
                         || !Regex.IsMatch(locationNormal, @"^[a-zA-Z]:\\"))
-                    select formatMessage("Invalid settings location", location));
+                    select formatMessage("Invalid file system location", location));
 
             if (issues.Count <= 0)
                 return manifest;
@@ -207,14 +207,14 @@ namespace VirtualEnvironment.Startup
             set => _registry = value?.Select(entry => entry?.Trim()).ToArray();
         }
         
-        private string[] _settings;
+        private string[] _filesystem;
 
-        [XmlArray("settings")]
+        [XmlArray("filesystem")]
         [XmlArrayItem("location")]
-        public string[] Settings
+        public string[] FileSystem
         {
-            get => _settings;
-            set => _settings = value?.Select(entry => entry?.Trim()).ToArray();
+            get => _filesystem;
+            set => _filesystem = value?.Select(entry => entry?.Trim()).ToArray();
         }
     }
 
