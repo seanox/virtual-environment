@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace VirtualEnvironment.Startup
 {
@@ -65,6 +66,11 @@ namespace VirtualEnvironment.Startup
             Push(new Message(type, content));
         }
 
+        internal static void Push(Type type, string content, bool exit)
+        {
+            Push(new Message(type, content, exit));
+        }
+
         internal enum Type
         {
             Error,
@@ -77,18 +83,33 @@ namespace VirtualEnvironment.Startup
         internal readonly struct Message
         {
             internal Type Type { get; }
-            
             internal string Content { get; }
+            internal bool Exit { get; }
 
             internal Message(Type type, string content)
             {
                 Type = type;
                 Content = content;
+                Exit = false;
+            }
+            
+            internal Message(Type type, string content, bool exit)
+            {
+                Type = type;
+                Content = content;
+                Exit = exit;
             }
             
             public override string ToString()
             {
-                return $"{Type}: {Content}";
+                var stringBuilder = new StringBuilder("UNKNOWN");
+                if (Type != null)
+                    stringBuilder.Clear().Append(Type.ToString().ToUpper());
+                if (!string.IsNullOrWhiteSpace(Content))
+                    stringBuilder.Append($": {Content.Trim()}");
+                if (Exit)
+                    stringBuilder.Append(" (exit)");
+                return stringBuilder.ToString();
             }
         }
     }
