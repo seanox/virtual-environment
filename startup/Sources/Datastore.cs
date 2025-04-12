@@ -321,7 +321,7 @@ namespace VirtualEnvironment.Startup
             throw new DataException($"{context} (code {code})");
         }
 
-        internal void RestoreFileSystemLocations()
+        internal void RestoreFileSystem()
         {
             foreach (var location in _filesystem)
                 RestoreFileSystemLocation(location);
@@ -420,7 +420,7 @@ namespace VirtualEnvironment.Startup
             }
         }
 
-        internal void MirrorMissingRegistry()
+        internal void MirrorMissingRegistryKeys()
         {
             if (_registry == null)
                 return;
@@ -536,7 +536,7 @@ namespace VirtualEnvironment.Startup
                 MirrorFileSystemLocation(location);
         }
 
-        internal void MirrorFileSystemLocations()
+        internal void MirrorFileSystem()
         {
             if (_filesystem == null)
                 return;
