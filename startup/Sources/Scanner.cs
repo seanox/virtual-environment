@@ -46,11 +46,10 @@ namespace VirtualEnvironment.Startup
         private const int FILE_SYSTEM_MAX_PATH = 258;
 
         private static readonly string SYSTEM_DRIVE;
+        private static readonly string SYSTEM_DRIVE_PATH;
         private static readonly string SYSTEM_MSO_CACHE_PATH;
-        private static readonly string SYSTEM_RECYCLE_BIN_PATH;
         private static readonly string SYSTEM_TEMP_PATH;
         private static readonly string SYSTEM_VOLUME_INFORMATION_PATH;
-        private static readonly string SYSTEM_WINREAGENT;
             
         private static readonly string SYSTEM_ROOT_PATH;
         private static readonly string SYSTEM_WINDOWS_CSC_PATH;
@@ -87,13 +86,12 @@ namespace VirtualEnvironment.Startup
             var systemDrive = Environment.GetEnvironmentVariable("SystemDrive");
             if (String.IsNullOrEmpty(systemDrive))
                systemDrive = "C:";
-            SYSTEM_DRIVE = PathNormalize(systemDrive).ToUpper();
+            SYSTEM_DRIVE = systemDrive;
+            SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper();
             
-            SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "MSOCache"));
-            SYSTEM_RECYCLE_BIN_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "$Recycle.Bin"));
-            SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "Temp"));
-            SYSTEM_VOLUME_INFORMATION_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE, "System Volume Information"));
-            SYSTEM_WINREAGENT = PathNormalize(Path.Combine(SYSTEM_DRIVE, "$WinREAgent"));
+            SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "MSOCache"));
+            SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "Temp"));
+            SYSTEM_VOLUME_INFORMATION_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "System Volume Information"));
            
             SYSTEM_PROGRAM_FILES_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles"));
             SYSTEM_PROGRAM_FILES_X86_PATH= PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
@@ -120,10 +118,8 @@ namespace VirtualEnvironment.Startup
             SYSTEM_NOT_RELEVANT_DIRECTORIES = new List<string>
             {
                 SYSTEM_MSO_CACHE_PATH.ToLower(),
-                SYSTEM_RECYCLE_BIN_PATH.ToLower(),
                 SYSTEM_TEMP_PATH.ToLower(),
                 SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
-                SYSTEM_WINREAGENT.ToLower(),
 
                 SYSTEM_WINDOWS_CSC_PATH.ToLower(),
                 SYSTEM_WINDOWS_DEBUG_PATH.ToLower(),
@@ -169,7 +165,7 @@ namespace VirtualEnvironment.Startup
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
             SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}\");
             Messages.Push(Messages.Type.Trace, "Scan file system");
-            ScanFileSystem(SYSTEM_DRIVE, depth, scanFileSystemOutput);
+            ScanFileSystem(SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
 
             // PerformanceData and Users are ignored. PerformanceData should
             // only be used read-only and Users is a real-time copy/reference to
@@ -284,9 +280,9 @@ namespace VirtualEnvironment.Startup
 
         private static void ScanFileSystem(string path, int depth, FileInfo output)
         {
-            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains($@"{path.ToLower()}\"))
-                return;
-            if (File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
+            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains($@"{path.ToLower()}\")
+                    || path.StartsWith($@"{SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
+                    || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
          
             Func<string, string> AbstractPath = normalPath =>
