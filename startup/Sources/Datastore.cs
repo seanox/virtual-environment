@@ -46,7 +46,7 @@ namespace VirtualEnvironment.Startup
             IntPtr lpSource,
             int dwMessageId,
             int dwLanguageId,
-            [Out] System.Text.StringBuilder lpBuffer,
+            [Out] StringBuilder lpBuffer,
             int nSize,
             IntPtr Arguments);
         
@@ -123,12 +123,12 @@ namespace VirtualEnvironment.Startup
 
         private readonly string _datastore;  
         private readonly string[] _registry;  
-        private readonly string[] _settings;  
+        private readonly string[] _filesystem;  
 
         internal Datastore(Manifest manifest)
         {
             _registry = manifest.Registry?.ToArray() ?? Array.Empty<string>();
-            _settings = manifest.Settings?.ToArray() ?? Array.Empty<string>();
+            _filesystem = manifest.FileSystem?.ToArray() ?? Array.Empty<string>();
             _datastore = NormalizeValue(manifest.Datastore);
             if (String.IsNullOrWhiteSpace(_datastore))
                 _datastore = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -188,9 +188,9 @@ namespace VirtualEnvironment.Startup
 
         internal void DeleteExistingSettings()
         {
-            if (_settings == null)
+            if (_filesystem == null)
                 return;
-            foreach (var location in _settings)
+            foreach (var location in _filesystem)
             {
                 var locationNormal = NormalizeValue(location);
                 if (File.Exists(locationNormal))
@@ -323,7 +323,7 @@ namespace VirtualEnvironment.Startup
 
         internal void RestoreSettings()
         {
-            foreach (var location in _settings)
+            foreach (var location in _filesystem)
                 RestoreSettingsLocation(location);
         }
 
@@ -519,10 +519,10 @@ namespace VirtualEnvironment.Startup
         
         internal void MirrorMissingSettings()
         {
-            if (_settings == null)
+            if (_filesystem == null)
                 return;
             var locations = new List<string>();
-            foreach (var location in _settings)
+            foreach (var location in _filesystem)
             {
                 var path = location;
                 if (Regex.IsMatch(path, @"^[a-zA-Z]:\\"))
@@ -538,9 +538,9 @@ namespace VirtualEnvironment.Startup
 
         internal void MirrorSettings()
         {
-            if (_settings == null)
+            if (_filesystem == null)
                 return;
-            foreach (var location in _settings)
+            foreach (var location in _filesystem)
                 MirrorSettingsLocation(location);
         }
     }
