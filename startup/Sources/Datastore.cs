@@ -186,7 +186,7 @@ namespace VirtualEnvironment.Startup
             }
         }
 
-        internal void DeleteExistingSettings()
+        internal void DeleteExistingFileSystemLocations()
         {
             if (_filesystem == null)
                 return;
@@ -280,7 +280,7 @@ namespace VirtualEnvironment.Startup
             }
         }
 
-        private void RestoreSettingsLocation(string location)
+        private void RestoreFileSystemLocation(string location)
         {
             var locationLength = NormalizePath(location).Length;
             if (locationLength > FILE_SYSTEM_MAX_PATH
@@ -321,10 +321,10 @@ namespace VirtualEnvironment.Startup
             throw new DataException($"{context} (code {code})");
         }
 
-        internal void RestoreSettings()
+        internal void RestoreFileSystemLocations()
         {
             foreach (var location in _filesystem)
-                RestoreSettingsLocation(location);
+                RestoreFileSystemLocation(location);
         }
 
         private static void MirrorRegistryKey(string destination, string registryKey)
@@ -481,7 +481,7 @@ namespace VirtualEnvironment.Startup
             return String.Join(Path.DirectorySeparatorChar.ToString(), queue);
         }
 
-        private void MirrorSettingsLocation(string location)
+        private void MirrorFileSystemLocation(string location)
         {
             var locationLength = NormalizePath(location).Length;
             if (locationLength > FILE_SYSTEM_MAX_PATH
@@ -510,14 +510,14 @@ namespace VirtualEnvironment.Startup
                 if (!Directory.Exists(destination))
                     Directory.CreateDirectory(destination);
                 foreach (var file in Directory.GetFiles(locationNormal))
-                    MirrorSettingsLocation(Path.Combine(location, Path.GetFileName(file)));
+                    MirrorFileSystemLocation(Path.Combine(location, Path.GetFileName(file)));
                 foreach (var subDirectory in Directory.GetDirectories(locationNormal))
-                    MirrorSettingsLocation(Path.Combine(location, Path.GetFileName(subDirectory)));
+                    MirrorFileSystemLocation(Path.Combine(location, Path.GetFileName(subDirectory)));
             } else if (File.Exists(locationNormal))
                 File.Copy(locationNormal, destination, overwrite: true);
         }
         
-        internal void MirrorMissingSettings()
+        internal void MirrorMissingFileSystemLocations()
         {
             if (_filesystem == null)
                 return;
@@ -533,15 +533,15 @@ namespace VirtualEnvironment.Startup
                     locations.Add(location);
             }
             foreach (var location in locations.ToArray())
-                MirrorSettingsLocation(location);
+                MirrorFileSystemLocation(location);
         }
 
-        internal void MirrorSettings()
+        internal void MirrorFileSystemLocations()
         {
             if (_filesystem == null)
                 return;
             foreach (var location in _filesystem)
-                MirrorSettingsLocation(location);
+                MirrorFileSystemLocation(location);
         }
     }
     
