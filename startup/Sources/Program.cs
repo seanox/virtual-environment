@@ -91,16 +91,26 @@ namespace VirtualEnvironment.Startup
 
                 if (arguments.Length > 0)
                 {
+                    var assembly = Assembly.GetExecutingAssembly();
+                    var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+                    var version = assembly.GetName().Version;
+                    var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                        .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
+
+                    Messages.Push(Messages.Type.Message, $"Seanox Startup [Version {version} {build}]");
+                    Messages.Push(Messages.Type.Message, $"{copyright.Replace("©", "(C)")}");
+                    Messages.Push(Messages.Type.Message, "");
+                    
                     var match = COMMAND_PATTERN.Match(arguments[0]);
                     if (!match.Success)
-                        Messages.Push(Messages.Type.Exit,
-                            $"usage: {Path.GetFileName(applicationPath)} sync|scan(:depth)");
+                        Messages.Push(Messages.Type.Message,
+                            $"usage: {Path.GetFileName(applicationPath)} sync|scan(:depth)", true);
                     var command = match.Groups[match.Groups[1].Success ? 1 : 2].Value;
                     var depth = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : SCAN_DEPTH_DEFAULT;
                     if (String.Equals(command, "sync", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!File.Exists(Manifest.File))
-                            Messages.Push(Messages.Type.Exit, $"Missing manifest file: {Manifest.File}");
+                            Messages.Push(Messages.Type.Message, $"Missing manifest file: {Manifest.File}", true);
                         Messages.Push(Messages.Type.Trace, "Read manifest file");
                         var manifest = Manifest.Load();
                         var datastore = new Datastore(manifest);
@@ -173,7 +183,7 @@ namespace VirtualEnvironment.Startup
                     // Step 09
                     // - Mirror/backup existing registry to mirror/backup
                     //   directory with timestamp
-                    datastore.MirrorRegistry();
+//                  datastore.MirrorRegistry();
                     // Step 10
                     // - Delete existing registry keys
 //                  datastore.DeleteExistingRegistry();
@@ -252,19 +262,25 @@ namespace VirtualEnvironment.Startup
                 if (!MESSAGES_TYPE_ACCEPTED.Contains(message.Type))
                     return;
                 
-                var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var applicationPath = Assembly.GetExecutingAssembly().Location;
                 var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".log");
 
-                var content = $"{timestamp} {message.Type.ToString().ToUpper()} {message.Content}";
                 if (Messages.Type.Message != message.Type)
-                    content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t");
-                content = content.Trim();
-                if (!String.IsNullOrEmpty(content))
                 {
-                    Console.WriteLine(content);
-                    File.AppendAllText(logfilePath, content);
+                    var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var content = message.Content;
+                    content = $"{timestamp} {message.Type.ToString().ToUpper()} {content}";
+                    content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t").Trim();
+                    if (!String.IsNullOrEmpty(content))
+                    {
+                        Console.WriteLine(content);
+                        File.AppendAllText(logfilePath, content);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(message.Content);
                 }
                 
                 if (Messages.Type.Exit == message.Type
