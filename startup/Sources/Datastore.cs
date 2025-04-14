@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -106,17 +105,17 @@ namespace VirtualEnvironment.Startup
         private const int FILE_SYSTEM_MAX_PATH = 258;
 
         private static readonly Regex REGISTRY_KEY_PATTERN =
-            new Regex(@"^(\w+)((?:\\[\s\w-]+)*)$");
+            new Regex(@"^(\w+)((?:\\[\s\w-]+)*)(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKCR_KEY_PATTERN =
-            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKCU_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKLM_KEY_PATTERN =
-            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKU_KEY_PATTERN =
-            new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKCC_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         
         private static readonly Regex ENCODING_BASE64_PATTERN =
             new Regex(@"^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$");
@@ -172,10 +171,10 @@ namespace VirtualEnvironment.Startup
 
                 var registrySubKeyNormal = REGISTRY_KEY_PATTERN.Match(registryKeyNormal).Groups[2].Value;
                 if (String.IsNullOrEmpty(registrySubKeyNormal))
-                    throw new DataException(formatMessage("Unexpected registry key", registryKeyNormal)) ;
+                    throw new DatastoreException(formatMessage("Unexpected registry key", registryKeyNormal)) ;
                 registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
                 if (String.IsNullOrEmpty(registrySubKeyNormal))
-                    throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
+                    throw new DatastoreException(formatMessage("Unexpected empty registry key", registryKey)) ;
 
                 using (var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal))
                     if (registrySubKey == null)
@@ -263,10 +262,10 @@ namespace VirtualEnvironment.Startup
 
                     var registrySubKeyNormal = REGISTRY_KEY_PATTERN.Match(registryKeyPathNormal).Groups[2].Value;
                     if (String.IsNullOrEmpty(registrySubKeyNormal))
-                        throw new DataException(formatMessage("Unexpected registry key", registryKeyPathNormal)) ;
+                        throw new DatastoreException(formatMessage("Unexpected registry key", registryKeyPathNormal)) ;
                     registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
                     if (String.IsNullOrEmpty(registrySubKeyNormal))
-                        throw new DataException(formatMessage("Unexpected empty registry key", registryKeyPathNormal)) ;
+                        throw new DatastoreException(formatMessage("Unexpected empty registry key", registryKeyPathNormal)) ;
                     
                     using (var registryKey = registryRootKey.CreateSubKey(registrySubKeyNormal))
                     {
@@ -317,8 +316,8 @@ namespace VirtualEnvironment.Startup
             var message = GetErrorMessage(code);
             var context = "Symbolic link cannot be created";
             if (message != null)
-                throw new DataException($"{context}: {message}");
-            throw new DataException($"{context} (code {code})");
+                throw new DatastoreException($"{context}: {message}");
+            throw new DatastoreException($"{context} (code {code})");
         }
 
         internal void RestoreFileSystem()
@@ -361,7 +360,15 @@ namespace VirtualEnvironment.Startup
                 }
                 return valueText;
             };
-
+            
+            var registryKeyValueName = REGISTRY_KEY_PATTERN.Match(registryKey).Groups[3].Value;
+            var registryKeyValueNameNormal = NormalizeValue(registryKeyValueName);
+            if (!String.IsNullOrWhiteSpace(registryKeyValueName)
+                    && String.IsNullOrWhiteSpace(registryKeyValueNameNormal))
+                throw new DatastoreException(formatMessage("Unexpected empty registry key value name", registryKey)) ;
+            if (!String.IsNullOrWhiteSpace(registryKeyValueNameNormal))
+                registryKey = Regex.Replace(registryKey, @":.*$", ""); 
+            
             var registryKeyNormal = NormalizeValue(registryKey);
 
             RegistryKey registryRootKey;
@@ -379,10 +386,10 @@ namespace VirtualEnvironment.Startup
             
             var registrySubKeyNormal = REGISTRY_KEY_PATTERN.Match(registryKeyNormal).Groups[2].Value;
             if (String.IsNullOrEmpty(registrySubKeyNormal))
-                throw new DataException(formatMessage("Unexpected registry key", registryKeyNormal)) ;
+                throw new DatastoreException(formatMessage("Unexpected registry key", registryKeyNormal)) ;
             registrySubKeyNormal = Regex.Replace(registrySubKeyNormal, @"^\\+", "");
             if (String.IsNullOrEmpty(registrySubKeyNormal))
-                throw new DataException(formatMessage("Unexpected empty registry key", registryKey)) ;
+                throw new DatastoreException(formatMessage("Unexpected empty registry key", registryKey)) ;
 
             using (var registrySubKey = registryRootKey.OpenSubKey(registrySubKeyNormal))
             {
@@ -391,6 +398,10 @@ namespace VirtualEnvironment.Startup
                 
                 foreach (var valueName in registrySubKey.GetValueNames())
                 {
+                    if (!String.IsNullOrWhiteSpace(registryKeyValueNameNormal)
+                            && valueName != registryKeyValueNameNormal)
+                        continue;
+                    
                     var valueType = registrySubKey.GetValueKind(valueName);
                     var valueValue = formatRegistryKeyValue(registrySubKey.GetValue(valueName), valueType);
                  
@@ -552,6 +563,13 @@ namespace VirtualEnvironment.Startup
                 return;
             foreach (var location in _filesystem)
                 MirrorFileSystemLocation(location);
+        }
+        
+        internal class DatastoreException : Exception
+        {
+            internal DatastoreException(string message) : base(message)
+            {
+            }
         }
     }
 }

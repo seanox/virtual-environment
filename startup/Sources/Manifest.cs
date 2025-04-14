@@ -32,15 +32,15 @@ namespace VirtualEnvironment.Startup
     public class Manifest
     {
         private static readonly Regex REGISTRY_HKCR_KEY_PATTERN =
-            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CLASSES_ROOT|HKCR)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKCU_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CURRENT_USER|HKCU)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKLM_KEY_PATTERN =
-            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_LOCAL_MACHINE|HKLM)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKU_KEY_PATTERN =
-            new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_USERS|HKU)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
         private static readonly Regex REGISTRY_HKCC_KEY_PATTERN =
-            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*$");
+            new Regex(@"^(HKEY_CURRENT_CONFIG|HKCC)(\\[\s\w-]+)*(?::(\w(?:(?:[^\x00-\x1F]*\w)?)?))?$");
 
         private static readonly Regex ENVIRONMENT_VARIABLE_ANTI_PATTERN =
             new Regex(@"=");
