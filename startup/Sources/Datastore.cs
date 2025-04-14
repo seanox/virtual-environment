@@ -481,6 +481,16 @@ namespace VirtualEnvironment.Startup
             return String.Join(Path.DirectorySeparatorChar.ToString(), queue);
         }
 
+        private void MirrorFileSystemSync(string location, string destination)
+        {
+            if (!File.Exists(location))
+                return;
+            if (File.GetLastWriteTime(location) == File.GetLastWriteTime(destination)
+                    && new FileInfo(location).Length == new FileInfo(destination).Length)
+                return;
+            File.Copy(location, destination, overwrite: true);
+        }
+
         private void MirrorFileSystemLocation(string location)
         {
             var locationLength = NormalizePath(location).Length;
@@ -513,8 +523,8 @@ namespace VirtualEnvironment.Startup
                     MirrorFileSystemLocation(Path.Combine(location, Path.GetFileName(file)));
                 foreach (var subDirectory in Directory.GetDirectories(locationNormal))
                     MirrorFileSystemLocation(Path.Combine(location, Path.GetFileName(subDirectory)));
-            } else if (File.Exists(locationNormal))
-                File.Copy(locationNormal, destination, overwrite: true);
+            }
+            else MirrorFileSystemSync(locationNormal, destination);
         }
         
         internal void MirrorMissingFileSystemLocations()
@@ -542,13 +552,6 @@ namespace VirtualEnvironment.Startup
                 return;
             foreach (var location in _filesystem)
                 MirrorFileSystemLocation(location);
-        }
-    }
-    
-    internal class DatastoreException : Exception
-    {
-        internal DatastoreException(string message) : base(message)
-        {
         }
     }
 }
