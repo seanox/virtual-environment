@@ -564,8 +564,8 @@ namespace VirtualEnvironment.Startup
             foreach (var location in _filesystem)
                 MirrorFileSystemLocation(location);
         }
-        
-        internal class DatastoreException : Exception
+
+        private class DatastoreException : Exception
         {
             internal DatastoreException(string message) : base(message)
             {
