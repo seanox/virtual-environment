@@ -80,9 +80,7 @@ namespace VirtualEnvironment.Startup
 
         static Scanner()
         {
-            Func<string, string> PathNormalize = path =>
-                path.EndsWith(@"\") ? path : path + @"\";
-
+            
             var systemDrive = Environment.GetEnvironmentVariable("SystemDrive");
             if (String.IsNullOrEmpty(systemDrive))
                systemDrive = "C:";
@@ -137,6 +135,26 @@ namespace VirtualEnvironment.Startup
                 USER_ROAMING_TEMP_PATH.ToLower(),
                 USER_DOWNLOADS_PATH.ToLower()
             };
+        }
+
+        private static string PathNormalize(string path)
+        {
+            return path.EndsWith(@"\") ? path : path + @"\";
+        }
+        
+        private static string PathAbstract(string path)
+        {
+            if (path.StartsWith(USER_PROFILE_PATH, StringComparison.OrdinalIgnoreCase))
+                return "%UserProfile%" + path.Substring(USER_PROFILE_PATH.Length -1);
+            if (path.StartsWith(SYSTEM_PROGRAM_FILES_PATH, StringComparison.OrdinalIgnoreCase))
+                return "%ProgramFiles%" + path.Substring(SYSTEM_PROGRAM_FILES_PATH.Length -1);
+            if (path.StartsWith(SYSTEM_PROGRAM_FILES_X86_PATH, StringComparison.OrdinalIgnoreCase))
+                return "%ProgramFiles(x86)%" + path.Substring(SYSTEM_PROGRAM_FILES_X86_PATH.Length -1);
+            if (path.StartsWith(SYSTEM_PROGRAM_DATA_PATH, StringComparison.OrdinalIgnoreCase))
+                return "%ProgramData%" + path.Substring(SYSTEM_PROGRAM_DATA_PATH.Length -1);
+            if (path.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
+                return "%SystemRoot%" + path.Substring(SYSTEM_ROOT_PATH.Length -1);
+            return path;
         }
 
         private static void WriteScanRecord(FileInfo output, string scanRecord)
@@ -256,20 +274,15 @@ namespace VirtualEnvironment.Startup
             if (Directory.Exists(path))
             {
                 var collectionBuilder = new StringBuilder();
-                Action<string> CollectionBuilderAppendLine = value =>
-                {
-                    lock (collectionBuilder)
-                        collectionBuilder.AppendLine(value);
-                };
-                
-                CollectionBuilderAppendLine($"{Path.GetFullPath(path)}"
-                        + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}");
+                StringBuilderAppendLineSynchronized(collectionBuilder,
+                    $"{Path.GetFullPath(path)}"
+                    + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}");
                 foreach (var subDirectory in Directory.GetDirectories(path))
-                    CollectionBuilderAppendLine(subDirectory.Length <= FILE_SYSTEM_MAX_PATH
+                    StringBuilderAppendLineSynchronized(collectionBuilder, subDirectory.Length <= FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(subDirectory)
                         : subDirectory);
                 foreach (var file in Directory.GetFiles(path))
-                    CollectionBuilderAppendLine(file.Length <= FILE_SYSTEM_MAX_PATH
+                    StringBuilderAppendLineSynchronized(collectionBuilder, file.Length <= FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(file)
                         : file);
                 return collectionBuilder.ToString();
@@ -284,21 +297,6 @@ namespace VirtualEnvironment.Startup
                     || path.StartsWith($@"{SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
                     || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
-         
-            Func<string, string> AbstractPath = normalPath =>
-            {
-                if (normalPath.StartsWith(USER_PROFILE_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%UserProfile%" + normalPath.Substring(USER_PROFILE_PATH.Length -1);
-                if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%ProgramFiles%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_PATH.Length -1);
-                if (normalPath.StartsWith(SYSTEM_PROGRAM_FILES_X86_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%ProgramFiles(x86)%" + normalPath.Substring(SYSTEM_PROGRAM_FILES_X86_PATH.Length -1);
-                if (normalPath.StartsWith(SYSTEM_PROGRAM_DATA_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%ProgramData%" + normalPath.Substring(SYSTEM_PROGRAM_DATA_PATH.Length -1);
-                if (normalPath.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
-                    return "%SystemRoot%" + normalPath.Substring(SYSTEM_ROOT_PATH.Length -1);
-                return normalPath;
-            };
 
             try
             {
@@ -314,7 +312,7 @@ namespace VirtualEnvironment.Startup
                         var hashBytes = sha256.ComputeHash(inputBytes);
                         filesystemInfos = Convert.ToBase64String(hashBytes);
                     }
-                    var scanRecord = $"{AbstractPath(path)}"
+                    var scanRecord = $"{PathAbstract(path)}"
                             + $"\t{filesystemInfos}"
                             + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
@@ -322,7 +320,7 @@ namespace VirtualEnvironment.Startup
                 else if (File.Exists(path))
                 {
                     var fileInfo = new FileInfo(path);
-                    var scanRecord = $"{AbstractPath(fileInfo.FullName)}"
+                    var scanRecord = $"{PathAbstract(fileInfo.FullName)}"
                             + $"\t{fileInfo.LastWriteTime:yyyyMMddHHmmss}"
                             + $"\t{fileInfo.Length}"
                             + $"\t{ComputeDateTimeHash(fileInfo.LastWriteTime)}";
@@ -330,7 +328,7 @@ namespace VirtualEnvironment.Startup
                 }
                 else if (Directory.Exists(path))
                 {
-                    var scanRecord = $"{AbstractPath(Path.GetFullPath(path))}"
+                    var scanRecord = $"{PathAbstract(Path.GetFullPath(path))}"
                             + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}"
                             + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
@@ -339,12 +337,18 @@ namespace VirtualEnvironment.Startup
                     foreach (var file in Directory.GetFiles(path))
                         ScanFileSystem(file, depth, output);
                 }
-                else WriteScanRecord(output, $"{AbstractPath(path)}\t0000");
+                else WriteScanRecord(output, $"{PathAbstract(path)}\t0000");
             }
             catch (UnauthorizedAccessException)
             {
-                WriteScanRecord(output, $"{AbstractPath(path)}\t0000");
+                WriteScanRecord(output, $"{PathAbstract(path)}\t0000");
             }
+        }
+        
+        private static void StringBuilderAppendLineSynchronized(StringBuilder stringBuilder, string line)
+        {
+            lock (stringBuilder)
+                stringBuilder.AppendLine(line);
         }
 
         private static string CollectRegistryKeys(RegistryKey registryKey, string path)
@@ -353,26 +357,20 @@ namespace VirtualEnvironment.Startup
                 return path;
 
             var collectionBuilder = new StringBuilder();
-            Action<string> CollectionBuilderAppendLine = value =>
-            {
-                lock (collectionBuilder)
-                    collectionBuilder.AppendLine(value);
-            };
-
             var collector = registryKey.GetValueNames()
                 .Select(valueName => $"{valueName}:{registryKey.GetValue(valueName)}")
                 .ToList();
-            CollectionBuilderAppendLine(String.Join(";", collector));
+            StringBuilderAppendLineSynchronized(collectionBuilder, String.Join(";", collector));
             
             foreach (var subKeyName in registryKey.GetSubKeyNames())
                 try
                 {
                     using (var subKey = registryKey.OpenSubKey(subKeyName))
-                        CollectionBuilderAppendLine(CollectRegistryKeys(subKey, $@"{path}\{subKeyName}"));
+                        StringBuilderAppendLineSynchronized(collectionBuilder, CollectRegistryKeys(subKey, $@"{path}\{subKeyName}"));
                 }
                 catch (SecurityException)
                 {
-                    CollectionBuilderAppendLine(path);
+                    StringBuilderAppendLineSynchronized(collectionBuilder, path);
                 }
             
             return collectionBuilder.ToString();
