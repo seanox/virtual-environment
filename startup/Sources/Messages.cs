@@ -26,27 +26,27 @@ namespace VirtualEnvironment.Startup
 {
     internal static class Messages
     {
-        private static readonly List<ISubscriber> _subscriptions;
+        private static readonly List<ISubscriber> Subscriptions;
         
         static Messages()
         {
-            _subscriptions = new List<ISubscriber>();
+            Subscriptions = new List<ISubscriber>();
         }
         
         internal static void Subscribe(ISubscriber recipient)
         {
             if (recipient == null)
                 throw new ArgumentNullException();
-            if (!_subscriptions.Contains(recipient))
-                _subscriptions.Add(recipient);
+            if (!Subscriptions.Contains(recipient))
+                Subscriptions.Add(recipient);
         }
 
         internal static void Unsubscribe(ISubscriber recipient)
         {
             if (recipient == null)
                 throw new ArgumentNullException();
-            if (_subscriptions.Contains(recipient))
-                _subscriptions.Remove(recipient);
+            if (Subscriptions.Contains(recipient))
+                Subscriptions.Remove(recipient);
         }
         
         internal interface ISubscriber
@@ -56,7 +56,7 @@ namespace VirtualEnvironment.Startup
 
         internal static void Push(params Message[] messages)
         {
-            foreach (var recipient in _subscriptions)
+            foreach (var recipient in Subscriptions)
                 foreach (var message in messages)
                     recipient.Receive(message);
         }
@@ -76,6 +76,7 @@ namespace VirtualEnvironment.Startup
             Error,
             Warn,
             Trace,
+            Text,
             Message,
             Exit
         }
