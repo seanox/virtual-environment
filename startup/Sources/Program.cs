@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Microsoft.Win32;
 
 namespace VirtualEnvironment.Startup
 {
@@ -42,7 +43,8 @@ namespace VirtualEnvironment.Startup
 
         private const int SW_RESTORE = 9;
 
-        private static Mutex Mutex;
+        private static Mutex _mutex;
+        private static Runner _runner;
 
         private static readonly Regex COMMAND_PATTERN = new Regex(
             @"^(?:(sync)|(?:(scan)(?::(\d{1-8}))?))$", 
@@ -117,6 +119,7 @@ namespace VirtualEnvironment.Startup
                     {
                         Scanner.Scan(depth);
                     }
+
                     return;
                 }
                 
@@ -152,6 +155,10 @@ namespace VirtualEnvironment.Startup
                             return;
                     }
 
+                    // Handle the Windows shutdown event
+                    SystemEvents.SessionEnding += OnSessionEnding;
+                    Shutdown.Lock($"{applicationName} must terminate");
+
                     var datastore = new Datastore(manifest);
 
                     // Step 01
@@ -178,22 +185,33 @@ namespace VirtualEnvironment.Startup
                     // Step 08
                     // - Start target application
                     // - Wait for the end of the target application, incl. kill
+
+                    // The process will intentionally block here. The following events
+                    // will end the processes and the program will continue:
+                    // - Session Ending
+                    // - Windows Shutdown
+                    // ShutdownBlockReasonCreate attempts to maintain this process and
+                    // execute the subsequent logic to the end.  
+
+                    _runner = new Runner(manifest.Applications, manifest.Environment);
+                    _runner.StartAndWaitForExit();
+
                     // Step 09
                     // - Mirror/backup existing registry to mirror/backup
                     //   directory with timestamp
-//                  datastore.MirrorRegistry();
+                    datastore.MirrorRegistry();
                     // Step 10
                     // - Delete existing registry keys
-//                  datastore.DeleteExistingRegistry();
+                    datastore.DeleteExistingRegistry();
                     // Step 11
                     // - Delete existing file system locations
-//                  datastore.DeleteExistingSettings();
+                    datastore.DeleteExistingFileSystemLocations();
 
                     // The reference is intended to prevent the garbage
                     // collector from cleaning up the mutex instance too early
                     // and thus losing the lock.
-                    Mutex.ReleaseMutex();
-                    
+                    _mutex.ReleaseMutex();
+
                     return;
                 }
                 
@@ -216,14 +234,14 @@ namespace VirtualEnvironment.Startup
                 var processStartInfo = new ProcessStartInfo()
                 {
                     UseShellExecute = true,
-                    CreateNoWindow  = true,
+                    CreateNoWindow = true,
 
                     WindowStyle = ProcessWindowStyle.Minimized,
 
                     FileName = scriptFile,
                     WorkingDirectory = scriptDirectory,
 
-                    RedirectStandardError  = false,
+                    RedirectStandardError = false,
                     RedirectStandardOutput = false,
                 };
                 
@@ -234,14 +252,21 @@ namespace VirtualEnvironment.Startup
                 var process = new Process();
                 process.StartInfo = processStartInfo;
                 process.Start();
-
-                // TODO: Session Ending
-                // TODO: Windows Shutdown
             }
             catch (Exception exception)
             {
                 Messages.Push(Messages.Type.Error, exception.ToString());
             }
+            finally
+            {
+                Shutdown.Unlock();
+            }
+        }
+
+        private static void OnSessionEnding(object sender, SessionEndingEventArgs eventArgs)
+        {
+            if (_runner != null)
+                _runner.Terminate();
         }
 
         private class Subscription : Messages.ISubscriber
@@ -253,6 +278,7 @@ namespace VirtualEnvironment.Startup
                 Messages.Type.Error,
                 Messages.Type.Warn,
                 Messages.Type.Trace,
+                Messages.Type.Text,
                 Messages.Type.Message,
                 Messages.Type.Exit
             };
@@ -292,7 +318,9 @@ namespace VirtualEnvironment.Startup
                     {
                         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         var content = message.Content;
-                        content = $"{timestamp} {message.Type.ToString().ToUpper()} {content}";
+                        if (Messages.Type.Text != message.Type)
+                            content = $"{message.Type.ToString().ToUpper()} {content}";
+                        content = $"{timestamp} {content}";
                         content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t").Trim();
                         if (!String.IsNullOrEmpty(content))
                         {
