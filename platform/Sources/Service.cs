@@ -198,7 +198,7 @@ namespace VirtualEnvironment.Platform
                         UseShellExecute = true,
                         CreateNoWindow = true,
                         WindowStyle = ProcessWindowStyle.Hidden,
-                        FileName = "taskkill.exe ",
+                        FileName = "taskkill.exe",
                         Arguments = $"/t /pid {process.Id}"
                     }
                 };
