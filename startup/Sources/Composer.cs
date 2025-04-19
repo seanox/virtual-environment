@@ -369,7 +369,7 @@ namespace VirtualEnvironment.Startup
             return groupData;
         }
 
-        private static void ComposeIcon(FileInfo sourceFile, FileInfo destinationFile)
+        private static void ComposeIcon(FileInfo destinationFile, FileInfo sourceFile)
         {
             var sourceIconGroups = new List<IconGroup>();
             foreach (var sourceIconGroupResourceId in GetResourceIds(sourceFile, RT_GROUP_ICON))
@@ -395,7 +395,7 @@ namespace VirtualEnvironment.Startup
 
             var hUpdate = BeginUpdateResource(destinationFile.FullName, false);
             if (hUpdate == IntPtr.Zero)
-                throw new ComposerException($"Update resource failed: {destinationFile.FullName}");
+                throw new ComposerException($"Update resource failed: {destinationFile.Name}");
             
             var destinationIconReplacements = new Dictionary<IconEntry, IconEntry>();
             foreach (var destinationIconEntry in destinationIconEntries)
@@ -410,7 +410,7 @@ namespace VirtualEnvironment.Startup
                         (ushort)destinationIconEntry.LanguageId,
                         iconEntry.Data,
                         (uint)iconEntry.Data.Length))
-                    throw new ComposerException($"Update resource failed: {destinationFile.FullName}");
+                    throw new ComposerException($"Update resource failed: {destinationFile.Name}");
             }
             
             var destinationIconGroupUpdate = destinationIconGroups
@@ -431,11 +431,11 @@ namespace VirtualEnvironment.Startup
                         (ushort)destinationIconGroup.Language,
                         iconGroupDataUpdate,
                         (uint)iconGroupDataUpdate.Length))
-                    throw new ComposerException($"Update resource failed: {destinationFile.FullName}");
+                    throw new ComposerException($"Update resource failed: {destinationFile.Name}");
             }
             
             if (!EndUpdateResource(hUpdate, false))
-                throw new ComposerException($"Update resource failed: {destinationFile.FullName}");
+                throw new ComposerException($"Update resource failed: {destinationFile.Name}");
         }
         
         private static FileInfo ComposeFileInfo(FileInfo file)
@@ -449,7 +449,9 @@ namespace VirtualEnvironment.Startup
         private static void ComposeFile(FileInfo file)
         {
             var target = ComposeFileInfo(file);
-            File.Move(file.FullName, target.FullName);
+            if (File.Exists(target.FullName))
+                File.Delete(target.FullName);    
+            File.Copy(file.FullName, target.FullName);
         }
 
         internal static void Compose(Application[] applications)
@@ -463,10 +465,16 @@ namespace VirtualEnvironment.Startup
                 Messages.Push(Messages.Type.Error, "Found main application with unsupported destination", true);
 
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var assemblyLocationComposed = ComposeFileInfo(new FileInfo(assemblyLocation));
-            ComposeFile(new FileInfo(assemblyLocation));
-            ComposeFile(new FileInfo(Manifest.File));
-            ComposeIcon(assemblyLocationComposed, new FileInfo(destination));
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+            var compositeApplicationName = ComposeFileInfo(new FileInfo(destination)).Name;
+            var compositeManifestName = $"{Path.GetFileNameWithoutExtension(compositeApplicationName)}.xml";;
+
+            Messages.Push(Messages.Type.Trace, $"Compose {compositeApplicationName}");
+            File.Copy(assemblyLocation, Path.Combine(assemblyDirectory, compositeApplicationName));
+            ComposeIcon(new FileInfo(Path.Combine(assemblyDirectory, compositeApplicationName)), new FileInfo(destination));
+            Messages.Push(Messages.Type.Trace, $"Compose {compositeManifestName}");
+            File.Move(Manifest.File, Path.Combine(assemblyDirectory, compositeManifestName));
+            Messages.Push(Messages.Type.Trace, "Compose completed");
         }
         
         private class ComposerException : Exception
