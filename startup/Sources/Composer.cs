@@ -58,7 +58,7 @@ namespace VirtualEnvironment.Startup
     // | 6      | icon entries  | 14 bytes each | References to individual RT_ICON resources |
     // +--------+---------------+---------------+--------------------------------------------+
 
-    // RT_GROUP_ICON Icon-Entrie (ICONDIRENTRY)
+    // RT_GROUP_ICON Icon-Entry (ICONDIRENTRY)
     // Offsets within a single ICONDIRENTRY for RT_GROUP_ICON
     // Each icon entry in the group has the following structure (14 bytes each):
     //
