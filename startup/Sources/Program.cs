@@ -47,7 +47,7 @@ namespace VirtualEnvironment.Startup
         private static Runner _runner;
 
         private static readonly Regex COMMAND_PATTERN = new Regex(
-            @"^(?:(sync)|(?:(scan)(?::(\d{1-8}))?))$", 
+            @"^(?:(compose|sync)|(?:(scan)(?::(\d{1-8}))?))$", 
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
         
@@ -97,10 +97,18 @@ namespace VirtualEnvironment.Startup
                     var match = COMMAND_PATTERN.Match(arguments[0]);
                     if (!match.Success)
                         Messages.Push(Messages.Type.Message,
-                            $"usage: {Path.GetFileName(applicationPath)} sync|scan(:depth)", true);
+                            $"usage: {Path.GetFileName(applicationPath)} compose|sync|scan(:depth)", true);
                     var command = match.Groups[match.Groups[1].Success ? 1 : 2].Value;
                     var depth = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : SCAN_DEPTH_DEFAULT;
-                    if (String.Equals(command, "sync", StringComparison.OrdinalIgnoreCase))
+
+                    if (String.Equals(command, "compose", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!File.Exists(Manifest.File))
+                            Messages.Push(Messages.Type.Message, $"Missing manifest file: {Manifest.File}", true);
+                        var manifest = Manifest.Load();
+                        Composer.Compose(manifest.Applications);
+                    }
+                    else if (String.Equals(command, "sync", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!File.Exists(Manifest.File))
                             Messages.Push(Messages.Type.Message, $"Missing manifest file: {Manifest.File}", true);
@@ -255,7 +263,9 @@ namespace VirtualEnvironment.Startup
             }
             catch (Exception exception)
             {
-                Messages.Push(Messages.Type.Error, exception.ToString());
+                var content = $"{exception.GetType().Name} {exception.Message.Trim()}"
+                        + $"{Environment.NewLine}{exception.StackTrace}";
+                Messages.Push(Messages.Type.Error, content);
             }
             finally
             {
