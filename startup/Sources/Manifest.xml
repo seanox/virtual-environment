@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <environment>
+    <!--
+    <variable>
+      <name>PATH</name>
+      <value>%APPSPATH%\example;%PATH%</value>
+    </variable>
+    -->
+  </environment>
+  
+  <applications>
+    <!--
+    <application>
+      <destination>%WINDIR%\system32\notepad.exe</destination>
+      <arguments>%WINDIR%\System32\drivers\etc\hosts</arguments>
+      <workingDirectory>%WINDIR%\System32\drivers\etc</workingDirectory>
+    </application>
+    -->
+  </applications>
+  
+  <!--
+    Path from the directory of the mirrored data
+    
+    If not specified, the directory in which the StartUp is located is used.
+  -->
+  <datastore></datastore>
+  
+  <!--
+    list of registry keys to be mirrored
+    
+    Supported are registry key paths as well as registry key values.
+    - ROOT_KEY\path\of\key
+    - ROOT_KEY\path\of\key:name_of_value
+   
+    NOTE: The mirroring is always synchronized after the end of the target
+    application so that changes are retained for the next start. 
+     
+    NOTE: HKEY_CURRENT_USER is an alias that refers to the specific user branch
+    in HKEY_USERS. Windows synchronizes both root keys in real time. Therefore
+    changes, incl. creation, modification and deletion of keys, are only
+    required on one of the root keys.
+  -->
+  <registry>
+    <key>HKEY_CURRENT_USER\Software\...</key>
+    <key>HKEY_LOCAL_MACHINE\Software\...</key>
+  </registry>
+
+  <!-- 
+    List of locations in the file system to be mirrored
+    
+    Supported are directories as well as files.
+    
+    RECOMMENDATION: Use environment variables, then the locations are more
+    flexible and not tied to a specific user account.
+    
+    NOTE: During runtime of the target application, symbolic links are used.
+    This means that the file system does not have to be permanently
+    synchronized, as the symbolic links point to the datastore directory.
+  -->
+  <filesystem>
+    <location>%ProgramFiles%\...</location>
+    <location>%UserProfile%\...</location>
+    <location>%WinDir%\...</location>
+  </filesystem>
+</manifest>
