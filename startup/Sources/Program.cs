@@ -43,7 +43,6 @@ namespace VirtualEnvironment.Startup
 
         private const int SW_RESTORE = 9;
 
-        private static Mutex _mutex;
         private static Runner _runner;
 
         private static readonly Regex COMMAND_PATTERN = new Regex(
@@ -218,7 +217,8 @@ namespace VirtualEnvironment.Startup
                     // The reference is intended to prevent the garbage
                     // collector from cleaning up the mutex instance too early
                     // and thus losing the lock.
-                    _mutex.ReleaseMutex();
+                    foreach (var mutex in mutexList)
+                        mutex.ReleaseMutex();
 
                     return;
                 }
