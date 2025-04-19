@@ -54,7 +54,7 @@ namespace VirtualEnvironment.Startup
     // +--------+---------------+---------------+--------------------------------------------+
     // | 0      | idReserved    | 2 Byte        | Always 0                                   |
     // | 2      | idType        | 2 Byte        | 1 for Icons, 2 for Cursors                 |
-    // | 4      | idCount       | 2 Byte        | Number of icons in the groupe              |
+    // | 4      | idCount       | 2 Byte        | Number of icons in the group               |
     // | 6      | icon entries  | 14 bytes each | References to individual RT_ICON resources |
     // +--------+---------------+---------------+--------------------------------------------+
 
@@ -100,7 +100,7 @@ namespace VirtualEnvironment.Startup
         private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr FindResourceEx(IntPtr hModule, string lpType, IntPtr lpName, ushort wLanguage);
+        private static extern IntPtr FindResourceEx(IntPtr hModule, IntPtr lpType, IntPtr lpName, ushort wLanguage);
         
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern uint SizeofResource(IntPtr hModule, IntPtr hResInfo);
@@ -111,12 +111,12 @@ namespace VirtualEnvironment.Startup
         private delegate bool EnumResNameProc(IntPtr hModule, IntPtr lpType, IntPtr lpName, IntPtr lParam);
         
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool EnumResourceNames(IntPtr hModule, string lpType, EnumResNameProc lpEnumFunc, IntPtr lParam);
+        private static extern bool EnumResourceNames(IntPtr hModule, IntPtr lpType, EnumResNameProc lpEnumFunc, IntPtr lParam);
 
         private delegate bool EnumResLangProc(IntPtr hModule, IntPtr lpType, IntPtr lpName, ushort wLanguage, IntPtr lParam);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool EnumResourceLanguages(IntPtr hModule, string lpType, IntPtr lpName, EnumResLangProc lpEnumFunc, IntPtr lParam);
+        private static extern bool EnumResourceLanguages(IntPtr hModule, IntPtr lpType, IntPtr lpName, EnumResLangProc lpEnumFunc, IntPtr lParam);
         
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr BeginUpdateResource(string pFileName, bool bDeleteExistingResources);
@@ -169,7 +169,7 @@ namespace VirtualEnvironment.Startup
             try
             {
                 var languagesIds = new List<int>();
-                EnumResourceLanguages(hModule, $"#{resourceType}", (IntPtr)resourceId, 
+                EnumResourceLanguages(hModule, (IntPtr)resourceType, (IntPtr)resourceId, 
                     (hModuleLang, lpTypeLang, lpNameLang, wLanguageLang, lParamLang) =>
                     {
                         languagesIds.Add(wLanguageLang);
@@ -191,7 +191,7 @@ namespace VirtualEnvironment.Startup
             try
             {
                 var resourceIds = new List<int>();
-                EnumResourceNames(hModule, $"#{resourceType}",
+                EnumResourceNames(hModule, (IntPtr)resourceType,
                     (hModuleRes, lpTypeRes, lpNameRes, lParamRes) =>
                     {
                         resourceIds.Add(lpNameRes.ToInt32());
@@ -212,7 +212,7 @@ namespace VirtualEnvironment.Startup
                 return default;
             try
             {
-                var hRes = FindResourceEx(hModule, $"#{RT_GROUP_ICON}", (IntPtr)resourceId, (ushort)languageId);
+                var hRes = FindResourceEx(hModule, (IntPtr)RT_GROUP_ICON, (IntPtr)resourceId, (ushort)languageId);
                 if (hRes == IntPtr.Zero)
                     return default;
 
@@ -244,7 +244,7 @@ namespace VirtualEnvironment.Startup
                         SizeInBytes = BitConverter.ToInt32(data, entryOffset + RT_GROUP_ICON_ENTRY_OFFSET_ICON_SIZE),
                     };
                     
-                    var hResIcon = FindResourceEx(hModule, $"#{RT_ICON}", (IntPtr)iconEntry.ResourceId, (ushort)iconEntry.LanguageId);
+                    var hResIcon = FindResourceEx(hModule, (IntPtr)RT_ICON, (IntPtr)iconEntry.ResourceId, (ushort)iconEntry.LanguageId);
                     if (hResIcon == IntPtr.Zero)
                         throw new ComposerException($"Missing RT_ICON: {iconEntry.ResourceId}:{iconEntry.LanguageId}");
                     var iconDataSize = SizeofResource(hModule, hResIcon);
