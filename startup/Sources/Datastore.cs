@@ -47,7 +47,7 @@ namespace VirtualEnvironment.Startup
             int dwLanguageId,
             [Out] StringBuilder lpBuffer,
             int nSize,
-            IntPtr Arguments);
+            IntPtr arguments);
         
         private static string GetErrorMessage(int code)
         {
@@ -90,6 +90,11 @@ namespace VirtualEnvironment.Startup
         // resources should not change.  
         
         private const string REGISTRY_DATA = "registry.data";
+
+        private const string REGISTRY_DATA_RECORD_REG = "REG";
+        private const string REGISTRY_DATA_RECORD_VAL = "VAL";
+        private const string REGISTRY_DATA_RECORD_TYP = "TYP";
+        private const string REGISTRY_DATA_RECORD_DAT = "DAT";
 
         // https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
         // Please read twice: 260 vs. 256 vs. 259 -1 characters
@@ -207,8 +212,9 @@ namespace VirtualEnvironment.Startup
                 Func<string, string, string> formatMessage = (message, value) =>
                     String.IsNullOrWhiteSpace(value) ? message : $"{message}: ${value}";
 
-                Func<char, Queue<string>, string> fetchQueueEntry = (assignment, queue) =>
-                    assignment == '1' && queue.Count > 0 ? queue.Dequeue() : "";
+                Func<string, Queue<string>, string> fetchQueueEntry = (prefix, queue) =>
+                    queue.FirstOrDefault(line => line.StartsWith(prefix + ":"))
+                        ?.Substring(prefix.Length + 1) ?? string.Empty;
 
                 Func<string, RegistryValueKind, object> convertRegistryKeyValue = (value, type) =>
                 {
@@ -232,13 +238,11 @@ namespace VirtualEnvironment.Startup
                             StringSplitOptions.None));
                     if (lines.Count <= 0)
                         continue;
-                    var assignment  = lines.ToArray()[lines.Count -1];
-                    if (!Regex.IsMatch(assignment, "^[01]{4}$"))
-                        continue;
-                    var registryKeyPath = fetchQueueEntry(assignment[0], lines);
-                    var registryKeyValueName = fetchQueueEntry(assignment[1], lines);
-                    var registryKeyValueTypeText = fetchQueueEntry(assignment[2], lines);
-                    var registryKeyValue = fetchQueueEntry(assignment[3], lines);
+                    
+                    var registryKeyPath = fetchQueueEntry(REGISTRY_DATA_RECORD_REG, lines);
+                    var registryKeyValueName = fetchQueueEntry(REGISTRY_DATA_RECORD_VAL, lines);
+                    var registryKeyValueTypeText = fetchQueueEntry(REGISTRY_DATA_RECORD_TYP, lines);
+                    var registryKeyValue = fetchQueueEntry(REGISTRY_DATA_RECORD_DAT, lines);
 
                     var registryKeyValueType = RegistryValueKind.None;
                     if (!String.IsNullOrWhiteSpace(registryKeyValueTypeText))
@@ -405,20 +409,13 @@ namespace VirtualEnvironment.Startup
                     var valueType = registrySubKey.GetValueKind(valueName);
                     var valueValue = formatRegistryKeyValue(registrySubKey.GetValue(valueName), valueType);
                  
-                    var assignment = "";
-                    assignment += !String.IsNullOrEmpty(registryKey) ? 1 : 0;
-                    assignment += !String.IsNullOrEmpty(valueName) ? 1 : 0;
-                    assignment += valueType != null ? 1 : 0;
-                    assignment += !String.IsNullOrEmpty(valueValue) ? 1 : 0;
-                    
-                    var payload = $"{registryKey}{Environment.NewLine}";
+                    var payload = $"{REGISTRY_DATA_RECORD_REG}:{registryKey}{Environment.NewLine}";
                     if (!String.IsNullOrEmpty(valueName))
-                        payload += $"{valueName}{Environment.NewLine}";
+                        payload += $"{REGISTRY_DATA_RECORD_VAL}:{valueName}{Environment.NewLine}";
                     if (valueType != null)
-                        payload += $"{valueType}{Environment.NewLine}";
+                        payload += $"{REGISTRY_DATA_RECORD_TYP}:{valueType}{Environment.NewLine}";
                     if (!String.IsNullOrEmpty(valueValue))
-                        payload += $"{valueValue}{Environment.NewLine}";
-                    payload += $"{assignment}{Environment.NewLine}";
+                        payload += $"{REGISTRY_DATA_RECORD_DAT}:{valueValue}{Environment.NewLine}";
                     payload += Environment.NewLine;
 
                     File.AppendAllText(destination, payload);
