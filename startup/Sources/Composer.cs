@@ -446,14 +446,6 @@ namespace VirtualEnvironment.Startup
             return new FileInfo(Path.Combine(directory, $"{name}Start{extension}"));
         }
 
-        private static void ComposeFile(FileInfo file)
-        {
-            var target = ComposeFileInfo(file);
-            if (File.Exists(target.FullName))
-                File.Delete(target.FullName);    
-            File.Copy(file.FullName, target.FullName);
-        }
-
         internal static void Compose(Application[] applications)
         {
             var mainApplication = applications.FirstOrDefault(
@@ -467,13 +459,19 @@ namespace VirtualEnvironment.Startup
             var assemblyLocation = Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
             var compositeApplicationName = ComposeFileInfo(new FileInfo(destination)).Name;
-            var compositeManifestName = $"{Path.GetFileNameWithoutExtension(compositeApplicationName)}.xml";;
-
+            var compositeApplicationLocation = Path.Combine(assemblyDirectory, compositeApplicationName);
+            var compositeManifestName = $"{Path.GetFileNameWithoutExtension(compositeApplicationName)}.xml";
+            var compositeManifestLocation = Path.Combine(assemblyDirectory, compositeManifestName);
+                
             Messages.Push(Messages.Type.Trace, $"Compose {compositeApplicationName}");
-            File.Copy(assemblyLocation, Path.Combine(assemblyDirectory, compositeApplicationName));
+            if (File.Exists(compositeApplicationLocation))
+                File.Delete(compositeApplicationLocation);
+            File.Copy(assemblyLocation, compositeApplicationLocation);
             ComposeIcon(new FileInfo(Path.Combine(assemblyDirectory, compositeApplicationName)), new FileInfo(destination));
             Messages.Push(Messages.Type.Trace, $"Compose {compositeManifestName}");
-            File.Move(Manifest.File, Path.Combine(assemblyDirectory, compositeManifestName));
+            if (File.Exists(compositeManifestLocation))
+                File.Delete(compositeManifestLocation);
+            File.Move(Manifest.File, compositeManifestLocation);
             Messages.Push(Messages.Type.Trace, "Compose completed");
         }
         
