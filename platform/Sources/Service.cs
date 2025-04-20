@@ -42,7 +42,7 @@ namespace VirtualEnvironment.Platform
         
         private static void SetupEnvironment(string drive)
         {
-            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachEnvironmentSetup);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerAttachEnvironmentSetup);
 
             var message = "";
             foreach (var file in Settings.Files)
@@ -69,13 +69,13 @@ namespace VirtualEnvironment.Platform
 
             if (!String.IsNullOrWhiteSpace(message))
                 Notification.Push(Notification.Type.Trace,
-                    $"@{Messages.WorkerAttachEnvironmentSetup}{message}");
+                    $"@{Resources.WorkerAttachEnvironmentSetup}{message}");
         }
 
         internal static void Attach(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
-            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
+            Notification.Push(Notification.Type.Trace, "@" + Resources.WorkerVersion);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerAttachText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanAttachDisk(drive, diskFile);
@@ -83,16 +83,16 @@ namespace VirtualEnvironment.Platform
 
             SetupEnvironment(drive);
                             
-            Notification.Push(Notification.Type.Trace, Messages.WorkerAttachText);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerAttachText);
             var batchResult = BatchExec(BatchType.Attach, drive + @"\Startup.cmd", "startup");
             if (batchResult.Failed)
             {
                 if (batchResult.Output.Length > 0)
                     Notification.Push(Notification.Type.Trace, "@" + batchResult.Output);
-                throw new DiskpartException(Messages.WorkerAttachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
+                throw new DiskpartException(Resources.WorkerAttachFailed, Resources.WorkerAttachBatchFailed, "@" + batchResult.Message);
             }
 
-            Notification.Push(Notification.Type.Abort, Messages.WorkerAttach, Messages.WorkerSuccessfullyCompleted);
+            Notification.Push(Notification.Type.Abort, Resources.WorkerAttach, Resources.WorkerSuccessfullyCompleted);
         }
 
         internal static void Create(string drive, string diskFile)
@@ -104,8 +104,8 @@ namespace VirtualEnvironment.Platform
             if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly())
                 throw new InvalidOperationException("Method not supported");
             
-            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
-            Notification.Push(Notification.Type.Trace, Messages.WorkerCreateText);
+            Notification.Push(Notification.Type.Trace, "@" + Resources.WorkerVersion);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerCreateText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanCreateDisk(drive, diskFile);
@@ -116,21 +116,21 @@ namespace VirtualEnvironment.Platform
             var applicationDirectory = Path.GetDirectoryName(applicationPath);
             var applicationName = Path.GetFileNameWithoutExtension(applicationFile);
             var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
-            File.WriteAllBytes(settingsFile, Resources.GetResource(@"\settings.ini"));
+            File.WriteAllBytes(settingsFile, Resources.Files[@"\settings.ini"]);
 
-            Notification.Push(Notification.Type.Abort, Messages.DiskpartCreate, Messages.WorkerSuccessfullyCompleted);
+            Notification.Push(Notification.Type.Abort, Resources.DiskpartCreate, Resources.WorkerSuccessfullyCompleted);
         }
 
         internal static void Compact(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
-            Notification.Push(Notification.Type.Trace, Messages.WorkerCompactText);
+            Notification.Push(Notification.Type.Trace, "@" + Resources.WorkerVersion);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerCompactText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanAttachDisk(drive, diskFile);
             Diskpart.AttachDisk(drive, diskFile);
 
-            Notification.Push(Notification.Type.Trace, Messages.DiskpartCompact, Messages.WorkerCompactCleanFilesystem);
+            Notification.Push(Notification.Type.Trace, Resources.DiskpartCompact, Resources.WorkerCompactCleanFilesystem);
 
             void DeleteFileEntry(string path)
             {
@@ -162,7 +162,7 @@ namespace VirtualEnvironment.Platform
             Diskpart.CanCompactDisk(drive, diskFile);
             Diskpart.CompactDisk(drive, diskFile);
             
-            Notification.Push(Notification.Type.Abort, Messages.DiskpartCompact, Messages.WorkerSuccessfullyCompleted);
+            Notification.Push(Notification.Type.Abort, Resources.DiskpartCompact, Resources.WorkerSuccessfullyCompleted);
         }
 
         private static List<Process> GetProcesses(string drive)
@@ -229,7 +229,7 @@ namespace VirtualEnvironment.Platform
                         if (exception is ArgumentException)
                             break;
                         Notification.Push(Notification.Type.Warning,
-                                String.Format(Messages.WorkerDetachBlocked,
+                                String.Format(Resources.WorkerDetachBlocked,
                                         process.ProcessName, exception.Message));
                     }
                 }
@@ -321,7 +321,7 @@ namespace VirtualEnvironment.Platform
                         catch (Exception)
                         {
                         }
-                        throw new TimeoutException(Messages.WorkerBatchFreezeDetection);
+                        throw new TimeoutException(Resources.WorkerBatchFreezeDetection);
                     }
                     if (totalProcessorTime == idleTotalProcessorTime)
                         continue;
@@ -342,8 +342,8 @@ namespace VirtualEnvironment.Platform
 
         internal static void Detach(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
-            Notification.Push(Notification.Type.Trace, Messages.WorkerDetachText);
+            Notification.Push(Notification.Type.Trace, "@" + Resources.WorkerVersion);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerDetachText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanDetachDisk(drive, diskFile);
@@ -352,7 +352,7 @@ namespace VirtualEnvironment.Platform
             {
                 if (batchResult.Output.Length > 0)
                     Notification.Push(Notification.Type.Trace, "@" + batchResult.Output);
-                throw new DiskpartException(Messages.WorkerDetachFailed, Messages.WorkerAttachBatchFailed, "@" + batchResult.Message);
+                throw new DiskpartException(Resources.WorkerDetachFailed, Resources.WorkerAttachBatchFailed, "@" + batchResult.Message);
             }
             
             // In DLL mode, launcher.exe must be excluded as it acts as the main
@@ -376,7 +376,7 @@ namespace VirtualEnvironment.Platform
             
             Diskpart.DetachDisk(drive, diskFile);
 
-            Notification.Push(Notification.Type.Abort, Messages.WorkerDetach, Messages.WorkerSuccessfullyCompleted);
+            Notification.Push(Notification.Type.Abort, Resources.WorkerDetach, Resources.WorkerSuccessfullyCompleted);
         }
         
         private enum ShortcutType
@@ -403,15 +403,15 @@ namespace VirtualEnvironment.Platform
 
         internal static void Shortcuts(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, "@" + Messages.WorkerVersion);
-            Notification.Push(Notification.Type.Trace, Messages.WorkerShortcutsText);
+            Notification.Push(Notification.Type.Trace, "@" + Resources.WorkerVersion);
+            Notification.Push(Notification.Type.Trace, Resources.WorkerShortcutsText);
             Thread.Sleep(NotificationDelay);
                             
             CreateShortcut(drive, diskFile, ShortcutType.Attach);
             CreateShortcut(drive, diskFile, ShortcutType.Detach);
             CreateShortcut(drive, diskFile, ShortcutType.Compact);
 
-            Notification.Push(Notification.Type.Abort, Messages.WorkerShortcuts, Messages.WorkerSuccessfullyCompleted);
+            Notification.Push(Notification.Type.Abort, Resources.WorkerShortcuts, Resources.WorkerSuccessfullyCompleted);
         }
     }
 }
