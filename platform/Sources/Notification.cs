@@ -101,8 +101,8 @@ namespace VirtualEnvironment.Platform
                    && Regex.IsMatch(messages[messages.Length -1], "^((@+)|(\\s+))$"))
                 messages = messages.Take(messages.Length -1).ToArray();
             messages = messages.Select(message =>
-                    Messages.DiskpartUnexpectedErrorOccurred == message
-                            || Messages.WorkerUnexpectedErrorOccurred == message
+                    Resources.DiskpartUnexpectedErrorOccurred == message
+                            || Resources.WorkerUnexpectedErrorOccurred == message
                         ? String.Format(message, Path.GetFileName(outputFilePath)) : message).ToArray();
             var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var output = String.Join("\r\n", messages.Select(message => Regex.Replace(message, "^@+", "")).ToArray()); 
