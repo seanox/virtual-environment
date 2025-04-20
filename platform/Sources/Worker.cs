@@ -82,8 +82,8 @@ namespace VirtualEnvironment.Platform
                         break;
                     
                     default:
-                        Notification.Push(Notification.Type.Error, Messages.WorkerVersion,
-                                String.Format(Messages.WorkerUsage, applicationFile));
+                        Notification.Push(Notification.Type.Error, Resources.WorkerVersion,
+                                String.Format(Resources.WorkerUsage, applicationFile));
                         break;
                 }
             }
@@ -95,7 +95,7 @@ namespace VirtualEnvironment.Platform
                     Notification.Push(Notification.Type.Error, diskpartAbortException.Messages);
                 else if (exception is DiskpartException diskpartException)
                     Notification.Push(Notification.Type.Error, diskpartException.Messages);
-                else Notification.Push(Notification.Type.Error, Messages.WorkerUnexpectedErrorOccurred, exception);
+                else Notification.Push(Notification.Type.Error, Resources.WorkerUnexpectedErrorOccurred, exception);
 
                 if (exception is DiskpartAbortException)
                     return;
