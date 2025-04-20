@@ -38,18 +38,17 @@
         <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
-        <Reference Include="System.Management" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
+        <Reference Include="System.Data.DataSetExtensions" />
         <Reference Include="System.Deployment" />
         <Reference Include="System.Drawing" />
-        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Management" />
         <Reference Include="System.Windows.Forms" />
         <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
     </ItemGroup>
     <ItemGroup>
         <COMReference Include="IWshRuntimeLibrary">
@@ -65,30 +64,34 @@
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Sources\Diskpart.cs" />
-        <Compile Include="Sources\Messages.Designer.cs">
-          <AutoGen>True</AutoGen>
-          <DesignTime>True</DesignTime>
-          <DependentUpon>Messages.resx</DependentUpon>
-        </Compile>
         <Compile Include="Sources\Notification.cs" />
         <Compile Include="Sources\Program.cs" />
-        <Compile Include="Sources\Resource.cs" />
+        <EmbeddedResource Include="Sources\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Include="Sources\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Sources\Resources.Extensions.cs">
+            <AutoGen>False</AutoGen>
+            <DesignTime>False</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
         <Compile Include="Sources\Service.cs" />
         <Compile Include="Sources\Settings.cs" />
-        <EmbeddedResource Include="Sources\Program.ico" />
+        <EmbeddedResource Include="Sources\Worker.resx">
+            <DependentUpon>Worker.cs</DependentUpon>
+        </EmbeddedResource>
         <Compile Include="Sources\Worker.cs">
           <SubType>Form</SubType>
         </Compile>
         <Compile Include="Sources\Worker.Designer.cs">
           <DependentUpon>Worker.cs</DependentUpon>
         </Compile>
-        <EmbeddedResource Include="Sources\Messages.resx">
-          <Generator>ResXFileCodeGenerator</Generator>
-          <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Include="Sources\Worker.resx">
-          <DependentUpon>Worker.cs</DependentUpon>
-        </EmbeddedResource>
+        <EmbeddedResource Include="Sources\Program.ico" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\diskpart\attach" />
