@@ -282,24 +282,11 @@ namespace VirtualEnvironment.Startup
         private class Subscription : Messages.ISubscriber
         {
             private bool _continue;
-            
-            private static readonly Messages.Type[] MESSAGES_TYPE_ACCEPTED = new[]
-            {
-                Messages.Type.Error,
-                Messages.Type.Warn,
-                Messages.Type.Trace,
-                Messages.Type.Text,
-                Messages.Type.Message,
-                Messages.Type.Exit
-            };
 
             public void Receive(Messages.Message message)
             {
                 try
                 {
-                    if (!MESSAGES_TYPE_ACCEPTED.Contains(message.Type))
-                        return;
-
                     var applicationPath = Assembly.GetExecutingAssembly().Location;
                     var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
                         Path.GetFileNameWithoutExtension(applicationPath) + ".log");

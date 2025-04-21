@@ -74,7 +74,7 @@ namespace VirtualEnvironment.Startup
         internal enum Type
         {
             Error,
-            Warn,
+            Warning,
             Trace,
             Text,
             Message,
