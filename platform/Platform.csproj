@@ -64,7 +64,7 @@
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Sources\Diskpart.cs" />
-        <Compile Include="Sources\Notification.cs" />
+        <Compile Include="Sources\Messages.cs" />
         <Compile Include="Sources\Program.cs" />
         <EmbeddedResource Include="Sources\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -75,7 +75,7 @@
             <DesignTime>True</DesignTime>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Compile Include="Sources\Resources.Extensions.cs">
+        <Compile Include="Sources\Resources.Extension.cs">
             <AutoGen>False</AutoGen>
             <DesignTime>False</DesignTime>
             <DependentUpon>Resources.resx</DependentUpon>
