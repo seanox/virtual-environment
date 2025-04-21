@@ -103,9 +103,7 @@ namespace VirtualEnvironment.Startup
             
             public override string ToString()
             {
-                var stringBuilder = new StringBuilder("UNKNOWN");
-                if (Type != null)
-                    stringBuilder.Clear().Append(Type.ToString().ToUpper());
+                var stringBuilder = new StringBuilder(Type.ToString().ToUpper());
                 if (!string.IsNullOrWhiteSpace(Content))
                     stringBuilder.Append($": {Content.Trim()}");
                 if (Exit)
