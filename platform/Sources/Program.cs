@@ -22,8 +22,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using VirtualEnvironment.Startup;
 
 namespace VirtualEnvironment.Platform
 {
@@ -42,6 +44,8 @@ namespace VirtualEnvironment.Platform
             if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly()
                     && !new Regex("^(compact|attach|detach|shortcuts)$", RegexOptions.IgnoreCase).IsMatch(task))
                 throw new InvalidOperationException("Requires a drive letter (A-Z) and a method: [compact|attach|detach|shortcuts].");
+            
+            Messages.Subscribe(new Subscription());
             
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
@@ -79,6 +83,54 @@ namespace VirtualEnvironment.Platform
                 Application.Run(new Worker(workerTask, drive, diskFile));
             }
             else new Worker(workerTask, drive, diskFile).Show();
+        }
+        
+        private class Subscription : Messages.ISubscriber
+        {
+            private bool _continue;
+
+            public void Receive(Messages.Message message)
+            {
+                try
+                {
+                    var applicationPath = Assembly.GetExecutingAssembly().Location;
+                    var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
+                        Path.GetFileNameWithoutExtension(applicationPath) + ".log");
+
+                    if (!_continue)
+                    {
+                        var assembly = Assembly.GetExecutingAssembly();
+                        var name = assembly.GetName().Name;
+                        var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+                        var version = assembly.GetName().Version;
+                        var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                            .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
+                        var banner = new StringBuilder()
+                            .AppendLine($"Seanox {name} [Version {version} {build}]")
+                            .AppendLine($"{copyright.Replace("©", "(C)")}")
+                            .ToString();
+                        
+                        if (!File.Exists(logfilePath)
+                                || new FileInfo(logfilePath).Length <= 0)
+                            File.WriteAllLines(logfilePath, new[] {banner});
+                    }
+                    else File.AppendText(System.Environment.NewLine);
+
+                    _continue = true;
+
+                    var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var content = message.Content;
+                    if (Messages.Type.Text != message.Type)
+                        content = $"{message.Type.ToString().ToUpper()} {content}";
+                    content = $"{timestamp} {content}";
+                    content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t").Trim();
+                    if (!String.IsNullOrEmpty(content))
+                        File.AppendAllText(logfilePath, content);
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
     }
 }
