@@ -2,7 +2,7 @@
 // hereinafter referred to as Seanox Software Solutions or Seanox for short.
 // This software is subject to version 2 of the Apache License.
 //
-// Virtual Environment Startup
+// Virtual Environment Platform
 // Program starter for the virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
 //
@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+    
 namespace VirtualEnvironment.Startup
 {
     internal static class Messages
@@ -52,8 +52,7 @@ namespace VirtualEnvironment.Startup
             if (recipient == null)
                 throw new ArgumentNullException();
             lock (_lock)
-                if (_subscriptions.Contains(recipient))
-                    _subscriptions.Remove(recipient);
+                _subscriptions.Remove(recipient);
         }
         
         internal interface ISubscriber
@@ -74,16 +73,10 @@ namespace VirtualEnvironment.Startup
                 }));
         } 
         
-        internal static void Push(Type type, params string[] content)
+        internal static void Push(Type type, params object[] data)
         {
-            content = content
-                .Select(line => line.Trim())
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .ToArray();
-            var stringBuilder = new StringBuilder();
-            foreach (var line in content)
-                stringBuilder.AppendLine(line);
-            Push(new Message(type, stringBuilder.ToString()));
+            foreach (var entry in data.Where(entry => !(entry is null)))
+                Push(new Message(type, entry));
         }
 
         internal enum Type
@@ -99,13 +92,23 @@ namespace VirtualEnvironment.Startup
         internal readonly struct Message
         {
             internal Type Type { get; }
-            internal string Content { get; }
+            internal object Data { get; }
             internal string Context { get; }
 
-            internal Message(Type type, string content)
+            internal Message(Type type, object data)
             {
                 Type = type;
-                Content = content;
+                
+                if (data is List<string> list)
+                    data = list.ToArray();
+                if (data is string[] strings)
+                    Data = string.Join(Environment.NewLine, strings
+                        .Select(line => line.Trim())
+                        .Where(line => !string.IsNullOrWhiteSpace(line)));
+                if (data is string)
+                    Data = ((string)data).Trim();
+                else Data = data;
+                    
                 Context = new Func<string>(() =>
                     new StackTrace().GetFrames()
                         .Select(stackFrame => stackFrame.GetMethod().DeclaringType.Name)
@@ -116,8 +119,9 @@ namespace VirtualEnvironment.Startup
             public override string ToString()
             {
                 var stringBuilder = new StringBuilder(Type.ToString().ToUpper());
-                if (!string.IsNullOrWhiteSpace(Content))
-                    stringBuilder.Append($": {Content.Trim()}");
+                var content = Data?.ToString();
+                if (!string.IsNullOrWhiteSpace(content))
+                    stringBuilder.Append($": {content.Trim()}");
                 return stringBuilder.ToString();
             }
         }
