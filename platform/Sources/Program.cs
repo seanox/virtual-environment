@@ -26,6 +26,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using VirtualEnvironment.Startup;
+using System.Collections.Generic;
 
 namespace VirtualEnvironment.Platform
 {
@@ -89,8 +90,24 @@ namespace VirtualEnvironment.Platform
         {
             private bool _continue;
 
+            private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
+            {
+                Messages.Type.Error,
+                Messages.Type.Warning,
+                Messages.Type.Trace,
+                Messages.Type.Text
+            };
+
             public void Receive(Messages.Message message)
             {
+                if (!MESSAGE_TYPE_LIST.Contains(message.Type)
+                        || message.Data is null)
+                    return;
+
+                var content = message.ToString().Trim();
+                if (String.IsNullOrWhiteSpace(content))
+                    return;
+                
                 try
                 {
                     var applicationPath = Assembly.GetExecutingAssembly().Location;
@@ -114,12 +131,11 @@ namespace VirtualEnvironment.Platform
                                 || new FileInfo(logfilePath).Length <= 0)
                             File.WriteAllLines(logfilePath, new[] {banner});
                     }
-                    else File.AppendText(System.Environment.NewLine);
-
+                    else File.AppendAllText(logfilePath, Environment.NewLine);
+                    
                     _continue = true;
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    var content = message.Content;
                     if (Messages.Type.Text != message.Type)
                         content = $"{message.Type.ToString().ToUpper()} {content}";
                     content = $"{timestamp} {content}";
