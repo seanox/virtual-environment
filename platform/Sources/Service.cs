@@ -89,10 +89,10 @@ namespace VirtualEnvironment.Platform
             {
                 if (batchResult.Output.Length > 0)
                     Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, batchResult.Output);
-                throw new DiskpartException(Resources.ServiceAttachFailed, Resources.ServiceBatchFailed, batchResult.Message);
+                throw new ServiceException(Resources.ServiceAttachFailed, Resources.ServiceBatchFailed, batchResult.Message);
             }
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ServiceCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.CommonCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -118,7 +118,7 @@ namespace VirtualEnvironment.Platform
             var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
             File.WriteAllBytes(settingsFile, Resources.Files[@"\settings.ini"]);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceCreate, Resources.ServiceCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceCreate, Resources.CommonCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -162,7 +162,7 @@ namespace VirtualEnvironment.Platform
             Diskpart.CanCompactDisk(drive, diskFile);
             Diskpart.CompactDisk(drive, diskFile);
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceCompact, Resources.ServiceCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceCompact, Resources.CommonCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -352,7 +352,7 @@ namespace VirtualEnvironment.Platform
             {
                 if (batchResult.Output.Length > 0)
                     Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, batchResult.Output);
-                throw new DiskpartException(Resources.ServiceDetachFailed, Resources.ServiceBatchFailed, batchResult.Message);
+                throw new ServiceException(Resources.ServiceDetachFailed, Resources.ServiceBatchFailed, batchResult.Message);
             }
             
             // In DLL mode, launcher.exe must be excluded as it acts as the main
@@ -376,7 +376,7 @@ namespace VirtualEnvironment.Platform
             
             Diskpart.DetachDisk(drive, diskFile);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ServiceCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.CommonCompleted);
             Messages.Push(Messages.Type.Exit);
         }
         
@@ -411,8 +411,22 @@ namespace VirtualEnvironment.Platform
             CreateShortcut(drive, diskFile, ShortcutType.Detach);
             CreateShortcut(drive, diskFile, ShortcutType.Compact);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceShortcuts, Resources.ServiceCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceShortcuts, Resources.CommonCompleted);
             Messages.Push(Messages.Type.Exit);
+        }
+    }
+    
+    internal class ServiceException : Exception
+    {
+        internal string Context { get; }
+        internal string Message { get; }
+        internal string Details { get; }
+
+        internal ServiceException(string context, string message, string details = null)
+        {
+            Context = context;
+            Message = message;
+            Details = details;
         }
     }
 }
