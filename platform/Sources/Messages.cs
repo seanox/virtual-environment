@@ -20,12 +20,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-    
-namespace VirtualEnvironment.Startup
+
+namespace VirtualEnvironment.Platform
 {
     internal static class Messages
     {
@@ -75,8 +75,7 @@ namespace VirtualEnvironment.Startup
         
         internal static void Push(Type type, params object[] data)
         {
-            foreach (var entry in data.Where(entry => !(entry is null)))
-                Push(new Message(type, entry));
+            Push(new Message(type, data));
         }
 
         internal enum Type
@@ -92,37 +91,52 @@ namespace VirtualEnvironment.Startup
         internal readonly struct Message
         {
             internal Type Type { get; }
-            internal object Data { get; }
             internal string Context { get; }
+            internal object Data { get; }
 
             internal Message(Type type, object data)
+                : this(type, null, data)
+            {
+            }
+            
+            internal Message(Type type, string context, object data)
             {
                 Type = type;
-                
-                if (data is List<string> list)
-                    data = list.ToArray();
-                if (data is string[] strings)
-                    Data = string.Join(Environment.NewLine, strings
-                        .Select(line => line.Trim())
-                        .Where(line => !string.IsNullOrWhiteSpace(line)));
-                if (data is string)
-                    Data = ((string)data).Trim();
-                else Data = data;
-                    
-                Context = new Func<string>(() =>
-                    new StackTrace().GetFrames()
-                        .Select(stackFrame => stackFrame.GetMethod().DeclaringType.Name)
-                        .FirstOrDefault(name => name != nameof(Messages))
-                )();
+                if (!String.IsNullOrWhiteSpace(context))
+                    context = Regex.Replace(context, @"[\r\n]+", " ").Trim();
+                Context = !String.IsNullOrWhiteSpace(context) ? context : null;
+                Data = data;
             }
             
             public override string ToString()
             {
-                var stringBuilder = new StringBuilder(Type.ToString().ToUpper());
-                var content = Data?.ToString();
-                if (!string.IsNullOrWhiteSpace(content))
-                    stringBuilder.Append($": {content.Trim()}");
-                return stringBuilder.ToString();
+                var stringBuilder = new StringBuilder(Type.ToString().ToUpper())
+                    .Append(" ");
+
+                var content = Data;
+
+                if (!String.IsNullOrWhiteSpace(Context))
+                    stringBuilder.AppendLine(Context);
+
+                if (Data is Exception exception
+                        && !String.IsNullOrWhiteSpace(exception.Message))
+                {
+                    stringBuilder.AppendLine(exception.Message.Trim());
+                    if (!(exception.StackTrace is null))
+                        content = exception.StackTrace
+                            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    else content = null;
+                }
+                
+                if (content is IEnumerable<string> strings)
+                    content = string.Join(Environment.NewLine,
+                        strings.Where(line => !string.IsNullOrWhiteSpace(line)));
+                
+                content = content?.ToString().Trim();
+                if (!String.IsNullOrEmpty((string)content))
+                    stringBuilder.Append(content);
+
+                return stringBuilder.ToString().Trim();
             }
         }
     }
