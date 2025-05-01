@@ -419,13 +419,12 @@ namespace VirtualEnvironment.Platform
     internal class ServiceException : Exception
     {
         internal string Context { get; }
-        internal string Message { get; }
         internal string Details { get; }
 
         internal ServiceException(string context, string message, string details = null)
+            : base(message)
         {
             Context = context;
-            Message = message;
             Details = details;
         }
     }
