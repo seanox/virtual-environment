@@ -118,6 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 
+  <data name="CommonUnexpectedErrorOccurred" xml:space="preserve">
+    <value>Unexpected error occurred</value>
+  </data>
+  <data name="CommonSuccessfullyCompleted" xml:space="preserve">
+    <value>Successfully completed</value>
+  </data>
+
   <data name="DiskpartAttach" xml:space="preserve">
     <value>Attaching virtual disk</value>
   </data>
@@ -179,10 +186,7 @@
   <data name="DiskpartFileNotExists" xml:space="preserve">
     <value>No file found for virtual disk</value>
   </data>
-  <data name="DiskpartUnexpectedErrorOccurred" xml:space="preserve">
-    <value>Unexpected error occurred</value>
-  </data>
-  
+
   <data name="ServiceAttach" xml:space="preserve">
     <value>Attaching virtual environment</value>
   </data>
@@ -242,14 +246,6 @@
   </data>
   <data name="ServiceShortcutsText" xml:space="preserve">
     <value>Usual functions initialized</value>
-  </data>
-
-  <data name="ServiceCompleted" xml:space="preserve">
-    <value>Successfully completed</value>
-  </data>
-  
-  <data name="ServiceUnexpectedErrorOccurred" xml:space="preserve">
-    <value>Unexpected error occurred</value>
   </data>
   
   <data name="WorkerUsage" xml:space="preserve">

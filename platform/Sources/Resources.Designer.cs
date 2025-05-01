@@ -60,6 +60,24 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully completed.
+        /// </summary>
+        internal static string CommonSuccessfullyCompleted {
+            get {
+                return ResourceManager.GetString("CommonSuccessfullyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error occurred.
+        /// </summary>
+        internal static string CommonUnexpectedErrorOccurred {
+            get {
+                return ResourceManager.GetString("CommonUnexpectedErrorOccurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attaching virtual disk.
         /// </summary>
         internal static string DiskpartAttach {
@@ -231,15 +249,6 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected error occurred.
-        /// </summary>
-        internal static string DiskpartUnexpectedErrorOccurred {
-            get {
-                return ResourceManager.GetString("DiskpartUnexpectedErrorOccurred", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Attaching virtual environment.
         /// </summary>
         internal static string ServiceAttach {
@@ -330,15 +339,6 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Successfully completed.
-        /// </summary>
-        internal static string ServiceCompleted {
-            get {
-                return ResourceManager.GetString("ServiceCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Creating virtual environment.
         /// </summary>
         internal static string ServiceCreate {
@@ -408,15 +408,6 @@ namespace VirtualEnvironment.Platform {
         internal static string ServiceShortcutsText {
             get {
                 return ResourceManager.GetString("ServiceShortcutsText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected error occurred.
-        /// </summary>
-        internal static string ServiceUnexpectedErrorOccurred {
-            get {
-                return ResourceManager.GetString("ServiceUnexpectedErrorOccurred", resourceCulture);
             }
         }
         
