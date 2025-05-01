@@ -276,8 +276,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attaching virtual environment
-        ///Programs and services established.
+        ///   Looks up a localized string similar to Programs and services established.
         /// </summary>
         internal static string WorkerAttachText {
             get {
@@ -304,8 +303,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compaction virtual environment
-        ///Virtual disk and file system compacted.
+        ///   Looks up a localized string similar to Virtual disk and file system compacted.
         /// </summary>
         internal static string WorkerCompactText {
             get {
@@ -314,8 +312,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creation virtual environment
-        ///Virtual disk and file system initialized.
+        ///   Looks up a localized string similar to Virtual disk and file system initialized.
         /// </summary>
         internal static string WorkerCreateText {
             get {
@@ -361,8 +358,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detaching virtual environment
-        ///Programs and services terminated.
+        ///   Looks up a localized string similar to Programs and services terminated.
         /// </summary>
         internal static string WorkerDetachText {
             get {
@@ -380,8 +376,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating shortcuts
-        ///Usual functions initialized.
+        ///   Looks up a localized string similar to Usual functions initialized.
         /// </summary>
         internal static string WorkerShortcutsText {
             get {

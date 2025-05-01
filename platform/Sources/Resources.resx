@@ -196,8 +196,7 @@
     <value>Configuring virtual environment</value>
   </data>
   <data name="WorkerAttachText" xml:space="preserve">
-    <value>Attaching virtual environment
-Programs and services established</value>
+    <value>Programs and services established</value>
   </data>
 
   <data name="WorkerBatchFreezeDetection" xml:space="preserve">
@@ -205,16 +204,14 @@ Programs and services established</value>
   </data>
 
   <data name="WorkerCompactText" xml:space="preserve">
-    <value>Compaction virtual environment
-Virtual disk and file system compacted</value>
+    <value>Virtual disk and file system compacted</value>
   </data>
   <data name="WorkerCompactCleanFilesystem" xml:space="preserve">
     <value>Cleaning temporary files</value>
   </data>
   
   <data name="WorkerCreateText" xml:space="preserve">
-    <value>Creation virtual environment
-Virtual disk and file system initialized</value>
+    <value>Virtual disk and file system initialized</value>
   </data>
 
   <data name="WorkerDetach" xml:space="preserve">
@@ -231,8 +228,7 @@ Virtual disk and file system initialized</value>
 {1}</value>
   </data>
   <data name="WorkerDetachText" xml:space="preserve">
-    <value>Detaching virtual environment
-Programs and services terminated</value>
+    <value>Programs and services terminated</value>
   </data>
   
   <data name="WorkerSuccessfullyCompleted" xml:space="preserve">
@@ -255,7 +251,6 @@ Programs and services terminated</value>
     <value>Creating shortcuts</value>
   </data>
   <data name="WorkerShortcutsText" xml:space="preserve">
-    <value>Creating shortcuts
-Usual functions initialized</value>
+    <value>Usual functions initialized</value>
   </data>
 </root>
