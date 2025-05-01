@@ -19,16 +19,18 @@
 // the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace VirtualEnvironment.Platform
 {
-    internal partial class Worker : Form, Notification.INotification
+    internal partial class Worker : Form, Messages.ISubscriber
     {
         internal enum Task
         {
@@ -42,7 +44,7 @@ namespace VirtualEnvironment.Platform
 
         internal Worker(Task task, string drive, string diskFile)
         {
-            Notification.Subscribe(this);
+            Messages.Subscribe(this);
 
             InitializeComponent();
             
@@ -82,31 +84,33 @@ namespace VirtualEnvironment.Platform
                         break;
                     
                     default:
-                        Notification.Push(Notification.Type.Error, Resources.WorkerVersion,
+                        Messages.Push(Messages.Type.Error, Resources.WorkerVersion,
                                 String.Format(Resources.WorkerUsage, applicationFile));
                         break;
                 }
             }
             catch (Exception exception)
             {
-                if (exception is WorkerException workerException)
-                    Notification.Push(Notification.Type.Error, workerException.Messages);
-                else if (exception is DiskpartAbortException diskpartAbortException)
-                    Notification.Push(Notification.Type.Error, diskpartAbortException.Messages);
-                else if (exception is DiskpartException diskpartException)
-                    Notification.Push(Notification.Type.Error, diskpartException.Messages);
-                else Notification.Push(Notification.Type.Error, Resources.WorkerUnexpectedErrorOccurred, exception);
-
                 if (exception is DiskpartAbortException)
                     return;
-
+                Messages.Push(Messages.Type.Error, exception);
                 if (new []{Task.Attach, Task.Create, Task.Compact}.Contains(task))
                     Diskpart.AbortDisk(drive, diskFile);
             }
         }
-
-        void Notification.INotification.Receive(Notification.Message message)
+        
+        private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
         {
+            Messages.Type.Error,
+            Messages.Type.Trace,
+            Messages.Type.Exit
+        };
+
+        void Messages.ISubscriber.Receive(Messages.Message message)
+        {
+            if (!MESSAGE_TYPE_LIST.Contains(message.Type))
+                return;
+
             // Invoke is required because in Windows Forms all changes to UI
             // elements such as text, colors or sizes must be made in the main
             // UI thread. If the method is called from a background thread,
@@ -114,46 +118,51 @@ namespace VirtualEnvironment.Platform
             // avoid thread safety issues.
             Invoke((MethodInvoker)(() =>
             {
-                Output.Text = message.Text;
-                Refresh();
-
-                if (message.Type != Notification.Type.Error
-                        && message.Type != Notification.Type.Abort)
-                    return;
-
-                if (message.Type == Notification.Type.Error
-                        || message.Type == Notification.Type.Warning)
+                var context = message.Context;
+                var text = Convert.ToString(message.Data ?? String.Empty);
+                
+                if (Messages.Type.Trace == message.Type)
                 {
+                    if (!String.IsNullOrWhiteSpace(context)
+                            && !Regex.IsMatch(text, @"[\r\n]"))
+                        Output.Text = ($"{context}{System.Environment.NewLine}{text}").Trim();
+                    Refresh();
+                    return;
+                }
+
+                if (message.Type == Messages.Type.Error)
+                {
+                    text = text.Contains(Environment.NewLine) 
+                        ? text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() 
+                        : text;
+                    
+                    if (message.Data is ServiceException serviceException)
+                        context = serviceException.Context;
+                    else if (message.Data is DiskpartException diskpartException)
+                        context = diskpartException.Context;
+                    else
+                        context = Resources.CommonUnexpectedErrorOccurred;
+
+                    Output.Text = ($"{context}{System.Environment.NewLine}{text}").Trim();
+                    Refresh();
+
                     BackColor = Color.FromArgb(250, 225, 150);
                     Progress.BackColor = Color.FromArgb(200, 150, 75);
                     Label.ForeColor = Progress.BackColor;
                 }
                 
-                if (message.Type == Notification.Type.Warning)
-                    return;
-
                 var originSize = Progress.Size;
                 Progress.Visible = true;
                 for (var width = 1; width < originSize.Width; width += 1)
                 {
                     Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
                     Refresh();
-                    Thread.Sleep(message.Type == Notification.Type.Error ? 75 : 25);
+                    Thread.Sleep(message.Type == Messages.Type.Error ? 75 : 25);
                 }
 
                 Thread.Sleep(500);
                 Close();
             }));
-        }
-    }
-
-    internal abstract class WorkerException : Exception
-    {
-        internal string[] Messages { get; }
-
-        internal WorkerException(params string[] messages)
-        {
-            Messages = messages;
         }
     }
 }
