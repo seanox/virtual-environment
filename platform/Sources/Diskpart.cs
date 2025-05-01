@@ -131,13 +131,15 @@ namespace VirtualEnvironment.Platform
 
         internal static void CompactDisk(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartCompact);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartCompact);
             CanCompactDisk(drive, diskFile);
 
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartCompact, Resources.DiskpartCompactDiskpart);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartCompact, Resources.DiskpartCompactDiskpart);
             var diskpartResult = DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
-                throw new DiskpartException(Resources.DiskpartCompactFailed, Resources.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                throw new DiskpartException(Resources.DiskpartCompactFailed,
+                    Resources.DiskpartUnexpectedErrorOccurred,
+                    diskpartResult.Output);
         }
         
         private static List<Process> GetProcesses(string drive)
@@ -215,11 +217,11 @@ namespace VirtualEnvironment.Platform
             // - The first partition is preserve partition, it cannot be mount
             // - The second partition is the real data partition 
             
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartAttach);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartAttach);
             CanAttachDisk(drive, diskFile);
             if (!Directory.Exists(drive))
             {
-                Notification.Push(Notification.Type.Trace,
+                Messages.Push(Messages.Type.Trace,
                     Resources.DiskpartAttach,
                     String.Format(Resources.DiskpartAttachDiskpart, drive));
                 var diskpartResult = DiskpartExec(DiskpartTask.Attach, new DiskpartProperties() {
@@ -229,11 +231,11 @@ namespace VirtualEnvironment.Platform
                 if (diskpartResult.Failed)
                     throw new DiskpartException(Resources.DiskpartAttachFailed,
                         Resources.DiskpartUnexpectedErrorOccurred,
-                        "@" + diskpartResult.Output);
+                        diskpartResult.Output);
             }
             else
             {
-                Notification.Push(Notification.Type.Trace,
+                Messages.Push(Messages.Type.Trace,
                     Resources.DiskpartAttach,
                     String.Format(Resources.DiskpartAttachExistingDrive, drive));
             }
@@ -252,13 +254,15 @@ namespace VirtualEnvironment.Platform
 
         internal static void DetachDisk(string drive, string diskFile, bool abort = false)
         {
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartDetach);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartDetach);
             CanDetachDisk(drive, diskFile);
 
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartDetach, Resources.DiskpartDetachDiskpart);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartDetach, Resources.DiskpartDetachDiskpart);
             var diskpartResult = DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
-                throw new DiskpartException(Resources.DiskpartDetachFailed, Resources.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                throw new DiskpartException(Resources.DiskpartDetachFailed,
+                    Resources.DiskpartUnexpectedErrorOccurred,
+                    diskpartResult.Output);
         }
 
         private static void MigrateResourcePlatformFile(string drive, string resourcePlatformPath, Dictionary<string, string> replacements = null)
@@ -287,7 +291,7 @@ namespace VirtualEnvironment.Platform
 
         internal static void CreateDisk(string drive, string diskFile)
         {
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartCreate);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartCreate);
             CanCreateDisk(drive, diskFile);
 
             var diskpartProperties = new DiskpartProperties()
@@ -300,14 +304,16 @@ namespace VirtualEnvironment.Platform
                 Name   = Path.GetFileNameWithoutExtension(diskFile)
             };
 
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartCreate, Resources.DiskpartCreateDiskpart);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartCreate, Resources.DiskpartCreateDiskpart);
             var diskpartResult = DiskpartExec(DiskpartTask.Create, diskpartProperties);
             if (diskpartResult.Failed)
-                throw new DiskpartException(Resources.DiskpartCreateFailed, Resources.DiskpartUnexpectedErrorOccurred, "@" + diskpartResult.Output);
+                throw new DiskpartException(Resources.DiskpartCreateFailed,
+                    Resources.DiskpartUnexpectedErrorOccurred,
+                    diskpartResult.Output);
 
             AttachDisk(drive, diskFile);
             
-            Notification.Push(Notification.Type.Trace, Resources.DiskpartCreate, Resources.DiskpartCreateInitializationFileSystem);
+            Messages.Push(Messages.Type.Trace, Resources.DiskpartCreate, Resources.DiskpartCreateInitializationFileSystem);
             Directory.CreateDirectory(drive + @"\Documents\Music");
             Directory.CreateDirectory(drive + @"\Documents\Pictures");
             Directory.CreateDirectory(drive + @"\Documents\Videos");
@@ -317,10 +323,12 @@ namespace VirtualEnvironment.Platform
             Directory.CreateDirectory(drive + @"\Storage");
             Directory.CreateDirectory(drive + @"\Temp");
 
-            var replacements = new Dictionary<string, string>();
-            replacements.Add("drive", drive);
-            replacements.Add("name", Path.GetFileNameWithoutExtension(diskFile));
-            replacements.Add("version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x");
+            var replacements = new Dictionary<string, string>
+            {
+                { "drive", drive },
+                { "name", Path.GetFileNameWithoutExtension(diskFile) },
+                { "version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x" }
+            };
 
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.exe");
