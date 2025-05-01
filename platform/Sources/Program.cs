@@ -25,7 +25,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using VirtualEnvironment.Startup;
 using System.Collections.Generic;
 
 namespace VirtualEnvironment.Platform
@@ -88,6 +87,8 @@ namespace VirtualEnvironment.Platform
         
         private class Subscription : Messages.ISubscriber
         {
+            private string _context;
+            
             private bool _continue;
 
             private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
@@ -103,11 +104,11 @@ namespace VirtualEnvironment.Platform
                 if (!MESSAGE_TYPE_LIST.Contains(message.Type)
                         || message.Data is null)
                     return;
-
+                
                 var content = message.ToString().Trim();
                 if (String.IsNullOrWhiteSpace(content))
                     return;
-                
+
                 try
                 {
                     var applicationPath = Assembly.GetExecutingAssembly().Location;
@@ -136,12 +137,27 @@ namespace VirtualEnvironment.Platform
                     _continue = true;
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    if (Messages.Type.Text != message.Type)
-                        content = $"{message.Type.ToString().ToUpper()} {content}";
-                    content = $"{timestamp} {content}";
-                    content = Regex.Replace(content, @"((?:\r\n)|(?:\n\r)|\r|\n)", "$1\t").Trim();
-                    if (!String.IsNullOrEmpty(content))
-                        File.AppendAllText(logfilePath, content);
+                    var lines = message.ToString()
+                        .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(line => !string.IsNullOrWhiteSpace(line))
+                        .ToArray();
+                    
+                    Action<string, bool> logfileWriteLine = (line, followup) =>
+                    {
+                        line = followup ? $" ... {line}" : line;
+                        File.AppendAllLines(logfilePath, new[] { $"{timestamp} {line}" });
+                    };
+
+                    for (var index = 0; index < lines.Length; index++)
+                    {
+                        if (index == 0)
+                        {
+                            if (lines[index] != _context)
+                                logfileWriteLine(lines[index], false);
+                            _context = lines[index];
+                        }
+                        else logfileWriteLine(lines[index], true);
+                    }
                 }
                 catch (Exception)
                 {
