@@ -78,6 +78,11 @@ namespace VirtualEnvironment.Platform
             Push(new Message(type, data));
         }
 
+        internal static void Push(Type type, string context, params object[] data)
+        {
+            Push(new Message(type, context, data));
+        }
+
         internal enum Type
         {
             Error,
