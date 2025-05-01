@@ -348,13 +348,12 @@ namespace VirtualEnvironment.Platform
     internal class DiskpartException : Exception
     {
         internal string Context { get; }
-        internal string Message { get; }
         internal string Details { get; }
 
         internal DiskpartException(string context, string message, string details = null)
+            : base(message)
         {
             Context = context;
-            Message = message;
             Details = details;
         }
     }
