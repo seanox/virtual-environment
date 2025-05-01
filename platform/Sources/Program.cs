@@ -95,8 +95,7 @@ namespace VirtualEnvironment.Platform
             {
                 Messages.Type.Error,
                 Messages.Type.Warning,
-                Messages.Type.Trace,
-                Messages.Type.Text
+                Messages.Type.Trace
             };
 
             public void Receive(Messages.Message message)
