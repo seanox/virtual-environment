@@ -203,13 +203,19 @@
     <value>Batch process unresponsive</value>
   </data>
 
+  <data name="WorkerCompact" xml:space="preserve">
+    <value>Compacting virtual environment</value>
+  </data>
   <data name="WorkerCompactText" xml:space="preserve">
     <value>Virtual disk and file system compacted</value>
   </data>
   <data name="WorkerCompactCleanFilesystem" xml:space="preserve">
     <value>Cleaning temporary files</value>
   </data>
-  
+
+  <data name="WorkerCreate" xml:space="preserve">
+    <value>Creating virtual environment</value>
+  </data>
   <data name="WorkerCreateText" xml:space="preserve">
     <value>Virtual disk and file system initialized</value>
   </data>

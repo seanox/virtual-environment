@@ -294,6 +294,15 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compacting virtual environment.
+        /// </summary>
+        internal static string WorkerCompact {
+            get {
+                return ResourceManager.GetString("WorkerCompact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cleaning temporary files.
         /// </summary>
         internal static string WorkerCompactCleanFilesystem {
@@ -308,6 +317,15 @@ namespace VirtualEnvironment.Platform {
         internal static string WorkerCompactText {
             get {
                 return ResourceManager.GetString("WorkerCompactText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating virtual environment.
+        /// </summary>
+        internal static string WorkerCreate {
+            get {
+                return ResourceManager.GetString("WorkerCreate", resourceCulture);
             }
         }
         
