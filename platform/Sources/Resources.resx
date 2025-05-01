@@ -183,65 +183,72 @@
     <value>Unexpected error occurred</value>
   </data>
   
-  <data name="WorkerAttach" xml:space="preserve">
+  <data name="ServiceAttach" xml:space="preserve">
     <value>Attaching virtual environment</value>
   </data>
-  <data name="WorkerAttachBatchFailed" xml:space="preserve">
+  <data name="ServiceAttachBatchFailed" xml:space="preserve">
     <value>Batch process failed</value>
   </data>
-  <data name="WorkerAttachFailed" xml:space="preserve">
+  <data name="ServiceAttachFailed" xml:space="preserve">
     <value>Virtual environment attachment failed</value>
   </data>
-  <data name="WorkerAttachEnvironmentSetup" xml:space="preserve">
+  <data name="ServiceAttachEnvironmentSetup" xml:space="preserve">
     <value>Configuring virtual environment</value>
   </data>
-  <data name="WorkerAttachText" xml:space="preserve">
+  <data name="ServiceAttachText" xml:space="preserve">
     <value>Programs and services established</value>
   </data>
 
-  <data name="WorkerBatchFreezeDetection" xml:space="preserve">
+  <data name="ServiceBatchFreezeDetection" xml:space="preserve">
     <value>Batch process unresponsive</value>
   </data>
 
-  <data name="WorkerCompact" xml:space="preserve">
+  <data name="ServiceCompact" xml:space="preserve">
     <value>Compacting virtual environment</value>
   </data>
-  <data name="WorkerCompactText" xml:space="preserve">
+  <data name="ServiceCompactText" xml:space="preserve">
     <value>Virtual disk and file system compacted</value>
   </data>
-  <data name="WorkerCompactCleanFilesystem" xml:space="preserve">
+  <data name="ServiceCompactCleanFilesystem" xml:space="preserve">
     <value>Cleaning temporary files</value>
   </data>
 
-  <data name="WorkerCreate" xml:space="preserve">
+  <data name="ServiceCreate" xml:space="preserve">
     <value>Creating virtual environment</value>
   </data>
-  <data name="WorkerCreateText" xml:space="preserve">
+  <data name="ServiceCreateText" xml:space="preserve">
     <value>Virtual disk and file system initialized</value>
   </data>
 
-  <data name="WorkerDetach" xml:space="preserve">
+  <data name="ServiceDetach" xml:space="preserve">
     <value>Detaching virtual environment</value>
   </data>
-  <data name="WorkerDetachBatchFailed" xml:space="preserve">
+  <data name="ServiceBatchFailed" xml:space="preserve">
     <value>Batch process failed</value>
   </data>
-  <data name="WorkerDetachFailed" xml:space="preserve">
+  <data name="ServiceDetachFailed" xml:space="preserve">
     <value>Virtual environment detachment failed</value>
   </data>
-  <data name="WorkerDetachBlocked" xml:space="preserve">
+  <data name="ServiceDetachBlocked" xml:space="preserve">
     <value>Detaching is blocked by {0}
 {1}</value>
   </data>
-  <data name="WorkerDetachText" xml:space="preserve">
+  <data name="ServiceDetachText" xml:space="preserve">
     <value>Programs and services terminated</value>
   </data>
-  
-  <data name="WorkerSuccessfullyCompleted" xml:space="preserve">
+
+  <data name="ServiceShortcuts" xml:space="preserve">
+    <value>Creating shortcuts</value>
+  </data>
+  <data name="ServiceShortcutsText" xml:space="preserve">
+    <value>Usual functions initialized</value>
+  </data>
+
+  <data name="ServiceCompleted" xml:space="preserve">
     <value>Successfully completed</value>
   </data>
   
-  <data name="WorkerUnexpectedErrorOccurred" xml:space="preserve">
+  <data name="ServiceUnexpectedErrorOccurred" xml:space="preserve">
     <value>Unexpected error occurred</value>
   </data>
   
@@ -251,12 +258,5 @@
   
   <data name="WorkerVersion" xml:space="preserve">
     <value>Seanox Virtual Environment [0.0.0 00000000]</value>
-  </data>
-
-  <data name="WorkerShortcuts" xml:space="preserve">
-    <value>Creating shortcuts</value>
-  </data>
-  <data name="WorkerShortcutsText" xml:space="preserve">
-    <value>Usual functions initialized</value>
   </data>
 </root>
