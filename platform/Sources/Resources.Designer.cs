@@ -242,117 +242,126 @@ namespace VirtualEnvironment.Platform {
         /// <summary>
         ///   Looks up a localized string similar to Attaching virtual environment.
         /// </summary>
-        internal static string WorkerAttach {
+        internal static string ServiceAttach {
             get {
-                return ResourceManager.GetString("WorkerAttach", resourceCulture);
+                return ResourceManager.GetString("ServiceAttach", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Batch process failed.
         /// </summary>
-        internal static string WorkerAttachBatchFailed {
+        internal static string ServiceAttachBatchFailed {
             get {
-                return ResourceManager.GetString("WorkerAttachBatchFailed", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachBatchFailed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Configuring virtual environment.
         /// </summary>
-        internal static string WorkerAttachEnvironmentSetup {
+        internal static string ServiceAttachEnvironmentSetup {
             get {
-                return ResourceManager.GetString("WorkerAttachEnvironmentSetup", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachEnvironmentSetup", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Virtual environment attachment failed.
         /// </summary>
-        internal static string WorkerAttachFailed {
+        internal static string ServiceAttachFailed {
             get {
-                return ResourceManager.GetString("WorkerAttachFailed", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachFailed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Programs and services established.
         /// </summary>
-        internal static string WorkerAttachText {
+        internal static string ServiceAttachText {
             get {
-                return ResourceManager.GetString("WorkerAttachText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch process unresponsive.
-        /// </summary>
-        internal static string WorkerBatchFreezeDetection {
-            get {
-                return ResourceManager.GetString("WorkerBatchFreezeDetection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compacting virtual environment.
-        /// </summary>
-        internal static string WorkerCompact {
-            get {
-                return ResourceManager.GetString("WorkerCompact", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cleaning temporary files.
-        /// </summary>
-        internal static string WorkerCompactCleanFilesystem {
-            get {
-                return ResourceManager.GetString("WorkerCompactCleanFilesystem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Virtual disk and file system compacted.
-        /// </summary>
-        internal static string WorkerCompactText {
-            get {
-                return ResourceManager.GetString("WorkerCompactText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creating virtual environment.
-        /// </summary>
-        internal static string WorkerCreate {
-            get {
-                return ResourceManager.GetString("WorkerCreate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Virtual disk and file system initialized.
-        /// </summary>
-        internal static string WorkerCreateText {
-            get {
-                return ResourceManager.GetString("WorkerCreateText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Detaching virtual environment.
-        /// </summary>
-        internal static string WorkerDetach {
-            get {
-                return ResourceManager.GetString("WorkerDetach", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Batch process failed.
         /// </summary>
-        internal static string WorkerDetachBatchFailed {
+        internal static string ServiceBatchFailed {
             get {
-                return ResourceManager.GetString("WorkerDetachBatchFailed", resourceCulture);
+                return ResourceManager.GetString("ServiceBatchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch process unresponsive.
+        /// </summary>
+        internal static string ServiceBatchFreezeDetection {
+            get {
+                return ResourceManager.GetString("ServiceBatchFreezeDetection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compacting virtual environment.
+        /// </summary>
+        internal static string ServiceCompact {
+            get {
+                return ResourceManager.GetString("ServiceCompact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cleaning temporary files.
+        /// </summary>
+        internal static string ServiceCompactCleanFilesystem {
+            get {
+                return ResourceManager.GetString("ServiceCompactCleanFilesystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual disk and file system compacted.
+        /// </summary>
+        internal static string ServiceCompactText {
+            get {
+                return ResourceManager.GetString("ServiceCompactText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully completed.
+        /// </summary>
+        internal static string ServiceCompleted {
+            get {
+                return ResourceManager.GetString("ServiceCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating virtual environment.
+        /// </summary>
+        internal static string ServiceCreate {
+            get {
+                return ResourceManager.GetString("ServiceCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual disk and file system initialized.
+        /// </summary>
+        internal static string ServiceCreateText {
+            get {
+                return ResourceManager.GetString("ServiceCreateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detaching virtual environment.
+        /// </summary>
+        internal static string ServiceDetach {
+            get {
+                return ResourceManager.GetString("ServiceDetach", resourceCulture);
             }
         }
         
@@ -360,63 +369,54 @@ namespace VirtualEnvironment.Platform {
         ///   Looks up a localized string similar to Detaching is blocked by {0}
         ///{1}.
         /// </summary>
-        internal static string WorkerDetachBlocked {
+        internal static string ServiceDetachBlocked {
             get {
-                return ResourceManager.GetString("WorkerDetachBlocked", resourceCulture);
+                return ResourceManager.GetString("ServiceDetachBlocked", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Virtual environment detachment failed.
         /// </summary>
-        internal static string WorkerDetachFailed {
+        internal static string ServiceDetachFailed {
             get {
-                return ResourceManager.GetString("WorkerDetachFailed", resourceCulture);
+                return ResourceManager.GetString("ServiceDetachFailed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Programs and services terminated.
         /// </summary>
-        internal static string WorkerDetachText {
+        internal static string ServiceDetachText {
             get {
-                return ResourceManager.GetString("WorkerDetachText", resourceCulture);
+                return ResourceManager.GetString("ServiceDetachText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Creating shortcuts.
         /// </summary>
-        internal static string WorkerShortcuts {
+        internal static string ServiceShortcuts {
             get {
-                return ResourceManager.GetString("WorkerShortcuts", resourceCulture);
+                return ResourceManager.GetString("ServiceShortcuts", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Usual functions initialized.
         /// </summary>
-        internal static string WorkerShortcutsText {
+        internal static string ServiceShortcutsText {
             get {
-                return ResourceManager.GetString("WorkerShortcutsText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Successfully completed.
-        /// </summary>
-        internal static string WorkerSuccessfullyCompleted {
-            get {
-                return ResourceManager.GetString("WorkerSuccessfullyCompleted", resourceCulture);
+                return ResourceManager.GetString("ServiceShortcutsText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unexpected error occurred.
         /// </summary>
-        internal static string WorkerUnexpectedErrorOccurred {
+        internal static string ServiceUnexpectedErrorOccurred {
             get {
-                return ResourceManager.GetString("WorkerUnexpectedErrorOccurred", resourceCulture);
+                return ResourceManager.GetString("ServiceUnexpectedErrorOccurred", resourceCulture);
             }
         }
         
