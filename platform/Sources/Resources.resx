@@ -121,7 +121,7 @@
   <data name="CommonUnexpectedErrorOccurred" xml:space="preserve">
     <value>Unexpected error occurred</value>
   </data>
-  <data name="CommonSuccessfullyCompleted" xml:space="preserve">
+  <data name="CommonCompleted" xml:space="preserve">
     <value>Successfully completed</value>
   </data>
 

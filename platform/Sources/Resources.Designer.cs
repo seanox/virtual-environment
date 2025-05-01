@@ -62,9 +62,9 @@ namespace VirtualEnvironment.Platform {
         /// <summary>
         ///   Looks up a localized string similar to Successfully completed.
         /// </summary>
-        internal static string CommonSuccessfullyCompleted {
+        internal static string CommonCompleted {
             get {
-                return ResourceManager.GetString("CommonSuccessfullyCompleted", resourceCulture);
+                return ResourceManager.GetString("CommonCompleted", resourceCulture);
             }
         }
         
