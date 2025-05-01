@@ -1,5 +1,8 @@
-3.6.0 20250401
+3.6.0 20250701
 BF: Review: Optimization and corrections
+    - Message Bus (Publisher + Subscriber)
+    - Resource for text output
+    - Logging improved output structure
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
     after the first incorrect path and the initialization of the platform
