@@ -136,7 +136,7 @@ namespace VirtualEnvironment.Platform
                     content = string.Join(Environment.NewLine,
                         strings.Where(line => !string.IsNullOrWhiteSpace(line)));
                 
-                content = content?.ToString().Trim();
+                content = Convert.ToString(content).Trim();
                 if (!String.IsNullOrEmpty((string)content))
                     stringBuilder.Append(content);
 
