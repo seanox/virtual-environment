@@ -88,7 +88,6 @@ namespace VirtualEnvironment.Platform
             Error,
             Warning,
             Trace,
-            Text,
             Data,
             Exit
         }
