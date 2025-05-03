@@ -286,12 +286,12 @@ namespace VirtualEnvironment.Platform
             foreach(KeyValuePair<string, string> value in Settings.Values)
                 SetEnvironmentVariableIfNecessary(value.Key, value.Value);
             
-            SetEnvironmentVariableIfNecessary("VT_PLATFORM_NAME", applicationName);
-            SetEnvironmentVariableIfNecessary("VT_PLATFORM_HOME", applicationDirectory);
-            SetEnvironmentVariableIfNecessary("VT_PLATFORM_DISK", diskFile);
-            SetEnvironmentVariableIfNecessary("VT_PLATFORM_APP", applicationPath);
+            SetEnvironmentVariableIfNecessary("PLATFORM_NAME", applicationName);
+            SetEnvironmentVariableIfNecessary("PLATFORM_HOME", applicationDirectory);
+            SetEnvironmentVariableIfNecessary("PLATFORM_DISK", diskFile);
+            SetEnvironmentVariableIfNecessary("PLATFORM_APP", applicationPath);
             var rootPath = Path.GetPathRoot(fileName);
-            SetEnvironmentVariableIfNecessary("VT_HOMEDRIVE", rootPath.Substring(0, 2));
+            SetEnvironmentVariableIfNecessary("PLATFORM_HOMEDRIVE", rootPath.Substring(0, 2));
 
             var batchResult = new BatchResult() {Output = ""};
             
