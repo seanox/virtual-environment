@@ -16,6 +16,30 @@ CR: Platform: Optimization for resumption if the drive already exists
     concerns the situation after shutting down and logging off if the virtual
     environment has not been closed beforehand.
 CR: Platform: Optimization for shutdown and session ending
+CR: Platform: Reorganization of the environment variables
+    - Variables with the prefix OS_ now use the prefix HOST_
+      HOST_APPDATA      -> HOST_APPDATA
+      HOST_LOCALAPPDATA -> HOST_LOCALAPPDATA
+      HOST_HOMEPATH     -> HOST_HOMEPATH
+      HOST_PATH         -> HOST_PATH
+      HOST_PUBLIC       -> HOST_PUBLIC
+      HOST_TEMP         -> HOST_TEMP
+      HOST_TMP          -> HOST_TMP
+      HOST_USERPROFILE  -> HOST_USERPROFILE
+    - Variables with the prefix VT_ now use the prefix PLATFORM_
+      VT_APPDATA      -> PLATFORM_APPDATA
+      VT_APPSPATH     -> PLATFORM_APPSPATH
+      VT_HOMEDRIVE    -> PLATFORM_HOMEDRIVE
+      VT_HOMEPATH     -> PLATFORM_HOMEPATH
+      VT_LOCALAPPDATA -> PLATFORM_LOCALAPPDATA
+      VT_PUBLIC       -> PLATFORM_PUBLIC
+      VT_TEMP         -> PLATFORM_TEMP
+      VT_USERPROFILE  -> PLATFORM_USERPROFILE
+    - Variables with the prefix PLATFORM_ are retained
+      PLATFORM_APP,
+      PLATFORM_DISK
+      PLATFORM_HOME
+      PLATFORM_NAME
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
