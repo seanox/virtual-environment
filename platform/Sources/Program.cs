@@ -45,6 +45,8 @@ namespace VirtualEnvironment.Platform
                     && !new Regex("^(compact|attach|detach|shortcuts)$", RegexOptions.IgnoreCase).IsMatch(task))
                 throw new InvalidOperationException("Requires a drive letter (A-Z) and a method: [compact|attach|detach|shortcuts].");
             
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            
             Messages.Subscribe(new Subscription());
             
             var applicationPath = Assembly.GetExecutingAssembly().Location;
@@ -83,6 +85,11 @@ namespace VirtualEnvironment.Platform
                 Application.Run(new Worker(workerTask, drive, diskFile));
             }
             else new Worker(workerTask, drive, diskFile).Show();
+        }
+        
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
+        {
+            Messages.Push(Messages.Type.Error, exceptionEvent.ExceptionObject as Exception);
         }
         
         private class Subscription : Messages.ISubscriber
