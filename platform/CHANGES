@@ -3,6 +3,7 @@ BF: Review: Optimization and corrections
     - Message Bus (Publisher + Subscriber)
     - Resource for text output
     - Logging improved output structure
+    - Settings using the Windows API to read the INI file
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
     after the first incorrect path and the initialization of the platform
@@ -40,6 +41,17 @@ CR: Platform: Reorganization of the environment variables
       PLATFORM_DISK
       PLATFORM_HOME
       PLATFORM_NAME
+CR: Settings: Refactoring
+    - New names of the sections
+      SETTINGS -> ENVIRONMENT
+      FILES    -> CUSTOMIZATION 
+    - New sections
+      FILESYSTEM for automatically created symlinks in the host system
+      REGISTRY for temporary registry entries in the host system
+      Details are described in the INI file!
+    - The suffix of the template files that are created when filling the
+      placeholders has been changed from -settings to -template.
+      THE FILES MUST BE RENAMED WHEN THE PLATFORM IS UPDATED.   
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
