@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <ProjectGuid>{ACCC1BBB-2740-490D-BEBA-CBF027A57B4B}</ProjectGuid>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <OutputType>WinExe</OutputType>
+        <RootNamespace>VirtualEnvironment.Platform</RootNamespace>
+        <AssemblyName>Platform</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
+        <ApplicationIcon>Sources\Program.ico</ApplicationIcon>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>Target\bin\Debug\</OutputPath>
+        <IntermediateOutputPath>Target\obj\Debug\</IntermediateOutputPath>
+        <BaseIntermediateOutputPath>Target\obj\Debug\</BaseIntermediateOutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>Target\bin\Release\</OutputPath>
+        <IntermediateOutputPath>Target\obj\Release\</IntermediateOutputPath>
+        <BaseIntermediateOutputPath>Target\obj\Release\</BaseIntermediateOutputPath>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Deployment" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Management" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+    </ItemGroup>
+    <ItemGroup>
+        <COMReference Include="IWshRuntimeLibrary">
+            <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+            <VersionMajor>1</VersionMajor>
+            <VersionMinor>0</VersionMinor>
+            <Lcid>0</Lcid>
+            <WrapperTool>tlbimp</WrapperTool>
+            <Isolated>False</Isolated>
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+        </COMReference>
+    </ItemGroup>    
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Sources\Diskpart.cs" />
+        <Compile Include="Sources\Messages.cs" />
+        <Compile Include="Sources\Program.cs" />
+        <EmbeddedResource Include="Sources\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Include="Sources\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Sources\Resources.Extension.cs">
+            <AutoGen>False</AutoGen>
+            <DesignTime>False</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Sources\Service.cs" />
+        <Compile Include="Sources\Settings.cs" />
+        <EmbeddedResource Include="Sources\Worker.resx">
+            <DependentUpon>Worker.cs</DependentUpon>
+        </EmbeddedResource>
+        <Compile Include="Sources\Worker.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Sources\Worker.Designer.cs">
+          <DependentUpon>Worker.cs</DependentUpon>
+        </Compile>
+        <EmbeddedResource Include="Sources\Program.ico" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\diskpart\attach" />
+        <EmbeddedResource Include="Resources\diskpart\compact" />
+        <EmbeddedResource Include="Resources\diskpart\create" />
+        <EmbeddedResource Include="Resources\diskpart\detach" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(OutputType)' == 'WinExe'">
+        <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\inventory.exe" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.exe" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.xml" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\platform.dll" />
+        <EmbeddedResource Include="Resources\platform\Programs\Macros\macro.cmd" />
+        <EmbeddedResource Include="Resources\platform\Programs\Macros\macros.cmd" />
+        <EmbeddedResource Include="Resources\platform\Resources\platform.ico" />
+        <EmbeddedResource Include="Resources\platform\Resources\platform.png" />
+        <EmbeddedResource Include="Resources\platform\Storage\registry.data" />
+        <EmbeddedResource Include="Resources\platform\Startup.cmd" />
+        <EmbeddedResource Include="Resources\settings.ini" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
