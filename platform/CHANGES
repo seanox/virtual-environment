@@ -3,7 +3,8 @@ BF: Review: Optimization and corrections
     - Message Bus (Publisher + Subscriber)
     - Resource for text output
     - Logging improved output structure
-    - Settings using the Windows API to read the INI file
+    - Settings uses the Windows API to read the INI file
+    - Build uses AssemblyInfo.cs for version and build number 
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
     after the first incorrect path and the initialization of the platform
@@ -41,7 +42,7 @@ CR: Platform: Reorganization of the environment variables
       PLATFORM_DISK
       PLATFORM_HOME
       PLATFORM_NAME
-CR: Settings: Refactoring
+CR: Settings: Refactoring and optimization
     - New names of the sections
       SETTINGS -> ENVIRONMENT
       FILES    -> CUSTOMIZATION 
@@ -51,7 +52,7 @@ CR: Settings: Refactoring
       Details are described in the INI file!
     - The suffix of the template files that are created when filling the
       placeholders has been changed from -settings to -template.
-      THE FILES MUST BE RENAMED WHEN THE PLATFORM IS UPDATED.   
+      THE FILES MUST BE RENAMED WHEN THE PLATFORM IS UPDATED.
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
