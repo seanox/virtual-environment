@@ -24,131 +24,111 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace VirtualEnvironment.Platform
 {
     internal static class Settings
     {
-        private static Dictionary<string, string> _values;
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern uint GetPrivateProfileString(
+            string lpAppName,
+            string lpKeyName,
+            string lpDefault,
+            StringBuilder lpReturnedString,
+            uint nSize,
+            string lpFileName);
         
-        private static string[] _files;
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern uint GetPrivateProfileSection(
+            string lpAppName,
+            StringBuilder lpReturnedString,
+            uint nSize,
+            string lpFileName);
         
-        private static readonly Regex PATTERN_COMMENT =
-                new Regex(@"\s*(;.*)\s*$", RegexOptions.Multiline);
-
-        private static readonly Regex PATTERN_EMPTY_LINE =
-                new Regex(@"[\r\n]+\s*[\r\n]+", RegexOptions.Singleline);
+        internal static readonly Dictionary<string, string> Environment;
         
-        private static readonly Regex PATTERN_SECTIONS =
-                new Regex(@"(?<=(^|[\r\n]))\s*\[\s*([^\r\n\]]+?)\s*\]\s*[\r\n]+\s*(.*?)\s*(?=$|([\r\n]\s*\[))", RegexOptions.Singleline);
+        internal static readonly HashSet<string> Filesystem;
         
-        private static readonly Regex PATTERN_SECTION_KEY_VALUE =
-                new Regex(@"^\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)(?:\s*[\s:=]\s*(.*?))?\s*$", RegexOptions.IgnoreCase);
+        internal static readonly HashSet<string> Registry;
         
-        private static readonly Regex PATTERN_FILE =
-                new Regex(@"^\s*([/\\].*?)\s*$");
+        internal static readonly HashSet<string> Customization;
         
-        private static readonly Regex PATTERN_LINES =
-                new Regex(@"(\r\n)+|(\n\r)+|[\r\n]");
+        private const string SECTION_ENVIRONMENT = "ENVIRONMENT";  
+        private const string SECTION_FILESYSTEM = "FILESYSTEM";  
+        private const string SECTION_REGISTRY = "REGISTRY";  
+        private const string SECTION_CUSTOMIZATION = "CUSTOMIZATION";  
         
         private static readonly Regex PATTERN_PLACEHOLDER =
-                new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
-
-        internal static string ReplacePlaceholders(string text)
+            new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
+        
+        static Settings()
         {
-            Settings.Initialize();
-            return Settings.ReplacePlaceholders(text, _values);
-        }
-
-        private static string ReplacePlaceholders(string text,
-            IReadOnlyDictionary<string, string> settings)
-        {
-            return PATTERN_PLACEHOLDER.Replace(text, match =>
-            {
-                var key = match.Groups[1].Value;
-                return settings.TryGetValue(key, value: out var expression)
-                    ? expression : match.ToString();
-            });
-        }
-
-        private static void Initialize()
-        {
-            if (_values != null)
-                return;
+            Environment = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (DictionaryEntry entry in System.Environment.GetEnvironmentVariables())
+                Environment[(string)entry.Key] = (string)entry.Value;
+            Filesystem = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            Registry = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            Customization = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             
             var applicationPath = Assembly.GetExecutingAssembly().Location;
-            var iniFile = Path.Combine(Path.GetDirectoryName(applicationPath),
-                    Path.GetFileNameWithoutExtension(applicationPath) + ".ini");
-            if (!File.Exists(iniFile))
+            var iniFilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
+                Path.GetFileNameWithoutExtension(applicationPath) + ".ini");
+            var iniFile = new FileInfo(iniFilePath);
+            if (!iniFile.Exists)
                 return;
             
-            var settingsDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
-                settingsDictionary[(string)entry.Key] = (string)entry.Value;
-            
-            var fileContent = File.ReadAllText(iniFile);
-            fileContent = PATTERN_COMMENT.Replace(fileContent, "");
-            fileContent = PATTERN_EMPTY_LINE.Replace(fileContent, "\r\n");
-
-            var sectionsDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (Match match in PATTERN_SECTIONS.Matches(fileContent))
-                sectionsDictionary[match.Groups[2].Value] = match.Groups[3].Value;
-
-            var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            
-            var settingsSection = sectionsDictionary.TryGetValue("settings", out var settingsContent) ? settingsContent : String.Empty;
-            foreach (var settingsLine in PATTERN_LINES.Split(settingsSection))
-            {
-                if (!PATTERN_SECTION_KEY_VALUE.IsMatch(settingsLine))
-                    continue;
-                var key = PATTERN_SECTION_KEY_VALUE.Replace(settingsLine, "$1");
-                var value = PATTERN_SECTION_KEY_VALUE.Replace(settingsLine, "$2");
-                value = Environment.ExpandEnvironmentVariables(value);
-                value = Settings.ReplacePlaceholders(value, settingsDictionary);
-                settingsDictionary[key] = value;
-                values[key] = value;
-            }
-
-            var files = new List<string>();
-            var filesSection = sectionsDictionary.TryGetValue("files", out var filesContent) ? filesContent : String.Empty;
-            foreach (var line in PATTERN_LINES.Split(filesSection))
-            {
-                if (!PATTERN_FILE.Match(line).Success)
-                    continue;
-                var file = PATTERN_FILE.Replace(line, "$1");
-                file = Environment.ExpandEnvironmentVariables(file);
-                file = Settings.ReplacePlaceholders(file, settingsDictionary);
-                files.Add(file);
-            }
-
-            if (_values == null)
-                _values = values;
-            if (_files == null)
-                _files = files.ToArray();
+            foreach (var key in GetSectionKeys(iniFile, SECTION_ENVIRONMENT))
+                Environment.Add(key, NormalizeValue(GetSectionKey(iniFile, SECTION_ENVIRONMENT, key)));
+            foreach (var line in GetSectionLines(iniFile, SECTION_FILESYSTEM))
+                Filesystem.Add(NormalizeValue(line));
+            foreach (var line in GetSectionLines(iniFile, SECTION_REGISTRY))
+                Registry.Add(NormalizeValue(line));
+            foreach (var line in GetSectionLines(iniFile, SECTION_CUSTOMIZATION))
+                Customization.Add(NormalizeValue(line));
         }
-
-        internal static Dictionary<string, string> Values
+        
+        private static IEnumerable<string> GetSectionKeys(FileInfo file, string section)
         {
-            get
-            {
-                Settings.Initialize();
-                if (_values == null)
-                    return new Dictionary<string, string>();
-                return _values.ToDictionary(entry => entry.Key,
-                    entry => entry.Value);
-            }
+            if (!file.Exists)
+                return Array.Empty<string>();
+            var buffer = new StringBuilder((int)file.Length);
+            GetPrivateProfileString(section, null, null, buffer, (uint)buffer.Capacity, file.FullName);
+            return buffer.ToString().Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
         }
-
-        internal static string[] Files
+        
+        private static string GetSectionKey(FileInfo file, string section, string key, string defaultValue = "")
         {
-            get
+            var result = new StringBuilder((int)file.Length);
+            GetPrivateProfileString(section, key, defaultValue, result, (uint)result.Capacity, file.FullName);
+            return result.ToString();
+        }
+        
+        private static IEnumerable<string> GetSectionLines(FileInfo file, string section)
+        {
+            if (!file.Exists)
+                return Array.Empty<string>();
+            var buffer = new StringBuilder((int)file.Length);
+            GetPrivateProfileSection(section, buffer, (uint)buffer.Capacity, file.FullName);
+            return buffer.ToString()
+                .Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .Where(line =>
+                    !string.IsNullOrEmpty(line)
+                        && !line.StartsWith(";"));
+        }
+        
+        private static string NormalizeValue(string value)
+        {
+            value = PATTERN_PLACEHOLDER.Replace(value, match =>
             {
-                Settings.Initialize();
-                if (_files == null)
-                    return Array.Empty<String>();
-                return (string[])_files.Clone();
-            }
+                var key = match.Groups[1].Value;
+                return Environment.TryGetValue(key, value: out var expression)
+                    ? expression : match.ToString();
+            });
+            return System.Environment.ExpandEnvironmentVariables(value ?? "").Trim();
         }
     }
 }
