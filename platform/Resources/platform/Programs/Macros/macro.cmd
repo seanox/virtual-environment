@@ -20,7 +20,7 @@ SETLOCAL ENABLEEXTENSIONS
 
 ECHO Virtual Environment Macros [Version 1.0.0 20230125]
 ECHO Copyright (C) 2023 Seanox Software Solutions
-ECHO Temporary change of the command line configuration
+ECHO Custom command line extensions
 ECHO.
 
 ECHO usage: %~nx0 [macro]
