@@ -63,6 +63,9 @@
       <replaceregexp match="(AssemblyFileVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
+      <replaceregexp match="(AssemblyMetadata\(&quot;Build&quot;,\s*)&quot;\d++&quot;\)" replace="\1(&quot;${release.info.date}&quot;)">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
