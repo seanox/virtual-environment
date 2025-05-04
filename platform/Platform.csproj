@@ -13,6 +13,9 @@
         <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
         <ApplicationIcon>Sources\Program.ico</ApplicationIcon>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(OutputType)' == 'Library' ">
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
@@ -42,7 +45,6 @@
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
-        <Reference Include="System.Collections.Immutable" />
         <Reference Include="System.Data.DataSetExtensions" />
         <Reference Include="System.Deployment" />
         <Reference Include="System.Drawing" />
