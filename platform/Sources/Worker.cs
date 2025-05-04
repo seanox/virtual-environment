@@ -58,8 +58,12 @@ namespace VirtualEnvironment.Platform
         {
             try
             {
-                var applicationPath = Assembly.GetExecutingAssembly().Location;
+                var assembly = Assembly.GetExecutingAssembly();
+                var applicationPath = assembly.Location;
                 var applicationFile = Path.GetFileName(applicationPath);
+                var applicationVersion = assembly.GetName().Version;
+                var applicationBuild = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
 
                 switch (task)
                 {
@@ -84,8 +88,9 @@ namespace VirtualEnvironment.Platform
                         break;
                     
                     default:
-                        Messages.Push(Messages.Type.Error, Resources.WorkerVersion,
-                                String.Format(Resources.WorkerUsage, applicationFile));
+                        Messages.Push(Messages.Type.Error,
+                            String.Format(Resources.WorkerVersion, applicationVersion, applicationBuild),
+                            String.Format(Resources.WorkerUsage, applicationFile));
                         break;
                 }
             }
@@ -94,7 +99,7 @@ namespace VirtualEnvironment.Platform
                 if (exception is DiskpartAbortException)
                     return;
                 Messages.Push(Messages.Type.Error, exception);
-                if (new []{Task.Attach, Task.Create, Task.Compact}.Contains(task))
+                if (new[] {Task.Attach, Task.Create, Task.Compact}.Contains(task))
                     Diskpart.AbortDisk(drive, diskFile);
             }
         }
