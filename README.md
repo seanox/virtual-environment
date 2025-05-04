@@ -19,10 +19,9 @@
 
 # Description
 Since about 2010, there is the project of a virtual environment with modular
-structure for developers and users, so that they can use a completely
-pre-configured environment with all programs, tools and services, without the
-host environment interfering with the running operating system and devouring
-resources.
+structure for developers and users, so that they can use a fully pre-configured
+environment with all programs, tools and services, without modifying the host
+environment or requiring additional dedicated virtualization resources.
 
 Short setup times, uniform tools with uniform configuration, uniform paths in
 the file system, centralized maintenance and easy distribution and updating are
@@ -95,7 +94,7 @@ Folgenden Seanox Software Solutions oder kurz Seanox genannt.
 
 Diese Software unterliegt der Version 2 der Apache License.
 
-Copyright (C) 2024 Seanox Software Solutions
+Copyright (C) 2025 Seanox Software Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
