@@ -132,10 +132,12 @@ namespace VirtualEnvironment.Platform
                 if (!String.IsNullOrWhiteSpace(Context))
                     stringBuilder.AppendLine(Context);
 
-                if (Data is Exception exception
-                        && !String.IsNullOrWhiteSpace(exception.Message))
+                if (Data is Exception exception)
                 {
-                    stringBuilder.AppendLine(exception.Message.Trim());
+                    stringBuilder.Append(exception.GetType().Name);
+                    if (!String.IsNullOrWhiteSpace(exception.Message))
+                        stringBuilder.Append($": {exception.Message.Trim()}");
+                    stringBuilder.AppendLine();
                     if (!(exception.StackTrace is null))
                         content = exception.StackTrace
                             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
