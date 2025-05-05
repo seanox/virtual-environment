@@ -136,21 +136,22 @@ namespace VirtualEnvironment.Platform
                         
                         if (!File.Exists(logfilePath)
                                 || new FileInfo(logfilePath).Length <= 0)
-                            File.WriteAllLines(logfilePath, new[] {banner});
+                            File.AppendAllText(logfilePath, banner);
+                        
+                        File.AppendAllText(logfilePath, Environment.NewLine);    
                     }
-                    else File.AppendAllText(logfilePath, Environment.NewLine);
                     
                     _continue = true;
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var lines = message.ToString()
                         .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                        .Where(line => !string.IsNullOrWhiteSpace(line))
+                        .Where(line => !String.IsNullOrWhiteSpace(line))
                         .ToArray();
                     
                     Action<string, bool> logfileWriteLine = (line, followup) =>
                     {
-                        line = followup ? $" ... {line}" : line;
+                        line = followup ? $" ...  {line}" : line;
                         File.AppendAllLines(logfilePath, new[] { $"{timestamp} {line}" });
                     };
 
