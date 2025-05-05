@@ -73,12 +73,22 @@ namespace VirtualEnvironment.Platform
                 }));
         } 
         
-        internal static void Push(Type type, params object[] data)
+        internal static void Push(Type type, params string[] data)
         {
             Push(new Message(type, data));
         }
 
-        internal static void Push(Type type, string context, params object[] data)
+        internal static void Push(Type type, string context, params string[] data)
+        {
+            Push(new Message(type, context, data));
+        }
+        
+        internal static void Push(Type type, object data)
+        {
+            Push(new Message(type, data));
+        }
+
+        internal static void Push(Type type, string context, object data)
         {
             Push(new Message(type, context, data));
         }
@@ -128,13 +138,21 @@ namespace VirtualEnvironment.Platform
                     stringBuilder.AppendLine(exception.Message.Trim());
                     if (!(exception.StackTrace is null))
                         content = exception.StackTrace
-                            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(line => Convert.ToString(line).Trim());
                     else content = null;
                 }
-                
+
+                if (!(content is IEnumerable<string>)
+                        && content is IEnumerable<object> objects)
+                    content = objects
+                            .Where(line => line != null)
+                            .Select(line => Convert.ToString(line).Trim())    
+                            .Where(line => !String.IsNullOrWhiteSpace(line));
+
                 if (content is IEnumerable<string> strings)
-                    content = string.Join(Environment.NewLine,
-                        strings.Where(line => !string.IsNullOrWhiteSpace(line)));
+                    content = String.Join(Environment.NewLine,
+                        strings.Where(line => !String.IsNullOrWhiteSpace(line)));
                 
                 content = Convert.ToString(content).Trim();
                 if (!String.IsNullOrEmpty((string)content))
