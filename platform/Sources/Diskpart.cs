@@ -70,7 +70,7 @@ namespace VirtualEnvironment.Platform
             var diskpartScript = Resources.Texts[diskpartScriptName];
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
-                            current.Replace($"#[{field.Name.ToLower()}]", (field.GetValue(diskpartProperties) ?? "").ToString()));
+                            current.Replace($"#[{field.Name.ToLower()}]", (field.GetValue(diskpartProperties) ?? String.Empty).ToString()));
 
             // In case the cleanup does not work and not so much junk
             // accumulates in the temp directory, fixed file names are used.
@@ -338,6 +338,7 @@ namespace VirtualEnvironment.Platform
             MigrateResourcePlatformFile(drive, @"\Programs\Macros\macro.cmd");
             MigrateResourcePlatformFile(drive, @"\Resources\platform.ico");
             MigrateResourcePlatformFile(drive, @"\Resources\platform.png");
+            MigrateResourcePlatformFile(drive, @"\Storage\registry.data");
             MigrateResourcePlatformFile(drive, @"\AutoRun.inf", replacements);
             MigrateResourcePlatformFile(drive, @"\Startup.cmd", replacements);
 
