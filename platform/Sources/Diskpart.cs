@@ -126,7 +126,7 @@ namespace VirtualEnvironment.Platform
         internal static void CanCompactDisk(string drive, string diskFile)
         {
             if (!File.Exists(diskFile))
-                throw new DiskpartException(Resources.DiskpartCompactFailed, Resources.DiskpartFileNotExists);
+                throw new DiskpartAbortException(Resources.DiskpartCompactFailed, Resources.DiskpartFileNotExists);
         }
 
         internal static void CompactDisk(string drive, string diskFile)
@@ -244,7 +244,7 @@ namespace VirtualEnvironment.Platform
         internal static void CanDetachDisk(string drive, string diskFile)
         {
             if (!File.Exists(diskFile))
-                throw new DiskpartException(Resources.DiskpartDetachFailed, Resources.DiskpartFileNotExists);
+                throw new DiskpartAbortException(Resources.DiskpartDetachFailed, Resources.DiskpartFileNotExists);
         }
 
         internal static void AbortDisk(string drive, string diskFile, bool abort = false)
@@ -284,9 +284,9 @@ namespace VirtualEnvironment.Platform
         internal static void CanCreateDisk(string drive, string diskFile)
         {
             if (Directory.Exists(drive))
-                throw new DiskpartException(Resources.DiskpartCreateFailed, Resources.DiskpartDriveAlreadyExists);
+                throw new DiskpartAbortException(Resources.DiskpartCreateFailed, Resources.DiskpartDriveAlreadyExists);
             if (File.Exists(diskFile))
-                throw new DiskpartException(Resources.DiskpartCreateFailed, Resources.DiskpartFileAlreadyExists);
+                throw new DiskpartAbortException(Resources.DiskpartCreateFailed, Resources.DiskpartFileAlreadyExists);
         }
 
         internal static void CreateDisk(string drive, string diskFile)
