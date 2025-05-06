@@ -36,10 +36,10 @@ namespace VirtualEnvironment.Platform
         {
             if (arguments == null)
                 arguments = new string[] {};
-            var task = (arguments.ElementAtOrDefault(1) ?? "").ToLower();
-            var drive = (arguments.ElementAtOrDefault(0) ?? "").ToUpper();
+            var task = (arguments.ElementAtOrDefault(1) ?? String.Empty).ToLower();
+            var drive = (arguments.ElementAtOrDefault(0) ?? String.Empty).ToUpper();
             if (!new Regex("^[A-Z]:$").IsMatch(drive))
-                task = "";
+                task = String.Empty;
             
             if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly()
                     && !new Regex("^(compact|attach|detach|shortcuts)$", RegexOptions.IgnoreCase).IsMatch(task))
@@ -185,7 +185,7 @@ namespace VirtualEnvironment.Platform
                         details = ((ServiceException)message.Data).Details;
                     if (!String.IsNullOrWhiteSpace(details))
                     {
-                        logfileWriteLine("", true);
+                        logfileWriteLine(String.Empty, true);
                         details.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                             .ToList()
                             .ForEach(line => logfileWriteLine(line, true));
