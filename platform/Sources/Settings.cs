@@ -128,7 +128,7 @@ namespace VirtualEnvironment.Platform
                 return Environment.TryGetValue(key, value: out var expression)
                     ? expression : match.ToString();
             });
-            return System.Environment.ExpandEnvironmentVariables(value ?? "").Trim();
+            return System.Environment.ExpandEnvironmentVariables(value ?? String.Empty).Trim();
         }
     }
 }
