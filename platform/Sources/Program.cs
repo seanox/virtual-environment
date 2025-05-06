@@ -89,7 +89,7 @@ namespace VirtualEnvironment.Platform
         
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
         {
-            Messages.Push(Messages.Type.Error, exceptionEvent.ExceptionObject as Exception);
+            Messages.Push(Messages.Type.Error, (Exception)exceptionEvent.ExceptionObject);
         }
         
         private class Subscription : Messages.ISubscriber
@@ -102,8 +102,7 @@ namespace VirtualEnvironment.Platform
             {
                 Messages.Type.Error,
                 Messages.Type.Warning,
-                Messages.Type.Trace,
-                Messages.Type.Verbose
+                Messages.Type.Trace
             };
 
             public void Receive(Messages.Message message)
@@ -121,17 +120,6 @@ namespace VirtualEnvironment.Platform
                     var applicationPath = Assembly.GetExecutingAssembly().Location;
                     var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
                         Path.GetFileNameWithoutExtension(applicationPath) + ".log");
-
-                    // VERBOSE is extended information that lies between TRACE
-                    // and DEBUG. The message must match the previous context or
-                    // have its own context, as otherwise the information cannot
-                    // be placed in any context.
-                    
-                    if (Messages.Type.Verbose == message.Type)
-                        if (String.IsNullOrWhiteSpace(_context)
-                                || String.IsNullOrWhiteSpace(message.Context)
-                                || message.Context != _context)
-                            return;
 
                     if (!_continue)
                     {
