@@ -116,7 +116,7 @@ namespace VirtualEnvironment.Platform
                 .Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(line => line.Trim())
                 .Where(line =>
-                    !string.IsNullOrEmpty(line)
+                    !String.IsNullOrEmpty(line)
                         && !line.StartsWith(";"));
         }
         
