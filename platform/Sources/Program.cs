@@ -102,7 +102,8 @@ namespace VirtualEnvironment.Platform
             {
                 Messages.Type.Error,
                 Messages.Type.Warning,
-                Messages.Type.Trace
+                Messages.Type.Trace,
+                Messages.Type.Verbose
             };
 
             public void Receive(Messages.Message message)
@@ -120,6 +121,17 @@ namespace VirtualEnvironment.Platform
                     var applicationPath = Assembly.GetExecutingAssembly().Location;
                     var logfilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
                         Path.GetFileNameWithoutExtension(applicationPath) + ".log");
+
+                    // VERBOSE is extended information that lies between TRACE
+                    // and DEBUG. The message must match the previous context or
+                    // have its own context, as otherwise the information cannot
+                    // be placed in any context.
+                    
+                    if (Messages.Type.Verbose == message.Type)
+                        if (String.IsNullOrWhiteSpace(_context)
+                                || String.IsNullOrWhiteSpace(message.Context)
+                                || message.Context != _context)
+                            return;
 
                     if (!_continue)
                     {
@@ -145,7 +157,7 @@ namespace VirtualEnvironment.Platform
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var lines = message.ToString()
-                        .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(line => !String.IsNullOrWhiteSpace(line))
                         .ToArray();
                     
@@ -164,6 +176,19 @@ namespace VirtualEnvironment.Platform
                             _context = lines[index];
                         }
                         else logfileWriteLine(lines[index], true);
+                    }
+
+                    var details = String.Empty;
+                    if (message.Data is DiskpartException)
+                        details = ((DiskpartException)message.Data).Details;
+                    if (message.Data is ServiceException)
+                        details = ((ServiceException)message.Data).Details;
+                    if (!String.IsNullOrWhiteSpace(details))
+                    {
+                        logfileWriteLine("", true);
+                        details.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                            .ToList()
+                            .ForEach(line => logfileWriteLine(line, true));
                     }
                 }
                 catch (Exception)
