@@ -80,10 +80,16 @@ namespace VirtualEnvironment.Platform
             if (!iniFile.Exists)
                 return;
             
+            // With the exception of FILESYSTEM, placeholders and system
+            // environment variables are replaced in the configuration values.
+            // With FILESYSTEM, the environment variables remain unchanged as
+            // they are required in the path for the storage. This serves both
+            // to reduce the path length and to mask the drive letter.
+                
             foreach (var key in GetSectionKeys(iniFile, SECTION_ENVIRONMENT))
                 Environment.Add(key, NormalizeValue(GetSectionKey(iniFile, SECTION_ENVIRONMENT, key)));
             foreach (var line in GetSectionLines(iniFile, SECTION_FILESYSTEM))
-                Filesystem.Add(NormalizeValue(line));
+                Filesystem.Add(NormalizeValuePlaceholder(line));
             foreach (var line in GetSectionLines(iniFile, SECTION_REGISTRY))
                 Registry.Add(NormalizeValue(line));
             foreach (var line in GetSectionLines(iniFile, SECTION_CUSTOMIZATION))
@@ -120,15 +126,18 @@ namespace VirtualEnvironment.Platform
                         && !line.StartsWith(";"));
         }
         
+        private static string NormalizeValuePlaceholder(string value)
+        {
+            return PATTERN_PLACEHOLDER.Replace(value, match =>
+                Environment.TryGetValue(match.Groups[1].Value, value: out var expression)
+                    ? expression : match.ToString()).Trim();
+        }
+
         private static string NormalizeValue(string value)
         {
-            value = PATTERN_PLACEHOLDER.Replace(value, match =>
-            {
-                var key = match.Groups[1].Value;
-                return Environment.TryGetValue(key, value: out var expression)
-                    ? expression : match.ToString();
-            });
-            return System.Environment.ExpandEnvironmentVariables(value ?? String.Empty).Trim();
+            value = NormalizeValuePlaceholder(value);
+            value = System.Environment.ExpandEnvironmentVariables(value).Trim();
+            return value;
         }
     }
 }
