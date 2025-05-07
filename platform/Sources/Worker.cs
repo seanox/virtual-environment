@@ -89,16 +89,20 @@ namespace VirtualEnvironment.Platform
                     
                     default:
                         Messages.Push(Messages.Type.Error,
-                            String.Format(Resources.WorkerVersion, applicationVersion, applicationBuild),
-                            String.Format(Resources.WorkerUsage, applicationFile));
+                            String.Format(Resources.ApplicationVersion, applicationVersion, applicationBuild),
+                            String.Format(Resources.ApplicationUsage, applicationFile));
                         break;
                 }
             }
             catch (Exception exception)
             {
-                if (exception is DiskpartAbortException)
-                    return;
-                Messages.Push(Messages.Type.Error, exception);
+                if (exception is DiskpartAbortException diskpartAbortException)
+                    Messages.Push(Messages.Type.Error, diskpartAbortException.Context, diskpartAbortException.Message);
+                else Messages.Push(Messages.Type.Error, exception);
+                if (exception is DiskpartException diskpartException)
+                    Messages.Push(Messages.Type.Verbose, diskpartException.Context, diskpartException.Details);
+                if (exception is ServiceException serviceException)
+                    Messages.Push(Messages.Type.Verbose, serviceException.Context, serviceException.Details);
                 if (new[] {Task.Attach, Task.Create, Task.Compact}.Contains(task))
                     Diskpart.AbortDisk(drive, diskFile);
             }
@@ -123,39 +127,48 @@ namespace VirtualEnvironment.Platform
             // avoid thread safety issues.
             Invoke((MethodInvoker)(() =>
             {
-                var context = message.Context;
-                var text = Convert.ToString(message.Data ?? String.Empty);
-                
-                if (Messages.Type.Trace == message.Type)
+                var context = message.Context.Trim();
+                var content = Convert.ToString(message.Data ?? String.Empty).Trim()
+                    .Split(new[] { '\r', '\n' }, StringSplitOptions.None)
+                    .Where(line => !String.IsNullOrWhiteSpace(line))
+                    .Select(line => line.Trim())
+                    .FirstOrDefault();
+
+                if (Messages.Type.Trace == message.Type
+                        || Messages.Type.Exit == message.Type)
                 {
-                    if (!String.IsNullOrWhiteSpace(context)
-                            && !Regex.IsMatch(text, @"[\r\n]"))
-                        Output.Text = ($"{context}{System.Environment.NewLine}{text}").Trim();
+                    if (!String.IsNullOrWhiteSpace(context))
+                        return;
+                    Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
                     Refresh();
                     return;
                 }
 
-                if (message.Type == Messages.Type.Error)
+                Output.Text = String.Empty;
+                Refresh();
+
+                BackColor = Color.FromArgb(250, 225, 150);
+                Progress.BackColor = Color.FromArgb(200, 150, 75);
+                Label.ForeColor = Progress.BackColor;
+                Refresh();
+                
+                if (message.Data is Exception exception)
                 {
-                    text = text.Contains(Environment.NewLine) 
-                        ? text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() 
-                        : text;
-                    
-                    if (message.Data is ServiceException serviceException)
-                        context = serviceException.Context;
-                    else if (message.Data is DiskpartException diskpartException)
-                        context = diskpartException.Context;
-                    else
-                        context = Resources.CommonUnexpectedErrorOccurred;
-
-                    Output.Text = ($"{context}{System.Environment.NewLine}{text}").Trim();
-                    Refresh();
-
-                    BackColor = Color.FromArgb(250, 225, 150);
-                    Progress.BackColor = Color.FromArgb(200, 150, 75);
-                    Label.ForeColor = Progress.BackColor;
+                    if (String.IsNullOrWhiteSpace(context))
+                    {
+                        context = Resources.ApplicationUnexpectedErrorOccurred;
+                        content = $"{exception.GetType().Name}: {content}";
+                    }
+                }
+                else
+                {
+                    if (String.IsNullOrWhiteSpace(context))
+                        context = Resources.ApplicationUnexpectedErrorOccurred;
                 }
                 
+                Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
+                Refresh();
+
                 var originSize = Progress.Size;
                 Progress.Visible = true;
                 for (var width = 1; width < originSize.Width; width += 1)
