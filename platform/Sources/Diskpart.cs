@@ -138,7 +138,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartCompactFailed,
-                    Resources.CommonUnexpectedErrorOccurred,
+                    Resources.ApplicationUnexpectedErrorOccurred,
                     diskpartResult.Output);
         }
         
@@ -230,7 +230,7 @@ namespace VirtualEnvironment.Platform
                 });
                 if (diskpartResult.Failed)
                     throw new DiskpartException(Resources.DiskpartAttachFailed,
-                        Resources.CommonUnexpectedErrorOccurred,
+                        Resources.ApplicationUnexpectedErrorOccurred,
                         diskpartResult.Output);
             }
             else
@@ -261,7 +261,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartDetachFailed,
-                    Resources.CommonUnexpectedErrorOccurred,
+                    Resources.ApplicationUnexpectedErrorOccurred,
                     diskpartResult.Output);
         }
 
@@ -308,7 +308,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Create, diskpartProperties);
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartCreateFailed,
-                    Resources.CommonUnexpectedErrorOccurred,
+                    Resources.ApplicationUnexpectedErrorOccurred,
                     diskpartResult.Output);
 
             AttachDisk(drive, diskFile);
