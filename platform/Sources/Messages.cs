@@ -120,6 +120,8 @@ namespace VirtualEnvironment.Platform
                 if (!String.IsNullOrWhiteSpace(context))
                     context = Regex.Replace(context, @"[\r\n]+", " ").Trim();
                 Context = !String.IsNullOrWhiteSpace(context) ? context : null;
+                if (data is IEnumerable<string> lines)
+                    data = String.Join(System.Environment.NewLine, lines);
                 Data = data;
             }
             
