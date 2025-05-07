@@ -62,18 +62,36 @@ namespace VirtualEnvironment.Platform {
         /// <summary>
         ///   Looks up a localized string similar to Successfully completed.
         /// </summary>
-        internal static string CommonCompleted {
+        internal static string ApplicationCompleted {
             get {
-                return ResourceManager.GetString("CommonCompleted", resourceCulture);
+                return ResourceManager.GetString("ApplicationCompleted", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unexpected error occurred.
         /// </summary>
-        internal static string CommonUnexpectedErrorOccurred {
+        internal static string ApplicationUnexpectedErrorOccurred {
             get {
-                return ResourceManager.GetString("CommonUnexpectedErrorOccurred", resourceCulture);
+                return ResourceManager.GetString("ApplicationUnexpectedErrorOccurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} [A-Z]: [create|attach|detach|...].
+        /// </summary>
+        internal static string ApplicationUsage {
+            get {
+                return ResourceManager.GetString("ApplicationUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seanox Virtual Environment [{0} {1}].
+        /// </summary>
+        internal static string ApplicationVersion {
+            get {
+                return ResourceManager.GetString("ApplicationVersion", resourceCulture);
             }
         }
         
@@ -231,7 +249,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual disk already file exists.
+        ///   Looks up a localized string similar to Virtual disk file already exists.
         /// </summary>
         internal static string DiskpartFileAlreadyExists {
             get {
@@ -272,6 +290,15 @@ namespace VirtualEnvironment.Platform {
         internal static string ServiceAttachEnvironmentSetup {
             get {
                 return ResourceManager.GetString("ServiceAttachEnvironmentSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize files.
+        /// </summary>
+        internal static string ServiceAttachEnvironmentSetupCustomizeFiles {
+            get {
+                return ResourceManager.GetString("ServiceAttachEnvironmentSetupCustomizeFiles", resourceCulture);
             }
         }
         
@@ -408,24 +435,6 @@ namespace VirtualEnvironment.Platform {
         internal static string ServiceShortcutsText {
             get {
                 return ResourceManager.GetString("ServiceShortcutsText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} [A-Z]: [create|attach|detach|...].
-        /// </summary>
-        internal static string WorkerUsage {
-            get {
-                return ResourceManager.GetString("WorkerUsage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [0.0.0 00000000].
-        /// </summary>
-        internal static string WorkerVersion {
-            get {
-                return ResourceManager.GetString("WorkerVersion", resourceCulture);
             }
         }
     }
