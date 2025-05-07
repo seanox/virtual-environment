@@ -98,6 +98,7 @@ namespace VirtualEnvironment.Platform
             Error,
             Warning,
             Trace,
+            Verbose,
             Data,
             Exit
         }
@@ -122,6 +123,11 @@ namespace VirtualEnvironment.Platform
                 Data = data;
             }
             
+            internal Message ConvertTo(Type type)
+            {
+                return new Message(type, Context, Data);
+            }
+
             public override string ToString()
             {
                 var stringBuilder = new StringBuilder(Type.ToString().ToUpper())

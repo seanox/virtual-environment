@@ -102,7 +102,8 @@ namespace VirtualEnvironment.Platform
             {
                 Messages.Type.Error,
                 Messages.Type.Warning,
-                Messages.Type.Trace
+                Messages.Type.Trace,
+                Messages.Type.Verbose,
             };
 
             public void Receive(Messages.Message message)
@@ -110,6 +111,21 @@ namespace VirtualEnvironment.Platform
                 if (!MESSAGE_TYPE_LIST.Contains(message.Type)
                         || message.Data is null)
                     return;
+                
+                // VERBOSE is extended information that lies between TRACE and
+                // DEBUG. The message have its own context, as otherwise the
+                // information cannot be placed in any context.
+                if (Messages.Type.Verbose == message.Type)
+                    if (String.IsNullOrWhiteSpace(_context)
+                            || String.IsNullOrWhiteSpace(message.Context)
+                            || message.Context != _context)
+                        return;
+                
+                // VERBOSE is logged as an extension of TRACE and is therefore
+                // converted to TRACE so that logging can pick up the previous
+                // context of TRACE and continue the logging block. 
+                if (Messages.Type.Verbose == message.Type)
+                    message = message.ConvertTo(Messages.Type.Trace);
                 
                 var content = message.ToString().Trim();
                 if (String.IsNullOrWhiteSpace(content))
@@ -130,7 +146,7 @@ namespace VirtualEnvironment.Platform
                         var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                             .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
                         var banner = new StringBuilder()
-                            .AppendLine($"Seanox {name} [Version {version} {build}]")
+                            .AppendLine(String.Format(Resources.ApplicationVersion, version, build))
                             .AppendLine($"{copyright.Replace("©", "(C)")}")
                             .ToString();
                         
@@ -155,28 +171,13 @@ namespace VirtualEnvironment.Platform
                         File.AppendAllLines(logfilePath, new[] { $"{timestamp} {line}" });
                     };
 
-                    for (var index = 0; index < lines.Length; index++)
+                    if (lines.Length > 0)
                     {
-                        if (index == 0)
-                        {
-                            if (lines[index] != _context)
-                                logfileWriteLine(lines[index], false);
-                            _context = lines[index];
-                        }
-                        else logfileWriteLine(lines[index], true);
-                    }
-
-                    var details = String.Empty;
-                    if (message.Data is DiskpartException)
-                        details = ((DiskpartException)message.Data).Details;
-                    if (message.Data is ServiceException)
-                        details = ((ServiceException)message.Data).Details;
-                    if (!String.IsNullOrWhiteSpace(details))
-                    {
-                        logfileWriteLine(String.Empty, true);
-                        details.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                            .ToList()
-                            .ForEach(line => logfileWriteLine(line, true));
+                        if (lines[0] != _context)
+                            logfileWriteLine(lines[0], false);
+                        _context = lines[0];
+                        for (var index = 1; index < lines.Length; index++)    
+                            logfileWriteLine(lines[index], true);
                     }
                 }
                 catch (Exception)
