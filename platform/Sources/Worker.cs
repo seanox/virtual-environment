@@ -138,6 +138,20 @@ namespace VirtualEnvironment.Platform
             Messages.Type.Exit
         };
 
+        private void ShowWaitingLoop(Messages.Type type)
+        {
+            var originSize = Progress.Size;
+            Progress.Visible = true;
+            for (var width = 1; width < originSize.Width; width += 1)
+            {
+                Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
+                Refresh();
+                Thread.Sleep(Messages.Type.Error == type ? 75 : 25);
+            }
+            Thread.Sleep(500);
+            Progress.Visible = false;
+        }
+
         void Messages.ISubscriber.Receive(Messages.Message message)
         {
             if (!MESSAGE_TYPE_LIST.Contains(message.Type))
@@ -160,9 +174,15 @@ namespace VirtualEnvironment.Platform
                         || Messages.Type.Exit == message.Type)
                 {
                     if (!String.IsNullOrWhiteSpace(context))
-                        return;
-                    Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
+                        Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
                     Refresh();
+                    
+                    if (Messages.Type.Exit != message.Type)
+                        return;
+                    
+                    ShowWaitingLoop(message.Type);
+                    Close();
+                    
                     return;
                 }
 
@@ -188,17 +208,8 @@ namespace VirtualEnvironment.Platform
                 
                 Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
                 Refresh();
-
-                var originSize = Progress.Size;
-                Progress.Visible = true;
-                for (var width = 1; width < originSize.Width; width += 1)
-                {
-                    Progress.Size = new Size(Math.Min(width, originSize.Width), originSize.Height);
-                    Refresh();
-                    Thread.Sleep(message.Type == Messages.Type.Error ? 75 : 25);
-                }
-
-                Thread.Sleep(500);
+                
+                ShowWaitingLoop(message.Type);
                 Close();
             }));
         }
