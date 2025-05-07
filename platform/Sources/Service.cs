@@ -33,44 +33,52 @@ namespace VirtualEnvironment.Platform
     internal static class Service
     {
         private const int BATCH_PROCESS_IDLE_TIMEOUT_SECONDS = 30;
+        
+        private static readonly Regex PATTERN_PLACEHOLDER =
+            new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
 
         private static int NotificationDelay =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 25 : 1000;
 
         private static int ShutdownTimeout =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 3000 : 5000;
+
+        private static void SetupEnvironmentCustomizeFile(string drive, string file)
+        {
+            var targetFile = file.Replace("/", @"\").Trim();
+            if (!targetFile.StartsWith(@"\"))
+                return;
+            
+            targetFile = Regex.Replace(targetFile, @"^\\+", String.Empty);
+            targetFile = Path.Combine(drive, targetFile);
+            if (!File.Exists(targetFile)
+                    || File.GetAttributes(targetFile).HasFlag(FileAttributes.Directory))
+                return;
+            
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupCustomizeFiles);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupCustomizeFiles, targetFile);
+            
+            var templateFile = targetFile + "-template";
+            if (!File.Exists(templateFile)
+                    || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) > 0)
+                File.Copy(targetFile, templateFile, true);
+            var templateContent = File.ReadAllText(templateFile);
+            var targetContent = PATTERN_PLACEHOLDER.Replace(templateContent, match =>
+            {
+                var key = match.Groups[1].Value;
+                return Settings.Environment.TryGetValue(key, value: out var expression)
+                    ? expression : match.ToString();
+            });
+            File.WriteAllText(targetFile, targetContent);
+            File.SetLastWriteTime(templateFile, DateTime.Now);
+        }
         
         private static void SetupEnvironment(string drive)
         {
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
 
-            var message = "";
-            foreach (var file in Settings.Files)
-            {
-                var targetFile = file.Replace("/", @"\");
-                targetFile = Regex.Replace(targetFile, @"^\\+", "");
-                targetFile = Path.Combine(drive, targetFile);
-                if (!File.Exists(targetFile)
-                        || File.GetAttributes(targetFile).HasFlag(FileAttributes.Directory))
-                    return;
-                message += $"{Environment.NewLine}{targetFile}";
-            
-                var templateFile = targetFile + "-settings";
-                if (!File.Exists(templateFile)
-                        || DateTime.Compare(File.GetLastWriteTime(targetFile), File.GetLastWriteTime(templateFile)) > 0)
-                    File.Copy(targetFile, templateFile, true);
-                
-                var templateContent = File.ReadAllText(templateFile);
-                var targetContent = Settings.ReplacePlaceholders(templateContent);
-                File.WriteAllText(targetFile, targetContent);
-
-                File.SetLastWriteTime(templateFile, DateTime.Now);
-            }
-
-            if (!String.IsNullOrWhiteSpace(message))
-                Messages.Push(Messages.Type.Trace,
-                    Resources.ServiceAttachEnvironmentSetup,
-                    message);
+            foreach (var file in Settings.Customization)
+                SetupEnvironmentCustomizeFile(drive, file);
         }
 
         internal static void Attach(string drive, string diskFile)
@@ -92,7 +100,7 @@ namespace VirtualEnvironment.Platform
                 throw new ServiceException(Resources.ServiceAttachFailed, Resources.ServiceBatchFailed, batchResult.Message);
             }
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.CommonCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ApplicationCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -105,7 +113,7 @@ namespace VirtualEnvironment.Platform
             if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly())
                 throw new InvalidOperationException("Method not supported");
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceCreateText);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceCreate, Resources.ServiceCreateText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanCreateDisk(drive, diskFile);
@@ -118,7 +126,7 @@ namespace VirtualEnvironment.Platform
             var settingsFile = Path.Combine(applicationDirectory, applicationName + ".ini");
             File.WriteAllBytes(settingsFile, Resources.Files[@"\settings.ini"]);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceCreate, Resources.CommonCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceCreate, Resources.ApplicationCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -162,7 +170,7 @@ namespace VirtualEnvironment.Platform
             Diskpart.CanCompactDisk(drive, diskFile);
             Diskpart.CompactDisk(drive, diskFile);
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceCompact, Resources.CommonCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceCompact, Resources.ApplicationCompleted);
             Messages.Push(Messages.Type.Exit);
         }
 
@@ -283,7 +291,7 @@ namespace VirtualEnvironment.Platform
                 processStartInfo.EnvironmentVariables[name] = value;
             });
 
-            foreach(KeyValuePair<string, string> value in Settings.Values)
+            foreach(KeyValuePair<string, string> value in Settings.Environment)
                 SetEnvironmentVariableIfNecessary(value.Key, value.Value);
             
             SetEnvironmentVariableIfNecessary("PLATFORM_NAME", applicationName);
@@ -293,7 +301,7 @@ namespace VirtualEnvironment.Platform
             var rootPath = Path.GetPathRoot(fileName);
             SetEnvironmentVariableIfNecessary("PLATFORM_HOMEDRIVE", rootPath.Substring(0, 2));
 
-            var batchResult = new BatchResult() {Output = ""};
+            var batchResult = new BatchResult() {Output = String.Empty};
             
             try
             {
@@ -376,7 +384,7 @@ namespace VirtualEnvironment.Platform
             
             Diskpart.DetachDisk(drive, diskFile);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.CommonCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ApplicationCompleted);
             Messages.Push(Messages.Type.Exit);
         }
         
@@ -411,7 +419,7 @@ namespace VirtualEnvironment.Platform
             CreateShortcut(drive, diskFile, ShortcutType.Detach);
             CreateShortcut(drive, diskFile, ShortcutType.Compact);
 
-            Messages.Push(Messages.Type.Trace, Resources.ServiceShortcuts, Resources.CommonCompleted);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceShortcuts, Resources.ApplicationCompleted);
             Messages.Push(Messages.Type.Exit);
         }
     }
