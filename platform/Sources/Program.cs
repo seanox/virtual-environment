@@ -103,7 +103,7 @@ namespace VirtualEnvironment.Platform
                 Messages.Type.Error,
                 Messages.Type.Warning,
                 Messages.Type.Trace,
-                Messages.Type.Verbose,
+                Messages.Type.Verbose
             };
 
             public void Receive(Messages.Message message)
