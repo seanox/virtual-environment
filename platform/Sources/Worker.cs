@@ -24,7 +24,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -50,8 +49,32 @@ namespace VirtualEnvironment.Platform
             
             Output.Font = new Font(SystemFonts.DialogFont.FontFamily, 9.25f);
             Label.Font = new Font(SystemFonts.DialogFont.FontFamily, 8.25f);
+
+            Paint += OnPaint; 
             
             System.Threading.Tasks.Task.Run(() => WorkerAction(task, drive, diskFile));
+        }
+        
+        private void OnPaint(object sender, PaintEventArgs paintEvent)
+        {
+            TruncateLabelTextToFit(paintEvent.Graphics, Output);
+        }
+
+        private static void TruncateLabelTextToFit(Graphics graphics, Label label)
+        {
+            if (String.IsNullOrEmpty(label.Text))
+                return;
+            var textTruncated = label.Text;
+            var textSize = graphics.MeasureString(textTruncated, label.Font);
+            if (textSize.Width <= label.Width)
+                return;
+            
+            Func<string, bool> isTextWidthSuitable = text =>
+                    graphics.MeasureString(text, label.Font).Width > label.Width;
+            
+            while (textTruncated.Length > 0 && isTextWidthSuitable(textTruncated + "..."))
+                textTruncated = textTruncated.Substring(0, textTruncated.Length - 1);
+            label.Text = $"{textTruncated}...";
         }
 
         private void WorkerAction(Task task, string drive, string diskFile)
@@ -127,10 +150,9 @@ namespace VirtualEnvironment.Platform
             // avoid thread safety issues.
             Invoke((MethodInvoker)(() =>
             {
-                var context = message.Context.Trim();
+                var context = message.Context?.Trim() ?? string.Empty;
                 var content = Convert.ToString(message.Data ?? String.Empty).Trim()
                     .Split(new[] { '\r', '\n' }, StringSplitOptions.None)
-                    .Where(line => !String.IsNullOrWhiteSpace(line))
                     .Select(line => line.Trim())
                     .FirstOrDefault();
 
@@ -150,21 +172,19 @@ namespace VirtualEnvironment.Platform
                 BackColor = Color.FromArgb(250, 225, 150);
                 Progress.BackColor = Color.FromArgb(200, 150, 75);
                 Label.ForeColor = Progress.BackColor;
+                
                 Refresh();
                 
                 if (message.Data is Exception exception)
                 {
-                    if (String.IsNullOrWhiteSpace(context))
-                    {
-                        context = Resources.ApplicationUnexpectedErrorOccurred;
-                        content = $"{exception.GetType().Name}: {content}";
-                    }
+                    content = exception.Message;
+                    context = String.IsNullOrWhiteSpace(context)
+                        ? Resources.ApplicationUnexpectedErrorOccurred
+                        : context;
+                    content = $"{exception.GetType().Name}: {content}";
                 }
-                else
-                {
-                    if (String.IsNullOrWhiteSpace(context))
-                        context = Resources.ApplicationUnexpectedErrorOccurred;
-                }
+                else if (String.IsNullOrWhiteSpace(context))
+                    context = Resources.ApplicationUnexpectedErrorOccurred;
                 
                 Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
                 Refresh();
