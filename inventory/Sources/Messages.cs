@@ -2,8 +2,8 @@
 // hereinafter referred to as Seanox Software Solutions or Seanox for short.
 // This software is subject to version 2 of the Apache License.
 //
-// Virtual Environment Platform
-// Program starter for the virtual environment.
+// Virtual Environment Inventory
+// Scans and extracts changes in the file system and registry.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
