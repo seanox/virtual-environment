@@ -41,7 +41,7 @@ namespace VirtualEnvironment.Inventory
         
         internal static void Subscribe(ISubscriber recipient)
         {
-            if (recipient == null)
+            if (recipient is null)
                 throw new ArgumentNullException();
             lock (_lock)
                 _subscriptions.Add(recipient);
@@ -49,7 +49,7 @@ namespace VirtualEnvironment.Inventory
 
         internal static void Unsubscribe(ISubscriber recipient)
         {
-            if (recipient == null)
+            if (recipient is null)
                 throw new ArgumentNullException();
             lock (_lock)
                 _subscriptions.Remove(recipient);
@@ -156,7 +156,7 @@ namespace VirtualEnvironment.Inventory
                 if (!(content is IEnumerable<string>)
                         && content is IEnumerable<object> objects)
                     content = objects
-                            .Where(line => line != null)
+                            .Where(line => !(line is null))
                             .Select(line => Convert.ToString(line).Trim())    
                             .Where(line => !String.IsNullOrWhiteSpace(line));
 
