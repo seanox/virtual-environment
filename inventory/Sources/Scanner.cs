@@ -84,7 +84,7 @@ namespace VirtualEnvironment.Inventory
             if (String.IsNullOrEmpty(systemDrive))
                systemDrive = "C:";
             SYSTEM_DRIVE = systemDrive;
-            SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper();
+            SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper() + Path.DirectorySeparatorChar;
             
             SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "MSOCache"));
             SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "Temp"));
@@ -138,23 +138,44 @@ namespace VirtualEnvironment.Inventory
 
         private static string PathNormalize(string path)
         {
-            return path.EndsWith(@"\") ? path : path + @"\";
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                return path.TrimEnd(Path.DirectorySeparatorChar);
+            return path;        
         }
         
+        private static bool PathStartsWithOrEquals(string path, string pattern)
+        {
+            path = PathNormalize(path) + Path.DirectorySeparatorChar;
+            pattern = PathNormalize(pattern) + Path.DirectorySeparatorChar;
+            return path.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)
+                    || path.Equals(pattern, StringComparison.OrdinalIgnoreCase);
+        }
+        
+        private static string PathAbstractAlias(string path, string pattern, string alias)
+        {
+            if (!PathStartsWithOrEquals(path, pattern))
+                return path;
+            path = PathNormalize(path) + Path.DirectorySeparatorChar;
+            pattern = PathNormalize(pattern) + Path.DirectorySeparatorChar;
+            if (path.Equals(pattern, StringComparison.OrdinalIgnoreCase))
+                return alias;
+            return PathNormalize(Path.Combine(alias, path.Substring(pattern.Length)));
+        }
+
         private static string PathAbstract(string path)
         {
-            if (path.StartsWith(USER_PROFILE_PATH, StringComparison.OrdinalIgnoreCase))
-                return Path.Combine("%UserProfile%", path.Substring(USER_PROFILE_PATH.Length));
-            if (path.StartsWith(SYSTEM_PROGRAM_FILES_PATH, StringComparison.OrdinalIgnoreCase))
-                return Path.Combine("%ProgramFiles%", path.Substring(SYSTEM_PROGRAM_FILES_PATH.Length));
-            if (path.StartsWith(SYSTEM_PROGRAM_FILES_X86_PATH, StringComparison.OrdinalIgnoreCase))
-                return Path.Combine("%ProgramFiles(x86)%", path.Substring(SYSTEM_PROGRAM_FILES_X86_PATH.Length));
-            if (path.StartsWith(SYSTEM_PROGRAM_DATA_PATH, StringComparison.OrdinalIgnoreCase))
-                return Path.Combine("%ProgramData%", path.Substring(SYSTEM_PROGRAM_DATA_PATH.Length));
-            if (path.StartsWith(SYSTEM_ROOT_PATH, StringComparison.OrdinalIgnoreCase))
-                return Path.Combine("%SystemRoot%", path.Substring(SYSTEM_ROOT_PATH.Length));
+            if (PathStartsWithOrEquals(path, USER_PROFILE_PATH))
+                return PathAbstractAlias(path, USER_PROFILE_PATH, "%UserProfile%");
+            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_FILES_PATH))
+                return PathAbstractAlias(path, SYSTEM_PROGRAM_FILES_PATH, "%ProgramFiles%");
+            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_FILES_X86_PATH))
+                return PathAbstractAlias(path, SYSTEM_PROGRAM_FILES_X86_PATH, "%ProgramFiles(x86)%");
+            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_DATA_PATH))
+                return PathAbstractAlias(path, SYSTEM_PROGRAM_DATA_PATH, "%ProgramData%");
+            if (PathStartsWithOrEquals(path, SYSTEM_ROOT_PATH))
+                return PathAbstractAlias(path, SYSTEM_ROOT_PATH, "%SystemRoot%");
             path = Regex.Replace(path, @"^([A-Za-z]):", match =>
-                $"%%{match.Groups[1].Value.ToUpper()}%");    
+                $"%%{match.Groups[1].Value.ToUpper()}%"); 
             return path;
         }
 
@@ -182,7 +203,7 @@ namespace VirtualEnvironment.Inventory
         {
             var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
-            SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}\");
+            SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}");
             Messages.Push(Messages.Type.Trace, "Scan file system");
             ScanFileSystem(SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
 
@@ -230,7 +251,7 @@ namespace VirtualEnvironment.Inventory
                 using (var reader = new StreamReader(file))
                 {
                     string line;
-                    while ((line = reader.ReadLine()) != null)
+                    while (!((line = reader.ReadLine()) is null))
                     {
                         var hash = line.Split('\t').Last();
                         if (!collector.ContainsKey(hash))
@@ -295,14 +316,14 @@ namespace VirtualEnvironment.Inventory
 
         private static void ScanFileSystem(string path, int depth, FileInfo output)
         {
-            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains($@"{path.ToLower()}\")
+            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains(PathNormalize(path).ToLower())
                     || path.StartsWith($@"{SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
                     || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
 
             try
             {
-                var currentDepth = path.Count(symbol => symbol == '\\');
+                var currentDepth = path.Count(symbol => symbol == Path.DirectorySeparatorChar);
                 if (Directory.Exists(path)
                         && currentDepth >= depth
                         && depth >= 0)
