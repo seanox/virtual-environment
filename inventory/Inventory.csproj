@@ -52,7 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\Messages.cs" />
     <Compile Include="Sources\Program.cs" />
+    <Content Include="Sources\Program.ico" />
     <Compile Include="Sources\Scanner.cs" />
+    <Compile Include="Sources\Storage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
