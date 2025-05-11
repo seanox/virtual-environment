@@ -32,47 +32,6 @@ namespace VirtualEnvironment.Inventory
 {
     internal static class Scanner
     {
-        // https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
-        // Please read twice: 260 vs. 256 vs. 259 -1 characters
-        // I don't understand how the documentary comes to 260 characters :-|
-        // - drive letter (C:)             2 Chars 
-        // - backslash                     1 Char
-        // - max. path characters        256 Chars
-        //                     Subtotal  259 Chars
-        // - terminating null character   -1 Char 
-        //                        Total  258 Chars
-        // HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem -> LongPathsEnabled
-        // Possible customizations is ignored. That's too much :-|
-        private const int FILE_SYSTEM_MAX_PATH = 258;
-
-        private static readonly string SYSTEM_DRIVE;
-        private static readonly string SYSTEM_DRIVE_PATH;
-        private static readonly string SYSTEM_MSO_CACHE_PATH;
-        private static readonly string SYSTEM_TEMP_PATH;
-        private static readonly string SYSTEM_VOLUME_INFORMATION_PATH;
-            
-        private static readonly string SYSTEM_ROOT_PATH;
-        private static readonly string SYSTEM_WINDOWS_CSC_PATH;
-        private static readonly string SYSTEM_WINDOWS_DEBUG_PATH;
-        private static readonly string SYSTEM_WINDOWS_INSTALLER_PATH;
-        private static readonly string SYSTEM_WINDOWS_LOGS_PATH;
-        private static readonly string SYSTEM_WINDOWS_PREFETCH_PATH;
-        private static readonly string SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH;
-        private static readonly string SYSTEM_WINDOWS_TEMP_PATH;
-        private static readonly string SYSTEM_WINDOWS_UUS_PATH;
-        private static readonly string SYSTEM_WINDOWS_WAAS_PATH;
-        private static readonly string SYSTEM_WINDOWS_WINSXS_PATH;
-        
-        private static readonly string SYSTEM_PROGRAM_FILES_PATH;
-        private static readonly string SYSTEM_PROGRAM_FILES_X86_PATH;
-        private static readonly string SYSTEM_PROGRAM_DATA_PATH;
-        
-        private static readonly string USER_PROFILE_PATH;
-        private static readonly string USER_LOCAL_TEMP_PATH;
-        private static readonly string USER_LOCALLOW_TEMP_PATH;
-        private static readonly string USER_ROAMING_TEMP_PATH;
-        private static readonly string USER_DOWNLOADS_PATH;
-        
         private static readonly List<string> SYSTEM_NOT_RELEVANT_DIRECTORIES;
         
         // Parallel does not bring any advantages here, as the scan and compare
@@ -80,103 +39,28 @@ namespace VirtualEnvironment.Inventory
 
         static Scanner()
         {
-            var systemDrive = Environment.GetEnvironmentVariable("SystemDrive");
-            if (String.IsNullOrEmpty(systemDrive))
-               systemDrive = "C:";
-            SYSTEM_DRIVE = systemDrive;
-            SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper() + Path.DirectorySeparatorChar;
-            
-            SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "MSOCache"));
-            SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "Temp"));
-            SYSTEM_VOLUME_INFORMATION_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "System Volume Information"));
-           
-            SYSTEM_PROGRAM_FILES_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles"));
-            SYSTEM_PROGRAM_FILES_X86_PATH= PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
-            SYSTEM_PROGRAM_DATA_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramData"));
-
-            SYSTEM_ROOT_PATH = PathNormalize(Environment.GetEnvironmentVariable("SystemRoot"));
-            SYSTEM_WINDOWS_CSC_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "CSC"));
-            SYSTEM_WINDOWS_DEBUG_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Debug"));
-            SYSTEM_WINDOWS_INSTALLER_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Installer"));
-            SYSTEM_WINDOWS_LOGS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Logs"));
-            SYSTEM_WINDOWS_PREFETCH_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Prefetch"));
-            SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "SoftwareDistribution"));
-            SYSTEM_WINDOWS_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Temp"));
-            SYSTEM_WINDOWS_UUS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "UUS"));
-            SYSTEM_WINDOWS_WAAS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WaaS"));
-            SYSTEM_WINDOWS_WINSXS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WinSxS"));
-            
-            USER_PROFILE_PATH = PathNormalize(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            USER_LOCAL_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Local\Temp"));
-            USER_LOCALLOW_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\LocalLow\Temp"));
-            USER_ROAMING_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Roaming\Temp"));
-            USER_DOWNLOADS_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"Downloads"));
-
             SYSTEM_NOT_RELEVANT_DIRECTORIES = new List<string>
             {
-                SYSTEM_MSO_CACHE_PATH.ToLower(),
-                SYSTEM_TEMP_PATH.ToLower(),
-                SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
+                Paths.SYSTEM_MSO_CACHE_PATH.ToLower(),
+                Paths.SYSTEM_TEMP_PATH.ToLower(),
+                Paths.SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
 
-                SYSTEM_WINDOWS_CSC_PATH.ToLower(),
-                SYSTEM_WINDOWS_DEBUG_PATH.ToLower(),
-                SYSTEM_WINDOWS_INSTALLER_PATH.ToLower(),
-                SYSTEM_WINDOWS_LOGS_PATH.ToLower(),
-                SYSTEM_WINDOWS_PREFETCH_PATH.ToLower(),
-                SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH.ToLower(),
-                SYSTEM_WINDOWS_TEMP_PATH.ToLower(),
-                SYSTEM_WINDOWS_UUS_PATH.ToLower(),
-                SYSTEM_WINDOWS_WAAS_PATH.ToLower(),
-                SYSTEM_WINDOWS_WINSXS_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_CSC_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_DEBUG_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_INSTALLER_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_LOGS_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_PREFETCH_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_TEMP_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_UUS_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_WAAS_PATH.ToLower(),
+                Paths.SYSTEM_WINDOWS_WINSXS_PATH.ToLower(),
                 
-                USER_LOCAL_TEMP_PATH.ToLower(),
-                USER_LOCALLOW_TEMP_PATH.ToLower(),
-                USER_ROAMING_TEMP_PATH.ToLower(),
-                USER_DOWNLOADS_PATH.ToLower()
+                Paths.USER_LOCAL_TEMP_PATH.ToLower(),
+                Paths.USER_LOCALLOW_TEMP_PATH.ToLower(),
+                Paths.USER_ROAMING_TEMP_PATH.ToLower(),
+                Paths.USER_DOWNLOADS_PATH.ToLower()
             };
-        }
-
-        private static string PathNormalize(string path)
-        {
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                return path.TrimEnd(Path.DirectorySeparatorChar);
-            return path;        
-        }
-        
-        private static bool PathStartsWithOrEquals(string path, string pattern)
-        {
-            path = PathNormalize(path) + Path.DirectorySeparatorChar;
-            pattern = PathNormalize(pattern) + Path.DirectorySeparatorChar;
-            return path.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)
-                    || path.Equals(pattern, StringComparison.OrdinalIgnoreCase);
-        }
-        
-        private static string PathAbstractAlias(string path, string pattern, string alias)
-        {
-            if (!PathStartsWithOrEquals(path, pattern))
-                return path;
-            path = PathNormalize(path) + Path.DirectorySeparatorChar;
-            pattern = PathNormalize(pattern) + Path.DirectorySeparatorChar;
-            if (path.Equals(pattern, StringComparison.OrdinalIgnoreCase))
-                return alias;
-            return PathNormalize(Path.Combine(alias, path.Substring(pattern.Length)));
-        }
-
-        private static string PathAbstract(string path)
-        {
-            if (PathStartsWithOrEquals(path, USER_PROFILE_PATH))
-                return PathAbstractAlias(path, USER_PROFILE_PATH, "%UserProfile%");
-            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_FILES_PATH))
-                return PathAbstractAlias(path, SYSTEM_PROGRAM_FILES_PATH, "%ProgramFiles%");
-            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_FILES_X86_PATH))
-                return PathAbstractAlias(path, SYSTEM_PROGRAM_FILES_X86_PATH, "%ProgramFiles(x86)%");
-            if (PathStartsWithOrEquals(path, SYSTEM_PROGRAM_DATA_PATH))
-                return PathAbstractAlias(path, SYSTEM_PROGRAM_DATA_PATH, "%ProgramData%");
-            if (PathStartsWithOrEquals(path, SYSTEM_ROOT_PATH))
-                return PathAbstractAlias(path, SYSTEM_ROOT_PATH, "%SystemRoot%");
-            path = Regex.Replace(path, @"^([A-Za-z]):", match =>
-                $"%%{match.Groups[1].Value.ToUpper()}%"); 
-            return path;
         }
 
         private static void WriteScanRecord(FileInfo output, string scanRecord)
@@ -205,7 +89,7 @@ namespace VirtualEnvironment.Inventory
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
             SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}");
             Messages.Push(Messages.Type.Trace, "Scan file system");
-            ScanFileSystem(SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
+            ScanFileSystem(Paths.SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
 
             // PerformanceData and Users are ignored. PerformanceData should
             // only be used read-only and Users is a real-time copy/reference to
@@ -283,7 +167,7 @@ namespace VirtualEnvironment.Inventory
 
         private static string CollectFileSystemInfos(string path)
         {
-            if (path.Length > FILE_SYSTEM_MAX_PATH)
+            if (path.Length > Paths.FILE_SYSTEM_MAX_PATH)
                 return path;
             
             if (File.Exists(path))
@@ -301,11 +185,11 @@ namespace VirtualEnvironment.Inventory
                     $"{Path.GetFullPath(path)}"
                     + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}");
                 foreach (var subDirectory in Directory.GetDirectories(path))
-                    StringBuilderAppendLineSynchronized(collectionBuilder, subDirectory.Length <= FILE_SYSTEM_MAX_PATH
+                    StringBuilderAppendLineSynchronized(collectionBuilder, subDirectory.Length <= Paths.FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(subDirectory)
                         : subDirectory);
                 foreach (var file in Directory.GetFiles(path))
-                    StringBuilderAppendLineSynchronized(collectionBuilder, file.Length <= FILE_SYSTEM_MAX_PATH
+                    StringBuilderAppendLineSynchronized(collectionBuilder, file.Length <= Paths.FILE_SYSTEM_MAX_PATH
                         ? CollectFileSystemInfos(file)
                         : file);
                 return collectionBuilder.ToString();
@@ -316,8 +200,8 @@ namespace VirtualEnvironment.Inventory
 
         private static void ScanFileSystem(string path, int depth, FileInfo output)
         {
-            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains(PathNormalize(path).ToLower())
-                    || path.StartsWith($@"{SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
+            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains(Paths.PathNormalize(path).ToLower())
+                    || path.StartsWith($@"{Paths.SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
                     || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
 
@@ -335,7 +219,7 @@ namespace VirtualEnvironment.Inventory
                         var hashBytes = sha256.ComputeHash(inputBytes);
                         filesystemInfos = Convert.ToBase64String(hashBytes);
                     }
-                    var scanRecord = $"{PathAbstract(path)}"
+                    var scanRecord = $"{Paths.PathAbstract(path)}"
                             + $"\t{filesystemInfos}"
                             + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
@@ -343,7 +227,7 @@ namespace VirtualEnvironment.Inventory
                 else if (File.Exists(path))
                 {
                     var fileInfo = new FileInfo(path);
-                    var scanRecord = $"{PathAbstract(fileInfo.FullName)}"
+                    var scanRecord = $"{Paths.PathAbstract(fileInfo.FullName)}"
                             + $"\t{fileInfo.LastWriteTime:yyyyMMddHHmmss}"
                             + $"\t{fileInfo.Length}"
                             + $"\t{ComputeDateTimeHash(fileInfo.LastWriteTime)}";
@@ -351,7 +235,7 @@ namespace VirtualEnvironment.Inventory
                 }
                 else if (Directory.Exists(path))
                 {
-                    var scanRecord = $"{PathAbstract(Path.GetFullPath(path))}"
+                    var scanRecord = $"{Paths.PathAbstract(Path.GetFullPath(path))}"
                             + $"\t{Directory.GetLastWriteTime(path):yyyyMMddHHmmss}"
                             + $"\t{ComputeDateTimeHash(Directory.GetLastWriteTime(path))}";
                     WriteScanRecord(output, scanRecord);
@@ -360,11 +244,11 @@ namespace VirtualEnvironment.Inventory
                     foreach (var file in Directory.GetFiles(path))
                         ScanFileSystem(file, depth, output);
                 }
-                else WriteScanRecord(output, $"{PathAbstract(path)}\t0000");
+                else WriteScanRecord(output, $"{Paths.PathAbstract(path)}\t0000");
             }
             catch (UnauthorizedAccessException)
             {
-                WriteScanRecord(output, $"{PathAbstract(path)}\t0000");
+                WriteScanRecord(output, $"{Paths.PathAbstract(path)}\t0000");
             }
         }
         
