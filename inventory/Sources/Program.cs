@@ -65,7 +65,25 @@ namespace VirtualEnvironment.Inventory
                         throw new InvalidUsageException();
                     else depth = Convert.ToInt32(COMMAND_PATTERN.Match(arguments[0]).Groups[1]);
 
-                Scanner.Scan(depth);
+                var compareFile = Scanner.Scan(depth);
+                if (compareFile is null)
+                    return;
+
+                Messages.Push(Messages.Type.Trace, "Mirror file system");
+                File.ReadAllLines(compareFile.FullName)
+                    .Where(line => !String.IsNullOrWhiteSpace(line))
+                    .Where(line => line.StartsWith("%"))
+                    .ToList()
+                    .ForEach(Storage.MirrorFileSystemLocation);
+
+                Messages.Push(Messages.Type.Trace, "Mirror registry");
+                File.ReadAllLines(compareFile.FullName)
+                    .Where(line => !String.IsNullOrWhiteSpace(line))
+                    .Where(line => line.StartsWith("HKEY_", StringComparison.OrdinalIgnoreCase))
+                    .ToList()
+                    .ForEach(Storage.MirrorRegistryKey);
+                
+                Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
             catch (InvalidUsageException exception)
             {
@@ -140,8 +158,10 @@ namespace VirtualEnvironment.Inventory
                         Console.WriteLine(banner);
 
                         if (Messages.Type.Exit == message.Type)
+                        {
                             Console.WriteLine(Convert.ToString(message.Data));
-                        return;
+                            return;
+                        }
                     }
                     
                     _continue = true;
