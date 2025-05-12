@@ -145,8 +145,8 @@ namespace VirtualEnvironment.Inventory
             {
                 var fileInfo = new FileInfo(path);
                 return $"{fileInfo.FullName}"
-                        + $"\t{fileInfo.LastWriteTime:yyyyMMddHHmmss}"
-                        + $"\t{fileInfo.Length}";
+                    + $"\t{fileInfo.LastWriteTime:yyyyMMddHHmmss}"
+                    + $"\t{fileInfo.Length}";
             }
             
             if (Directory.Exists(path))
@@ -234,10 +234,13 @@ namespace VirtualEnvironment.Inventory
                 return path;
 
             var collectionBuilder = new StringBuilder();
-            var collector = registryKey.GetValueNames()
-                .Select(valueName => $"{valueName}:{registryKey.GetValue(valueName)}")
-                .ToList();
-            StringBuilderAppendLineSynchronized(collectionBuilder, String.Join(";", collector));
+            StringBuilderAppendLineSynchronized(collectionBuilder, $":{ComputeRegistryKeyHash(registryKey)}");
+            registryKey.GetValueNames()
+                .Select(valueName =>
+                    $"{valueName}:{ComputeRegistryKeyHash(registryKey, valueName)}")
+                .ToList()
+                .ForEach(line =>
+                    StringBuilderAppendLineSynchronized(collectionBuilder, line));
             
             foreach (var subKeyName in registryKey.GetSubKeyNames())
                 try
@@ -251,6 +254,18 @@ namespace VirtualEnvironment.Inventory
                 }
             
             return collectionBuilder.ToString();
+        }
+
+        private static string ComputeRegistryKeyHash(RegistryKey registryKey, string valueName = "")
+        {
+            var registryKeyValue = registryKey.GetValue(valueName);
+            var registryKeyHash = !(registryKeyValue is null)
+                ? $"{registryKeyValue.GetType().Name}\t{registryKeyValue}"
+                : $"{null}\t{null}";
+            using (SHA256 sha256 = SHA256.Create())
+                return Convert.ToBase64String(
+                    sha256.ComputeHash(
+                        Encoding.UTF8.GetBytes(registryKeyHash)));
         }
 
         private static void ScanRegistry(RegistryKey registryKey, string path, int depth, FileInfo output)
@@ -273,19 +288,22 @@ namespace VirtualEnvironment.Inventory
             }
             else
             {
-                var collector = registryKey.GetValueNames()
-                    .Select(valueName => $"{valueName}:{registryKey.GetValue(valueName)}")
-                    .ToList();
-                var hash = String.Join(";", collector);
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    var inputBytes = Encoding.UTF8.GetBytes(hash);
-                    var hashBytes = sha256.ComputeHash(inputBytes);
-                    hash = Convert.ToBase64String(hashBytes);
-                }
-                var scanRecord = $"{path}\t{hash}\t{ComputePathHash(path)}";
+                var scanRecordHash = ComputeRegistryKeyHash(registryKey);
+                var scanRecord = $"{path}\t{scanRecordHash}\t{ComputePathHash(path)}";
                 WriteScanRecord(output, scanRecord);
                 
+                registryKey
+                    .GetValueNames()
+                    .Where(valueName =>
+                        !String.IsNullOrWhiteSpace(valueName))
+                    .ToList()
+                    .ForEach(valueName =>
+                    {
+                        scanRecordHash = ComputeRegistryKeyHash(registryKey, valueName);
+                        scanRecord = $"{path}:{valueName}\t{scanRecordHash}\t{ComputePathHash(path)}";
+                        WriteScanRecord(output, scanRecord);
+                    });
+                        
                 foreach (var subKeyName in registryKey.GetSubKeyNames())
                     try
                     {
