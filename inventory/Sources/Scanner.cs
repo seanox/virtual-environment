@@ -66,16 +66,16 @@ namespace VirtualEnvironment.Inventory
             // only be used read-only and Users is a real-time copy/reference to
             // CurrentUser that is automatically maintained by Windows.
             var scanRegistryOutput = new FileInfo($"{timestamp}-R.scan");
-            Messages.Push(Messages.Type.Trace, "Scan registry HKEY_CLASSES_ROOT");
+            Messages.Push(Messages.Type.Trace, $"Scan registry {Registry.ClassesRoot.Name}");
             using (RegistryKey rootKey = Registry.ClassesRoot)
                 ScanRegistry(rootKey, "HKEY_CLASSES_ROOT", depth, scanRegistryOutput);
-            Messages.Push(Messages.Type.Trace, "Scan registry HKEY_CURRENT_CONFIG");
+            Messages.Push(Messages.Type.Trace, $"Scan registry {Registry.CurrentConfig.Name}");
             using (RegistryKey rootKey = Registry.CurrentConfig)
                 ScanRegistry(rootKey, "HKEY_CURRENT_CONFIG", depth, scanRegistryOutput);
-            Messages.Push(Messages.Type.Trace, "Scan registry HKEY_CURRENT_USER");
+            Messages.Push(Messages.Type.Trace, $"Scan registry {Registry.CurrentUser.Name}");
             using (RegistryKey rootKey = Registry.CurrentUser)
                 ScanRegistry(rootKey, "HKEY_CURRENT_USER", depth, scanRegistryOutput);
-            Messages.Push(Messages.Type.Trace, "Scan registry HKEY_LOCAL_MACHINE");
+            Messages.Push(Messages.Type.Trace, $"Scan registry {Registry.LocalMachine.Name}");
             using (RegistryKey rootKey = Registry.LocalMachine)
                 ScanRegistry(rootKey, "HKEY_LOCAL_MACHINE", depth, scanRegistryOutput);
             
