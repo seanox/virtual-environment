@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\Messages.cs" />
+    <Compile Include="Sources\Paths.cs" />
     <Compile Include="Sources\Program.cs" />
     <Content Include="Sources\Program.ico" />
     <Compile Include="Sources\Scanner.cs" />
