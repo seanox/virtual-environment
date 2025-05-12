@@ -32,37 +32,9 @@ namespace VirtualEnvironment.Inventory
 {
     internal static class Scanner
     {
-        private static readonly List<string> SYSTEM_NOT_RELEVANT_DIRECTORIES;
-        
         // Parallel does not bring any advantages here, as the scan and compare
         // functions are not CPU-intensive enough
-
-        static Scanner()
-        {
-            SYSTEM_NOT_RELEVANT_DIRECTORIES = new List<string>
-            {
-                Paths.SYSTEM_MSO_CACHE_PATH.ToLower(),
-                Paths.SYSTEM_TEMP_PATH.ToLower(),
-                Paths.SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
-
-                Paths.SYSTEM_WINDOWS_CSC_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_DEBUG_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_INSTALLER_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_LOGS_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_PREFETCH_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_TEMP_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_UUS_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_WAAS_PATH.ToLower(),
-                Paths.SYSTEM_WINDOWS_WINSXS_PATH.ToLower(),
-                
-                Paths.USER_LOCAL_TEMP_PATH.ToLower(),
-                Paths.USER_LOCALLOW_TEMP_PATH.ToLower(),
-                Paths.USER_ROAMING_TEMP_PATH.ToLower(),
-                Paths.USER_DOWNLOADS_PATH.ToLower()
-            };
-        }
-
+        
         private static void WriteScanRecord(FileInfo output, string scanRecord)
         {
             lock (output)
@@ -87,7 +59,6 @@ namespace VirtualEnvironment.Inventory
         {
             var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
-            SYSTEM_NOT_RELEVANT_DIRECTORIES.Add($@"{scanFileSystemOutput.FullName.ToLower()}");
             Messages.Push(Messages.Type.Trace, "Scan file system");
             ScanFileSystem(Paths.SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
 
@@ -200,8 +171,7 @@ namespace VirtualEnvironment.Inventory
 
         private static void ScanFileSystem(string path, int depth, FileInfo output)
         {
-            if (SYSTEM_NOT_RELEVANT_DIRECTORIES.Contains(Paths.PathNormalize(path).ToLower())
-                    || path.StartsWith($@"{Paths.SYSTEM_DRIVE_PATH}$", StringComparison.OrdinalIgnoreCase)
+            if (String.Equals(output.FullName, Paths.PathNormalize(path), StringComparison.OrdinalIgnoreCase)
                     || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
                 return;
 
