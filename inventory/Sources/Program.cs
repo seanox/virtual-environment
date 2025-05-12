@@ -68,20 +68,30 @@ namespace VirtualEnvironment.Inventory
                 var compareFile = Scanner.Scan(depth);
                 if (compareFile is null)
                     return;
+                var timestamp = Path.GetFileNameWithoutExtension(compareFile.Name);
 
                 Messages.Push(Messages.Type.Trace, "Mirror file system");
                 File.ReadAllLines(compareFile.FullName)
                     .Where(line => !String.IsNullOrWhiteSpace(line))
                     .Where(line => line.StartsWith("%"))
                     .ToList()
-                    .ForEach(Storage.MirrorFileSystemLocation);
+                    .ForEach(line =>
+                    {
+                        Storage.MirrorFileSystemLocation(timestamp, line);
+                        var location = new FileInfo(
+                            Environment.ExpandEnvironmentVariables(
+                                Regex.Replace(line, "%%([A-Z])%", "$1:")));
+                        if (Directory.Exists(location.FullName)
+                                && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth +1)
+                            Storage.MirrorFileSystemLocation(timestamp, location.FullName, true);
+                    });
 
                 Messages.Push(Messages.Type.Trace, "Mirror registry");
                 File.ReadAllLines(compareFile.FullName)
                     .Where(line => !String.IsNullOrWhiteSpace(line))
                     .Where(line => line.StartsWith("HKEY_", StringComparison.OrdinalIgnoreCase))
                     .ToList()
-                    .ForEach(Storage.MirrorRegistryKey);
+                    .ForEach(line => Storage.MirrorRegistryKey(timestamp, line));
                 
                 Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
