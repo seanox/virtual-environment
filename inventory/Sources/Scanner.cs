@@ -58,6 +58,7 @@ namespace VirtualEnvironment.Inventory
         internal static FileInfo Scan(int depth)
         {
             var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            
             var scanFileSystemOutput = new FileInfo($"{timestamp}-F.scan");
             Messages.Push(Messages.Type.Trace, "Scan file system");
             ScanFileSystem(Paths.SYSTEM_DRIVE_PATH, depth, scanFileSystemOutput);
@@ -312,7 +313,7 @@ namespace VirtualEnvironment.Inventory
                     }
                     catch (SecurityException)
                     {
-                        WriteScanRecord(output, $"{path}\t000");
+                        WriteScanRecord(output, $"{path}\\{subKeyName}\t000");
                     }
             }
         }
