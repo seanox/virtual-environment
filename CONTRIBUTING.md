@@ -10,7 +10,7 @@
 ## Code Conventions
 
 ### Action
-- PascalCamelCase
+- PascalCase
   ```csharp
   Action<string> OutputMessage = message =>
       Console.WriteLine(message);
@@ -23,7 +23,7 @@
   ```
 
 ### Func
-- PascalCamelCase
+- PascalCase
   ```csharp
   Func<string, bool> IsEmptyString = text =>
       String.IsNullOrWhiteSpace(text);
