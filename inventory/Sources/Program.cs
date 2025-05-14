@@ -32,7 +32,7 @@ namespace VirtualEnvironment.Inventory
     internal static class Program
     {
         private static readonly Regex COMMAND_PATTERN = new Regex(
-            @"^(depth)(?::(\d{1-8}))?$", 
+            @"^(depth)(?::(\d{1,8}))?$", 
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
         
@@ -68,36 +68,34 @@ namespace VirtualEnvironment.Inventory
                 var compareFile = Scanner.Scan(depth);
                 if (compareFile is null)
                     return;
+                
                 var timestamp = Path.GetFileNameWithoutExtension(compareFile.Name);
 
-                Messages.Push(Messages.Type.Trace, "Mirror file system");
-                File.ReadAllLines(compareFile.FullName)
-                    .Where(line => !String.IsNullOrWhiteSpace(line))
-                    .Where(line => line.StartsWith("%"))
-                    .Select(line => line.Trim())
-                    .ToList()
-                    .ForEach(line =>
-                    {
-                        var location = new FileInfo(
-                            Environment.ExpandEnvironmentVariables(
-                                Regex.Replace(line, "%%([A-Z])%", "$1:")));
-                        var recursive = Directory.Exists(location.FullName)
-                                && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth;
-                        Storage.MirrorFileSystemLocation(timestamp, line, recursive);
-                    });
-
+                var deltas = File.ReadAllLines(compareFile.FullName); 
+                
+                foreach (var line in deltas)
+                {
+                    if (String.IsNullOrWhiteSpace(line)
+                            || !line.StartsWith("%"))
+                        continue;
+                    var location = new FileInfo(
+                        Environment.ExpandEnvironmentVariables(
+                            Regex.Replace(line.Trim(), "%([A-Za-z]:)%", "$1")));
+                    var recursive = Directory.Exists(location.FullName)
+                            && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth;
+                    Storage.MirrorFileSystemLocation(timestamp, line.Trim(), recursive);
+                }
+                
                 Messages.Push(Messages.Type.Trace, "Mirror registry");
-                File.ReadAllLines(compareFile.FullName)
-                    .Where(line => !String.IsNullOrWhiteSpace(line))
-                    .Where(line => line.StartsWith("HKEY_", StringComparison.OrdinalIgnoreCase))
-                    .Select(line => line.Trim())
-                    .ToList()
-                    .ForEach(line =>
-                    {
-                        var recursive = !line.Contains(":")
-                              && line.Split(Path.DirectorySeparatorChar).Length >= depth;
-                        Storage.MirrorRegistryKey(timestamp, line, recursive);
-                    });
+                foreach (var line in deltas)
+                {
+                    if (String.IsNullOrWhiteSpace(line)
+                            || !line.StartsWith("HKEY_", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    var recursive = !line.Contains(":")
+                            && line.Split(Path.DirectorySeparatorChar).Length >= depth;
+                    Storage.MirrorRegistryKey(timestamp, line.Trim(), recursive);
+                }
                 
                 Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
