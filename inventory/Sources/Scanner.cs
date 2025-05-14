@@ -180,7 +180,7 @@ namespace VirtualEnvironment.Inventory
             {
                 var currentDepth = path.Count(symbol => symbol == Path.DirectorySeparatorChar);
                 if (Directory.Exists(path)
-                        && currentDepth >= depth
+                        && currentDepth > depth
                         && depth >= 0)
                 {
                     var filesystemInfos = CollectFileSystemInfos(path);
@@ -273,8 +273,8 @@ namespace VirtualEnvironment.Inventory
         {
             if (registryKey is null)
                 return;
-         
-            var currentDepth = path.Count(symbol => symbol == '\\') +1;
+            
+            var currentDepth = path.Count(symbol => symbol == Path.DirectorySeparatorChar);
             if (currentDepth >= depth)
             {
                 var registryKeys = CollectRegistryKeys(registryKey, path);
