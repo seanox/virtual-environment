@@ -70,20 +70,25 @@ namespace VirtualEnvironment.Inventory
         private static readonly Regex TEXT_ASCII_7_PATTERN =
             new Regex(@"^[\x20-\x7F]*$");
         
-        private static readonly List<string> FILESYSTEM_DIRECTORIES_EXCLUDES;
-        private static readonly List<string> REGISTRY_KEYS_EXCLUDES;
+        private static readonly List<string> FILESYSTEM_EXCLUDES;
+        private static readonly List<string> REGISTRY_EXCLUDES;
         
         private static string STORAGE => 
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         
         static Storage()
         {
-            FILESYSTEM_DIRECTORIES_EXCLUDES = new List<string>
+            FILESYSTEM_EXCLUDES = new List<string>
             {
                 Paths.SYSTEM_VOLUME_INFORMATION_PATH.ToLower(),
                 
                 Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "MSOCache")).ToLower(),
                 Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "Temp")).ToLower(),
+
+                Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "bootstat.dat")).ToLower(),
+                Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "dumpfile.dmp")).ToLower(),
+                Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "pagefile.sys")).ToLower(),
+                Paths.PathNormalize(Path.Combine(Paths.SYSTEM_DRIVE_PATH, "swapfile.sys")).ToLower(),
 
                 Paths.PathNormalize(Path.Combine(Paths.USER_PROFILE_PATH, @"AppData\Local\Temp")).ToLower(),
                 Paths.PathNormalize(Path.Combine(Paths.USER_PROFILE_PATH, @"AppData\LocalLow\Temp")).ToLower(),
@@ -102,7 +107,7 @@ namespace VirtualEnvironment.Inventory
                 Paths.PathNormalize(Path.Combine(Paths.SYSTEM_ROOT_PATH, "WinSxS")).ToLower()
             };
             
-            REGISTRY_KEYS_EXCLUDES = new List<string>
+            REGISTRY_EXCLUDES = new List<string>
             {
                 (@"HKEY_CLASSES_ROOT\Local Settings\MuiCache").ToLower(),
                 (@"HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\TypedURLs").ToLower(),
@@ -149,11 +154,17 @@ namespace VirtualEnvironment.Inventory
                     throw new IOException("Maximum path length exceeded");
                 
                 var locationFilter = locationFileInfo.FullName.ToLower();
-                if (REGISTRY_KEYS_EXCLUDES.Contains(locationFilter)
-                        || REGISTRY_KEYS_EXCLUDES.Any(exclude =>
+                if (FILESYSTEM_EXCLUDES.Contains(locationFilter)
+                        || FILESYSTEM_EXCLUDES.Any(exclude =>
                             locationFilter.StartsWith($@"{exclude}{Path.DirectorySeparatorChar}")))
                     return;
-                
+                if (locationFileInfo.FullName.StartsWith($"{Paths.SYSTEM_DRIVE_PATH}$",
+                        StringComparison.OrdinalIgnoreCase))
+                    return;
+                if (File.Exists(locationFileInfo.FullName)
+                        && locationFileInfo.Length > 1000 * 1024 * 1024)
+                    throw new IOException("Maximum file length exceeded");
+
                 if (Directory.Exists(locationFileInfo.FullName))
                 {
                     Directory.CreateDirectory(storageFileInfo.FullName);
@@ -276,8 +287,8 @@ namespace VirtualEnvironment.Inventory
                 else return;
 
                 var registrySubKeyPathFilter = ($@"{registryRootKey.Name}\{registrySubKeyPath}").ToLower();
-                if (REGISTRY_KEYS_EXCLUDES.Contains(registrySubKeyPathFilter)
-                        || REGISTRY_KEYS_EXCLUDES.Any(exclude =>
+                if (REGISTRY_EXCLUDES.Contains(registrySubKeyPathFilter)
+                        || REGISTRY_EXCLUDES.Any(exclude =>
                             registrySubKeyPathFilter.StartsWith($@"{exclude}\")))
                     return;
 
