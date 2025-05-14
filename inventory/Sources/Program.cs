@@ -74,24 +74,30 @@ namespace VirtualEnvironment.Inventory
                 File.ReadAllLines(compareFile.FullName)
                     .Where(line => !String.IsNullOrWhiteSpace(line))
                     .Where(line => line.StartsWith("%"))
+                    .Select(line => line.Trim())
                     .ToList()
                     .ForEach(line =>
                     {
-                        Storage.MirrorFileSystemLocation(timestamp, line);
                         var location = new FileInfo(
                             Environment.ExpandEnvironmentVariables(
                                 Regex.Replace(line, "%%([A-Z])%", "$1:")));
-                        if (Directory.Exists(location.FullName)
-                                && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth +1)
-                            Storage.MirrorFileSystemLocation(timestamp, location.FullName, true);
+                        var recursive = Directory.Exists(location.FullName)
+                                && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth;
+                        Storage.MirrorFileSystemLocation(timestamp, line, recursive);
                     });
 
                 Messages.Push(Messages.Type.Trace, "Mirror registry");
                 File.ReadAllLines(compareFile.FullName)
                     .Where(line => !String.IsNullOrWhiteSpace(line))
                     .Where(line => line.StartsWith("HKEY_", StringComparison.OrdinalIgnoreCase))
+                    .Select(line => line.Trim())
                     .ToList()
-                    .ForEach(line => Storage.MirrorRegistryKey(timestamp, line));
+                    .ForEach(line =>
+                    {
+                        var recursive = !line.Contains(":")
+                              && line.Split(Path.DirectorySeparatorChar).Length >= depth;
+                        Storage.MirrorRegistryKey(timestamp, line, recursive);
+                    });
                 
                 Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
