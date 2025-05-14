@@ -19,7 +19,9 @@
 // the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace VirtualEnvironment.Inventory
@@ -61,22 +63,39 @@ namespace VirtualEnvironment.Inventory
                 systemDrive = "C:";
             SYSTEM_DRIVE = systemDrive;
             SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper() + Path.DirectorySeparatorChar;
+
+            var environmentVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "ProgramData", $@"{SYSTEM_DRIVE}\ProgramData" },
+                { "ProgramFiles", $@"{SYSTEM_DRIVE}\Program Files" },
+                { "ProgramFiles(x86)", $@"{SYSTEM_DRIVE}\Program Files (x86)" },
+                { "SystemRoot", $@"{SYSTEM_DRIVE}\Windows" },
+                { "WinDir", $@"{SYSTEM_DRIVE}\Windows" },
+            };
             
+            foreach (var key in environmentVariables.Keys.ToList())
+            {
+                var value = Environment.GetEnvironmentVariable(key);
+                if (!string.IsNullOrEmpty(value))
+                    environmentVariables[key] = value;
+            }
+
             SYSTEM_VOLUME_INFORMATION_PATH =
                 PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "System Volume Information"));
 
-            SYSTEM_PROGRAM_FILES_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles"));
-            SYSTEM_PROGRAM_FILES_X86_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramFiles(x86)"));
-            SYSTEM_PROGRAM_DATA_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramData"));
+            SYSTEM_PROGRAM_FILES_PATH = PathNormalize(environmentVariables["ProgramFiles"]);
+            SYSTEM_PROGRAM_FILES_X86_PATH = PathNormalize(environmentVariables["ProgramFiles(x86)"]);
+            SYSTEM_PROGRAM_DATA_PATH = PathNormalize(environmentVariables["ProgramData"]);
 
-            SYSTEM_ROOT_PATH = PathNormalize(Environment.GetEnvironmentVariable("SystemRoot"));
-            SYSTEM_WINDOWS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WinDir"));
+            SYSTEM_ROOT_PATH = PathNormalize(environmentVariables["SystemRoot"]);
+            SYSTEM_WINDOWS_PATH = PathNormalize(environmentVariables["WinDir"]);
 
             USER_PROFILE_PATH = PathNormalize(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
         }
 
         internal static string PathNormalize(string path)
         {
+            path = (path ?? "").Trim();
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 return path.TrimEnd(Path.DirectorySeparatorChar);
             return path;        

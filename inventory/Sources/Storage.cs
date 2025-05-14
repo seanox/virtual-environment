@@ -134,7 +134,7 @@ namespace VirtualEnvironment.Inventory
                 
         private static FileInfo FileSystemNormalizeLocation(string location)
         {
-            location = Regex.Replace(location, "%%([A-Z])%", "$1:");
+            location = Regex.Replace(location, "%([A-Za-z]:)%", "$1");
             location = Environment.ExpandEnvironmentVariables(location);
             return new FileInfo(location.Trim());
         }

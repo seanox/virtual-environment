@@ -240,12 +240,10 @@ namespace VirtualEnvironment.Inventory
 
             var collectionBuilder = new StringBuilder();
             StringBuilderAppendLineSynchronized(collectionBuilder, $":{ComputeRegistryKeyHash(registryKey)}");
-            registryKey.GetValueNames()
-                .Select(valueName =>
-                    $"{valueName}:{ComputeRegistryKeyHash(registryKey, valueName)}")
-                .ToList()
-                .ForEach(line =>
-                    StringBuilderAppendLineSynchronized(collectionBuilder, line));
+
+            foreach (var valueName in registryKey.GetValueNames())
+                StringBuilderAppendLineSynchronized(collectionBuilder,
+                    $"{valueName}:{ComputeRegistryKeyHash(registryKey, valueName)}");
             
             foreach (var subKeyName in registryKey.GetSubKeyNames())
                 try
@@ -296,18 +294,15 @@ namespace VirtualEnvironment.Inventory
                 var scanRecordHash = ComputeRegistryKeyHash(registryKey);
                 var scanRecord = $"{path}\t{scanRecordHash}\t{ComputePathHash(path)}";
                 WriteScanRecord(output, scanRecord);
-                
-                registryKey
-                    .GetValueNames()
-                    .Where(valueName =>
-                        !String.IsNullOrWhiteSpace(valueName))
-                    .ToList()
-                    .ForEach(valueName =>
-                    {
-                        scanRecordHash = ComputeRegistryKeyHash(registryKey, valueName);
-                        scanRecord = $"{path}:{valueName}\t{scanRecordHash}\t{ComputePathHash(path)}";
-                        WriteScanRecord(output, scanRecord);
-                    });
+
+                foreach (var valueName in registryKey.GetValueNames())
+                {
+                    if (String.IsNullOrWhiteSpace(valueName))
+                        continue;
+                    scanRecordHash = ComputeRegistryKeyHash(registryKey, valueName);
+                    scanRecord = $"{path}:{valueName}\t{scanRecordHash}\t{ComputePathHash(path)}";
+                    WriteScanRecord(output, scanRecord);
+                }
                         
                 foreach (var subKeyName in registryKey.GetSubKeyNames())
                     try
