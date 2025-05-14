@@ -172,12 +172,12 @@ namespace VirtualEnvironment.Inventory
 
         private static void ScanFileSystem(string path, int depth, FileInfo output)
         {
-            if (String.Equals(output.FullName, Paths.PathNormalize(path), StringComparison.OrdinalIgnoreCase)
-                    || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
-                return;
-
             try
             {
+                if (String.Equals(output.FullName, Paths.PathNormalize(path), StringComparison.OrdinalIgnoreCase)
+                        || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
+                    return;
+
                 var currentDepth = path.Count(symbol => symbol == Path.DirectorySeparatorChar);
                 if (Directory.Exists(path)
                         && currentDepth > depth
@@ -217,8 +217,12 @@ namespace VirtualEnvironment.Inventory
                 }
                 else WriteScanRecord(output, $"{Paths.PathAbstract(path)}\t0000");
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception exception)
             {
+                if (!(exception is UnauthorizedAccessException)
+                        && !(exception is FileNotFoundException)
+                        && !(exception is DirectoryNotFoundException))
+                    throw exception;
                 WriteScanRecord(output, $"{Paths.PathAbstract(path)}\t0000");
             }
         }
