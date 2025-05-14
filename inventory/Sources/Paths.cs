@@ -114,7 +114,7 @@ namespace VirtualEnvironment.Inventory
             if (PathStartsWithOrEquals(path, SYSTEM_ROOT_PATH))
                 return PathAbstractAlias(path, SYSTEM_ROOT_PATH, "%SystemRoot%");
             path = Regex.Replace(path, @"^([A-Za-z]):", match =>
-                $"%%{match.Groups[1].Value.ToUpper()}%"); 
+                $"%{match.Groups[1].Value.ToUpper()}:%"); 
             return path;
         }
     }
