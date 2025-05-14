@@ -41,31 +41,18 @@ namespace VirtualEnvironment.Inventory
 
         internal static readonly string SYSTEM_DRIVE;
         internal static readonly string SYSTEM_DRIVE_PATH;
-        internal static readonly string SYSTEM_MSO_CACHE_PATH;
-        internal static readonly string SYSTEM_TEMP_PATH;
+
         internal static readonly string SYSTEM_VOLUME_INFORMATION_PATH;
-            
-        internal static readonly string SYSTEM_ROOT_PATH;
-        internal static readonly string SYSTEM_WINDOWS_CSC_PATH;
-        internal static readonly string SYSTEM_WINDOWS_DEBUG_PATH;
-        internal static readonly string SYSTEM_WINDOWS_INSTALLER_PATH;
-        internal static readonly string SYSTEM_WINDOWS_LOGS_PATH;
-        internal static readonly string SYSTEM_WINDOWS_PREFETCH_PATH;
-        internal static readonly string SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH;
-        internal static readonly string SYSTEM_WINDOWS_TEMP_PATH;
-        internal static readonly string SYSTEM_WINDOWS_UUS_PATH;
-        internal static readonly string SYSTEM_WINDOWS_WAAS_PATH;
-        internal static readonly string SYSTEM_WINDOWS_WINSXS_PATH;
-        
+
         internal static readonly string SYSTEM_PROGRAM_FILES_PATH;
         internal static readonly string SYSTEM_PROGRAM_FILES_X86_PATH;
         internal static readonly string SYSTEM_PROGRAM_DATA_PATH;
+
+        internal static readonly string SYSTEM_ROOT_PATH;
+        
+        internal static readonly string SYSTEM_WINDOWS_PATH;
         
         internal static readonly string USER_PROFILE_PATH;
-        internal static readonly string USER_LOCAL_TEMP_PATH;
-        internal static readonly string USER_LOCALLOW_TEMP_PATH;
-        internal static readonly string USER_ROAMING_TEMP_PATH;
-        internal static readonly string USER_DOWNLOADS_PATH;
 
         static Paths()
         {
@@ -74,9 +61,7 @@ namespace VirtualEnvironment.Inventory
                 systemDrive = "C:";
             SYSTEM_DRIVE = systemDrive;
             SYSTEM_DRIVE_PATH = PathNormalize(systemDrive).ToUpper() + Path.DirectorySeparatorChar;
-
-            SYSTEM_MSO_CACHE_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "MSOCache"));
-            SYSTEM_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "Temp"));
+            
             SYSTEM_VOLUME_INFORMATION_PATH =
                 PathNormalize(Path.Combine(SYSTEM_DRIVE_PATH, "System Volume Information"));
 
@@ -85,23 +70,9 @@ namespace VirtualEnvironment.Inventory
             SYSTEM_PROGRAM_DATA_PATH = PathNormalize(Environment.GetEnvironmentVariable("ProgramData"));
 
             SYSTEM_ROOT_PATH = PathNormalize(Environment.GetEnvironmentVariable("SystemRoot"));
-            SYSTEM_WINDOWS_CSC_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "CSC"));
-            SYSTEM_WINDOWS_DEBUG_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Debug"));
-            SYSTEM_WINDOWS_INSTALLER_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Installer"));
-            SYSTEM_WINDOWS_LOGS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Logs"));
-            SYSTEM_WINDOWS_PREFETCH_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Prefetch"));
-            SYSTEM_WINDOWS_SOFTWARE_DISTRIBUTION_PATH =
-                PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "SoftwareDistribution"));
-            SYSTEM_WINDOWS_TEMP_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "Temp"));
-            SYSTEM_WINDOWS_UUS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "UUS"));
-            SYSTEM_WINDOWS_WAAS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WaaS"));
-            SYSTEM_WINDOWS_WINSXS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WinSxS"));
+            SYSTEM_WINDOWS_PATH = PathNormalize(Path.Combine(SYSTEM_ROOT_PATH, "WinDir"));
 
             USER_PROFILE_PATH = PathNormalize(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            USER_LOCAL_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Local\Temp"));
-            USER_LOCALLOW_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\LocalLow\Temp"));
-            USER_ROAMING_TEMP_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"AppData\Roaming\Temp"));
-            USER_DOWNLOADS_PATH = PathNormalize(Path.Combine(USER_PROFILE_PATH, @"Downloads"));
         }
 
         internal static string PathNormalize(string path)
