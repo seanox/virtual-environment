@@ -4,7 +4,7 @@
 //
 // Virtual Environment Startup
 // Starts a batch script with the same name minimized.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -32,6 +32,9 @@ namespace VirtualEnvironment.Startup
         [STAThread]
         private static void Main(string[] arguments)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var applicationDirectory = Path.GetDirectoryName(applicationPath);
             var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
