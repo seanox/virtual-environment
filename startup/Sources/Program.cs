@@ -40,13 +40,13 @@ namespace VirtualEnvironment.Startup
             var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
 
             var scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
-            if (File.Exists(Path.Combine(".", Path.GetFileName(scriptName))))
-                applicationDirectory = ".";
-
             var scriptFile = Path.Combine(applicationDirectory, scriptName);
             if (!File.Exists(scriptFile))
             {
-                MessageBox.Show($"The required {scriptName} file was not found", applicationName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show($"The required {scriptName} file was not found",
+                    applicationName,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Stop);
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace VirtualEnvironment.Startup
                 UseShellExecute = true,
                 CreateNoWindow  = true,
 
-                WindowStyle = ProcessWindowStyle.Minimized,
+                WindowStyle = ProcessWindowStyle.Hidden,
 
                 FileName = scriptFile,
                 WorkingDirectory = applicationDirectory,
@@ -68,12 +68,22 @@ namespace VirtualEnvironment.Startup
             };
             
             if (arguments?.Length > 0)
-                processStartInfo.Arguments = String.Join(" ", arguments
-                        .Select(argument => $"\"{argument}\""));
-                
-            var process = new Process();
-            process.StartInfo = processStartInfo;
-            process.Start();
+                processStartInfo.Arguments = String.Join(" ",
+                    arguments.Select(argument => $"\"{argument.Replace("\"", "\\\"") }\""));
+
+            try
+            {
+                var process = new Process();
+                process.StartInfo = processStartInfo;
+                process.Start();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show($"The program start has failed{System.Environment.NewLine}{exception.Message}",
+                    applicationName,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }
