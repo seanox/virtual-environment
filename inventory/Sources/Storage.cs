@@ -187,7 +187,7 @@ namespace VirtualEnvironment.Inventory
             catch (Exception)
             {
                 Messages.Push(Messages.Type.Warning,
-                    "Mirror file system failed",
+                    "Mirror file system skipped",
                     FileSystemNormalizeLocation(location).FullName);
             }
         }
