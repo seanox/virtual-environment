@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
 [assembly: AssemblyProduct("Inventory")]
-[assembly: AssemblyCopyright("Copyright © 2025 Seanox Software Solutions")]
+[assembly: AssemblyCopyright("Copyright © 0000 Seanox Software Solutions")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
