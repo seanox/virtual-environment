@@ -20,7 +20,7 @@ Arguments are also supported and passed to the batch script.
 
 
 # Download
-Startup is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Program%20Portables/Extensions)
+Startup is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Programs/Platform)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/releases
