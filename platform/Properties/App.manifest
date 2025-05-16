@@ -8,4 +8,9 @@
       </requestedPrivileges>
     </security>
   </trustInfo>
+  <asmv3:application>
+    <asmv3:windowsSettings>
+      <dpiAware>true/PM</dpiAware>
+    </asmv3:windowsSettings>
+  </asmv3:application>
 </assembly>
