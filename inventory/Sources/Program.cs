@@ -57,6 +57,8 @@ namespace VirtualEnvironment.Inventory
 
             try
             {
+                AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+                
                 Messages.Subscribe(new Subscription());
                 
                 var depth = SCAN_DEPTH_DEFAULT;
@@ -110,6 +112,13 @@ namespace VirtualEnvironment.Inventory
                         + $"{Environment.NewLine}{exception.StackTrace}";
                 Messages.Push(Messages.Type.Error, content);
             }
+        }
+        
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
+        {
+            Messages.Push(Messages.Type.Error,
+                "Unexpected error occurred.",
+                (Exception)exceptionEvent.ExceptionObject);
         }
 
         private class InvalidUsageException : Exception
