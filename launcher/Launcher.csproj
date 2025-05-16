@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+s    <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
     <ApplicationIcon>Sources\Program.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -52,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sources\Messages.cs" />
     <Compile Include="Sources\Settings.cs" />
     <Compile Include="Sources\Program.cs" />
     <Compile Include="Sources\Tiles\MetaTile.cs" />
