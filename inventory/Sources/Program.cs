@@ -101,7 +101,7 @@ namespace VirtualEnvironment.Inventory
                 
                 Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
-            catch (InvalidUsageException exception)
+            catch (InvalidUsageException)
             {
                 Messages.Push(Messages.Type.Exit,
                     data:$"usage: {Path.GetFileName(applicationPath)} [scan:depth]");
@@ -175,7 +175,7 @@ namespace VirtualEnvironment.Inventory
                         var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                             .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
                         var banner = new StringBuilder()
-                            .AppendLine(String.Format("Seanox Inventory [{0} {1}]", version, build))
+                            .AppendLine($"Seanox Inventory [{version} {build}]")
                             .AppendLine($"{copyright.Replace("©", "(C)")}")
                             .ToString();
                         Console.WriteLine(banner);
