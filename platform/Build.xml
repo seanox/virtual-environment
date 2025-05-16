@@ -57,13 +57,13 @@
       <replaceregexp match="(AssemblyCopyright\(&quot;.*?\s)\d{4}(\s.*?&quot;\))" replace="\1${release.info.year}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(AssemblyVersion\(&quot;)\d+(?:\.\d)+(&quot;\)" replace="\1${release.info.version}\2">
+      <replaceregexp match="(AssemblyVersion\(&quot;)\d+(?:\.\d)+(&quot;\))" replace="\1${release.info.version}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(AssemblyFileVersion\(&quot;)\d+(?:\.\d)+(&quot;\)" replace="\1${release.info.version}\2">
+      <replaceregexp match="(AssemblyFileVersion\(&quot;)\d+(?:\.\d)+(&quot;\))" replace="\1${release.info.version}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(AssemblyMetadata\(&quot;Build&quot;,\s*&quot;)\d++(&quot;\)" replace="\1${release.info.date}\2">
+      <replaceregexp match="(AssemblyMetadata\(&quot;Build&quot;,\s*&quot;)\d+(&quot;\))" replace="\1${release.info.date}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
