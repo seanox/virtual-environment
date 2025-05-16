@@ -88,7 +88,6 @@
         <EmbeddedResource Include="Sources\Worker.resx">
             <DependentUpon>Worker.cs</DependentUpon>
         </EmbeddedResource>
-        <Compile Include="Sources\Storage.cs" />
         <Compile Include="Sources\Worker.cs">
           <SubType>Form</SubType>
         </Compile>
