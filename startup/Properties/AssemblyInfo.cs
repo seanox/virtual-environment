@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Starts batch scripts without a console window.")]
+[assembly: AssemblyTitle("Startup for Seanox Virtual Environment")]
 [assembly: AssemblyDescription("Starts batch scripts without a console window.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
