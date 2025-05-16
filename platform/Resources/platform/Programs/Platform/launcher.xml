@@ -25,7 +25,7 @@
   <hotKey>8 + 27</hotKey>
 
   <!-- Cell size in pixels (height and width) -->
-  <gridSize>99</gridSize>
+  <gridSize>101</gridSize>
   <!-- Distance between cells in pixels -->
   <gridGap>25</gridGap>
   <!-- Distance from the border in the cells in pixels -->
@@ -33,7 +33,7 @@
   <!-- Radius for rounding the corners from the grid in pixels -->
   <gridCornerRadius>4</gridCornerRadius>
 
-  <!-- Scales the view according to the resolution of the primary screen. --> 
+  <!-- Scales the view according to the resolution of the primary screen. -->
   <autoScale>true</autoScale>
 
   <!-- 
