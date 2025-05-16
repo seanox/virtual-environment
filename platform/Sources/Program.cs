@@ -34,6 +34,9 @@ namespace VirtualEnvironment.Platform
         [STAThread]
         private static void Main (params string[] arguments)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            
             if (arguments == null)
                 arguments = new string[] {};
             var task = (arguments.ElementAtOrDefault(1) ?? String.Empty).ToLower();
@@ -89,7 +92,9 @@ namespace VirtualEnvironment.Platform
         
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
         {
-            Messages.Push(Messages.Type.Error, (Exception)exceptionEvent.ExceptionObject);
+            Messages.Push(Messages.Type.Error,
+                Resources.ApplicationUnexpectedErrorOccurred,
+                (Exception)exceptionEvent.ExceptionObject);
         }
         
         private class Subscription : Messages.ISubscriber
@@ -140,7 +145,6 @@ namespace VirtualEnvironment.Platform
                     if (!_continue)
                     {
                         var assembly = Assembly.GetExecutingAssembly();
-                        var name = assembly.GetName().Name;
                         var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
                         var version = assembly.GetName().Version;
                         var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
