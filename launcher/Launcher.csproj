@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-s    <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
+    <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
     <ApplicationIcon>Sources\Program.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
