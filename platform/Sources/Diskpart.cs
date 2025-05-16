@@ -330,10 +330,11 @@ namespace VirtualEnvironment.Platform
                 { "version", $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.x" }
             };
 
-            MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\inventory.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\launcher.xml");
             MigrateResourcePlatformFile(drive, @"\Programs\Platform\platform.dll");
+            MigrateResourcePlatformFile(drive, @"\Programs\Platform\startup.exe");
             MigrateResourcePlatformFile(drive, @"\Programs\Macros\macros.cmd");
             MigrateResourcePlatformFile(drive, @"\Programs\Macros\macro.cmd");
             MigrateResourcePlatformFile(drive, @"\Resources\platform.ico");
