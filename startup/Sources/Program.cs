@@ -69,7 +69,7 @@ namespace VirtualEnvironment.Startup
             
             if (arguments?.Length > 0)
                 processStartInfo.Arguments = String.Join(" ",
-                    arguments.Select(argument => $"\"{argument.Replace("\"", "\\\"") }\""));
+                    arguments.Select(argument => argument.Replace("\"", "\"\"\"")));
 
             try
             {
