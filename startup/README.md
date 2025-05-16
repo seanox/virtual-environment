@@ -3,12 +3,11 @@ Startup is a simple background launcher for batch scripts.
 
 The program expects in the current working directory or in the program directory
 a batch file of the same name with the file extension cmd that it starts with a
-minimized console window and then waits until the end of the batch script.
+hidden console window and then waits until the end of the batch script.
 
-If the startup program is renamed, this also affects the name of the expected
-batch script.
+Renaming the startup program also changes the expected name of the batch script.
 
-Arguments are also supported and passed to the batch script.
+Command-line arguments are supported and passed to the batch script.
 
 # System Requirement
 - Microsoft Windows 10 or higher
