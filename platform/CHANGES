@@ -4,7 +4,8 @@ BF: Review: Optimization and corrections
     - Resource for text output
     - Logging improved output structure
     - Settings uses the Windows API to read the INI file
-    - Build uses AssemblyInfo.cs for version and build number 
+    - Build uses AssemblyInfo.cs for version and build number
+    - Build uses conditional PropertyGroup
 BF: Settings: Correction to ignore invalid paths in section [FILES]
     Previously, the replacement of the placeholders was terminated without error
     after the first incorrect path and the initialization of the platform
@@ -45,7 +46,7 @@ CR: Platform: Reorganization of the environment variables
 CR: Settings: Refactoring and optimization
     - New names of the sections
       SETTINGS -> ENVIRONMENT
-      FILES    -> CUSTOMIZATION 
+      FILES    -> CUSTOMIZATION
     - New sections
       FILESYSTEM for automatically created symlinks in the host system
       REGISTRY for temporary registry entries in the host system
@@ -53,6 +54,11 @@ CR: Settings: Refactoring and optimization
     - The suffix of the template files that are created when filling the
       placeholders has been changed from -settings to -template.
       THE FILES MUST BE RENAMED WHEN THE PLATFORM IS UPDATED.
+CR: Platform: Update of platform tools
+    - /Programs/Platform/inventory.exe
+    - /Programs/Platform/launcher.exe
+    - /Programs/Platform/platform.dll
+    - /Programs/Platform/startup.exe
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach
