@@ -70,16 +70,12 @@ namespace VirtualEnvironment.Platform
             var diskpartScript = Resources.Texts[diskpartScriptName];
             diskpartScript = typeof(DiskpartProperties).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                     .Aggregate(diskpartScript, (current, field) =>
-                            current.Replace($"#[{field.Name.ToLower()}]", (field.GetValue(diskpartProperties) ?? String.Empty).ToString()));
+                            current.Replace($"#[{field.Name.ToLower()}]",
+                                (field.GetValue(diskpartProperties) ?? String.Empty).ToString()));
 
-            // In case the cleanup does not work and not so much junk
-            // accumulates in the temp directory, fixed file names are used.
-
-            var diskpartScriptTempFile = Path.GetTempFileName();
-            var diskpartScriptDirectory = Path.GetDirectoryName(diskpartScriptTempFile);
-            var diskpartScriptFile = Path.Combine(diskpartScriptDirectory, diskpartScriptName);
-            File.Delete(diskpartScriptFile);
-            File.Move(diskpartScriptTempFile, diskpartScriptFile);
+            var diskpartScriptFile = Path.Combine(
+                    Path.GetTempPath(),
+                    $"{Guid.NewGuid().ToString().ToUpper()}.diskpart");
 
             try
             {
