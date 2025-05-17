@@ -200,7 +200,7 @@ namespace VirtualEnvironment.Launcher
                         && Screen.FromControl(this).Bounds.Equals(bounds))
                     return;
                 
-                Invoke((MethodInvoker)delegate
+                BeginInvoke((MethodInvoker)delegate
                 {
                     _timer?.Change(Timeout.Infinite, Timeout.Infinite);
                     _timer?.Dispose();
