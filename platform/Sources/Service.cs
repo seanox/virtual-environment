@@ -77,7 +77,7 @@ namespace VirtualEnvironment.Platform
         {
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
 
-            foreach (var file in Settings.Customization)
+            foreach (var file in Settings.Customs)
                 SetupEnvironmentCustomizeFile(drive, file);
         }
 
