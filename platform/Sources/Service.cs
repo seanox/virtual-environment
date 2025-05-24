@@ -43,7 +43,7 @@ namespace VirtualEnvironment.Platform
         private static int ShutdownTimeout =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 3000 : 5000;
 
-        private static void SetupEnvironmentCustomizeFile(string drive, string file)
+        private static void AttachCustomizeFile(string drive, string file)
         {
             var targetFile = file.Replace("/", @"\").Trim();
             if (!targetFile.StartsWith(@"\"))
@@ -72,13 +72,15 @@ namespace VirtualEnvironment.Platform
             File.WriteAllText(targetFile, targetContent);
             File.SetLastWriteTime(templateFile, DateTime.Now);
         }
-        
-        private static void SetupEnvironment(string drive)
-        {
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
 
-            foreach (var file in Settings.Customs)
-                SetupEnvironmentCustomizeFile(drive, file);
+        private static void AttachHostFilesystem()
+        {
+            // TODO:
+        }
+        
+        private static void AttachHostRegistry()
+        {
+            // TODO:
         }
 
         internal static void Attach(string drive, string diskFile)
@@ -88,8 +90,12 @@ namespace VirtualEnvironment.Platform
 
             Diskpart.CanAttachDisk(drive, diskFile);
             Diskpart.AttachDisk(drive, diskFile);
-
-            SetupEnvironment(drive);
+            
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
+            AttachHostFilesystem();
+            AttachHostRegistry();
+            foreach (var file in Settings.Customs)
+                AttachCustomizeFile(drive, file);
                             
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ServiceAttachText);
             var batchResult = BatchExec(BatchType.Attach, drive + @"\Startup.cmd", "startup");
@@ -347,6 +353,16 @@ namespace VirtualEnvironment.Platform
                 batchResult.Failed = true;
                 return batchResult;
             }
+        }
+        
+        private static void DetachHostFilesystem()
+        {
+            // TODO:
+        }
+        
+        private static void DetachHostRegistry()
+        {
+            // TODO:
         }
 
         internal static void Detach(string drive, string diskFile)
