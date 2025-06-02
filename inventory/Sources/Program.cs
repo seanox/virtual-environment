@@ -57,6 +57,8 @@ namespace VirtualEnvironment.Inventory
 
             try
             {
+                AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+                
                 Messages.Subscribe(new Subscription());
                 
                 var depth = SCAN_DEPTH_DEFAULT;
@@ -99,7 +101,7 @@ namespace VirtualEnvironment.Inventory
                 
                 Messages.Push(Messages.Type.Trace, "Mirror completed");
             }
-            catch (InvalidUsageException exception)
+            catch (InvalidUsageException)
             {
                 Messages.Push(Messages.Type.Exit,
                     data:$"usage: {Path.GetFileName(applicationPath)} [scan:depth]");
@@ -110,6 +112,13 @@ namespace VirtualEnvironment.Inventory
                         + $"{Environment.NewLine}{exception.StackTrace}";
                 Messages.Push(Messages.Type.Error, content);
             }
+        }
+        
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
+        {
+            Messages.Push(Messages.Type.Error,
+                "Unexpected error occurred.",
+                (Exception)exceptionEvent.ExceptionObject);
         }
 
         private class InvalidUsageException : Exception
@@ -166,7 +175,7 @@ namespace VirtualEnvironment.Inventory
                         var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                             .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
                         var banner = new StringBuilder()
-                            .AppendLine(String.Format("Seanox Inventory [{0} {1}]", version, build))
+                            .AppendLine($"Seanox Inventory [{version} {build}]")
                             .AppendLine($"{copyright.Replace("©", "(C)")}")
                             .ToString();
                         Console.WriteLine(banner);

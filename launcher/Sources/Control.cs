@@ -122,7 +122,7 @@ namespace VirtualEnvironment.Launcher
             // necessary to undo this, as the launcher ends and Windows then
             // automatically cleans up the ShutdownBlockReason. 
             var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
-            var platformDrive = Environment.GetEnvironmentVariable("VT_HOMEDRIVE");
+            var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
             if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
                 ShutdownBlockReasonCreate(Handle, "Virtual environment must be shut down.");
             
@@ -200,7 +200,7 @@ namespace VirtualEnvironment.Launcher
                         && Screen.FromControl(this).Bounds.Equals(bounds))
                     return;
                 
-                Invoke((MethodInvoker)delegate
+                BeginInvoke((MethodInvoker)delegate
                 {
                     _timer?.Change(Timeout.Infinite, Timeout.Infinite);
                     _timer?.Dispose();
@@ -221,11 +221,11 @@ namespace VirtualEnvironment.Launcher
             }
             catch (Exception)
             {
-                MessageBox.Show("The settings do not contain a usable hot key."
-                        + $"{Environment.NewLine}Please check the node /settings/hotKey in file {Settings.FILE.Replace(" ", "\u00A0")}.",
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Messages.Push(Messages.Type.Error,
+                        "The settings do not contain a usable hot key.",
+                        $"Please check the node /settings/hotKey in file {Settings.FILE.Replace(" ", "\u00A0")}.");
                 if (_initial)
-                    Environment.Exit(0);
+                    Messages.Push(Messages.Type.Exit);
             }
         }
 
@@ -247,7 +247,7 @@ namespace VirtualEnvironment.Launcher
                 return;
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
-                Environment.Exit(0);
+                Messages.Push(Messages.Type.Exit);
 
             // For a short time, TopMost must be abandoned. It may be that
             // Windows asks for authorization or similar when starting programs
@@ -264,11 +264,12 @@ namespace VirtualEnvironment.Launcher
                 if (exception is Win32Exception
                         && ((Win32Exception)exception).NativeErrorCode == ERROR_CANCELLED)
                     return;
+                
+                Messages.Push(Messages.Type.Error,
+                        $"Error opening action: {metaTile.Settings.Destination}",
+                        exception.Message,
+                        exception.InnerException?.Message ?? "");
 
-                MessageBox.Show(($"Error opening action: {metaTile.Settings.Destination}"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             finally

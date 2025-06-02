@@ -104,10 +104,10 @@
     </ItemGroup>
     <ItemGroup Condition="'$(OutputType)' == 'WinExe'">
         <EmbeddedResource Include="Resources\platform\AutoRun.inf" />
-        <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\inventory.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\launcher.xml" />
+        <EmbeddedResource Include="Resources\platform\Programs\Platform\startup.exe" />
         <EmbeddedResource Include="Resources\platform\Programs\Platform\platform.dll" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macro.cmd" />
         <EmbeddedResource Include="Resources\platform\Programs\Macros\macros.cmd" />

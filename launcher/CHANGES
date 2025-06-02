@@ -1,11 +1,15 @@
-1.2.0 20250501
-BF: Launcher: Correction/optimization
+1.2.0 20250701
 BF: Launcher: Correction when using custom scaling
     Correction of the possibly incorrect calculation of
     FormWindowState.Maximized for custom scaling.
-CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
-CR: Platform: Simplification of the terminal action
-CR: Launcher: Optimization for shutdown and session ending
+CR: Platform: Optimization and corrections
+    - Omission of the steps recorder (deprecated by Microsoft)
+    - Simplification of the terminal action
+CR: Launcher: Optimization and corrections
+    - Shutdown and session ending
+    - Internal communication via message bus
+    - Build uses AssemblyInfo.cs for version and build number
+    - Adjustment to updated platform environment variables
 CR: Launcher: Added additional environment variables for the tile action
     For details, see the documentation/comments in the Settings.xml
     settings -> tiles -> tile -> environment

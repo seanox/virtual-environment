@@ -4,7 +4,7 @@
 //
 // Virtual Environment Startup
 // Starts a batch script with the same name minimized.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
@@ -32,18 +32,21 @@ namespace VirtualEnvironment.Startup
         [STAThread]
         private static void Main(string[] arguments)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var applicationDirectory = Path.GetDirectoryName(applicationPath);
             var applicationName = Path.GetFileNameWithoutExtension(applicationPath);
 
             var scriptName = Path.GetFileNameWithoutExtension(applicationPath) + ".cmd";
-            if (File.Exists(Path.Combine(".", Path.GetFileName(scriptName))))
-                applicationDirectory = ".";
-
             var scriptFile = Path.Combine(applicationDirectory, scriptName);
             if (!File.Exists(scriptFile))
             {
-                MessageBox.Show($"The required {scriptName} file was not found", applicationName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show($"The required {scriptName} file was not found",
+                    applicationName,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Stop);
                 return;
             }
 
@@ -55,7 +58,7 @@ namespace VirtualEnvironment.Startup
                 UseShellExecute = true,
                 CreateNoWindow  = true,
 
-                WindowStyle = ProcessWindowStyle.Minimized,
+                WindowStyle = ProcessWindowStyle.Hidden,
 
                 FileName = scriptFile,
                 WorkingDirectory = applicationDirectory,
@@ -65,12 +68,22 @@ namespace VirtualEnvironment.Startup
             };
             
             if (arguments?.Length > 0)
-                processStartInfo.Arguments = String.Join(" ", arguments
-                        .Select(argument => $"\"{argument}\""));
-                
-            var process = new Process();
-            process.StartInfo = processStartInfo;
-            process.Start();
+                processStartInfo.Arguments = String.Join(" ",
+                    arguments.Select(argument => argument.Replace("\"", "\"\"\"")));
+
+            try
+            {
+                var process = new Process();
+                process.StartInfo = processStartInfo;
+                process.Start();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show($"The program start has failed{System.Environment.NewLine}{exception.Message}",
+                    applicationName,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

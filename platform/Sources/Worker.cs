@@ -156,13 +156,19 @@ namespace VirtualEnvironment.Platform
         {
             if (!MESSAGE_TYPE_LIST.Contains(message.Type))
                 return;
-
-            // Invoke is required because in Windows Forms all changes to UI
-            // elements such as text, colors or sizes must be made in the main
-            // UI thread. If the method is called from a background thread,
-            // Invoke ensures that the execution is moved to the main thread to
-            // avoid thread safety issues.
-            Invoke((MethodInvoker)(() =>
+            
+            // (Begin)Invoke is required because, in Windows Forms, all changes
+            // to UI elements such as text, colors, or sizes must be executed in
+            // the main UI thread. If the method is called from a background
+            // thread, Invoke ensures that execution is transferred to the UI
+            // thread to avoid thread safety issues.
+            //
+            // BeginInvoke starts the update asynchronously, allowing the UI to
+            // react faster because it does not have to wait for Invoke to
+            // complete and does not block the application. This improves
+            // performance and keeps the application responsive.
+            
+            BeginInvoke((MethodInvoker)(() =>
             {
                 var context = message.Context?.Trim() ?? string.Empty;
                 var content = Convert.ToString(message.Data ?? String.Empty).Trim()

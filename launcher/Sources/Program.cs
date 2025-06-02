@@ -19,8 +19,11 @@
 // the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -32,13 +35,17 @@ namespace VirtualEnvironment.Launcher
         [STAThread]
         private static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+            Messages.Subscribe(new Subscription());
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Handle the Windows shutdown event, but only if the launcher is
             // running in the context of the virtual environment.
             var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
-            var platformDrive = Environment.GetEnvironmentVariable("VT_HOMEDRIVE");
+            var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
             if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
                 SystemEvents.SessionEnding += OnSessionEnding;          
 
@@ -48,9 +55,9 @@ namespace VirtualEnvironment.Launcher
             // is shown and existing settings continue to be used.
             
             // The logic for the reload is a bit more complicated, because 
-            // Application.Run blocks and the detection of changed settings
-            // runs in the control as background timer. But since Windows
-            // expects a STA (Single Thread Apartment) for some functions like
+            // Application.Run blocks and the detection of changed settings runs
+            // in the control as background timer. But since Windows expects a
+            // STA (Single Thread Apartment) for some functions like
             // Icon.ExtractAssociatedIcon, the control must run in the main
             // thread, otherwise it is an MTA (Multi Thread Apartment) and
             // causes problems.
@@ -81,22 +88,27 @@ namespace VirtualEnvironment.Launcher
                     if (exception is Settings.SettingsException)
                         message = exception.Message;
                     
-                    MessageBox.Show(message, "Virtual Environment Launcher",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
+                    Messages.Push(Messages.Type.Error, message);
                     if (control == null)
-                        Environment.Exit(0);
+                        Messages.Push(Messages.Type.Exit);
                 }
                 Thread.Sleep(25);
             }
+        }
+        
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
+        {
+            Messages.Push(Messages.Type.Error,
+                    "Unexpected error occurred.",
+                    (Exception)exceptionEvent.ExceptionObject);
         }
         
         private static void OnSessionEnding(object sender, SessionEndingEventArgs eventArgs)
         {
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var applicationDrive = Path.GetPathRoot(applicationPath).Substring(0, 2);
-            var platformDrive = Environment.GetEnvironmentVariable("VT_HOMEDRIVE");
-            var platformDisk = Environment.GetEnvironmentVariable("VT_PLATFORM_DISK");
+            var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
+            var platformDisk = Environment.GetEnvironmentVariable("PLATFORM_PLATFORM_DISK");
 
             if (!string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
                 return;
@@ -121,6 +133,106 @@ namespace VirtualEnvironment.Launcher
                         ? $"{timestamp} {exception.InnerException.Message}\r\n{exception.InnerException.StackTrace}\r\n"
                         : $"{timestamp} {exception.Message}\r\n{exception.StackTrace}\r\n";
                 File.AppendAllText(logfilePath, message);
+            }
+        }
+        
+        private class Subscription : Messages.ISubscriber
+        {
+            private string _context;
+            
+            private bool _continue;
+
+            private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
+            {
+                Messages.Type.Error,
+                Messages.Type.Warning,
+                Messages.Type.Trace,
+                Messages.Type.Verbose,
+                Messages.Type.Exit
+            };
+
+            public void Receive(Messages.Message message)
+            {
+                if (!MESSAGE_TYPE_LIST.Contains(message.Type)
+                        || message.Data is null)
+                    return;
+                
+                // VERBOSE is extended information that lies between TRACE and
+                // DEBUG. The message have its own context, as otherwise the
+                // information cannot be placed in any context.
+                if (Messages.Type.Verbose == message.Type)
+                    if (String.IsNullOrWhiteSpace(_context)
+                            || String.IsNullOrWhiteSpace(message.Context)
+                            || message.Context != _context)
+                        return;
+                
+                // VERBOSE is logged as an extension of TRACE and is therefore
+                // converted to TRACE so that logging can pick up the previous
+                // context of TRACE and continue the logging block. 
+                if (Messages.Type.Verbose == message.Type)
+                    message = message.ConvertTo(Messages.Type.Trace);
+                
+                var content = message.ToString().Trim();
+                if (String.IsNullOrWhiteSpace(content))
+                    return;
+
+                try
+                {
+                    if (!_continue)
+                    {
+                        var assembly = Assembly.GetExecutingAssembly();
+                        var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+                        var version = assembly.GetName().Version;
+                        var build = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                            .FirstOrDefault(attribute => attribute.Key == "Build")?.Value;
+                        var banner = new StringBuilder()
+                            .AppendLine($"Seanox Launcher [{version} {build}]")
+                            .AppendLine($"{copyright.Replace("©", "(C)")}")
+                            .ToString();
+                        Console.WriteLine(banner);
+
+                        if (Messages.Type.Exit == message.Type)
+                        {
+                            Console.WriteLine(Convert.ToString(message.Data));
+                            Environment.Exit(0);
+                        }
+                    }
+                    
+                    _continue = true;
+
+                    var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var lines = message.ToString()
+                        .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(line => !String.IsNullOrWhiteSpace(line))
+                        .ToArray();
+                    
+                    Action<string, bool> consoleWriteLine = (line, followup) =>
+                    {
+                        line = followup ? $" ...  {line}" : line;
+                        Console.WriteLine($"{timestamp} {line}");
+                    };
+
+                    if (lines.Length > 0)
+                    {
+                        if (lines[0] != _context)
+                            consoleWriteLine(lines[0], false);
+                        _context = lines[0];
+                        for (var index = 1; index < lines.Length; index++)    
+                            consoleWriteLine(lines[index], true);
+                    }
+
+                    if (Messages.Type.Error == message.Type)
+                        MessageBox.Show(
+                                String.Join(System.Environment.NewLine, lines),
+                                "Virtual Environment Launcher",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                    if (Messages.Type.Exit == message.Type)
+                        Environment.Exit(0);
+                }
+                catch (Exception)
+                {
+                }
             }
         }
     }

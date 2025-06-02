@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Scans and extracts changes in the file system and registry.")]
+[assembly: AssemblyTitle("Inventory for Seanox Virtual Environment")]
 [assembly: AssemblyDescription("Scans and extracts changes in the file system and registry.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]

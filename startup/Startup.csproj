@@ -39,25 +39,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\Composer.cs" />
-    <Compile Include="Sources\Datastore.cs" />
-    <Compile Include="Sources\Manifest.cs" />
-    <Compile Include="Sources\Messages.cs" />
     <Compile Include="Sources\Program.cs" />
-    <Compile Include="Sources\Runner.cs" />
-    <Compile Include="Sources\Scanner.cs" />
-    <Compile Include="Sources\Shutdown.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

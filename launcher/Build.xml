@@ -49,16 +49,19 @@
       <local name="release.info.date"/>
       <loadproperties srcfile="release-info.tmp"/>
       <delete file="release-info.tmp"/>
-      <replaceregexp match="(Version) \d+(?:\.\d+)+ \d+" replace="\1 ${release.info.version} ${release.info.date}">
+      <replaceregexp match="(Version\s*)\d+(?:\.\d+)+ \d+" replace="\1${release.info.version} ${release.info.date}">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(AssemblyCopyright\(&quot;.*?\s)\d{4}(\s.*?&quot;\))" replace="\1${release.info.year}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
-      </replaceregexp>      
-      <replaceregexp match="(AssemblyVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
+      </replaceregexp>
+      <replaceregexp match="(AssemblyVersion\(&quot;)\d+(?:\.\d)+(&quot;\))" replace="\1${release.info.version}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
-      <replaceregexp match="(AssemblyFileVersion)\(&quot;\d+(?:\.\d)+&quot;\)" replace="\1(&quot;${release.info.version}&quot;)">
+      <replaceregexp match="(AssemblyFileVersion\(&quot;)\d+(?:\.\d)+(&quot;\))" replace="\1${release.info.version}\2">
+        <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
+      </replaceregexp>
+      <replaceregexp match="(AssemblyMetadata\(&quot;Build&quot;,\s*&quot;)\d+(&quot;\))" replace="\1${release.info.date}\2">
         <fileset dir="${workspace}" includes="${workspace.sources.filter}"/>
       </replaceregexp>
       <replaceregexp match="(&lt;assemblyIdentity version=&quot;)\d+(?:\.\d+)+(&quot;)" replace="\1${release.info.version}.0\2">
@@ -69,7 +72,7 @@
       </replaceregexp>
     </sequential>
   </macrodef>
-
+  
   <macrodef name="release-info-reset">
     <sequential>
       <release-info-insert version="0.0.0 00000000"/>

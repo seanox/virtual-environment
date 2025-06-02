@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Launcher for Seanox Virtual Environment")]
-[assembly: AssemblyDescription("Full screen overlay tile menu for launching programs .")]
+[assembly: AssemblyDescription("Full screen tile menu for launching programs.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
 [assembly: AssemblyProduct("Launcher")]

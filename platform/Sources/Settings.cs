@@ -54,12 +54,12 @@ namespace VirtualEnvironment.Platform
         
         internal static readonly HashSet<string> Registry;
         
-        internal static readonly HashSet<string> Customization;
+        internal static readonly HashSet<string> Customs;
         
         private const string SECTION_ENVIRONMENT = "ENVIRONMENT";  
         private const string SECTION_FILESYSTEM = "FILESYSTEM";  
         private const string SECTION_REGISTRY = "REGISTRY";  
-        private const string SECTION_CUSTOMIZATION = "CUSTOMIZATION";  
+        private const string SECTION_CUSTOMS = "CUSTOMS";  
         
         private static readonly Regex PATTERN_PLACEHOLDER =
             new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
@@ -71,7 +71,7 @@ namespace VirtualEnvironment.Platform
                 Environment[(string)entry.Key] = (string)entry.Value;
             Filesystem = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             Registry = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            Customization = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            Customs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var iniFilePath = Path.Combine(Path.GetDirectoryName(applicationPath),
@@ -92,8 +92,8 @@ namespace VirtualEnvironment.Platform
                 Filesystem.Add(NormalizeValuePlaceholder(line));
             foreach (var line in GetSectionLines(iniFile, SECTION_REGISTRY))
                 Registry.Add(NormalizeValue(line));
-            foreach (var line in GetSectionLines(iniFile, SECTION_CUSTOMIZATION))
-                Customization.Add(NormalizeValue(line));
+            foreach (var line in GetSectionLines(iniFile, SECTION_CUSTOMS))
+                Customs.Add(NormalizeValue(line));
         }
         
         private static IEnumerable<string> GetSectionKeys(FileInfo file, string section)
