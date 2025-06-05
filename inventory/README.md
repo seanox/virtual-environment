@@ -3,8 +3,8 @@ Scans and extracts changes in the file system and registry.
 
 The program analyzes changes in the file system of the system disk and the
 Windows registry through comparative status snapshots. It creates hash-based
-scan files that either contain full paths or aggregated hash values—depending on
-the user-defined scan depth.
+scan files that either contain full paths or aggregated hash values -- depending
+on the user-defined scan depth.
 
 Up to the specified scan depth, paths are fully recorded in the scan files. For
 deeper structures beyond this depth, a hash value is calculated that represents
