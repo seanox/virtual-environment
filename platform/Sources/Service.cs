@@ -48,6 +48,11 @@ namespace VirtualEnvironment.Platform
         private static readonly Regex PATTERN_PLACEHOLDER =
             new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
 
+        private const string PLATFORM_PATH_RECYCLE_BIN = @"$RECYCLE.BIN";
+        private const string PLATFORM_PATH_STORAGE = @"Storage";
+        private const string PLATFORM_PATH_STORAGE_PLATFORM_DATA = @"Storage\platform.data";
+        private const string PLATFORM_PATH_TEMP = @"Temp";
+        
         private static int NotificationDelay =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 25 : 1000;
 
@@ -180,7 +185,7 @@ namespace VirtualEnvironment.Platform
 
         private static void AttachHostFilesystem(string drive)
         {
-            var storage = new DirectoryInfo(Path.Combine(drive, "Storage"));
+            var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
             var storageSymLinks = Settings.Filesystem
                 .Select(path =>
                     {
@@ -196,7 +201,7 @@ namespace VirtualEnvironment.Platform
                 Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupHostFilesystem, storageSymLink.ToString());
                 storageSymLink.Create();
                 File.AppendAllLines(
-                    Path.Combine(drive, @"Storage\platform.data"),
+                    Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
                     new[] {storageSymLink.TargetMountPoint.FullName});
             }
         }
@@ -286,11 +291,11 @@ namespace VirtualEnvironment.Platform
                 }
             }
 
-            var tempDirectory = Path.Combine(drive, "Temp");
+            var tempDirectory = Path.Combine(drive, PLATFORM_PATH_TEMP);
             DeleteFileEntry(tempDirectory);
             Directory.CreateDirectory(tempDirectory);
 
-            var recycleDirectory = Path.Combine(drive, "$RECYCLE.BIN");
+            var recycleDirectory = Path.Combine(drive, PLATFORM_PATH_RECYCLE_BIN);
             DeleteFileEntry(recycleDirectory);
             
             Diskpart.CanDetachDisk(drive, diskFile);
