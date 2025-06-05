@@ -82,7 +82,7 @@ namespace VirtualEnvironment.Inventory
                         continue;
                     var location = new FileInfo(
                         Environment.ExpandEnvironmentVariables(
-                            Regex.Replace(line.Trim(), "%([A-Za-z]:)%", "$1")));
+                            Regex.Replace(line.Trim(), "^%%([A-Za-z])%", "$1:")));
                     var recursive = Directory.Exists(location.FullName)
                             && location.FullName.Split(Path.DirectorySeparatorChar).Length > depth;
                     Storage.MirrorFileSystemLocation(timestamp, line.Trim(), recursive);
