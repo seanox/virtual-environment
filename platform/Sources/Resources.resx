@@ -202,13 +202,13 @@
   <data name="ServiceAttachFailed" xml:space="preserve">
     <value>Virtual environment attachment failed</value>
   </data>
-  <data name="ServiceAttachEnvironmentSetup" xml:space="preserve">
+  <data name="ServiceAttachEnvironment" xml:space="preserve">
     <value>Configuring virtual environment</value>
   </data>
-  <data name="ServiceAttachEnvironmentSetupCustomizeFiles" xml:space="preserve">
+  <data name="ServiceAttachCustomizeFiles" xml:space="preserve">
     <value>Customize files</value>
   </data>
-  <data name="ServiceAttachEnvironmentSetupHostFilesystem" xml:space="preserve">
+  <data name="ServiceAttachHostFilesystem" xml:space="preserve">
     <value>Customize host file system</value>
   </data>
   <data name="ServiceAttachText" xml:space="preserve">
@@ -252,7 +252,17 @@
   <data name="ServiceDetachText" xml:space="preserve">
     <value>Programs and services terminated</value>
   </data>
+  <data name="ServiceDetachHostFilesystem" xml:space="preserve">
+    <value>Restore host file system</value>
+  </data>
 
+  <data name="ServiceRestore" xml:space="preserve">
+    <value>Restoring virtual environment</value>
+  </data>
+  <data name="ServiceRestoreText" xml:space="preserve">
+    <value>Pending changes to the host system are restored</value>
+  </data>
+  
   <data name="ServiceShortcuts" xml:space="preserve">
     <value>Creating shortcuts</value>
   </data>

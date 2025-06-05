@@ -285,29 +285,20 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuring virtual environment.
-        /// </summary>
-        internal static string ServiceAttachEnvironmentSetup {
-            get {
-                return ResourceManager.GetString("ServiceAttachEnvironmentSetup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Customize files.
         /// </summary>
-        internal static string ServiceAttachEnvironmentSetupCustomizeFiles {
+        internal static string ServiceAttachCustomizeFiles {
             get {
-                return ResourceManager.GetString("ServiceAttachEnvironmentSetupCustomizeFiles", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachCustomizeFiles", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Customize host file system.
+        ///   Looks up a localized string similar to Configuring virtual environment.
         /// </summary>
-        internal static string ServiceAttachEnvironmentSetupHostFilesystem {
+        internal static string ServiceAttachEnvironment {
             get {
-                return ResourceManager.GetString("ServiceAttachEnvironmentSetupHostFilesystem", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachEnvironment", resourceCulture);
             }
         }
         
@@ -317,6 +308,15 @@ namespace VirtualEnvironment.Platform {
         internal static string ServiceAttachFailed {
             get {
                 return ResourceManager.GetString("ServiceAttachFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize host file system.
+        /// </summary>
+        internal static string ServiceAttachHostFilesystem {
+            get {
+                return ResourceManager.GetString("ServiceAttachHostFilesystem", resourceCulture);
             }
         }
         
@@ -421,11 +421,38 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore host file system.
+        /// </summary>
+        internal static string ServiceDetachHostFilesystem {
+            get {
+                return ResourceManager.GetString("ServiceDetachHostFilesystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Programs and services terminated.
         /// </summary>
         internal static string ServiceDetachText {
             get {
                 return ResourceManager.GetString("ServiceDetachText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restoring virtual environment.
+        /// </summary>
+        internal static string ServiceRestore {
+            get {
+                return ResourceManager.GetString("ServiceRestore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending changes to the host system are restored.
+        /// </summary>
+        internal static string ServiceRestoreText {
+            get {
+                return ResourceManager.GetString("ServiceRestoreText", resourceCulture);
             }
         }
         

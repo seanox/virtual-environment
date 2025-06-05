@@ -48,6 +48,9 @@ namespace VirtualEnvironment.Platform
         private static readonly Regex PATTERN_PLACEHOLDER =
             new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
 
+        private static readonly Regex PATTERN_FILESYSTEM_ENTRY =
+            new Regex(@"^[A-Za-z]:[\\/]( *)[^\x00-\x20\\/:*?\""<>|]+$", RegexOptions.IgnoreCase);
+
         private const string PLATFORM_PATH_RECYCLE_BIN = @"$RECYCLE.BIN";
         private const string PLATFORM_PATH_STORAGE = @"Storage";
         private const string PLATFORM_PATH_STORAGE_PLATFORM_DATA = @"Storage\platform.data";
@@ -80,9 +83,7 @@ namespace VirtualEnvironment.Platform
                 // - drive of the path must exist
 
                 var pathNormal = Environment.ExpandEnvironmentVariables(path).Trim(); 
-                if (!Regex.IsMatch(
-                        pathNormal,
-                        @"^[A-Za-z]:[\\/]( *)[^\x00-\x20\\/:*?\""<>|]+$"))
+                if (!PATTERN_FILESYSTEM_ENTRY.IsMatch(pathNormal))
                     throw new ArgumentException("Invalid path, target drive is missing");
                 if (!File.Exists(Path.Combine(storage.FullName, path))
                         && !Directory.Exists(Path.Combine(storage.FullName, path)))
@@ -156,8 +157,8 @@ namespace VirtualEnvironment.Platform
                     || File.GetAttributes(targetFile).HasFlag(FileAttributes.Directory))
                 return;
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupCustomizeFiles);
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupCustomizeFiles, targetFile);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachCustomizeFiles);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachCustomizeFiles, targetFile);
             
             var templateFile = targetFile + "-template";
             if (!File.Exists(templateFile)
@@ -197,8 +198,8 @@ namespace VirtualEnvironment.Platform
                 .ToArray();
             foreach (var storageSymLink in storageSymLinks)
             {
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupHostFilesystem);
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupHostFilesystem, storageSymLink.ToString());
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem);
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem, storageSymLink.ToString());
                 storageSymLink.Create();
                 File.AppendAllLines(
                     Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
@@ -206,22 +207,38 @@ namespace VirtualEnvironment.Platform
             }
         }
         
-        private static void AttachHostRegistry()
+        private static void AttachHostRegistry(string drive)
         {
             // TODO:
         }
 
         internal static void Attach(string drive, string diskFile)
         {
+            // If the platform crashes or terminated unexpectedly, the file 
+            // /Storage/platform.data remains in the virtual filesystem. Changes
+            // to the host filesystem and registry recorded in this file may
+            // still exist and must be cleaned up to prevent issues with
+            // resource initialization during the next startup. The cleanup runs 
+            // automatically, and upon successful completion, platform.data is
+            // deleted.
+            var platformData = Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA);
+            if (File.Exists(platformData))
+            {
+                Messages.Push(Messages.Type.Trace, Resources.ServiceRestore, Resources.ServiceRestoreText);
+                Thread.Sleep(NotificationDelay);
+                DetachHostFilesystem(drive, true);
+                DetachHostRegistry(drive, true);
+            }
+            
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ServiceAttachText);
             Thread.Sleep(NotificationDelay);
 
             Diskpart.CanAttachDisk(drive, diskFile);
             Diskpart.AttachDisk(drive, diskFile);
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment);
             AttachHostFilesystem(drive);
-            AttachHostRegistry();
+            AttachHostRegistry(drive);
             foreach (var file in Settings.Customs)
                 AttachCustomizeFile(drive, file);
                             
@@ -483,12 +500,26 @@ namespace VirtualEnvironment.Platform
             }
         }
         
-        private static void DetachHostFilesystem()
+        private static void DetachHostFilesystem(string drive, bool restore = false)
         {
-            // TODO:
+            var platformData = Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA);
+            if (!File.Exists(platformData))
+                return;
+            File.ReadLines(platformData)
+                .Where(line => PATTERN_FILESYSTEM_ENTRY.IsMatch(line))
+                .ToList()
+                .ForEach(path =>
+                {
+                    Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ServiceDetachHostFilesystem);
+                    Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ServiceDetachHostFilesystem, path);
+                    if (Directory.Exists(path))
+                        Directory.Delete(path, true);
+                    else if (File.Exists(path))
+                        File.Delete(path);
+                });
         }
         
-        private static void DetachHostRegistry()
+        private static void DetachHostRegistry(string drive, bool restore = false)
         {
             // TODO:
         }
@@ -525,6 +556,9 @@ namespace VirtualEnvironment.Platform
                 processes = processes.Where(process => !process.ProcessName.Equals("launcher", StringComparison.OrdinalIgnoreCase))
                     .ToList();
             processes.ForEach(KillProcess);
+            
+            DetachHostFilesystem(drive);
+            DetachHostRegistry(drive);
             
             Diskpart.DetachDisk(drive, diskFile);
 
