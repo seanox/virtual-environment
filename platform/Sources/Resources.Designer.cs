@@ -303,6 +303,15 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize host file system.
+        /// </summary>
+        internal static string ServiceAttachEnvironmentSetupHostFilesystem {
+            get {
+                return ResourceManager.GetString("ServiceAttachEnvironmentSetupHostFilesystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Virtual environment attachment failed.
         /// </summary>
         internal static string ServiceAttachFailed {

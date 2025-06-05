@@ -208,6 +208,9 @@
   <data name="ServiceAttachEnvironmentSetupCustomizeFiles" xml:space="preserve">
     <value>Customize files</value>
   </data>
+  <data name="ServiceAttachEnvironmentSetupHostFilesystem" xml:space="preserve">
+    <value>Customize host file system</value>
+  </data>
   <data name="ServiceAttachText" xml:space="preserve">
     <value>Programs and services established</value>
   </data>

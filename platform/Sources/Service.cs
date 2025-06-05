@@ -25,13 +25,24 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using IWshRuntimeLibrary;
+using File = System.IO.File;
 
 namespace VirtualEnvironment.Platform
 {
     internal static class Service
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
+        
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId, 
+            StringBuilder lpBuffer, int nSize, IntPtr Arguments);
+        
         private const int BATCH_PROCESS_IDLE_TIMEOUT_SECONDS = 30;
         
         private static readonly Regex PATTERN_PLACEHOLDER =
@@ -43,18 +54,18 @@ namespace VirtualEnvironment.Platform
         private static int ShutdownTimeout =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 3000 : 5000;
         
-        private struct StorageSymLink
+        private class StorageSymLink : IComparable<StorageSymLink>
         {
-            private DirectoryInfo Storage { get; }
-            private string Path { get; }
-            private DirectoryInfo Directory { get; }
-            private string Name { get; }
-            private FileInfo MountPoint { get; }
+            internal DirectoryInfo StorageDirectory { get; }
+            internal string StoragePath { get; }
+            internal DirectoryInfo TargetDirectory { get; }
+            internal string TargetName { get; }
+            internal FileInfo TargetMountPoint { get; }
         
-            private StorageSymLink(DirectoryInfo storage, string path)
+            internal StorageSymLink(DirectoryInfo storage, string path)
             {
-                Storage = storage;
-                Path = path;
+                StorageDirectory = storage;
+                StoragePath = path;
                 
                 // Only path that...
                 // - begin with %, it is a question of mapping in the storage
@@ -68,30 +79,64 @@ namespace VirtualEnvironment.Platform
                         pathNormal,
                         @"^[A-Za-z]:[\\/]( *)[^\x00-\x20\\/:*?\""<>|]+$"))
                     throw new ArgumentException("Invalid path, target drive is missing");
-                if (!File.Exists(System.IO.Path.Combine(storage.FullName, path))
-                        && !System.IO.Directory.Exists(System.IO.Path.Combine(storage.FullName, path)))
+                if (!File.Exists(Path.Combine(storage.FullName, path))
+                        && !Directory.Exists(Path.Combine(storage.FullName, path)))
                     throw new ArgumentException("Invalid path, target does not exist");
-                var rootPath = System.IO.Path.GetPathRoot(pathNormal);
+                var rootPath = Path.GetPathRoot(pathNormal);
                 if (String.IsNullOrEmpty(rootPath)
-                        || !DriveInfo.GetDrives().Any(driveInfo =>
-                                driveInfo.Name.Equals(rootPath, StringComparison.OrdinalIgnoreCase)))
+                        || !Directory.Exists(rootPath))
                     throw new ArgumentException("Invalid path, target drive does not exist");
                 
-                pathNormal = System.IO.Path.GetFullPath(pathNormal);
-                Directory = new DirectoryInfo(System.IO.Path.GetDirectoryName(pathNormal) ?? System.IO.Path.GetPathRoot(pathNormal));
-                Name = System.IO.Path.GetFileName(pathNormal); 
+                pathNormal = Path.GetFullPath(pathNormal);
+                TargetDirectory = new DirectoryInfo(Path.GetDirectoryName(pathNormal) ?? Path.GetPathRoot(pathNormal));
+                TargetName = Path.GetFileName(pathNormal); 
                     
-                MountPoint = null;
-                var pathSegments = new List<String>(Directory.FullName.Split(System.IO.Path.DirectorySeparatorChar));
+                TargetMountPoint = null;
+                var pathSegments = new List<String>(TargetDirectory.FullName.Split(Path.DirectorySeparatorChar));
                 for (var index = 1; index < pathSegments.Count; index++)
                 {
-                    var mountPoint = System.IO.Path.Combine(pathSegments.GetRange(0, index + 1).ToArray());
-                    if (System.IO.Directory.Exists(mountPoint))
+                    var mountPoint = Path.Combine(pathSegments.GetRange(0, index + 1).ToArray());
+                    if (Directory.Exists(mountPoint))
                         continue;
-                    MountPoint = new FileInfo(mountPoint);
+                    TargetMountPoint = new FileInfo(mountPoint);
                     break;
                 }
-            }        
+            }   
+
+            internal void Create()
+            {
+                Directory.CreateDirectory(TargetDirectory.FullName);
+
+                var target = Path.Combine(StorageDirectory.FullName, StoragePath);
+                var symlink = Path.Combine(TargetDirectory.FullName, TargetName);
+                if (Directory.Exists(target))
+                {
+                    if (CreateSymbolicLink(symlink, target, 1))
+                        return;
+                }
+                else if (File.Exists(target))
+                {
+                    if (CreateSymbolicLink(symlink, target, 0))
+                        return;
+                }
+                else throw new FileNotFoundException(target);
+                var errorCode = Marshal.GetLastWin32Error();
+                var errorMessage = new StringBuilder(256);
+                FormatMessage(0x1000, IntPtr.Zero, errorCode, 0, errorMessage, errorMessage.Capacity, IntPtr.Zero);
+                throw new IOException($"{errorCode}: {errorMessage}");
+            }
+
+            public int CompareTo(StorageSymLink compare)
+            {
+                return StringComparer.OrdinalIgnoreCase.Compare(
+                    TargetMountPoint?.FullName, 
+                    compare.TargetMountPoint?.FullName);
+            }
+
+            public override string ToString()
+            {
+                return Path.Combine(TargetDirectory.FullName, TargetName);
+            }
         }
         
         private static void AttachCustomizeFile(string drive, string file)
@@ -135,7 +180,25 @@ namespace VirtualEnvironment.Platform
 
         private static void AttachHostFilesystem(string drive)
         {
-            // TODO:
+            var storage = new DirectoryInfo(Path.Combine(drive, "Storage"));
+            var storageSymLinks = Settings.Filesystem
+                .Select(path =>
+                    {
+                        try{ return new StorageSymLink(storage, path); }
+                        catch (Exception) { return null; }
+                    })
+                .Where(storageSymLink => storageSymLink != null)
+                .OrderBy(storageSymLink => storageSymLink)
+                .ToArray();
+            foreach (var storageSymLink in storageSymLinks)
+            {
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupHostFilesystem);
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup, Resources.ServiceAttachEnvironmentSetupHostFilesystem, storageSymLink.ToString());
+                storageSymLink.Create();
+                File.AppendAllLines(
+                    Path.Combine(drive, @"Storage\platform.data"),
+                    new[] {storageSymLink.TargetMountPoint.FullName});
+            }
         }
         
         private static void AttachHostRegistry()
@@ -475,11 +538,11 @@ namespace VirtualEnvironment.Platform
         {
             var applicationPath = Path.GetDirectoryName(diskFile);
             var applicationName = Path.GetFileNameWithoutExtension(diskFile);
-            var wshShell = new IWshRuntimeLibrary.WshShell();
+            var wshShell = new WshShell();
             var shortcutFile = Path.Combine(applicationPath, applicationName + "." + type.ToString().ToLower() + ".lnk");
             if (File.Exists(shortcutFile))
                 File.Delete(shortcutFile);
-            var shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(shortcutFile);
+            var shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFile);
             shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
             shortcut.Arguments = drive + " " + type.ToString().ToLower();
             shortcut.IconLocation = shortcut.TargetPath; 
