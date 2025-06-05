@@ -42,7 +42,58 @@ namespace VirtualEnvironment.Platform
 
         private static int ShutdownTimeout =>
             Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly() ? 3000 : 5000;
+        
+        private struct StorageSymLink
+        {
+            private DirectoryInfo Storage { get; }
+            private string Path { get; }
+            private DirectoryInfo Directory { get; }
+            private string Name { get; }
+            private FileInfo MountPoint { get; }
+        
+            private StorageSymLink(DirectoryInfo storage, string path)
+            {
+                Storage = storage;
+                Path = path;
+                
+                // Only path that...
+                // - begin with %, it is a question of mapping in the storage
+                // - for which a corresponding entry exists in Storage
+                // - begins with a drive after resolving
+                // - does not contain any invalid path characters
+                // - drive of the path must exist
 
+                var pathNormal = Environment.ExpandEnvironmentVariables(path).Trim(); 
+                if (!Regex.IsMatch(
+                        pathNormal,
+                        @"^[A-Za-z]:[\\/]( *)[^\x00-\x20\\/:*?\""<>|]+$"))
+                    throw new ArgumentException("Invalid path, target drive is missing");
+                if (!File.Exists(System.IO.Path.Combine(storage.FullName, path))
+                        && !System.IO.Directory.Exists(System.IO.Path.Combine(storage.FullName, path)))
+                    throw new ArgumentException("Invalid path, target does not exist");
+                var rootPath = System.IO.Path.GetPathRoot(pathNormal);
+                if (String.IsNullOrEmpty(rootPath)
+                        || !DriveInfo.GetDrives().Any(driveInfo =>
+                                driveInfo.Name.Equals(rootPath, StringComparison.OrdinalIgnoreCase)))
+                    throw new ArgumentException("Invalid path, target drive does not exist");
+                
+                pathNormal = System.IO.Path.GetFullPath(pathNormal);
+                Directory = new DirectoryInfo(System.IO.Path.GetDirectoryName(pathNormal) ?? System.IO.Path.GetPathRoot(pathNormal));
+                Name = System.IO.Path.GetFileName(pathNormal); 
+                    
+                MountPoint = null;
+                var pathSegments = new List<String>(Directory.FullName.Split(System.IO.Path.DirectorySeparatorChar));
+                for (var index = 1; index < pathSegments.Count; index++)
+                {
+                    var mountPoint = System.IO.Path.Combine(pathSegments.GetRange(0, index + 1).ToArray());
+                    if (System.IO.Directory.Exists(mountPoint))
+                        continue;
+                    MountPoint = new FileInfo(mountPoint);
+                    break;
+                }
+            }        
+        }
+        
         private static void AttachCustomizeFile(string drive, string file)
         {
             var targetFile = file.Replace("/", @"\").Trim();
@@ -73,7 +124,16 @@ namespace VirtualEnvironment.Platform
             File.SetLastWriteTime(templateFile, DateTime.Now);
         }
 
-        private static void AttachHostFilesystem()
+        private static bool PathDriveExists(string path)
+        {
+            var root = Path.GetPathRoot(path);
+            if (String.IsNullOrEmpty(root))
+                return false;
+            return DriveInfo.GetDrives().Any(driveInfo =>
+                    driveInfo.Name.Equals(root, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static void AttachHostFilesystem(string drive)
         {
             // TODO:
         }
@@ -92,7 +152,7 @@ namespace VirtualEnvironment.Platform
             Diskpart.AttachDisk(drive, diskFile);
             
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironmentSetup);
-            AttachHostFilesystem();
+            AttachHostFilesystem(drive);
             AttachHostRegistry();
             foreach (var file in Settings.Customs)
                 AttachCustomizeFile(drive, file);
