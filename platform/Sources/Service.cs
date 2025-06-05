@@ -510,8 +510,9 @@ namespace VirtualEnvironment.Platform
                 .ToList()
                 .ForEach(path =>
                 {
-                    Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ServiceDetachHostFilesystem);
-                    Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, Resources.ServiceDetachHostFilesystem, path);
+                    var traceContext = restore ? Resources.ServiceRestore : Resources.ServiceDetach;
+                    Messages.Push(Messages.Type.Trace, traceContext, Resources.ServiceDetachHostFilesystem);
+                    Messages.Push(Messages.Type.Trace, traceContext, Resources.ServiceDetachHostFilesystem, path);
                     if (Directory.Exists(path))
                         Directory.Delete(path, true);
                     else if (File.Exists(path))
