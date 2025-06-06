@@ -49,7 +49,7 @@ namespace VirtualEnvironment.Platform
             new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
 
         private static readonly Regex PATTERN_FILESYSTEM_ENTRY =
-            new Regex(@"^[A-Za-z]:[\\/]( *)[^\x00-\x20\\/:*?\""<>|]+$", RegexOptions.IgnoreCase);
+            new Regex(@"^[A-Za-z]:([\\/]+( *)[^\x00-\x20\\/:*?""<>|])([\\/]+( *)[^\x00-\x20:*?""<>|]*)*$", RegexOptions.IgnoreCase);
 
         private const string PLATFORM_PATH_RECYCLE_BIN = @"$RECYCLE.BIN";
         private const string PLATFORM_PATH_STORAGE = @"Storage";
@@ -82,16 +82,17 @@ namespace VirtualEnvironment.Platform
                 // - does not contain any invalid path characters
                 // - drive of the path must exist
 
-                var pathNormal = Environment.ExpandEnvironmentVariables(path).Trim(); 
+                var pathNormal = Environment.ExpandEnvironmentVariables(
+                    Regex.Replace(path, "^%%([A-Za-z])%", "$1:")).Trim(); 
                 if (!PATTERN_FILESYSTEM_ENTRY.IsMatch(pathNormal))
-                    throw new ArgumentException("Invalid path, target drive is missing");
+                    throw new StorageSymLinkException("Target drive is missing");
                 if (!File.Exists(Path.Combine(storage.FullName, path))
                         && !Directory.Exists(Path.Combine(storage.FullName, path)))
-                    throw new ArgumentException("Invalid path, target does not exist");
+                    throw new StorageSymLinkException("Target does not exist");
                 var rootPath = Path.GetPathRoot(pathNormal);
                 if (String.IsNullOrEmpty(rootPath)
                         || !Directory.Exists(rootPath))
-                    throw new ArgumentException("Invalid path, target drive does not exist");
+                    throw new StorageSymLinkException("Target drive does not exist");
                 
                 pathNormal = Path.GetFullPath(pathNormal);
                 TargetDirectory = new DirectoryInfo(Path.GetDirectoryName(pathNormal) ?? Path.GetPathRoot(pathNormal));
@@ -145,6 +146,14 @@ namespace VirtualEnvironment.Platform
             }
         }
         
+        private class StorageSymLinkException : Exception
+        {
+            internal StorageSymLinkException(string message)
+                : base(message)
+            {
+            }
+        }
+        
         private static void AttachCustomizeFile(string drive, string file)
         {
             var targetFile = file.Replace("/", @"\").Trim();
@@ -190,8 +199,13 @@ namespace VirtualEnvironment.Platform
             var storageSymLinks = Settings.Filesystem
                 .Select(path =>
                     {
-                        try{ return new StorageSymLink(storage, path); }
-                        catch (Exception) { return null; }
+                        Messages.Push(Messages.Type.Trace, Resources.ServiceAttachHostFilesystem, path);            
+                        try { return new StorageSymLink(storage, path); }
+                        catch (Exception exception)
+                        {
+                            Messages.Push(Messages.Type.Error, Resources.ServiceAttachHostFilesystem, exception.Message);            
+                            return null;
+                        }
                     })
                 .Where(storageSymLink => storageSymLink != null)
                 .OrderBy(storageSymLink => storageSymLink)
@@ -374,7 +388,6 @@ namespace VirtualEnvironment.Platform
                 // the virus scanner). Therefore, we try up to 3 times with a
                 // small pause. After three attempts, the process is ignored and
                 // the drive is detached.
-
                 for (var index = 0; index < 3; index++)
                 {
                     Thread.Sleep(ShutdownTimeout /2);

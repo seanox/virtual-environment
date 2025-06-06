@@ -209,7 +209,7 @@
     <value>Customize files</value>
   </data>
   <data name="ServiceAttachHostFilesystem" xml:space="preserve">
-    <value>Customize host file system</value>
+    <value>Mount host file system</value>
   </data>
   <data name="ServiceAttachText" xml:space="preserve">
     <value>Programs and services established</value>

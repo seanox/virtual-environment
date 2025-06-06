@@ -312,7 +312,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Customize host file system.
+        ///   Looks up a localized string similar to Mount host file system.
         /// </summary>
         internal static string ServiceAttachHostFilesystem {
             get {
