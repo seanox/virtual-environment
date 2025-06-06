@@ -68,13 +68,14 @@ namespace VirtualEnvironment.Platform
             Func<string, bool> isTextWidthSuitable = text =>
                 graphics.MeasureString(text, label.Font).Width > label.Width;
 
-            Func<string, string> truncateText = line =>
+            Func<string, string> truncateText = text =>
             {
-                var textTruncated = line;
-                while (textTruncated.Length > 0
-                        && isTextWidthSuitable(textTruncated + "..."))
-                    textTruncated = textTruncated.Substring(0, textTruncated.Length - 1);
-                return textTruncated + "...";
+                if (!isTextWidthSuitable(text))
+                    return text; 
+                while (text.Length > 0
+                       && isTextWidthSuitable(text + "..."))
+                    text = text.Substring(0, text.Length - 1);
+                return text + "...";
             };            
             
             label.Text = string.Join(System.Environment.NewLine, 
