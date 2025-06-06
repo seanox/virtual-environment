@@ -88,7 +88,7 @@ namespace VirtualEnvironment.Platform
                     throw new StorageSymLinkException("Target drive is missing");
                 if (!File.Exists(Path.Combine(storage.FullName, path))
                         && !Directory.Exists(Path.Combine(storage.FullName, path)))
-                    throw new StorageSymLinkException("Target does not exist");
+                    throw new StorageSymLinkException("Source does not exist");
                 var rootPath = Path.GetPathRoot(pathNormal);
                 if (String.IsNullOrEmpty(rootPath)
                         || !Directory.Exists(rootPath))
