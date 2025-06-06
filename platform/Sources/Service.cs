@@ -85,14 +85,15 @@ namespace VirtualEnvironment.Platform
                 var pathNormal = Environment.ExpandEnvironmentVariables(
                     Regex.Replace(path, "^%%([A-Za-z])%", "$1:")).Trim(); 
                 if (!PATTERN_FILESYSTEM_ENTRY.IsMatch(pathNormal))
-                    throw new StorageSymLinkException("Target drive is missing");
-                if (!File.Exists(Path.Combine(storage.FullName, path))
-                        && !Directory.Exists(Path.Combine(storage.FullName, path)))
-                    throw new StorageSymLinkException("Source does not exist");
+                    throw new InvalidDataException(pathNormal);
+                var storagePath = Path.Combine(storage.FullName, path); 
+                if (!File.Exists(storagePath)
+                        && !Directory.Exists(storagePath))
+                    throw new FileNotFoundException(storagePath);
                 var rootPath = Path.GetPathRoot(pathNormal);
                 if (String.IsNullOrEmpty(rootPath)
                         || !Directory.Exists(rootPath))
-                    throw new StorageSymLinkException("Target drive does not exist");
+                    throw new DirectoryNotFoundException(rootPath);
                 
                 pathNormal = Path.GetFullPath(pathNormal);
                 TargetDirectory = new DirectoryInfo(Path.GetDirectoryName(pathNormal) ?? Path.GetPathRoot(pathNormal));
@@ -146,14 +147,6 @@ namespace VirtualEnvironment.Platform
             }
         }
         
-        private class StorageSymLinkException : Exception
-        {
-            internal StorageSymLinkException(string message)
-                : base(message)
-            {
-            }
-        }
-        
         private static void AttachCustomizeFile(string drive, string file)
         {
             var targetFile = file.Replace("/", @"\").Trim();
@@ -198,16 +191,18 @@ namespace VirtualEnvironment.Platform
             var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
             var storageSymLinks = Settings.Filesystem
                 .Select(path =>
-                    {
-                        Messages.Push(Messages.Type.Trace, Resources.ServiceAttachHostFilesystem, path);            
-                        try { return new StorageSymLink(storage, path); }
-                        catch (Exception exception)
-                        {
-                            Messages.Push(Messages.Type.Error, Resources.ServiceAttachHostFilesystem, exception.Message);            
-                            return null;
-                        }
-                    })
-                .Where(storageSymLink => storageSymLink != null)
+                {
+                    Messages.Push(
+                        Messages.Type.Trace,
+                        Resources.ServiceAttachEnvironment,
+                        Resources.ServiceAttachHostFilesystem);
+                    Messages.Push(
+                        Messages.Type.Trace,
+                        Resources.ServiceAttachEnvironment,
+                        Resources.ServiceAttachHostFilesystem,
+                        Path.Combine(storage.FullName, path));
+                    return new StorageSymLink(storage, path);
+                })
                 .OrderBy(storageSymLink => storageSymLink)
                 .ToArray();
             foreach (var storageSymLink in storageSymLinks)
