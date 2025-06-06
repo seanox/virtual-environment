@@ -69,7 +69,8 @@ namespace VirtualEnvironment.Platform
             Parallel.ForEach(messages, message =>
                 Parallel.ForEach(recipients, recipient =>
                 {
-                    try { recipient.Receive(message); } catch { }
+                    try { recipient.Receive(message); }
+                    catch { }
                 }));
         } 
         
