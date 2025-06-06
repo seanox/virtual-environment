@@ -92,9 +92,7 @@ namespace VirtualEnvironment.Platform
         
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
         {
-            Messages.Push(Messages.Type.Error,
-                Resources.ApplicationUnexpectedErrorOccurred,
-                (Exception)exceptionEvent.ExceptionObject);
+            Messages.Push(Messages.Type.Error, exceptionEvent.ExceptionObject);
         }
         
         private class Subscription : Messages.ISubscriber
