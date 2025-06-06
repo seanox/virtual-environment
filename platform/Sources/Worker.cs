@@ -64,17 +64,22 @@ namespace VirtualEnvironment.Platform
         {
             if (String.IsNullOrEmpty(label.Text))
                 return;
-            var textTruncated = label.Text;
-            var textSize = graphics.MeasureString(textTruncated, label.Font);
-            if (textSize.Width <= label.Width)
-                return;
             
             Func<string, bool> isTextWidthSuitable = text =>
-                    graphics.MeasureString(text, label.Font).Width > label.Width;
+                graphics.MeasureString(text, label.Font).Width > label.Width;
+
+            Func<string, string> truncateText = line =>
+            {
+                var textTruncated = line;
+                while (textTruncated.Length > 0
+                        && isTextWidthSuitable(textTruncated + "..."))
+                    textTruncated = textTruncated.Substring(0, textTruncated.Length - 1);
+                return textTruncated + "...";
+            };            
             
-            while (textTruncated.Length > 0 && isTextWidthSuitable(textTruncated + "..."))
-                textTruncated = textTruncated.Substring(0, textTruncated.Length - 1);
-            label.Text = $"{textTruncated}...";
+            label.Text = string.Join(System.Environment.NewLine, 
+                label.Text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None)
+                    .Select(truncateText));
         }
 
         private void WorkerAction(Task task, string drive, string diskFile)
