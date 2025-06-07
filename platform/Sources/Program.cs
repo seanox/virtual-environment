@@ -105,8 +105,7 @@ namespace VirtualEnvironment.Platform
             {
                 Messages.Type.Error,
                 Messages.Type.Warning,
-                Messages.Type.Trace,
-                Messages.Type.Verbose
+                Messages.Type.Trace
             };
 
             public void Receive(Messages.Message message)
@@ -114,21 +113,6 @@ namespace VirtualEnvironment.Platform
                 if (!MESSAGE_TYPE_LIST.Contains(message.Type)
                         || message.Data is null)
                     return;
-                
-                // VERBOSE is extended information that lies between TRACE and
-                // DEBUG. The message have its own context, as otherwise the
-                // information cannot be placed in any context.
-                if (Messages.Type.Verbose == message.Type)
-                    if (String.IsNullOrWhiteSpace(_context)
-                            || String.IsNullOrWhiteSpace(message.Context)
-                            || message.Context != _context)
-                        return;
-                
-                // VERBOSE is logged as an extension of TRACE and is therefore
-                // converted to TRACE so that logging can pick up the previous
-                // context of TRACE and continue the logging block. 
-                if (Messages.Type.Verbose == message.Type)
-                    message = message.ConvertTo(Messages.Type.Trace);
                 
                 var content = message.ToString().Trim();
                 if (String.IsNullOrWhiteSpace(content))
@@ -163,8 +147,7 @@ namespace VirtualEnvironment.Platform
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var lines = message.ToString()
-                        .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Where(line => !String.IsNullOrWhiteSpace(line))
+                        .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                         .ToArray();
                     
                     Action<string, bool> logfileWriteLine = (line, followup) =>
