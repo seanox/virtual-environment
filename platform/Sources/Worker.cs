@@ -78,8 +78,8 @@ namespace VirtualEnvironment.Platform
                 return text + "...";
             };            
             
-            label.Text = string.Join(System.Environment.NewLine, 
-                label.Text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None)
+            label.Text = string.Join(Environment.NewLine, 
+                label.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(truncateText));
         }
 
@@ -125,24 +125,15 @@ namespace VirtualEnvironment.Platform
             }
             catch (Exception exception)
             {
-                if (exception is DiskpartAbortException diskpartAbortException)
-                    Messages.Push(Messages.Type.Error, diskpartAbortException.Context, diskpartAbortException.Message);
-                else Messages.Push(Messages.Type.Error, exception);
                 if (exception is DiskpartException diskpartException)
-                    Messages.Push(Messages.Type.Verbose, diskpartException.Context, diskpartException.Details);
-                if (exception is ServiceException serviceException)
-                    Messages.Push(Messages.Type.Verbose, serviceException.Context, serviceException.Details);
+                    Messages.Push(Messages.Type.Error, diskpartException.Context, diskpartException.Message, diskpartException.Details);
+                else if (exception is ServiceException serviceException)
+                    Messages.Push(Messages.Type.Error, serviceException.Context, serviceException.Message, serviceException.Details);
+                else Messages.Push(Messages.Type.Error, exception);
                 if (new[] {Task.Attach, Task.Create, Task.Compact}.Contains(task))
                     Diskpart.AbortDisk(drive, diskFile);
             }
         }
-        
-        private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
-        {
-            Messages.Type.Error,
-            Messages.Type.Trace,
-            Messages.Type.Exit
-        };
 
         private void ShowWaitingLoop(Messages.Type type)
         {
@@ -158,6 +149,15 @@ namespace VirtualEnvironment.Platform
             Progress.Visible = false;
         }
 
+        private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
+        {
+            Messages.Type.Error,
+            Messages.Type.Trace,
+            Messages.Type.Exit
+        };
+
+        private string _context;
+
         void Messages.ISubscriber.Receive(Messages.Message message)
         {
             if (!MESSAGE_TYPE_LIST.Contains(message.Type))
@@ -168,7 +168,7 @@ namespace VirtualEnvironment.Platform
             // the main UI thread. If the method is called from a background
             // thread, Invoke ensures that execution is transferred to the UI
             // thread to avoid thread safety issues.
-            //
+            
             // BeginInvoke starts the update asynchronously, allowing the UI to
             // react faster because it does not have to wait for Invoke to
             // complete and does not block the application. This improves
@@ -176,17 +176,39 @@ namespace VirtualEnvironment.Platform
             
             BeginInvoke((MethodInvoker)(() =>
             {
-                var context = message.Context?.Trim() ?? string.Empty;
-                var content = Convert.ToString(message.Data ?? String.Empty).Trim()
-                    .Split(new[] { '\r', '\n' }, StringSplitOptions.None)
+                var context = message.Context?.Trim() ?? _context ?? string.Empty;
+
+                var content = Convert.ToString(message.Data ?? String.Empty);
+                if (message.Data is ServiceException serviceException)
+                {
+                    content = serviceException.Message;
+                    context = serviceException.Context;
+                }
+                else if (message.Data is DiskpartException diskpartException)
+                {
+                    content = diskpartException.Message;
+                    context = diskpartException.Context;
+                }
+                else if (message.Data is Exception exception)
+                {
+                    content = String.Format(
+                        Resources.ApplicationUnexpectedErrorTypeOccurred,
+                        exception.GetType().Name);
+                    content = $"{content}{Environment.NewLine}{exception.Message}";
+                }
+                    
+                _context = context;                
+                
+                content = content.Trim()
+                    .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(line => line.Trim())
                     .FirstOrDefault();
+                content = ($"{context}{Environment.NewLine}{content}").Trim();
 
                 if (Messages.Type.Trace == message.Type
                         || Messages.Type.Exit == message.Type)
                 {
-                    if (!String.IsNullOrWhiteSpace(context))
-                        Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
+                    Output.Text = content;
                     Refresh();
                     
                     if (Messages.Type.Exit != message.Type)
@@ -204,21 +226,9 @@ namespace VirtualEnvironment.Platform
                 BackColor = Color.FromArgb(250, 225, 150);
                 Progress.BackColor = Color.FromArgb(200, 150, 75);
                 Label.ForeColor = Progress.BackColor;
-                
                 Refresh();
                 
-                if (message.Data is Exception exception)
-                {
-                    content = exception.Message;
-                    context = String.IsNullOrWhiteSpace(context)
-                        ? Resources.ApplicationUnexpectedErrorOccurred
-                        : context;
-                    content = $"{exception.GetType().Name}: {content}";
-                }
-                else if (String.IsNullOrWhiteSpace(context))
-                    context = Resources.ApplicationUnexpectedErrorOccurred;
-                
-                Output.Text = ($"{context}{System.Environment.NewLine}{content}").Trim();
+                Output.Text = content;
                 Refresh();
                 
                 ShowWaitingLoop(message.Type);
