@@ -43,6 +43,9 @@ namespace VirtualEnvironment.Platform
         static extern int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId, 
             StringBuilder lpBuffer, int nSize, IntPtr Arguments);
         
+        [DllImport("kernel32.dll")]
+        private static extern uint GetOEMCP();
+        
         private const int BATCH_PROCESS_IDLE_TIMEOUT_SECONDS = 30;
         
         private static readonly Regex PATTERN_PLACEHOLDER =
@@ -51,6 +54,9 @@ namespace VirtualEnvironment.Platform
         private static readonly Regex PATTERN_FILESYSTEM_ENTRY =
             new Regex(@"^[A-Za-z]:([\\/]+( *)[^\x00-\x20\\/:*?""<>|])([\\/]+( *)[^\x00-\x20:*?""<>|]*)*$", RegexOptions.IgnoreCase);
 
+        private static readonly Encoding Encoding =
+            Encoding.GetEncoding((int)GetOEMCP());
+        
         private const string PLATFORM_PATH_RECYCLE_BIN = @"$RECYCLE.BIN";
         private const string PLATFORM_PATH_STORAGE = @"Storage";
         private const string PLATFORM_PATH_STORAGE_PLATFORM_DATA = @"Storage\platform.data";
@@ -461,15 +467,18 @@ namespace VirtualEnvironment.Platform
             SetEnvironmentVariableIfNecessary("PLATFORM_HOMEDRIVE", rootPath.Substring(0, 2));
 
             var batchResult = new BatchResult() {Output = String.Empty};
-            
+
+            Func<string, string> decodeCodepageOutput = data =>
+                Encoding.GetString(Encoding.GetBytes(data));
+
             try
             {
                 var process = Process.Start(processStartInfo);
                 process.OutputDataReceived += (sender, eventArgs) =>
-                    batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
+                    batchResult.Output += $"{Environment.NewLine}{decodeCodepageOutput(eventArgs.Data)}";
                 process.BeginOutputReadLine();
                 process.ErrorDataReceived += (sender, eventArgs) =>
-                    batchResult.Output += $"{Environment.NewLine}{eventArgs.Data}";
+                    batchResult.Output += $"{Environment.NewLine}{decodeCodepageOutput(eventArgs.Data)}";
                 process.BeginErrorReadLine();
                 
                 var idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
