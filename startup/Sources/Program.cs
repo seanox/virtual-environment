@@ -79,7 +79,7 @@ namespace VirtualEnvironment.Startup
             }
             catch (Exception exception)
             {
-                MessageBox.Show($"The program start has failed{System.Environment.NewLine}{exception.Message}",
+                MessageBox.Show($"Program start has failed{System.Environment.NewLine}{exception.Message}",
                     applicationName,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
