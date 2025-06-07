@@ -330,6 +330,15 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Batch process failed.
+        /// </summary>
+        internal static string ServiceBatchFailed {
+            get {
+                return ResourceManager.GetString("ServiceBatchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Batch process unresponsive.
         /// </summary>
         internal static string ServiceBatchFreezeDetection {

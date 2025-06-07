@@ -263,7 +263,10 @@ namespace VirtualEnvironment.Platform
             {
                 if (batchResult.Output.Length > 0)
                     Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, batchResult.Output);
-                throw new ServiceException(Resources.ServiceAttachFailed, Resources.ServiceBatchFailed, batchResult.Message);
+                throw new ServiceException(
+                    Resources.ServiceAttachFailed,
+                    Resources.ServiceBatchFailed,
+                    batchResult.Message);
             }
 
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ApplicationCompleted);
@@ -553,7 +556,10 @@ namespace VirtualEnvironment.Platform
             {
                 if (batchResult.Output.Length > 0)
                     Messages.Push(Messages.Type.Trace, Resources.ServiceDetach, batchResult.Output);
-                throw new ServiceException(Resources.ServiceDetachFailed, Resources.ServiceBatchFailed, batchResult.Message);
+                throw new ServiceException(
+                    Resources.ServiceDetachFailed,
+                    Resources.ServiceBatchFailed,
+                    batchResult.Message);
             }
             
             // In DLL mode, launcher.exe must be excluded as it acts as the main

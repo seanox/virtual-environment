@@ -192,7 +192,7 @@ namespace VirtualEnvironment.Platform
                 else if (message.Data is Exception exception)
                 {
                     content = String.Format(
-                        Resources.ApplicationUnexpectedErrorTypeOccurred,
+                        Resources.ApplicationUnexpectedErrorOccurred,
                         exception.GetType().Name);
                     content = $"{content}{Environment.NewLine}{exception.Message}";
                 }
