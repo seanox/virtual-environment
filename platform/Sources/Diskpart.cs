@@ -142,7 +142,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Compact, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartCompactFailed,
-                    Resources.ApplicationUnexpectedErrorOccurred,
+                    String.Format(Resources.ApplicationUnexpectedErrorOccurred, nameof(DiskpartException)),
                     diskpartResult.Output);
         }
         
@@ -234,7 +234,7 @@ namespace VirtualEnvironment.Platform
                 });
                 if (diskpartResult.Failed)
                     throw new DiskpartException(Resources.DiskpartAttachFailed,
-                        Resources.ApplicationUnexpectedErrorOccurred,
+                        String.Format(Resources.ApplicationUnexpectedErrorOccurred, nameof(DiskpartException)),
                         diskpartResult.Output);
             }
             else
@@ -265,7 +265,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Detach, new DiskpartProperties() {File = diskFile});
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartDetachFailed,
-                    Resources.ApplicationUnexpectedErrorOccurred,
+                    String.Format(Resources.ApplicationUnexpectedErrorOccurred, nameof(DiskpartException)),
                     diskpartResult.Output);
         }
 
@@ -312,7 +312,7 @@ namespace VirtualEnvironment.Platform
             var diskpartResult = DiskpartExec(DiskpartTask.Create, diskpartProperties);
             if (diskpartResult.Failed)
                 throw new DiskpartException(Resources.DiskpartCreateFailed,
-                    Resources.ApplicationUnexpectedErrorOccurred,
+                    String.Format(Resources.ApplicationUnexpectedErrorOccurred, nameof(DiskpartException)),
                     diskpartResult.Output);
 
             AttachDisk(drive, diskFile);
