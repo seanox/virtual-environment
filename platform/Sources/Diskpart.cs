@@ -25,12 +25,16 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace VirtualEnvironment.Platform
 {
     internal static class Diskpart
     {
+        [DllImport("kernel32.dll")]
+        private static extern uint GetOEMCP();
+        
         private const string DISK_TYPE   = "expandable";
         private const int    DISK_SIZE   = 128000;
         private const string DISK_STYLE  = "GPT";
@@ -96,9 +100,13 @@ namespace VirtualEnvironment.Platform
                 process.WaitForExit();
 
                 var diskpartResult = new DiskpartResult();
-                diskpartResult.Output = process.StandardError.ReadToEnd().Trim();
+                using (var streamReader = new StreamReader(process.StandardError.BaseStream,
+                        Encoding.GetEncoding((int)GetOEMCP())))
+                    diskpartResult.Output = streamReader.ReadToEnd().Trim();
                 if (diskpartResult.Output.Length <= 0)
-                    diskpartResult.Output = process.StandardOutput.ReadToEnd().Trim();
+                    using (var streamReader = new StreamReader(process.StandardOutput.BaseStream,
+                            Encoding.GetEncoding((int)GetOEMCP())))
+                        diskpartResult.Output = streamReader.ReadToEnd().Trim();
                 else diskpartResult.Failed = true;
                 if (process.ExitCode != 0)
                     diskpartResult.Failed = true;
