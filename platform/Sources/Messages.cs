@@ -122,7 +122,7 @@ namespace VirtualEnvironment.Platform
                     context = Regex.Replace(context, @"[\r\n]+", " ").Trim();
                 Context = !String.IsNullOrWhiteSpace(context) ? context : null;
                 if (data is IEnumerable<string> lines)
-                    data = String.Join(System.Environment.NewLine, lines);
+                    data = String.Join(Environment.NewLine, lines);
                 Data = data;
             }
             
@@ -158,14 +158,20 @@ namespace VirtualEnvironment.Platform
                         && content is IEnumerable<object> objects)
                     content = objects
                             .Where(line => line != null)
-                            .Select(line => Convert.ToString(line).Trim())    
-                            .Where(line => !String.IsNullOrWhiteSpace(line));
+                            .Select(Convert.ToString);
 
                 if (content is IEnumerable<string> strings)
-                    content = String.Join(Environment.NewLine,
-                        strings.Where(line => !String.IsNullOrWhiteSpace(line)));
+                    content = String.Join(Environment.NewLine, strings);
                 
                 content = Convert.ToString(content).Trim();
+                content = Regex.Replace(
+                    (string)content,
+                    "((\r\n)|(\n\r)|[\r\n])",
+                    Environment.NewLine);
+                content = Regex.Replace(
+                    (string)content,
+                    "((\r\n)|(\n\r)|[\r\n]){3,}",
+                    $"{Environment.NewLine}{Environment.NewLine}");
                 if (!String.IsNullOrEmpty((string)content))
                     stringBuilder.Append(content);
 
