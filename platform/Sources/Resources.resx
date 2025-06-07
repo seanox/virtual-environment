@@ -125,7 +125,7 @@
     <value>Seanox Virtual Environment [{0} {1}]</value>
   </data>
   <data name="ApplicationUnexpectedErrorOccurred" xml:space="preserve">
-    <value>Unexpected error occurred</value>
+    <value>Unexpected {0} occurred</value>
   </data>
   <data name="ApplicationCompleted" xml:space="preserve">
     <value>Successfully completed</value>
@@ -238,9 +238,6 @@
 
   <data name="ServiceDetach" xml:space="preserve">
     <value>Detaching virtual environment</value>
-  </data>
-  <data name="ServiceBatchFailed" xml:space="preserve">
-    <value>Batch process failed</value>
   </data>
   <data name="ServiceDetachFailed" xml:space="preserve">
     <value>Virtual environment detachment failed</value>

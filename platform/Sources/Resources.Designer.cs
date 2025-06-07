@@ -69,7 +69,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected error occurred.
+        ///   Looks up a localized string similar to Unexpected {0} occurred.
         /// </summary>
         internal static string ApplicationUnexpectedErrorOccurred {
             get {
@@ -326,15 +326,6 @@ namespace VirtualEnvironment.Platform {
         internal static string ServiceAttachText {
             get {
                 return ResourceManager.GetString("ServiceAttachText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch process failed.
-        /// </summary>
-        internal static string ServiceBatchFailed {
-            get {
-                return ResourceManager.GetString("ServiceBatchFailed", resourceCulture);
             }
         }
         
