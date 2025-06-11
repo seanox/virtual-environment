@@ -157,8 +157,8 @@ namespace VirtualEnvironment.Platform
                 if (!(content is IEnumerable<string>)
                         && content is IEnumerable<object> objects)
                     content = objects
-                            .Where(line => line != null)
-                            .Select(Convert.ToString);
+                        .Where(line => line != null)
+                        .Select(Convert.ToString);
 
                 if (content is IEnumerable<string> strings)
                     content = String.Join(Environment.NewLine, strings);
