@@ -66,8 +66,8 @@ namespace VirtualEnvironment.Platform
             lock (_lock)
                 recipients = _subscriptions.ToList();
                 
-            Parallel.ForEach(messages, message =>
-                Parallel.ForEach(recipients, recipient =>
+            foreach (messages, message =>
+                foreach (recipients, recipient =>
                 {
                     try { recipient.Receive(message); }
                     catch { }
