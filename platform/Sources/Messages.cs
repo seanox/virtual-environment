@@ -66,12 +66,10 @@ namespace VirtualEnvironment.Platform
             lock (_lock)
                 recipients = _subscriptions.ToList();
                 
-            foreach (messages, message =>
-                foreach (recipients, recipient =>
-                {
+            foreach (var message in messages)
+                foreach (var recipient in recipients)
                     try { recipient.Receive(message); }
                     catch { }
-                }));
         } 
         
         internal static void Push(Type type, params string[] data)
