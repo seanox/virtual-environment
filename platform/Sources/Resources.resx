@@ -125,7 +125,7 @@
     <value>Seanox Virtual Environment [{0} {1}]</value>
   </data>
   <data name="ApplicationUnexpectedErrorOccurred" xml:space="preserve">
-    <value>Unexpected {0} occurred</value>
+    <value>Unexpected error occurred</value>
   </data>
   <data name="ApplicationCompleted" xml:space="preserve">
     <value>Successfully completed</value>
@@ -196,9 +196,6 @@
   <data name="ServiceAttach" xml:space="preserve">
     <value>Attaching virtual environment</value>
   </data>
-  <data name="ServiceAttachBatchFailed" xml:space="preserve">
-    <value>Batch process failed</value>
-  </data>
   <data name="ServiceAttachFailed" xml:space="preserve">
     <value>Virtual environment attachment failed</value>
   </data>
@@ -215,6 +212,9 @@
     <value>Programs and services established</value>
   </data>
 
+  <data name="ServiceBatchFailed" xml:space="preserve">
+    <value>Batch process failed</value>
+  </data>
   <data name="ServiceBatchFreezeDetection" xml:space="preserve">
     <value>Batch process unresponsive</value>
   </data>
