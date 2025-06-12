@@ -471,17 +471,19 @@ namespace VirtualEnvironment.Platform
 
             var batchResult = new BatchResult() {Output = String.Empty};
 
-            Func<string, string> decodeCodepageOutput = data =>
-                Encoding.GetString(Encoding.GetBytes(data));
+            Func<string, string> decodeCodepageOutputLine = data =>
+                !String.IsNullOrEmpty(data?.Trim())
+                    ? $"{Environment.NewLine}{Encoding.GetString(Encoding.GetBytes(data))}"
+                    : String.Empty;
 
             try
             {
                 var process = Process.Start(processStartInfo);
                 process.OutputDataReceived += (sender, eventArgs) =>
-                    batchResult.Output += $"{Environment.NewLine}{decodeCodepageOutput(eventArgs.Data)}";
+                    batchResult.Output += decodeCodepageOutputLine(eventArgs.Data);
                 process.BeginOutputReadLine();
                 process.ErrorDataReceived += (sender, eventArgs) =>
-                    batchResult.Output += $"{Environment.NewLine}{decodeCodepageOutput(eventArgs.Data)}";
+                    batchResult.Output += decodeCodepageOutputLine(eventArgs.Data);
                 process.BeginErrorReadLine();
                 
                 var idleTimoutSeconds = DateTimeOffset.Now.AddSeconds(BATCH_PROCESS_IDLE_TIMEOUT_SECONDS);
