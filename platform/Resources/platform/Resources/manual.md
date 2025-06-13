@@ -2,9 +2,9 @@
 
 Since about 2010, there has been a project for a virtual environment with a
 modular structure targeting developers and users, enabling them to work in a
-fully pre-configured environment with all programs, tools, and services—without
-modifying the host environment or requiring additional dedicated virtualization
-resources.
+fully pre-configured environment with all programs, tools, and services --
+without modifying the host environment or requiring additional dedicated
+virtualization resources.
 
 Short setup times, uniform tools with standardized configurations, consistent
 file system paths, centralized maintenance, and easy distribution and updates
@@ -12,8 +12,8 @@ are just some of the benefits. The environment is highly customizable, can be
 quickly adapted for different projects, and can be seamlessly transferred to
 other machines to continue ongoing work.
 
-The project includes a platform—a tool for the initial creation, use, and
-management of the virtual environment—and a module concept for the automatic
+The project includes a platform -- a tool for the initial creation, use, and
+management of the virtual environment -- and a module concept for the automatic
 integration and configuration of tools and programs from any source on the
 Internet. The module concept is a successful proof of concept envisioned as a
 possible future extension of the platform, but it is not currently the focus of
@@ -34,7 +34,8 @@ command line commands.
 
 - Use a directory where the virtual environment will be created.
 - Copy the `platform.exe` file into this directory.
-- Rename `platform.exe` to the name of the virtual environment you want to create  
+- Rename `platform.exe` to the name of the virtual environment you want to
+  create  
   e.g. `ren platform.exe seanox.exe`
 - Create the virtual environment for drive B:  
   e.g., `seanox.exe B: create`
@@ -42,7 +43,7 @@ command line commands.
 A VHDX file is created in the current directory with the name derived from the
 platform program. The virtual drive also uses this name.
 
-The drive can be mounted temporarily—either manually or using the platform
+The drive can be mounted temporarily -- either manually or using the platform
 program. When you open the virtual drive, a recommended directory structure is
 already present; however, it can be rearranged individually.
 
@@ -96,7 +97,7 @@ software.
 
 With both attachment and detachment of the virtual environment, `Startup.cmd` is
 invoked. This enables the environment to be configured and allows programs to be
-installed, configured, started, stopped, or uninstalled— all driven by the
+installed, configured, started, stopped, or uninstalled -- all driven by the
 environment variables of the virtual platform.
 
 
@@ -136,9 +137,10 @@ potentially carries an increased risk, it is quite common in development and
 testing environments to run applications with administrative or elevated user
 rights. Many tools and programs require these rights in order to fully utilize
 all the necessary system functionalities. Nevertheless, the use of
-administrative privileges should always be applied consciously—with appropriate
-security measures in place within controlled environments—to minimize potential
-risks as much as possible without unnecessarily hindering operations.__
+administrative privileges should always be applied consciously -- with
+appropriate security measures in place within controlled environments -- to
+minimize potential risks as much as possible without unnecessarily hindering
+operations.__
 
 
 
@@ -179,6 +181,7 @@ the virtual disk is compacted by eliminating unused space.
 The user interface is minimalistic, reflecting a novel approach. Due to limited
 space for extended explanations, a log file is generated. This log file contains
 both error outputs and extended trace outputs, which assist in diagnostics.
+
 
 
 ## 9. Tips
