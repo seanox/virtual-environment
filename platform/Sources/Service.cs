@@ -152,7 +152,38 @@ namespace VirtualEnvironment.Platform
                 return Path.Combine(TargetDirectory.FullName, TargetName);
             }
         }
-        
+
+        private class StorageRegLink : IComparable<StorageRegLink>
+        {
+            internal DirectoryInfo StorageDirectory { get; }
+            internal string RegistryKey { get; }
+
+            internal StorageRegLink(DirectoryInfo storage, string registryKey)
+            {
+                StorageDirectory = storage;
+                RegistryKey = registryKey;
+                
+                // TODO
+            }
+
+            internal void Create()
+            {
+                // TODO
+            }
+
+            public int CompareTo(StorageRegLink compare)
+            {
+                return StringComparer.OrdinalIgnoreCase.Compare(
+                    RegistryKey, 
+                    compare.RegistryKey);
+            }
+            
+            public override string ToString()
+            {
+                return RegistryKey;
+            }
+        }
+
         private static void AttachCustomizeFile(string drive, string file)
         {
             var targetFile = file.Replace("/", @"\").Trim();
@@ -194,26 +225,26 @@ namespace VirtualEnvironment.Platform
 
         private static void AttachHostFilesystem(string drive)
         {
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem);
             var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
             var storageSymLinks = Settings.Filesystem
                 .Select(path =>
                 {
-                    Messages.Push(
-                        Messages.Type.Trace,
-                        Resources.ServiceAttachEnvironment,
-                        Resources.ServiceAttachHostFilesystem);
-                    Messages.Push(
-                        Messages.Type.Trace,
-                        Resources.ServiceAttachEnvironment,
-                        Resources.ServiceAttachHostFilesystem,
-                        Path.Combine(storage.FullName, path));
-                    return new StorageSymLink(storage, path);
+                    try { return new StorageSymLink(storage, path); }
+                    catch (Exception)
+                    {
+                        Messages.Push(
+                            Messages.Type.Trace,
+                            Resources.ServiceAttachEnvironment,
+                            Resources.ServiceAttachHostFilesystem,
+                            Path.Combine(storage.FullName, path));
+                        throw;
+                    }
                 })
                 .OrderBy(storageSymLink => storageSymLink)
                 .ToArray();
             foreach (var storageSymLink in storageSymLinks)
             {
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem);
                 Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem, storageSymLink.ToString());
                 storageSymLink.Create();
                 File.AppendAllLines(
@@ -224,7 +255,32 @@ namespace VirtualEnvironment.Platform
         
         private static void AttachHostRegistry(string drive)
         {
-            // TODO:
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry);
+            var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
+            var registryKeys = Settings.Registry
+                .Select(registryKey =>
+                {
+                    try { return new StorageRegLink(storage, registryKey); }
+                    catch (Exception)
+                    {
+                        Messages.Push(
+                            Messages.Type.Trace,
+                            Resources.ServiceAttachEnvironment,
+                            Resources.ServiceAttachHostRegistry,
+                            Path.Combine(storage.FullName, registryKey));
+                        throw;
+                    }
+                })
+                .OrderBy(registryKey => registryKey)
+                .ToArray();
+            foreach (var registryKey in registryKeys)
+            {
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry, registryKey.ToString());
+                registryKey.Create();
+                File.AppendAllLines(
+                    Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
+                    new[] {registryKey.ToString()});
+            }
         }
 
         internal static void Attach(string drive, string diskFile)

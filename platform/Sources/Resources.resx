@@ -208,6 +208,9 @@
   <data name="ServiceAttachHostFilesystem" xml:space="preserve">
     <value>Mount host file system</value>
   </data>
+  <data name="ServiceAttachHostRegistry" xml:space="preserve">
+    <value>Mount host registry</value>
+  </data>
   <data name="ServiceAttachText" xml:space="preserve">
     <value>Programs and services established</value>
   </data>

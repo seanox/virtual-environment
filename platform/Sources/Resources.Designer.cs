@@ -312,6 +312,15 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mount host registry.
+        /// </summary>
+        internal static string ServiceAttachHostRegistry {
+            get {
+                return ResourceManager.GetString("ServiceAttachHostRegistry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Programs and services established.
         /// </summary>
         internal static string ServiceAttachText {
