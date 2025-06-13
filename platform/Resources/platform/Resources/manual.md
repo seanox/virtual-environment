@@ -181,5 +181,15 @@ space for extended explanations, a log file is generated. This log file contains
 both error outputs and extended trace outputs, which assist in diagnostics.
 
 
+## 9. Tips
+
+Deactivate automatic playback for removable media in Windows. This prevents
+erroneous error messages from Windows File Explorer when mounting virtual disks.
+
+- Settings - Bluetooth & devices
+  - Use AutoPlay for all media and devices: __Off__
+  - Choose AutoPlay defaults
+    - Removable drive: __Take no action__
+
 
 __That's it -- have fun with it!__
