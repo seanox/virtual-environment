@@ -118,8 +118,10 @@ Example of a configuration file:
 ```
 
 # Changes 
-## 1.1.2 20240302  
-CR: Project: Updated TargetFrameworkVersion to v4.8  
-CR: Platform: Refactoring of the standard directory structure  
+## 1.2.0 20250701  
+BF: Launcher: Correction when using custom scaling  
+CR: Platform: Optimization and corrections  
+CR: Launcher: Optimization and corrections  
+CR: Launcher: Added additional environment variables for the tile action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
