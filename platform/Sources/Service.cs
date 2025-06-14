@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -243,13 +244,20 @@ namespace VirtualEnvironment.Platform
                 })
                 .OrderBy(storageSymLink => storageSymLink)
                 .ToArray();
+            var storageSymLinkCollector = new Collection<string>();
             foreach (var storageSymLink in storageSymLinks)
             {
+                if (storageSymLinkCollector.Any(existing =>
+                        storageSymLink.ToString().StartsWith(
+                            existing.ToString() + Path.DirectorySeparatorChar,
+                            StringComparison.OrdinalIgnoreCase)))
+                    continue;
                 Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem, storageSymLink.ToString());
                 storageSymLink.Create();
                 File.AppendAllLines(
                     Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
                     new[] {storageSymLink.TargetMountPoint.FullName});
+                storageSymLinkCollector.Add(storageSymLink.ToString());
             }
         }
         
@@ -257,7 +265,7 @@ namespace VirtualEnvironment.Platform
         {
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry);
             var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
-            var registryKeys = Settings.Registry
+            var storageRegLinks = Settings.Registry
                 .Select(registryKey =>
                 {
                     try { return new StorageRegLink(storage, registryKey); }
@@ -273,13 +281,25 @@ namespace VirtualEnvironment.Platform
                 })
                 .OrderBy(registryKey => registryKey)
                 .ToArray();
-            foreach (var registryKey in registryKeys)
+            var storageRegLinkCollector = new Collection<string>();
+            foreach (var storageRegLink in storageRegLinks)
             {
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry, registryKey.ToString());
-                registryKey.Create();
+                if (storageRegLinkCollector.Any(existing =>
+                        storageRegLink.ToString().StartsWith(
+                            existing.ToString() + Path.DirectorySeparatorChar,
+                            StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                if (storageRegLinkCollector.Any(existing =>
+                        Regex.Replace(storageRegLink.ToString(), "@.*$", Path.AltDirectorySeparatorChar.ToString()).StartsWith(
+                            existing.ToString() + Path.DirectorySeparatorChar,
+                            StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry, storageRegLink.ToString());
+                storageRegLink.Create();
                 File.AppendAllLines(
                     Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
-                    new[] {registryKey.ToString()});
+                    new[] {storageRegLink.ToString()});
+                storageRegLinkCollector.Add(storageRegLink.ToString());
             }
         }
 
