@@ -116,7 +116,14 @@ namespace VirtualEnvironment.Platform
                     TargetMountPoint = new FileInfo(mountPoint);
                     break;
                 }
-            }   
+            }
+
+            internal bool Exists()
+            {
+                var symlink = Path.Combine(TargetDirectory.FullName, TargetName);
+                return Directory.Exists(symlink)
+                        || File.Exists(symlink);
+            }
 
             internal void Create()
             {
@@ -165,6 +172,12 @@ namespace VirtualEnvironment.Platform
                 RegistryKey = registryKey;
                 
                 // TODO
+            }
+            
+            internal bool Exists()
+            {
+                // TODO
+                return false;
             }
 
             internal void Create()
@@ -215,15 +228,6 @@ namespace VirtualEnvironment.Platform
             File.SetLastWriteTime(templateFile, DateTime.Now);
         }
 
-        private static bool PathDriveExists(string path)
-        {
-            var root = Path.GetPathRoot(path);
-            if (String.IsNullOrEmpty(root))
-                return false;
-            return DriveInfo.GetDrives().Any(driveInfo =>
-                    driveInfo.Name.Equals(root, StringComparison.OrdinalIgnoreCase));
-        }
-
         private static void AttachHostFilesystem(string drive)
         {
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem);
@@ -247,6 +251,8 @@ namespace VirtualEnvironment.Platform
             var storageSymLinkCollector = new Collection<string>();
             foreach (var storageSymLink in storageSymLinks)
             {
+                if (storageSymLink.Exists())
+                    continue;
                 if (storageSymLinkCollector.Any(existing =>
                         storageSymLink.ToString().StartsWith(
                             existing.ToString() + Path.DirectorySeparatorChar,
@@ -284,6 +290,8 @@ namespace VirtualEnvironment.Platform
             var storageRegLinkCollector = new Collection<string>();
             foreach (var storageRegLink in storageRegLinks)
             {
+                if (storageRegLink.Exists())
+                    continue;
                 if (storageRegLinkCollector.Any(existing =>
                         storageRegLink.ToString().StartsWith(
                             existing.ToString() + Path.DirectorySeparatorChar,
