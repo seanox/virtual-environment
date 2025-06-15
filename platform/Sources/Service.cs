@@ -164,20 +164,55 @@ namespace VirtualEnvironment.Platform
         private class StorageRegLink : IComparable<StorageRegLink>
         {
             internal DirectoryInfo StorageDirectory { get; }
+            internal FileInfo StorageFile { get; }
             internal string RegistryKey { get; }
+            internal Registry.RootClass RegistryRootClass { get; }
+            internal string RegistryKeyPath { get; }
+            internal string RegistryKeyValueName { get; }
+            internal string RegistryMountPoint { get; }
 
             internal StorageRegLink(DirectoryInfo storage, string registryKey)
             {
                 StorageDirectory = storage;
-                RegistryKey = registryKey;
+
+                var registryKeyParts = Registry.RegistryKeyPatttern.Match(registryKey);
+                if (!registryKeyParts.Success)
+                    throw new InvalidDataException(registryKey);
+                Enum.TryParse<Registry.RootClass>(registryKeyParts.Groups[1].Value, true, out var registryRootClass);
+                RegistryRootClass = registryRootClass;
+                RegistryKeyPath = registryKeyParts.Groups[2].Value;
+                RegistryKeyValueName = registryKeyParts.Groups[3].Value;
                 
-                // TODO
+                var registryRootClassMapping = new Dictionary<Registry.RootClass, Registry.RootClass>
+                {
+                    { Registry.RootClass.HKCR, Registry.RootClass.HKEY_CLASSES_ROOT },
+                    { Registry.RootClass.HKCU, Registry.RootClass.HKEY_CURRENT_USER },
+                    { Registry.RootClass.HKLM, Registry.RootClass.HKEY_LOCAL_MACHINE },
+                    { Registry.RootClass.HKU,  Registry.RootClass.HKEY_USERS },
+                    { Registry.RootClass.HKCC, Registry.RootClass.HKEY_CURRENT_CONFIG }
+                };
+                var storageFileName = registryRootClassMapping.TryGetValue(RegistryRootClass, out var registryRootClassMappingValue)
+                    ? registryRootClassMappingValue.ToString()
+                    : RegistryRootClass.ToString();
+                var storagePath = Path.Combine(StorageDirectory.FullName, storageFileName);
+                if (!File.Exists(storagePath))
+                    throw new FileNotFoundException(storagePath);
+                
+                RegistryMountPoint = null;
+                var pathSegments = new List<String>(RegistryKeyPath.Split(Registry.PathSeparatorChar));
+                for (var index = 1; index < pathSegments.Count; index++)
+                {
+                    var mountPoint = Path.Combine(pathSegments.GetRange(0, index + 1).ToArray());
+                    if (Registry.Exists(RegistryRootClass, mountPoint))
+                        continue;
+                    RegistryMountPoint = mountPoint;
+                    break;
+                }
             }
             
             internal bool Exists()
             {
-                // TODO
-                return false;
+                return Registry.Exists(RegistryRootClass, RegistryKey, RegistryKeyValueName);
             }
 
             internal void Create()
@@ -251,14 +286,18 @@ namespace VirtualEnvironment.Platform
             var storageSymLinkCollector = new Collection<string>();
             foreach (var storageSymLink in storageSymLinks)
             {
-                if (storageSymLink.Exists())
-                    continue;
                 if (storageSymLinkCollector.Any(existing =>
                         storageSymLink.ToString().StartsWith(
                             existing.ToString() + Path.DirectorySeparatorChar,
                             StringComparison.OrdinalIgnoreCase)))
                     continue;
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem, storageSymLink.ToString());
+                if (storageSymLink.Exists())
+                    continue;
+                Messages.Push(
+                    Messages.Type.Trace,
+                    Resources.ServiceAttachEnvironment,
+                    Resources.ServiceAttachHostFilesystem,
+                    storageSymLink.ToString());
                 storageSymLink.Create();
                 File.AppendAllLines(
                     Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
@@ -281,7 +320,7 @@ namespace VirtualEnvironment.Platform
                             Messages.Type.Trace,
                             Resources.ServiceAttachEnvironment,
                             Resources.ServiceAttachHostRegistry,
-                            Path.Combine(storage.FullName, registryKey));
+                            registryKey);
                         throw;
                     }
                 })
@@ -290,8 +329,6 @@ namespace VirtualEnvironment.Platform
             var storageRegLinkCollector = new Collection<string>();
             foreach (var storageRegLink in storageRegLinks)
             {
-                if (storageRegLink.Exists())
-                    continue;
                 if (storageRegLinkCollector.Any(existing =>
                         storageRegLink.ToString().StartsWith(
                             existing.ToString() + Path.DirectorySeparatorChar,
@@ -302,7 +339,13 @@ namespace VirtualEnvironment.Platform
                             existing.ToString() + Path.DirectorySeparatorChar,
                             StringComparison.OrdinalIgnoreCase)))
                     continue;
-                Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry, storageRegLink.ToString());
+                if (storageRegLink.Exists())
+                    continue;
+                Messages.Push(
+                    Messages.Type.Trace,
+                    Resources.ServiceAttachEnvironment,
+                    Resources.ServiceAttachHostRegistry,
+                    storageRegLink.ToString());
                 storageRegLink.Create();
                 File.AppendAllLines(
                     Path.Combine(drive, PLATFORM_PATH_STORAGE_PLATFORM_DATA),
