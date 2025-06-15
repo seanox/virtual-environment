@@ -194,9 +194,10 @@ namespace VirtualEnvironment.Platform
                 var storageFileName = registryRootClassMapping.TryGetValue(RegistryRootClass, out var registryRootClassMappingValue)
                     ? registryRootClassMappingValue.ToString()
                     : RegistryRootClass.ToString();
-                var storagePath = Path.Combine(StorageDirectory.FullName, storageFileName);
-                if (!File.Exists(storagePath))
-                    throw new FileNotFoundException(storagePath);
+                var storageFile = Path.Combine(StorageDirectory.FullName, storageFileName);
+                if (!File.Exists(storageFile))
+                    throw new FileNotFoundException(storageFile);
+                StorageFile = new FileInfo(storageFile);
                 
                 RegistryMountPoint = null;
                 var pathSegments = new List<String>(RegistryKeyPath.Split(Registry.PathSeparatorChar));
