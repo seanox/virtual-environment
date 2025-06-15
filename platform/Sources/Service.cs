@@ -175,7 +175,7 @@ namespace VirtualEnvironment.Platform
             {
                 StorageDirectory = storage;
 
-                var registryKeyParts = Registry.RegistryKeyPatttern.Match(registryKey);
+                var registryKeyParts = Registry.RegistryKeyPattern.Match(registryKey);
                 if (!registryKeyParts.Success)
                     throw new InvalidDataException(registryKey);
                 Enum.TryParse<Registry.RootClass>(registryKeyParts.Groups[1].Value, true, out var registryRootClass);
