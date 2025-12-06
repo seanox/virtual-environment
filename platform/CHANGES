@@ -21,14 +21,14 @@ CR: Platform: Optimization for resumption if the drive already exists
 CR: Platform: Optimization for shutdown and session ending
 CR: Platform: Reorganization of the environment variables
     - Variables with the prefix OS_ now use the prefix HOST_
-      HOST_APPDATA      -> HOST_APPDATA
-      HOST_LOCALAPPDATA -> HOST_LOCALAPPDATA
-      HOST_HOMEPATH     -> HOST_HOMEPATH
-      HOST_PATH         -> HOST_PATH
-      HOST_PUBLIC       -> HOST_PUBLIC
-      HOST_TEMP         -> HOST_TEMP
-      HOST_TMP          -> HOST_TMP
-      HOST_USERPROFILE  -> HOST_USERPROFILE
+      OS_APPDATA      -> HOST_APPDATA
+      OS_LOCALAPPDATA -> HOST_LOCALAPPDATA
+      OS_HOMEPATH     -> HOST_HOMEPATH
+      OS_PATH         -> HOST_PATH
+      OS_PUBLIC       -> HOST_PUBLIC
+      OS_TEMP         -> HOST_TEMP
+      OS_TMP          -> HOST_TMP
+      OS_USERPROFILE  -> HOST_USERPROFILE
     - Variables with the prefix VT_ now use the prefix PLATFORM_
       VT_APPDATA      -> PLATFORM_APPDATA
       VT_APPSPATH     -> PLATFORM_APPSPATH
