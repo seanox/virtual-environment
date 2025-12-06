@@ -133,8 +133,11 @@ Example of a configuration file:
 
 
 # Changes 
-## 1.1.2 20240302  
-CR: Project: Updated TargetFrameworkVersion to v4.8  
-CR: Platform: Refactoring of the standard directory structure  
+## 1.2.0 20241230  
+BF: Launcher: Correction/optimization  
+BF: Launcher: Correction when using custom scaling  
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
+CR: Platform: Simplification of the terminal action  
+CR: Settings: Added events (SessionEndingReason)  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
