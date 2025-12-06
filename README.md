@@ -116,8 +116,8 @@ specific language governing permissions and limitations under the License.
 
 
 # Downloads
-[Seanox Virtual Environment 3.5.0](https://github.com/seanox/virtual-environment/releases/download/3.5.0/seanox-platform-3.5.0.zip)  
-[Seanox Virtual Environment 3.5.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.5.0/seanox-platform-3.5.0-update.zip) for existing environment
+[Seanox Virtual Environment 3.6.0](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0.zip)  
+[Seanox Virtual Environment 3.6.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0-update.zip) for existing environment
 
 
 ## Example
@@ -177,12 +177,15 @@ __Module integration will come later, but will be similar.__
 
 
 # Changes
-## 3.5.0 20240706  
-BF: DiskPart: Optimization of attach  
-BF: DiskPart: Optimization of detach if an error occurs  
-BF: DiskPart: Optimization of compact  
-BF: Platform: Correction if no <platform>.ini file exists  
-CR: Platform: Optimization of output/logging  
+## 3.6.0 20251206  
+BF: Platform: Optimization and corrections  
+BF: Launcher: Correction/optimization  
+BF: Launcher: Correction when using custom scaling  
+BF: Settings: Correction to ignore invalid paths in section [FILES]  
+BF: Platform: Names of environment variables are case-sensitive  
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
+CR: Platform: Simplification of the terminal action  
+CR: Launcher: Added events (SessionEndingReason)  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 

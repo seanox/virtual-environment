@@ -94,6 +94,17 @@ Example of a configuration file:
     <!-- Font size in the tiles -->
     <fontSize>9.75</fontSize>
 
+    <!-- Optional actions for Windows events -->
+    <events>
+      <session>
+        <ending>
+          <destination>...</destination>
+          <arguments>...</arguments>
+          <workingDirectory>...</workingDirectory>
+        </ending>
+      </session>
+    </events>
+
     <tiles>
         <tile>
             <!-- Number of the tile (1 - 40) -->
@@ -118,10 +129,11 @@ Example of a configuration file:
 ```
 
 # Changes 
-## 1.2.0 20250701  
+## 1.2.0 20241230  
+BF: Launcher: Correction/optimization  
 BF: Launcher: Correction when using custom scaling  
-CR: Platform: Optimization and corrections  
-CR: Launcher: Optimization and corrections  
-CR: Launcher: Added additional environment variables for the tile action  
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
+CR: Platform: Simplification of the terminal action  
+CR: Settings: Added events (SessionEndingReason)  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)

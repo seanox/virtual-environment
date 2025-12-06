@@ -47,11 +47,11 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/releases
 
 # Changes 
-## 3.5.0 20240706  
-BF: DiskPart: Optimization of attach  
-BF: DiskPart: Optimization of detach if an error occurs  
-BF: DiskPart: Optimization of compact  
-BF: Platform: Correction if no platform.ini file exists  
-CR: Platform: Optimization of output/logging  
+## 3.6.0 20241230  
+BF: Review: Optimization and corrections  
+BF: Settings: Correction to ignore invalid paths in section [FILES]  
+BF: Platform: Names of environment variables are case-sensitive  
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
+CR: Platform: Simplification of the terminal action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)
