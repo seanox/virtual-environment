@@ -16,7 +16,6 @@
   ></a>
 </p>
 
-
 # Description
 Since about 2010, there is the project of a virtual environment with modular
 structure for developers and users, so that they can use a fully pre-configured
@@ -61,7 +60,6 @@ corresponding eco-system or repository.
 perfectly and both release very good portable versions of programs that can be
 used in the virtual environment.
 
-
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
 - The drives can also be supplied and used via the network.
@@ -74,7 +72,6 @@ used in the virtual environment.
 - Environments can be maintained and distributed centrally.
 - A team use the same environment with the same paths and configurations, which facilitates automation.
 
-
 # Features
 - Supports VHD, VHDX as virtual drive also with Bitlocker
 - Functions to create, launch, manage and compact the environment
@@ -86,7 +83,6 @@ used in the virtual environment.
 - Easy customization according to the requirements
 - Simplifies centralized maintenance and distribution
 - Simplifies automation
-
 
 # Licence Agreement
 LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
@@ -107,18 +103,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
-
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
 - [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
-
 # Downloads
 [Seanox Virtual Environment 3.6.0](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0.zip)  
 [Seanox Virtual Environment 3.6.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0-update.zip) for existing environment
-
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
@@ -147,7 +140,6 @@ Next steps are optional and after attaching
 - Change the label of the virtual disk (properties of disk)
 - Change the name of the virtual volume in `AutoRun.inf`
 
-
 # Usage
 - Download the last release of [seanox-platform.zip](#downloads)
 - Extract the file to any location in the local file system
@@ -175,7 +167,6 @@ __Module integration will come later, but will be similar.__
 
 <img src="resources/usage.gif"/>
 
-
 # Changes
 ## 3.6.0 20251206  
 BF: Platform: Optimization and corrections  
@@ -188,7 +179,6 @@ CR: Platform: Simplification of the terminal action
 CR: Launcher: Added events (SessionEndingReason)  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
-
 
 # Contact
 [Issues](https://github.com/seanox/virtual-environment/issues)  
