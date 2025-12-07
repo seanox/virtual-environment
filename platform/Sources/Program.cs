@@ -1,7 +1,3 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
@@ -36,22 +32,22 @@ namespace VirtualEnvironment.Platform
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
             if (arguments == null)
                 arguments = new string[] {};
             var task = (arguments.ElementAtOrDefault(1) ?? String.Empty).ToLower();
             var drive = (arguments.ElementAtOrDefault(0) ?? String.Empty).ToUpper();
             if (!new Regex("^[A-Z]:$").IsMatch(drive))
                 task = String.Empty;
-            
+
             if (Assembly.GetExecutingAssembly() != Assembly.GetEntryAssembly()
                     && !new Regex("^(compact|attach|detach|shortcuts)$", RegexOptions.IgnoreCase).IsMatch(task))
                 throw new InvalidOperationException("Requires a drive letter (A-Z) and a method: [compact|attach|detach|shortcuts].");
-            
+
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-            
+
             Messages.Subscribe(new Subscription());
-            
+
             var applicationPath = Assembly.GetExecutingAssembly().Location;
             var diskFile = Path.Combine(Path.GetDirectoryName(applicationPath),
                     Path.GetFileNameWithoutExtension(applicationPath) + ".vhdx");
@@ -78,8 +74,8 @@ namespace VirtualEnvironment.Platform
             // In the case that the main method is called as a DLL. If a window
             // from the calling program already exists, no new one should or may
             // be established as an application, as this will otherwise cause an
-            // InvalidOperationException. 
-            
+            // InvalidOperationException.
+
             if (!Application.MessageLoop
                     && Application.OpenForms.Count <= 0)
             {
@@ -89,16 +85,16 @@ namespace VirtualEnvironment.Platform
             }
             else new Worker(workerTask, drive, diskFile).Show();
         }
-        
+
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs exceptionEvent)
         {
             Messages.Push(Messages.Type.Error, exceptionEvent.ExceptionObject);
         }
-        
+
         private class Subscription : Messages.ISubscriber
         {
             private string _context;
-            
+
             private bool _continue;
 
             private static readonly HashSet<Messages.Type> MESSAGE_TYPE_LIST = new HashSet<Messages.Type>()
@@ -113,7 +109,7 @@ namespace VirtualEnvironment.Platform
                 if (!MESSAGE_TYPE_LIST.Contains(message.Type)
                         || message.Data is null)
                     return;
-                
+
                 var content = message.ToString().Trim();
                 if (String.IsNullOrWhiteSpace(content))
                     return;
@@ -135,21 +131,21 @@ namespace VirtualEnvironment.Platform
                             .AppendLine(String.Format(Resources.ApplicationVersion, version, build))
                             .AppendLine($"{copyright.Replace("©", "(C)")}")
                             .ToString();
-                        
+
                         if (!File.Exists(logfilePath)
                                 || new FileInfo(logfilePath).Length <= 0)
                             File.AppendAllText(logfilePath, banner);
-                        
-                        File.AppendAllText(logfilePath, Environment.NewLine);    
+
+                        File.AppendAllText(logfilePath, Environment.NewLine);
                     }
-                    
+
                     _continue = true;
 
                     var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     var lines = message.ToString()
                         .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                         .ToArray();
-                    
+
                     Action<string, bool> logfileWriteLine = (line, followup) =>
                     {
                         line = followup ? $" ...  {line}" : line;
@@ -161,7 +157,7 @@ namespace VirtualEnvironment.Platform
                         if (lines[0] != _context)
                             logfileWriteLine(lines[0], false);
                         _context = lines[0];
-                        for (var index = 1; index < lines.Length; index++)    
+                        for (var index = 1; index < lines.Length; index++)
                             logfileWriteLine(lines[index], true);
                     }
                 }

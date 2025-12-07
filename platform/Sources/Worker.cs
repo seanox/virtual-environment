@@ -1,7 +1,3 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
@@ -50,11 +46,11 @@ namespace VirtualEnvironment.Platform
             Output.Font = new Font(SystemFonts.DialogFont.FontFamily, 9.25f);
             Label.Font = new Font(SystemFonts.DialogFont.FontFamily, 8.25f);
 
-            Paint += OnPaint; 
-            
+            Paint += OnPaint;
+
             System.Threading.Tasks.Task.Run(() => WorkerAction(task, drive, diskFile));
         }
-        
+
         private void OnPaint(object sender, PaintEventArgs paintEvent)
         {
             TruncateLabelTextToFit(paintEvent.Graphics, Output);
@@ -64,21 +60,21 @@ namespace VirtualEnvironment.Platform
         {
             if (String.IsNullOrEmpty(label.Text))
                 return;
-            
+
             Func<string, bool> isTextWidthSuitable = text =>
                 graphics.MeasureString(text, label.Font).Width > label.Width;
 
             Func<string, string> truncateText = text =>
             {
                 if (!isTextWidthSuitable(text))
-                    return text; 
+                    return text;
                 while (text.Length > 0
                        && isTextWidthSuitable(text + "..."))
                     text = text.Substring(0, text.Length - 1);
                 return text + "...";
-            };            
-            
-            label.Text = string.Join(Environment.NewLine, 
+            };
+
+            label.Text = string.Join(Environment.NewLine,
                 label.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(truncateText));
         }
@@ -103,19 +99,19 @@ namespace VirtualEnvironment.Platform
                     case Task.Create:
                         Service.Create(drive, diskFile);
                         break;
-                    
+
                     case Task.Compact:
                         Service.Compact(drive, diskFile);
                         break;
-                    
+
                     case Task.Detach:
                         Service.Detach(drive, diskFile);
                         break;
-                 
+
                     case Task.Shortcuts:
                         Service.Shortcuts(drive, diskFile);
                         break;
-                    
+
                     default:
                         Messages.Push(Messages.Type.Error,
                             String.Format(Resources.ApplicationVersion, applicationVersion, applicationBuild),
@@ -162,18 +158,18 @@ namespace VirtualEnvironment.Platform
         {
             if (!MESSAGE_TYPE_LIST.Contains(message.Type))
                 return;
-            
+
             // (Begin)Invoke is required because, in Windows Forms, all changes
             // to UI elements such as text, colors, or sizes must be executed in
             // the main UI thread. If the method is called from a background
             // thread, Invoke ensures that execution is transferred to the UI
             // thread to avoid thread safety issues.
-            
+
             // BeginInvoke starts the update asynchronously, allowing the UI to
             // react faster because it does not have to wait for Invoke to
             // complete and does not block the application. This improves
             // performance and keeps the application responsive.
-            
+
             BeginInvoke((MethodInvoker)(() =>
             {
                 var context = message.Context?.Trim() ?? _context ?? string.Empty;
@@ -196,9 +192,9 @@ namespace VirtualEnvironment.Platform
                         exception.GetType().Name);
                     content = $"{content}{Environment.NewLine}{exception.Message}";
                 }
-                    
-                _context = context;                
-                
+
+                _context = context;
+
                 content = content.Trim()
                     .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(line => line.Trim())
@@ -210,13 +206,13 @@ namespace VirtualEnvironment.Platform
                 {
                     Output.Text = content;
                     Refresh();
-                    
+
                     if (Messages.Type.Exit != message.Type)
                         return;
-                    
+
                     ShowWaitingLoop(message.Type);
                     Close();
-                    
+
                     return;
                 }
 
@@ -227,10 +223,10 @@ namespace VirtualEnvironment.Platform
                 Progress.BackColor = Color.FromArgb(200, 150, 75);
                 Label.ForeColor = Progress.BackColor;
                 Refresh();
-                
+
                 Output.Text = content;
                 Refresh();
-                
+
                 ShowWaitingLoop(message.Type);
                 Close();
             }));

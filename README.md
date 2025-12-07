@@ -84,13 +84,13 @@ used in the virtual environment.
 - Simplifies centralized maintenance and distribution
 - Simplifies automation
 
-# Licence Agreement
-LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-Folgenden Seanox Software Solutions oder kurz Seanox genannt.
+# License Terms
+Seanox Software Solutions is an open-source project, hereinafter referred to as
+__Seanox__.
 
-Diese Software unterliegt der Version 2 der Apache License.
+This software is licensed under the __Apache License, Version 2.0__.
 
-Copyright (C) 2025 Seanox Software Solutions
+__Copyright (C) 2025 Seanox Software Solutions__
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -110,8 +110,8 @@ specific language governing permissions and limitations under the License.
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 # Downloads
-[Seanox Virtual Environment 3.6.0](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0.zip)  
-[Seanox Virtual Environment 3.6.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0-update.zip) for existing environment
+[Seanox Virtual Environment 3.7.0](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
+[Seanox Virtual Environment 3.7.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for existing environment
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
@@ -168,15 +168,23 @@ __Module integration will come later, but will be similar.__
 <img src="resources/usage.gif"/>
 
 # Changes
-## 3.6.0 20251206  
+## 3.7.0 20251207  
+__Version 3.6.0 contained outdated components due to a merge issue.__    
+__The release was withdrawn and replaced by version 3.7.0.__  
+
+BF: Review: Optimization and corrections  
+BF: Settings: Correction to ignore invalid paths in section [FILES]  
 BF: Platform: Optimization and corrections  
+BF: Platform: Names of environment variables are case-sensitive  
+BF: StartUp: Optimization and corrections  
 BF: Launcher: Correction/optimization  
 BF: Launcher: Correction when using custom scaling  
-BF: Settings: Correction to ignore invalid paths in section [FILES]  
-BF: Platform: Names of environment variables are case-sensitive  
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
 CR: Platform: Simplification of the terminal action  
-CR: Launcher: Added events (SessionEndingReason)  
+CR: Platform: Optimization and corrections  
+CR: StartUp: Optimization  
+CR: Launcher: Optimization and corrections  
+CR: Launcher: Added additional environment variables for the tile action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 

@@ -22,7 +22,8 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/releases
 
 # Changes 
-## 1.2.4 20250701  
+## 1.3.0 20250701  
 BF: StartUp: Optimization and corrections  
+CR: StartUp: Optimization  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)

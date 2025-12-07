@@ -1,7 +1,3 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
@@ -56,14 +52,14 @@ namespace VirtualEnvironment.Platform
         
         internal static readonly HashSet<string> Customs;
         
-        private const string SECTION_ENVIRONMENT = "ENVIRONMENT";  
-        private const string SECTION_FILESYSTEM = "FILESYSTEM";  
-        private const string SECTION_REGISTRY = "REGISTRY";  
-        private const string SECTION_CUSTOMS = "CUSTOMS";  
+        private const string SECTION_ENVIRONMENT = "ENVIRONMENT";
+        private const string SECTION_FILESYSTEM = "FILESYSTEM";
+        private const string SECTION_REGISTRY = "REGISTRY";
+        private const string SECTION_CUSTOMS = "CUSTOMS";
         
         private static readonly Regex PATTERN_PLACEHOLDER =
             new Regex(@"#\[\s*([a-z_](?:[\w\.\-]*[a-z0-9_])?)\s*\]", RegexOptions.IgnoreCase);
-        
+
         static Settings()
         {
             Environment = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -85,7 +81,7 @@ namespace VirtualEnvironment.Platform
             // With FILESYSTEM, the environment variables remain unchanged as
             // they are required in the path for the storage. This serves both
             // to reduce the path length and to mask the drive letter.
-                
+
             foreach (var key in GetSectionKeys(iniFile, SECTION_ENVIRONMENT))
                 Environment.Add(key, NormalizeValue(GetSectionKey(iniFile, SECTION_ENVIRONMENT, key)));
             foreach (var line in GetSectionLines(iniFile, SECTION_FILESYSTEM))
@@ -95,7 +91,7 @@ namespace VirtualEnvironment.Platform
             foreach (var line in GetSectionLines(iniFile, SECTION_CUSTOMS))
                 Customs.Add(NormalizeValue(line));
         }
-        
+
         private static IEnumerable<string> GetSectionKeys(FileInfo file, string section)
         {
             if (!file.Exists)
@@ -104,14 +100,14 @@ namespace VirtualEnvironment.Platform
             GetPrivateProfileString(section, null, null, buffer, (uint)buffer.Capacity, file.FullName);
             return buffer.ToString().Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
         }
-        
+
         private static string GetSectionKey(FileInfo file, string section, string key, string defaultValue = "")
         {
             var result = new StringBuilder((int)file.Length);
             GetPrivateProfileString(section, key, defaultValue, result, (uint)result.Capacity, file.FullName);
             return result.ToString();
         }
-        
+
         private static IEnumerable<string> GetSectionLines(FileInfo file, string section)
         {
             if (!file.Exists)
@@ -125,7 +121,7 @@ namespace VirtualEnvironment.Platform
                     !String.IsNullOrEmpty(line)
                         && !line.StartsWith(";"));
         }
-        
+
         private static string NormalizeValuePlaceholder(string value)
         {
             return PATTERN_PLACEHOLDER.Replace(value, match =>

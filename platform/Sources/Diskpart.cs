@@ -1,7 +1,3 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
 // Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
@@ -34,7 +30,7 @@ namespace VirtualEnvironment.Platform
     {
         [DllImport("kernel32.dll")]
         private static extern uint GetOEMCP();
-        
+
         private const string DISK_TYPE   = "expandable";
         private const int    DISK_SIZE   = 128000;
         private const string DISK_STYLE  = "GPT";
@@ -145,7 +141,7 @@ namespace VirtualEnvironment.Platform
                     Resources.ApplicationUnexpectedErrorOccurred,
                     diskpartResult.Output);
         }
-        
+
         private static List<Process> GetProcesses(string drive)
         {
             var wmiQueryString = "SELECT ProcessId, ExecutablePath FROM Win32_Process";
@@ -179,12 +175,12 @@ namespace VirtualEnvironment.Platform
                             var logicalDrive = logicalDisk["DeviceID"]?.ToString();
                             if (!drive.Equals(logicalDrive, StringComparison.OrdinalIgnoreCase))
                                 continue;
-                            
+
                             var pnpDeviceId = disk["PNPDeviceID"]?.ToString();
                             if (pnpDeviceId != null
                                     && pnpDeviceId.IndexOf("VIRTUAL_DISK", StringComparison.OrdinalIgnoreCase) >= 0)
                                 return true;
-                            
+
                             var mediaType = disk["MediaType"]?.ToString();
                             if (mediaType != null
                                     && mediaType.IndexOf("VIRTUAL", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -208,7 +204,7 @@ namespace VirtualEnvironment.Platform
                     throw new DiskpartAbortException(Resources.DiskpartAttachAbort, Resources.DiskpartDriveAlreadyUsed);
                 return;
             }
-            
+
             if (Directory.Exists(drive))
                 throw new DiskpartAbortException(Resources.DiskpartAttachAbort, Resources.DiskpartDriveAlreadyExists);
             if (!File.Exists(diskFile))
@@ -363,12 +359,12 @@ namespace VirtualEnvironment.Platform
             Details = details;
         }
     }
-    
+
     internal class DiskpartAbortException : DiskpartException
     {
         internal DiskpartAbortException(string context, string message)
             : base(context, message)
         {
         }
-    }    
+    }
 }
