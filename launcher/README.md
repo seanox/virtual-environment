@@ -94,17 +94,6 @@ Example of a configuration file:
     <!-- Font size in the tiles -->
     <fontSize>9.75</fontSize>
 
-    <!-- Optional actions for Windows events -->
-    <events>
-      <session>
-        <ending>
-          <destination>...</destination>
-          <arguments>...</arguments>
-          <workingDirectory>...</workingDirectory>
-        </ending>
-      </session>
-    </events>
-
     <tiles>
         <tile>
             <!-- Number of the tile (1 - 40) -->
@@ -122,6 +111,23 @@ Example of a configuration file:
             <arguments>%HOMEDRIVE% detach</arguments>
             <!-- Working directory in which the application is executed -->
             <workingDirectory>%PLATFORM_HOME%</workingDirectory>
+            <!-- 
+                Optionally, environment variables can be added for the action of
+                the tile. These also support the syntax of other environment
+                variables.
+            -->
+            <!--
+            <environment>
+                <variable>
+                    <name>USERPROFILE</name>
+                    <value>%APPSSETTINGS%</value>
+                </variable>
+                <variable>
+                    <name>PATH</name>
+                    <value>%APPSPATH%\example;%PATH%</value>
+                </variable>
+            </environment>
+            -->          
         </tile>
         ...
     </tiles>
@@ -129,11 +135,10 @@ Example of a configuration file:
 ```
 
 # Changes 
-## 1.2.0 20241230  
-BF: Launcher: Correction/optimization  
+## 1.2.0 20250701  
 BF: Launcher: Correction when using custom scaling  
-CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
-CR: Platform: Simplification of the terminal action  
-CR: Settings: Added events (SessionEndingReason)  
+CR: Platform: Optimization and corrections  
+CR: Launcher: Optimization and corrections  
+CR: Launcher: Added additional environment variables for the tile action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
