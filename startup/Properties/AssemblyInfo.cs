@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Starts batch scripts in a minimized console window.")]
-[assembly: AssemblyDescription("Starts batch scripts in a minimized console window.")]
+[assembly: AssemblyTitle("Startup for Seanox Virtual Environment")]
+[assembly: AssemblyDescription("Starts batch scripts without a console window.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
 [assembly: AssemblyProduct("Startup")]
@@ -33,3 +33,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0")]
+[assembly: AssemblyMetadata("Build", "00000000")]
