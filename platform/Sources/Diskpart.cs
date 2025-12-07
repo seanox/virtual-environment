@@ -1,8 +1,4 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
-//
-// Virtual Environment Platform
+﻿// Virtual Environment Platform
 // Creates, starts and controls a virtual environment.
 // Copyright (C) 2023 Seanox Software Solutions
 //
