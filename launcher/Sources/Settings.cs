@@ -1,16 +1,12 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
-//
-// Virtual Environment Launcher
+﻿// Virtual Environment Launcher
 // Program starter for the virtual environment.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
 // the License at
 //
-// https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -208,9 +204,6 @@ namespace VirtualEnvironment.Launcher
         [XmlElement("autoScale")]
         public bool AutoScale;
         
-        [XmlElement(ElementName = "events")]
-        public Events Events { get; set; }
-
         [XmlArray("tiles")]
         [XmlArrayItem("tile", typeof(Tile))]
         public Tile[] Tiles;
@@ -263,22 +256,6 @@ namespace VirtualEnvironment.Launcher
             }
         }
     }
-    
-    public class Events
-    {
-        [XmlElement("session")]
-        public Session Session { get; set; }
-    }
-    
-    public class Session
-    {
-        [XmlElement("ending")]
-        public Ending Ending { get; set; }
-    }
-    
-    public class Ending : Action
-    {
-    }
 
     public class Action
     {
@@ -306,17 +283,43 @@ namespace VirtualEnvironment.Launcher
             get => _workingDirectory;
             set => _workingDirectory = Settings.NormalizeValue(value);
         }
+        
+        [XmlArray("environment")]
+        [XmlArrayItem("variable", typeof(Variable))]
+        public Variable[] Environment { get; set; }
 
-        public void Start()
+        public class Variable
+        {
+            private string _value;
+
+            [XmlElement("name")]
+            public string Name { get; set; }
+
+            [XmlElement("value")]
+            public string Value
+            {
+                get => _value;
+                set => _value = Settings.NormalizeValue(value);
+            }
+        }
+
+        internal void Start()
         {
             if (String.IsNullOrWhiteSpace(Destination))
                 return;
-            using (Process.Start(new ProcessStartInfo
+            using (var process = new Process())
             {
-                WorkingDirectory = WorkingDirectory,
-                FileName = Destination,
-                Arguments = String.Join(" ", Arguments ?? "")
-            }));
+                process.StartInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = WorkingDirectory,
+                    FileName = Destination,
+                    Arguments = String.Join(" ", Arguments ?? "")
+                };
+                if (Environment != null)
+                    foreach (var variable in Environment)
+                        process.StartInfo.EnvironmentVariables[variable.Name] = variable.Value;
+                process.Start();
+            }
         }
     }
 }
