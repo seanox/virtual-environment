@@ -1,8 +1,4 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
-// Virtual Environment Launcher
+﻿// Virtual Environment Launcher
 // Program starter for the virtual environment.
 // Copyright (C) 2025 Seanox Software Solutions
 //
@@ -10,7 +6,7 @@
 // use this file except in compliance with the License. You may obtain a copy of
 // the License at
 //
-// https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
