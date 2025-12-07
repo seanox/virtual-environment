@@ -31,11 +31,9 @@ transferred to other machines where work started can be continued.
 __The project includes with [platform](platform), a tool for the initial
 creation, use and management of the virtual environment and a
 [module concept](modules) for the automatic integration and configuration of
-tools and programs from any source on the Internet.__
-
-__The module concept is a successful PoC (proof of concept), but is not
-currently the focus of the project. So the software has to be set up manually
-in the virtual environment, but that's easy because it's a normal drive.__
+tools and programs from any source on the Internet. However, the module concept
+only exists as a successful PoC (proof of concept) and is not currently the
+focus of the project.__
 
 Since in large companies the strict use of BitLocker is often required, this is
 also supported.
