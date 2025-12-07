@@ -8,7 +8,6 @@ __The module concept is implemented and usable, but no modules have been
 released yet because there is currently not enough time to maintain the
 packages -- your support is welcome :-)__
 
-
 # Usage
 - Rename __platform.exe__ to the name that will be used for the environment and
   drive
@@ -34,20 +33,17 @@ when detaching and the environment variables are needed for this.
 
 __Module integration will come later, but will be similar.__
 
-
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
 - [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
-
 # Download
 Platform is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/releases
-
 
 # Changes 
 ## 3.6.0 20241230  

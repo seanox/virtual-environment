@@ -1,13 +1,13 @@
 <p>
-  <!--
   <a href="https://github.com/seanox/virtual-environment/pulls"
     ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
   ></a>
-  --> 
+  <!--
   <a href="https://github.com/seanox/virtual-environment/pulls"
       title="Development is waiting for new issues / requests / ideas"
     ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
   ></a>
+  -->
   <a href="https://github.com/seanox/virtual-environment/issues"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
@@ -16,13 +16,11 @@
   ></a>
 </p>
 
-
 # Description
 Since about 2010, there is the project of a virtual environment with modular
-structure for developers and users, so that they can use a completely
-pre-configured environment with all programs, tools and services, without the
-host environment interfering with the running operating system and devouring
-resources.
+structure for developers and users, so that they can use a fully pre-configured
+environment with all programs, tools and services, without modifying the host
+environment or requiring additional dedicated virtualization resources.
 
 Short setup times, uniform tools with uniform configuration, uniform paths in
 the file system, centralized maintenance and easy distribution and updating are
@@ -62,7 +60,6 @@ corresponding eco-system or repository.
 perfectly and both release very good portable versions of programs that can be
 used in the virtual environment.
 
-
 ## Advantages
 - A virtual drive is used, which contains all data in one file.
 - The drives can also be supplied and used via the network.
@@ -74,7 +71,6 @@ used in the virtual environment.
 - The use of the file system and registry from the host is avoided.
 - Environments can be maintained and distributed centrally.
 - A team use the same environment with the same paths and configurations, which facilitates automation.
-
 
 # Features
 - Supports VHD, VHDX as virtual drive also with Bitlocker
@@ -88,14 +84,13 @@ used in the virtual environment.
 - Simplifies centralized maintenance and distribution
 - Simplifies automation
 
+# License Terms
+Seanox Software Solutions is an open-source project, hereinafter referred to as
+__Seanox__.
 
-# Licence Agreement
-LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-Folgenden Seanox Software Solutions oder kurz Seanox genannt.
+This software is licensed under the __Apache License, Version 2.0__.
 
-Diese Software unterliegt der Version 2 der Apache License.
-
-Copyright (C) 2025 Seanox Software Solutions
+__Copyright (C) 2025 Seanox Software Solutions__
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -108,18 +103,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
-
 # System Requirement
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
 - [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
-
 # Downloads
-[Seanox Virtual Environment 3.6.0](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0.zip)  
-[Seanox Virtual Environment 3.6.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.6.0/seanox-platform-3.6.0-update.zip) for existing environment
-
+[Seanox Virtual Environment 3.7.0](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
+[Seanox Virtual Environment 3.7.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for existing environment
 
 ## Example
 Download the master templates as virtual environments (approx __4 GB__ /
@@ -148,7 +140,6 @@ Next steps are optional and after attaching
 - Change the label of the virtual disk (properties of disk)
 - Change the name of the virtual volume in `AutoRun.inf`
 
-
 # Usage
 - Download the last release of [seanox-platform.zip](#downloads)
 - Extract the file to any location in the local file system
@@ -176,20 +167,23 @@ __Module integration will come later, but will be similar.__
 
 <img src="resources/usage.gif"/>
 
-
 # Changes
-## 3.6.0 20251206  
+## 3.7.0 20251207  
+BF: Review: Optimization and corrections  
+BF: Settings: Correction to ignore invalid paths in section [FILES]  
 BF: Platform: Optimization and corrections  
+BF: Platform: Names of environment variables are case-sensitive  
+BF: StartUp: Optimization and corrections  
 BF: Launcher: Correction/optimization  
 BF: Launcher: Correction when using custom scaling  
-BF: Settings: Correction to ignore invalid paths in section [FILES]  
-BF: Platform: Names of environment variables are case-sensitive  
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
 CR: Platform: Simplification of the terminal action  
-CR: Launcher: Added events (SessionEndingReason)  
+CR: Platform: Optimization and corrections  
+CR: StartUp: Optimization  
+CR: Launcher: Optimization and corrections  
+CR: Launcher: Added additional environment variables for the tile action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
-
 
 # Contact
 [Issues](https://github.com/seanox/virtual-environment/issues)  
