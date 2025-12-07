@@ -169,6 +169,9 @@ __Module integration will come later, but will be similar.__
 
 # Changes
 ## 3.7.0 20251207  
+__Version 3.6.0 contained outdated components due to a merge issue.__    
+__The release was withdrawn and replaced by version 3.7.0.__  
+
 BF: Review: Optimization and corrections  
 BF: Settings: Correction to ignore invalid paths in section [FILES]  
 BF: Platform: Optimization and corrections  
