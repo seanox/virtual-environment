@@ -22,8 +22,7 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/releases
 
 # Changes 
-## 1.2.3 20240302  
-CR: Project: Updated TargetFrameworkVersion to v4.8  
-CR: Platform: Refactoring of the standard directory structure  
+## 1.2.4 20250701  
+BF: StartUp: Optimization and corrections  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)
