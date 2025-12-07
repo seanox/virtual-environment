@@ -1,13 +1,12 @@
 # Launcher
 A portable program launcher specially developed for the Seanox Virtual
-Environment with a full-screen tile optics that can also be used standalone and
-independently.
+Environment with a full-screen tile-based interface that can also be used
+standalone and independently.
 
 <img src="Resources/animation.gif"/>
 
-Focus is fast keyboard usage -- open a program with three keys.  
+Focus is on fast keyboard usage -- open a program with three keys.  
 Through the global hotkey even when the launcher is not visible.
-
 
 # Features
 - Full screen overlay user interface  
@@ -26,12 +25,11 @@ Through the global hotkey even when the launcher is not visible.
 - Visual style per settings (themes support)  
   The user interface supports the configuration of colors, opacity, background
   color and image, and the appearance of the grid.
-- No icons and functions in the taskbar or system tray  
-  The program is optimized for the virtual environment. So that the shell is
-  not lost, the program is always present in the background and cannot be
-  simply terminated, but the quit can be configured as a function via a tile.  
+- No icons or functions appear in the taskbar or system tray
+  The program is optimized for the virtual environment to ensure that the shell
+  remains accessible. The program runs continuously in the background and cannot
+  be terminated directly. However, quitting can be configured via a tile.
 - Portable application without installation
-
 
 # System Requirement
 - Microsoft Windows 10 or higher
@@ -39,13 +37,12 @@ Through the global hotkey even when the launcher is not visible.
 - [Microsoft .NET 4.8.x Developer Pack or higher](
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
-
 # Download
-The launcher is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
+The launcher is [part of the virtual environment](
+    https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/virtual-environment/releases
-
 
 # Settings
 For configuration the file `launcher.xml` (depending on the application name)
@@ -97,17 +94,6 @@ Example of a configuration file:
     <!-- Font size in the tiles -->
     <fontSize>9.75</fontSize>
 
-    <!-- Optional actions for Windows events -->
-    <events>
-      <session>
-        <ending>
-          <destination>...</destination>
-          <arguments>...</arguments>
-          <workingDirectory>...</workingDirectory>
-        </ending>
-      </session>
-    </events>
-
     <tiles>
         <tile>
             <!-- Number of the tile (1 - 40) -->
@@ -125,19 +111,34 @@ Example of a configuration file:
             <arguments>%HOMEDRIVE% detach</arguments>
             <!-- Working directory in which the application is executed -->
             <workingDirectory>%PLATFORM_HOME%</workingDirectory>
+            <!-- 
+                Optionally, environment variables can be added for the action of
+                the tile. These also support the syntax of other environment
+                variables.
+            -->
+            <!--
+            <environment>
+                <variable>
+                    <name>USERPROFILE</name>
+                    <value>%APPSSETTINGS%</value>
+                </variable>
+                <variable>
+                    <name>PATH</name>
+                    <value>%APPSPATH%\example;%PATH%</value>
+                </variable>
+            </environment>
+            -->          
         </tile>
         ...
     </tiles>
 </settings>
 ```
 
-
 # Changes 
-## 1.2.0 20241230  
-BF: Launcher: Correction/optimization  
+## 1.2.0 20250701  
 BF: Launcher: Correction when using custom scaling  
-CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
-CR: Platform: Simplification of the terminal action  
-CR: Settings: Added events (SessionEndingReason)  
+CR: Platform: Optimization and corrections  
+CR: Launcher: Optimization and corrections  
+CR: Launcher: Added additional environment variables for the tile action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)

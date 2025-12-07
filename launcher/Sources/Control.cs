@@ -1,16 +1,12 @@
-﻿// LIZENZBEDINGUNGEN - Seanox Software Solutions ist ein Open-Source-Projekt, im
-// Folgenden Seanox Software Solutions oder kurz Seanox genannt.
-// Diese Software unterliegt der Version 2 der Apache License.
-//
-// Virtual Environment Launcher
+﻿// Virtual Environment Launcher
 // Program starter for the virtual environment.
-// Copyright (C) 2022 Seanox Software Solutions
+// Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
 // the License at
 //
-// https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -23,6 +19,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -82,6 +80,9 @@ namespace VirtualEnvironment.Launcher
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool ShutdownBlockReasonCreate(IntPtr hWnd, string pwszReason);
+        
         private const int HOTKEY_ID = 0x0;
         
         // Keyboard Input Notifications
@@ -112,6 +113,15 @@ namespace VirtualEnvironment.Launcher
 
         internal Control(Settings settings, bool visible = true)
         {
+            // Handle the Windows ShutdownBlockReason, but only if the launcher
+            // is running in the context of the virtual environment. It is not
+            // necessary to undo this, as the launcher ends and Windows then
+            // automatically cleans up the ShutdownBlockReason. 
+            var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
+            var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
+            if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
+                ShutdownBlockReasonCreate(Handle, "Virtual environment must be shut down.");
+            
             _settings = settings;
             _visible  = visible;
 
@@ -186,7 +196,7 @@ namespace VirtualEnvironment.Launcher
                         && Screen.FromControl(this).Bounds.Equals(bounds))
                     return;
                 
-                Invoke((MethodInvoker)delegate
+                BeginInvoke((MethodInvoker)delegate
                 {
                     _timer?.Change(Timeout.Infinite, Timeout.Infinite);
                     _timer?.Dispose();
@@ -207,11 +217,11 @@ namespace VirtualEnvironment.Launcher
             }
             catch (Exception)
             {
-                MessageBox.Show("The settings do not contain a usable hot key."
-                        + $"{Environment.NewLine}Please check the node /settings/hotKey in file {Settings.FILE.Replace(" ", "\u00A0")}.",
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Messages.Push(Messages.Type.Error,
+                        "The settings do not contain a usable hot key.",
+                        $"Please check the node /settings/hotKey in file {Settings.FILE.Replace(" ", "\u00A0")}.");
                 if (_initial)
-                    Environment.Exit(0);
+                    Messages.Push(Messages.Type.Exit);
             }
         }
 
@@ -233,7 +243,7 @@ namespace VirtualEnvironment.Launcher
                 return;
 
             if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
-                Environment.Exit(0);
+                Messages.Push(Messages.Type.Exit);
 
             // For a short time, TopMost must be abandoned. It may be that
             // Windows asks for authorization or similar when starting programs
@@ -250,11 +260,12 @@ namespace VirtualEnvironment.Launcher
                 if (exception is Win32Exception
                         && ((Win32Exception)exception).NativeErrorCode == ERROR_CANCELLED)
                     return;
+                
+                Messages.Push(Messages.Type.Error,
+                        $"Error opening action: {metaTile.Settings.Destination}",
+                        exception.Message,
+                        exception.InnerException?.Message ?? "");
 
-                MessageBox.Show(($"Error opening action: {metaTile.Settings.Destination}"
-                        + $"{Environment.NewLine}{exception.Message}"
-                        + $"{Environment.NewLine}{exception.InnerException?.Message ?? ""}").Trim(),
-                        "Virtual Environment Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             finally
