@@ -119,7 +119,7 @@ https://seanox.com/storage/master-proxy-3.6.0.7z
 
 Included is a complete development environment with various tools for AWS,
 Kubernetes, Terraform, Java, Python, Node.js, including a customized Eclipse, a
-PostgreSQL database inclusive pgvector and much more.
+PostgreSQL database including pgvector and much more.
 
 Start `master.exe B: attach`.
 
