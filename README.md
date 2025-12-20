@@ -112,14 +112,14 @@ specific language governing permissions and limitations under the License.
 [Seanox Virtual Environment 3.7.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for existing environment
 
 ## Example
-Download the master templates as virtual environments (approx __4 GB__ /
-last update 2024-09-20):  
-https://seanox.com/storage/master-3.6.0.7z  
+Download the master templates as virtual environments (approx __5 GB__ /
+last update 2025-12-20):  
+https://seanox.com/storage/master-3.7.0.7z  
 https://seanox.com/storage/master-proxy-3.6.0.7z
 
 Included is a complete development environment with various tools for AWS,
-Kubernetes, Terraform, Java and Node.js, including a customized Eclipse, a
-PostgreSQL database and much more.
+Kubernetes, Terraform, Java, Python, Node.js, including a customized Eclipse, a
+PostgreSQL database inclusive pgvector and much more.
 
 Start `master.exe B: attach`.
 
