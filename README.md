@@ -113,9 +113,9 @@ specific language governing permissions and limitations under the License.
 
 ## Example
 Download the master templates as virtual environments (approx __5 GB__ /
-last update 2025-12-20):  
+last update 2025-12-21):  
 https://seanox.com/storage/master-3.7.0.7z  
-https://seanox.com/storage/master-proxy-3.6.0.7z
+https://seanox.com/storage/master-proxy-3.7.0.7z
 
 Included is a complete development environment with various tools for AWS,
 Kubernetes, Terraform, Java, Python, Node.js, including a customized Eclipse, a
