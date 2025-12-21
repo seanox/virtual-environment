@@ -1,13 +1,14 @@
 # Startup
-Startup is a simple background launcher for batch scripts.
+Startup is a small background launcher for batch scripts.
 
-The program expects in the current working directory or in the program directory
-a batch file of the same name with the file extension cmd that it starts with a
-hidden console window and then waits until the end of the batch script.
+The program looks for a batch file with the same name and the `.cmd` extension
+in the current working directory or in the program directory. It starts this
+batch script in a hidden console window and waits until the script has finished.
 
-Renaming the startup program also changes the expected name of the batch script.
+Renaming the Startup executable also changes the expected name of the batch
+script.
 
-Command-line arguments are supported and passed to the batch script.
+Command-line arguments are supported and passed through to the batch script.
 
 # System Requirement
 - Microsoft Windows 10 or higher
@@ -16,10 +17,10 @@ Command-line arguments are supported and passed to the batch script.
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 # Download
-Startup is [part of the virtual environment](https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Programs/Platform)
-but can also be downloaded and used separately.
+Startup is [part of the virtual environment](../platform) but can also be
+downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/releases
+https://github.com/seanox/virtual-environment/releases/latest
 
 # Changes 
 ## 1.3.0 20250701  

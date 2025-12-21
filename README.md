@@ -17,70 +17,69 @@
 </p>
 
 # Description
-Since about 2010, there is the project of a virtual environment with modular
-structure for developers and users, so that they can use a fully pre-configured
-environment with all programs, tools and services, without modifying the host
-environment or requiring additional dedicated virtualization resources.
+This project provides a virtual environment based on a modular structure. It
+enables developers and users to work within a pre?configured environment that
+contains tools, programs and services without modifying the host system or
+requiring additional virtualization software.
 
-Short setup times, uniform tools with uniform configuration, uniform paths in
-the file system, centralized maintenance and easy distribution and updating are
-some of the benefits. The environment is easily customizable, can be quickly
-switched to use for different projects, and the environment can be easily
-transferred to other machines where work started can be continued.
+The environment is stored on a virtual drive that can be attached, detached and
+moved between systems. It operates on an abstraction layer on top of Windows
+that mounts this virtual drive. All operations take place inside this file?based
+environment, which is logically separated through path and configuration
+isolation and is designed to avoid interaction with the host file system and
+registry.
 
-__The project includes with [platform](platform), a tool for the initial
-creation, use and management of the virtual environment and a
-[module concept](modules) for the automatic integration and configuration of
-tools and programs from any source on the Internet. However, the module concept
-only exists as a successful PoC (proof of concept) and is not currently the
-focus of the project.__
+__The project consists of the [platform](platform), the [launcher](launcher) and
+the [startup tool](startup). The platform manages virtual drives (creation,
+attachment, detachment, maintenance). The launcher provides keyboard-based
+access to programs inside the environment, and the startup tool initializes
+services and applications. A [module concept](modules) for integrating external
+tools exists as a proof of concept but is not the current focus of
+development.__
 
-Since in large companies the strict use of BitLocker is often required, this is
-also supported.
+BitLocker-encrypted virtual drives are supported for environments where
+encryption requirements apply.
 
-__What is the difference with PortableApps.com or portapps.io?__
+__Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
+    https://portapps.io)__
 
-The virtual environment focuses on the virtual drive as a platform. It is about
-the advantages that the platform can be used as a single file and programs and
-services can be used in it with a complete configuration and with reliable
-absolute paths.
+This project focuses on the virtual drive as the execution platform.
+Applications and services run inside the virtual drive with defined paths and
+configurations. The goal is not to provide portable applications, but to offer a
+complete, isolated environment that can be used as a single file.
 
-The integration and distribution of portable applications are not the ambition
-of this project.
-
-The use of modules for the integration of programs and services is planned, but
-is more an exemplification of the possibilities for the integration of programs
-and services. However, it is not the intention of the project to establish a
-corresponding eco-system or repository.
-
-[PortableApps.com](https://portableapps.com/apps) and
-[portapps.io](https://portapps.io/apps) complement the virtual environment
-perfectly and both release very good portable versions of programs that can be
-used in the virtual environment.
+[PortableApps.com](https://portableapps.com) and [portapps.io](
+    https://portapps.io) can be used within the virtual environment, but the
+project does not aim to provide an application repository or an ecosystem for
+portable software.
 
 ## Advantages
-- A virtual drive is used, which contains all data in one file.
-- The drives can also be supplied and used via the network.
-- Only one large file can be copied faster and also shared.
-- Snapshots and versioning are possible.
-- Multiple drives with different environments can be used in parallel on one computer. 
-- Fast switching between different drives and environments is possible.
-- Fixed drive letters and paths are used.
-- The use of the file system and registry from the host is avoided.
-- Environments can be maintained and distributed centrally.
-- A team use the same environment with the same paths and configurations, which facilitates automation.
+- Virtual drive as a single file containing the entire environment
+- Usable from local storage, external drives or network locations
+- Single?file structure simplifies copying, transferring and sharing
+- Snapshots and versioning supported by Windows VHD/VHDX mechanisms
+- Multiple environments attachable in parallel on the same system
+- Switching between environments by attaching/detaching virtual drives
+- Consistent paths through fixed drive letters
+- Host file system and registry usage avoided by operating inside the virtual drive
+- Centralized maintenance by distributing updated virtual drive files
+- Identical paths and configurations for teams, enabling reproducible automation workflows
 
 # Features
-- Supports VHD, VHDX as virtual drive also with Bitlocker
-- Functions to create, launch, manage and compact the environment
-- The environment is immediately usable after creation
-- Integrated program launcher with optimized keyboard support for fast program access
-- Personalization of environment and programs through a separate key values file
-- Very small and resource-efficient implementation of the platform
-- The use of the local file system and the registry is avoided
-- Easy customization according to the requirements
-- Simplifies centralized maintenance and distribution
-- Simplifies automation
+- Support for VHD and VHDX virtual drives, including optional BitLocker
+  encryption
+- Commands to create, attach, detach, manage and compact the virtual environment
+- Predefined structure that makes the environment usable immediately after
+  creation
+- Integrated launcher with keyboard?based navigation for accessing programs
+- Configuration of environment and applications through a separate key-value
+  file
+- Platform implemented with a small footprint and minimal resource usage
+- Operation inside the virtual drive to avoid using the host file system and
+  registry
+- Customization through configuration files and startup scripts
+- Centralized distribution by providing updated virtual drive files
+- Consistent paths and configurations enabling reproducible automation workflows
 
 # License Terms
 Seanox Software Solutions is an open-source project, hereinafter referred to as
@@ -108,62 +107,80 @@ specific language governing permissions and limitations under the License.
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 # Downloads
-[Seanox Virtual Environment 3.7.0](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
-[Seanox Virtual Environment 3.7.0 Update](https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for existing environment
-
-## Example
-Download the master templates as virtual environments (approx __5 GB__ /
-last update 2025-12-21):  
-https://seanox.com/storage/master-3.7.0.7z  
-https://seanox.com/storage/master-proxy-3.7.0.7z
-
-Included is a complete development environment with various tools for AWS,
-Kubernetes, Terraform, Java, Python, Node.js, including a customized Eclipse, a
-PostgreSQL database including pgvector and much more.
-
-Start `master.exe B: attach`.
-
-The host key combination for the launcher: `Win + ESC`
-
-To exit, use the Detach button at the bottom right of the launcher.
-
-<img src="resources/example.gif"/>
-
-## Use the examples as a template for your own environment
-- Download the example(s)
-- Rename `master.exe`, `master.ini` and `master.vhdx` to your name
-
-Next steps are optional and after attaching
-
-- Change the label of the virtual disk (properties of disk)
-- Change the name of the virtual volume in `AutoRun.inf`
+- [Seanox Virtual Environment 3.7.0](
+    https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip
+)  
+- [Seanox Virtual Environment 3.7.0 Update](
+    https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip
+) for an existing environment
 
 # Usage
-- Download the last release of [seanox-platform.zip](#downloads)
-- Extract the file to any location in the local file system
-- Rename __platform.exe__ to the name that will be used for the environment and drive
+1. Download the last release of [seanox-platform.zip](
+      https://github.com/seanox/virtual-environment/releases/latest)
+2. Extract the archive to any location in the local file system.
+3. Rename __`platform.exe`__ to the name that will be used for the environment
+   and drive
 
-Then the program can be used as follows::
+__Then the program can be used as follows:__
 
-`usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
+```
+usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]
+```
 
 Example
-- `platform.exe B: create` to create the initial environment as VHDX
-- `platform.exe B: shortcuts` to create the usual calls as shortcuts
+- `platform.exe B: create`  
+  Creates the initial environment as a VHDX virtual drive.
+- `platform.exe B: shortcuts`  
+  Creates shortcut files for common actions.
 - `platform.exe B: attach` to attach the environment
+  Attaches the environment and makes it available as a virtual drive.
 
-Configure __Startup.cmd__ in the root directory of the virtual environment and
+Configure __`Startup.cmd`__ in the root directory of the virtual environment and
 add the desired programs and services. It is recommended to use a launcher so
 that the environment variables are available to the called programs. Detach
 should also be started via the launcher if programs and services are terminated
 when detaching and the environment variables are needed for this.
 
-- `platform.exe B: detach` to detach the environment
-- `platform.exe B: compact` to compact the virtual disk
-
-__Module integration will come later, but will be similar.__
+- `platform.exe B: detach`  
+  Detaches the environment.
+- `platform.exe B: compact`  
+  Detaches the environment.
 
 <img src="resources/usage.gif"/>
+
+__Module integration will follow later and will be similar.__
+
+# Example Environment (Ready-to-Use Template)
+A complete, ready?to?use virtual environment is provided as a template. It
+contains a fully configured development setup with tools for AWS, Kubernetes,
+Terraform, Java, Python, Node.js, a customized Eclipse installation, a
+PostgreSQL database including pgvector, and additional utilities.
+
+## Download (approx. 5 GB, last update 2025-12-21)
+- https://seanox.com/storage/master-3.7.0.7z  
+- https://seanox.com/storage/master-proxy-3.7.0.7z
+
+### Starting the environment
+1. Extract the archive.
+2. Start __`master.exe B: attach`__ to mount the environment.
+3. The launcher can be opened with the host key combination __Win + ESC__.
+4. To exit the environment, use the **Detach** button in the launcher.
+
+The environment is immediately usable after attaching. All tools and
+configurations are already included inside the virtual drive.
+
+<img src="resources/example.gif"/>
+
+### Using the template as a base for your own environment (optional)
+
+If you want to create your own environment based on the template:
+
+1. Rename __`master.exe`__, __`master.ini`__ and __`master.vhdx`__ to the
+   desired environment name.
+2. (Optional) Change the virtual disk label (disk properties).
+3. (Optional) Adjust the volume name in __`AutoRun.inf`__.
+4. Modify __`Startup.cmd`__ inside the virtual drive to start your own tools and
+   services.
 
 # Changes
 ## 3.7.0 20251207  
