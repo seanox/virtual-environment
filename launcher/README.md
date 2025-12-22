@@ -1,35 +1,34 @@
 # Launcher
-A portable program launcher specially developed for the Seanox Virtual
-Environment with a full-screen tile-based interface that can also be used
-standalone and independently.
+A portable program launcher designed for the Seanox Virtual Environment. It
+provides a full-screen, tile-based interface and can also be used independently.
 
 <img src="Resources/animation.gif"/>
 
-Focus is on fast keyboard usage -- open a program with three keys.  
-Through the global hotkey even when the launcher is not visible.
+The launcher is optimized for keyboard-based operation. Programs can be started
+with a small number of key presses, including via a global hotkey when the
+launcher is not visible.
 
 # Features
-- Full screen overlay user interface  
-  The full screen overlay is displayed on the primary screen.
-- User interface in tile optics  
-  There are 40 freely configurable tiles available.
-- Global HotKey combination  
-  A global HotKey combination is used to show and hide the user interface.
-- HotKey for tiles and programs  
-  Quick access via the keyboard, optimized for the used keyboard layout.  
-  Support for international keyboard layouts.
-- Automatic settings update  
-  Changes in the settings are used immediately.
-- Settings supports environment variables  
-  Environment variables can be used in text-based values.
-- Visual style per settings (themes support)  
-  The user interface supports the configuration of colors, opacity, background
-  color and image, and the appearance of the grid.
-- No icons or functions appear in the taskbar or system tray
-  The program is optimized for the virtual environment to ensure that the shell
-  remains accessible. The program runs continuously in the background and cannot
-  be terminated directly. However, quitting can be configured via a tile.
-- Portable application without installation
+- __Full-screen overlay interface__  
+  Displayed on the primary screen.
+- __Tile-based user interface__  
+  Up to 40 configurable tiles.
+- __Global hotkey__  
+  Shows or hides the launcher.
+- __Hotkeys for tiles and programs__  
+  Keyboard-optimized access, including support for international keyboard
+  layouts.
+- __Automatic settings reload__  
+  Configuration changes are applied immediately.
+- __Environment variable support__  
+  Text-based configuration values can reference environment variables.
+- __Configurable visual appearance__  
+  Colors, opacity, background image, and grid appearance can be adjusted.
+- __No taskbar or system tray integration__  
+  The launcher runs in the background without adding icons to the shell.  
+  Termination can be configured via a tile.
+- __Portable application__  
+  No installation required.
 
 # System Requirement
 - Microsoft Windows 10 or higher
@@ -45,11 +44,11 @@ but can also be downloaded and used separately.
 https://github.com/seanox/virtual-environment/releases
 
 # Settings
-For configuration the file `launcher.xml` (depending on the application name)
-in the working directory is used. If this file does not exist or is incorrect,
-the launcher aborts the start with an error message.
+Configuration is stored in a file named `launcher.xml` (based on the application
+name) in the working directory. If the file is missing or invalid, the launcher
+terminates with an error message.
 
-Example of a configuration file:
+Example configuration:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
