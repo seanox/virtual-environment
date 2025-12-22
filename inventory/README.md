@@ -1,29 +1,28 @@
 # Inventory
-Scans and extracts changes in the file system and registry.
+Analyzes and extracts modifications in the file system and the Windows registry.
 
-The program analyzes changes in the file system of the system disk and the
-Windows registry through comparative status snapshots. It creates hash-based
-scan files that either contain full paths or aggregated hash values -- depending
-on the user-defined scan depth.
+The tool performs comparative scans of the system drive and the registry.  
+Each scan produces hash?based data files that contain either full paths or
+aggregated hash values, depending on the configured scan depth.
 
-Up to the specified scan depth, paths are fully recorded in the scan files. For
-deeper structures beyond this depth, a hash value is calculated that represents
-their entire content. The maximum scan depth is limited by the file system of
-the operating system.
+Up to the defined scan depth, all paths are written explicitly to the scan
+files. For deeper structures, a hash value is generated that represents the
+complete content of the respective subtree. The maximum usable scan depth is
+determined by the operating system’s file system.
 
-A second scan again creates scan files for the file system and the registry. By
-comparing the two scans, only modified and added data is extracted and stored as
-an exact copy of the affected files in an inventory directory. Deleted data is
-not recorded.
+A subsequent scan produces a second set of scan files for both the file system
+and the registry. By comparing the two scans, the tool identifies added and
+modified data. These files are copied verbatim into an inventory directory.
+Removed data is not recorded.
 
-For the copy of the file system, standard environment variables are used for
-paths, making them independent of drive letters and user accounts. Registry
-changes are saved in plain text in registry.data.
+For file system copies, standard environment variables are used to normalize
+paths, ensuring independence from drive letters and user-specific directories.
+Registry modifications are stored in plain text in the file `registry.data`.
 
-The tool facilitates the creation of portable applications, as the recorded
-changes make it clear which files and registry entries an application requires
-and which may need to be abstracted. Additionally, it improves the traceability
-of changes after a software installation.
+The resulting data supports the creation of portable applications by making
+visible which files and registry entries are required and which components may
+need abstraction. It also improves the traceability of system changes following
+software installation.
 
 # System Requirement
 - Microsoft Windows 10 or higher
