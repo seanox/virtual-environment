@@ -1,30 +1,29 @@
 <p>
-  <a href="https://github.com/seanox/virtual-environment/pulls"
+  <a href="pulls" title="Open for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
   ></a>
   <!--
-  <a href="https://github.com/seanox/virtual-environment/pulls"
-      title="Development is waiting for new issues / requests / ideas"
+  <a href="pulls" title="Development is waiting for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
   ></a>
   -->
-  <a href="https://github.com/seanox/virtual-environment/issues"
+  <a href="issues" title="Open for issues and feature requests"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
-  <a href="http://seanox.de/contact"
+  <a href="http://seanox.de/contact" title="Contact for questions and support"
     ><img src="https://img.shields.io/badge/support-active-green?style=for-the-badge"
   ></a>
 </p>
 
 # Description
 This project provides a virtual environment based on a modular structure. It
-enables developers and users to work within a pre?configured environment that
+enables developers and users to work within a pre-configured environment that
 contains tools, programs and services without modifying the host system or
 requiring additional virtualization software.
 
 The environment is stored on a virtual drive that can be attached, detached and
 moved between systems. It operates on an abstraction layer on top of Windows
-that mounts this virtual drive. All operations take place inside this file?based
+that mounts this virtual drive. All operations take place inside this file-based
 environment, which is logically separated through path and configuration
 isolation and is designed to avoid interaction with the host file system and
 registry.
@@ -56,14 +55,16 @@ portable software.
 ## Advantages
 - Virtual drive as a single file containing the entire environment
 - Usable from local storage, external drives or network locations
-- Single?file structure simplifies copying, transferring and sharing
+- Single-file structure simplifies copying, transferring and sharing
 - Snapshots and versioning supported by Windows VHD/VHDX mechanisms
 - Multiple environments attachable in parallel on the same system
 - Switching between environments by attaching/detaching virtual drives
-- Consistent paths through fixed drive letters
-- Host file system and registry usage avoided by operating inside the virtual drive
+- Consistent paths with freely selectable drive letters
+- Host file system and registry usage avoided by operating inside the virtual
+  drive
 - Centralized maintenance by distributing updated virtual drive files
-- Identical paths and configurations for teams, enabling reproducible automation workflows
+- Identical paths and configurations for teams, enabling reproducible automation
+  workflows
 
 # Features
 - Support for VHD and VHDX virtual drives, including optional BitLocker
@@ -71,7 +72,7 @@ portable software.
 - Commands to create, attach, detach, manage and compact the virtual environment
 - Predefined structure that makes the environment usable immediately after
   creation
-- Integrated launcher with keyboard?based navigation for accessing programs
+- Integrated launcher with keyboard-based navigation for accessing programs
 - Configuration of environment and applications through a separate key-value
   file
 - Platform implemented with a small footprint and minimal resource usage
@@ -104,19 +105,19 @@ specific language governing permissions and limitations under the License.
 - Microsoft Windows 10 or higher
 - Microsoft .NET 4.8.x or higher (for runtime)
 - [Microsoft .NET 4.8.x Developer Pack or higher](
-      https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
+      https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for
+  development only)
 
 # Downloads
 - [Seanox Virtual Environment 3.7.0](
-    https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip
+      releases/download/3.7.0/seanox-platform-3.7.0.zip
 )  
 - [Seanox Virtual Environment 3.7.0 Update](
-    https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip
-) for an existing environment
+      releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for an existing
+  environment
 
 # Usage
-1. Download the last release of [seanox-platform.zip](
-      https://github.com/seanox/virtual-environment/releases/latest)
+1. Download the last release of [seanox-platform.zip](releases/latest)
 2. Extract the archive to any location in the local file system.
 3. Rename __`platform.exe`__ to the name that will be used for the environment
    and drive
@@ -127,7 +128,7 @@ __Then the program can be used as follows:__
 usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]
 ```
 
-Example
+## Example
 - `platform.exe B: create`  
   Creates the initial environment as a VHDX virtual drive.
 - `platform.exe B: shortcuts`  
@@ -146,12 +147,12 @@ when detaching and the environment variables are needed for this.
 - `platform.exe B: compact`  
   Detaches the environment.
 
-<img src="resources/usage.gif"/>
+<img src="assets/usage.gif"/>
 
 __Module integration will follow later and will be similar.__
 
 # Example Environment (Ready-to-Use Template)
-A complete, ready?to?use virtual environment is provided as a template. It
+A complete, ready-to-use virtual environment is provided as a template. It
 contains a fully configured development setup with tools for AWS, Kubernetes,
 Terraform, Java, Python, Node.js, a customized Eclipse installation, a
 PostgreSQL database including pgvector, and additional utilities.
@@ -169,7 +170,7 @@ PostgreSQL database including pgvector, and additional utilities.
 The environment is immediately usable after attaching. All tools and
 configurations are already included inside the virtual drive.
 
-<img src="resources/example.gif"/>
+<img src="assets/example.gif"/>
 
 ### Using the template as a base for your own environment (optional)
 
@@ -204,6 +205,6 @@ CR: Launcher: Added additional environment variables for the tile action
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
 # Contact
-[Issues](https://github.com/seanox/virtual-environment/issues)  
+[Issues](issues)  
 [Requests](https://github.com/seanox/virtual-environment/pulls)  
 [Mail](https://seanox.com/contact)
