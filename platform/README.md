@@ -21,7 +21,8 @@ downloaded and used separately.
 https://github.com/seanox/virtual-environment/releases/latest
 
 # Usage
-1. Download the last release of [seanox-platform.zip](releases/latest)
+1. Download the last release of [seanox-platform.zip](
+       https://github.com/seanox/virtual-environment/releases/latest)
 2. Extract the archive to any location in the local file system.
 3. Rename __`platform.exe`__ to the name that will be used for the environment
    and drive

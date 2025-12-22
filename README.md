@@ -1,13 +1,16 @@
 <p>
-  <a href="pulls" title="Open for contributions, ideas and enhancements"
+  <a href="https://github.com/seanox/virtual-environment/pulls"
+    title="Open for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
   ></a>
   <!--
-  <a href="pulls" title="Development is waiting for contributions, ideas and enhancements"
+  <a href="https://github.com/seanox/virtual-environment/pulls"
+    title="Development is waiting for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
   ></a>
   -->
-  <a href="issues" title="Open for issues and feature requests"
+  <a href="https://github.com/seanox/virtual-environment/issues"
+    title="Open for issues and feature requests"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
   <a href="http://seanox.de/contact" title="Contact for questions and support"
@@ -110,14 +113,15 @@ specific language governing permissions and limitations under the License.
 
 # Downloads
 - [Seanox Virtual Environment 3.7.0](
-      releases/download/3.7.0/seanox-platform-3.7.0.zip
+      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip
 )  
 - [Seanox Virtual Environment 3.7.0 Update](
-      releases/download/3.7.0/seanox-platform-3.7.0-update.zip) for an existing
-  environment
+      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip
+  ) for an existing environment
 
 # Usage
-1. Download the last release of [seanox-platform.zip](releases/latest)
+1. Download the last release of [seanox-platform.zip](
+       https://github.com/seanox/virtual-environment/releases/latest)
 2. Extract the archive to any location in the local file system.
 3. Rename __`platform.exe`__ to the name that will be used for the environment
    and drive
@@ -205,6 +209,6 @@ CR: Launcher: Added additional environment variables for the tile action
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
 
 # Contact
-[Issues](issues)  
+[Issues](https://github.com/seanox/virtual-environment/issues)  
 [Requests](https://github.com/seanox/virtual-environment/pulls)  
 [Mail](https://seanox.com/contact)
