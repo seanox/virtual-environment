@@ -136,8 +136,10 @@
     <tile>
       <index>31</index>
       <title>Terminal</title>
-      <destination>%ComSpec%</destination>
+      <icon>%WINDIR%\System32\cmd.exe</icon>
+      <destination>%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe</destination>
       <workingDirectory>%HOMEDRIVE%\</workingDirectory>
+      <arguments>-w nt -d %HOMEDRIVE%\ cmd</arguments>
     </tile>
     <tile>
       <index>39</index>
