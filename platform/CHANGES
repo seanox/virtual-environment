@@ -1,4 +1,4 @@
-3.6.0 20250701
+3.8.0 2026xxxx
 BF: Review: Optimization and corrections
     - Message Bus (Publisher + Subscriber)
     - Resource for text output
@@ -6,13 +6,6 @@ BF: Review: Optimization and corrections
     - Settings uses the Windows API to read the INI file
     - Build uses AssemblyInfo.cs for version and build number
     - Build uses conditional PropertyGroup
-BF: Settings: Correction to ignore invalid paths in section [FILES]
-    Previously, the replacement of the placeholders was terminated without error
-    after the first incorrect path and the initialization of the platform
-    continued.
-BF: Platform: Names of environment variables are case-sensitive
-CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
-CR: Platform: Simplification of the terminal action
 CR: Platform: Optimization for resumption if the drive already exists
     If the drive is recognized as attached, it is used directly instead of the
     error message that the drive already exists and the ejection. This usually
@@ -59,6 +52,21 @@ CR: Platform: Update of platform tools
     - /Programs/Platform/launcher.exe
     - /Programs/Platform/platform.dll
     - /Programs/Platform/startup.exe
+CR: Launcher: Switch from cmd.exe to wt.exe (Windows Terminal)
+
+3.7.0 20250000
+NT: Version 3.7.0 is skipped because a project release with this version number
+     had to be inserted due to a merge issue.
+
+3.6.0 20241230
+BF: Review: Optimization and corrections
+BF: Settings: Correction to ignore invalid paths in section [FILES]
+    Previously, the replacement of the placeholders was terminated without error
+    after the first incorrect path and the initialization of the platform
+    continued.
+BF: Platform: Names of environment variables are case-sensitive
+CR: Platform: Omission of the steps recorder (deprecated by Microsoft)
+CR: Platform: Simplification of the terminal action
 
 3.5.0 20240706
 BF: DiskPart: Optimization of attach

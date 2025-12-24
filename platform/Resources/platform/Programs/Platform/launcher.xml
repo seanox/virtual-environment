@@ -141,14 +141,9 @@
       <index>31</index>
       <title>Terminal</title>
       <icon>%WINDIR%\System32\cmd.exe</icon>
-      <destination>%APPSPATH%\Platform\console.cmd</destination>
-      <workingDirectory>%HOMEDRIVE%</workingDirectory>
-    </tile>
-    <tile>
-      <index>38</index>
-      <title>Steps Recorder</title>
-      <destination>%WINDIR%\System32\psr.exe</destination>
-      <workingDirectory>%WINDIR%\System32</workingDirectory>
+      <destination>%HOST_LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe</destination>
+      <workingDirectory>%HOMEDRIVE%\</workingDirectory>
+      <arguments>-w nt -d %HOMEDRIVE%\ cmd</arguments>
     </tile>
     <tile>
       <index>39</index>
