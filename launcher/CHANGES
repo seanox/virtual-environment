@@ -4,6 +4,8 @@ BF: Launcher: Optimization and correction of system event handling
     - Corrected reaction to DisplaySettingsChanged (WM_DISPLAYCHANGE, WM_DPICHANGED)
     - Unified lifecycle reset via OnEnvironmentChanged
 CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)
+CR: #0000 Launcher: Inversion of navigation with Shift has been removed
+    The functionality provided no practical value.
 
 1.2.0 20250701
 BF: Launcher: Correction when using custom scaling
