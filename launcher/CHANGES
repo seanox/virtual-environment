@@ -1,9 +1,7 @@
 1.3.0 2026xxxx
 BF: Launcher: Optimization and correction of system event handling
-    - Improved handling of SystemEvents.UserPreferenceChanging:
-      WM_SETTINGCHANGE
-    - Corrected reaction to SystemEvents.DisplaySettingsChanged:
-      WM_DISPLAYCHANGE, WM_DPICHANGED
+    - Improved handling of UserPreferenceChanging (WM_SETTINGCHANGE)
+    - Corrected reaction to DisplaySettingsChanged (WM_DISPLAYCHANGE, WM_DPICHANGED)
     - Unified lifecycle reset via OnEnvironmentChanged
 CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)
 
