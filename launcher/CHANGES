@@ -1,5 +1,11 @@
 1.3.0 2026xxxx
-CR: Settings: Switch from cmd.exe to wt.exe (Windows Terminal)
+BF: Launcher: Optimization and correction of system event handling
+    - Improved handling of SystemEvents.UserPreferenceChanging:
+      WM_SETTINGCHANGE
+    - Corrected reaction to SystemEvents.DisplaySettingsChanged:
+      WM_DISPLAYCHANGE, WM_DPICHANGED
+    - Unified lifecycle reset via OnEnvironmentChanged
+CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)
 
 1.2.0 20250701
 BF: Launcher: Correction when using custom scaling

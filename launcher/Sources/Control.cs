@@ -185,8 +185,8 @@ namespace VirtualEnvironment.Launcher
             MouseClick += OnMouseClick;
             VisibleChanged += OnVisibleChanged;
 
-            SystemEvents.UserPreferenceChanging += (sender, eventArgs) => Visible = false;
-            SystemEvents.DisplaySettingsChanged += (sender, eventArgs) => Visible = false;
+            SystemEvents.UserPreferenceChanging += OnEnvironmentChanged;
+            SystemEvents.DisplaySettingsChanged += OnEnvironmentChanged;
 
             var bounds = Screen.FromControl(this).Bounds; 
             
@@ -195,15 +195,7 @@ namespace VirtualEnvironment.Launcher
                 if (!Settings.IsUpdateAvailable()
                         && Screen.FromControl(this).Bounds.Equals(bounds))
                     return;
-                
-                BeginInvoke((MethodInvoker)delegate
-                {
-                    _timer?.Change(Timeout.Infinite, Timeout.Infinite);
-                    _timer?.Dispose();
-                    
-                    Close();
-                    Dispose();
-                });
+                OnEnvironmentChanged(null, null);
             }, null, 1000, 1000);
         }
 
@@ -296,7 +288,24 @@ namespace VirtualEnvironment.Launcher
                 Visible = !Visible;
             _inputSignalTiming = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
-        
+
+        private void OnEnvironmentChanged(object sender, EventArgs eventArgs)
+        {
+            BeginInvoke((MethodInvoker)delegate
+            {
+                try
+                {
+                    _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                    _timer?.Dispose();
+                }
+                catch (Exception)
+                {
+                }
+                Close();
+                Dispose();
+            });
+        }
+
         private void OnClosing(object sender, EventArgs eventArgs)
         {
             UnregisterHotKey(Handle, HOTKEY_ID);
