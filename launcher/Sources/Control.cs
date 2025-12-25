@@ -46,8 +46,7 @@ namespace VirtualEnvironment.Launcher
     
     // Navigation
     // ----
-    // Mouse, arrow keys as well as tab and backslash are supported. In
-    // combination with Shift inverts the behavior of the buttons.
+    // Mouse, arrow keys as well as tab and backslash are supported.
     
     // Loss of focus
     // ----
@@ -374,32 +373,24 @@ namespace VirtualEnvironment.Launcher
             if (navigationKeys.Contains(keyEventArgs.KeyCode))
                 _inputEventLock = true;
             
-            // Key combinations with Shift invert the key functions for
-            // navigation. Escape, Enter and Space are excluded from this.
-
             switch (keyEventArgs.KeyCode)
             {
                 case (Keys.Escape):
                     Visible = false;
                     break;
-                case Keys.Left when !keyEventArgs.Shift:
-                case Keys.Back when !keyEventArgs.Shift:
-                case Keys.Right when keyEventArgs.Shift:
-                case Keys.Tab when keyEventArgs.Shift:
+                case Keys.Left:
+                case Keys.Back:
                     if (_cursor <= 0)
                         _cursor = _metaTileGrid.Count;
                     _cursor--;
                     break;
-                case Keys.Right when !keyEventArgs.Shift:
-                case Keys.Tab when !keyEventArgs.Shift:
-                case Keys.Left when keyEventArgs.Shift:
-                case Keys.Back when keyEventArgs.Shift:
+                case Keys.Right:
+                case Keys.Tab:
                     if (_cursor + 1 >= _metaTileGrid.Count)
                         _cursor = -1;
                     _cursor++;
                     break;
-                case Keys.Up when !keyEventArgs.Shift:
-                case Keys.Down when keyEventArgs.Shift:
+                case Keys.Up:
                     if (_cursor < _metaTileGrid.Columns
                             && _cursor > 0)
                         _cursor += _metaTileGrid.Count - 1;
@@ -407,8 +398,7 @@ namespace VirtualEnvironment.Launcher
                     if (_cursor < 0)
                         _cursor = _metaTileGrid.Count - 1;
                     break;
-                case Keys.Down when !keyEventArgs.Shift:
-                case Keys.Up when keyEventArgs.Shift:
+                case Keys.Down:
                     if (_cursor >= _metaTileGrid.Count -_metaTileGrid.Columns
                             && _cursor < _metaTileGrid.Count - 1)
                         _cursor = (_cursor - _metaTileGrid.Count) + 1;
