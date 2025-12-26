@@ -158,7 +158,7 @@ CR: Platform: Added function shortcuts
     Creates the usual calls as shortcuts.
     e.g. platform.exe B: shortcuts
 CR: Settings: Added for placeholder replacement in files
-    This simplifies the personalization , distribution, migrations and updates.
+    This simplifies the personalization, distribution, migrations and updates.
 
 2.5.0 2019xxxx
 CR: Added support for VHDX and BitLocker
