@@ -104,29 +104,31 @@ Example configuration:
                 Supports many image formats and icons in exe, dll, ... files.
             -->
             <icon>%WINDIR%\system32\shell32.dll:27</icon>
-            <!-- Path of the application file or `exit` to exit the launcher -->
-            <destination>%PLATFORM_APP%</destination>
-            <!-- Arguments for the program start -->
-            <arguments>%HOMEDRIVE% detach</arguments>
-            <!-- Working directory in which the application is executed -->
-            <workingDirectory>%PLATFORM_HOME%</workingDirectory>
-            <!-- 
-                Optionally, environment variables can be added for the action of
-                the tile. These also support the syntax of other environment
-                variables.
-            -->
-            <!--
-            <environment>
-                <variable>
-                    <name>USERPROFILE</name>
-                    <value>%APPSSETTINGS%</value>
-                </variable>
-                <variable>
-                    <name>PATH</name>
-                    <value>%APPSPATH%\example;%PATH%</value>
-                </variable>
-            </environment>
-            -->          
+            <action>
+              <!-- Path of the application file or `exit` to exit the launcher -->
+              <destination>%PLATFORM_APP%</destination>
+              <!-- Arguments for the program start -->
+              <arguments>%HOMEDRIVE% detach</arguments>
+              <!-- Working directory in which the application is executed -->
+              <workingDirectory>%PLATFORM_HOME%</workingDirectory>
+              <!-- 
+                  Optionally, environment variables can be added for the action of
+                  the tile. These also support the syntax of other environment
+                  variables.
+              -->
+              <!--
+              <environment>
+                  <variable>
+                      <name>USERPROFILE</name>
+                      <value>%APPSSETTINGS%</value>
+                  </variable>
+                  <variable>
+                      <name>PATH</name>
+                      <value>%APPSPATH%\example;%PATH%</value>
+                  </variable>
+              </environment>
+              -->
+            </action>
         </tile>
         ...
     </tiles>

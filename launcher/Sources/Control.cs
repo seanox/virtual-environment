@@ -86,6 +86,7 @@ namespace VirtualEnvironment.Launcher
         
         // Keyboard Input Notifications
         // https://docs.microsoft.com/de-de/windows/win32/inputdev/keyboard-input-notifications
+        private const int WM_KEYDOWN  = 0x0100;
         private const int WM_KEYUP    = 0x0101;
         private const int WM_CHAR     = 0x0102;
         private const int WM_SYSKEYUP = 0x0105;
@@ -230,10 +231,10 @@ namespace VirtualEnvironment.Launcher
                 return;
             SelectMetaTile(metaTile);
             if (metaTile == null
-                    || String.IsNullOrWhiteSpace(metaTile.Settings?.Destination))
+                    || String.IsNullOrWhiteSpace(metaTile.Action?.Destination))
                 return;
 
-            if (metaTile.Settings.Destination.Trim().ToLower().Equals("exit"))
+            if (metaTile.Action.Destination.Trim().ToLower().Equals("exit"))
                 Messages.Push(Messages.Type.Exit);
 
             // For a short time, TopMost must be abandoned. It may be that
@@ -243,7 +244,7 @@ namespace VirtualEnvironment.Launcher
 
             try
             {
-                metaTile.Settings.Start();
+                metaTile.Action.Start();
             }
             catch (Exception exception)
             {
@@ -253,7 +254,7 @@ namespace VirtualEnvironment.Launcher
                     return;
                 
                 Messages.Push(Messages.Type.Error,
-                        $"Error opening action: {metaTile.Settings.Destination}",
+                        $"Error opening action: {metaTile.Action.Destination}",
                         exception.Message,
                         exception.InnerException?.Message ?? "");
 
@@ -432,8 +433,7 @@ namespace VirtualEnvironment.Launcher
             SelectMetaTile(metaTile);
             if ((mouseEventArgs.Button & MouseButtons.Left) == 0
                     || metaTile == null
-                    || metaTile.Settings == null
-                    || String.IsNullOrWhiteSpace(metaTile.Settings.Destination))
+                    || String.IsNullOrWhiteSpace(metaTile.Action?.Destination))
                 return;
             UseMetaTile(metaTile);
         }

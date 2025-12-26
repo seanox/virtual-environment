@@ -23,12 +23,13 @@ namespace VirtualEnvironment.Launcher.Tiles
 {
     internal class MetaTile : IDisposable
     {
-        internal readonly Settings.Tile Settings;
+        internal readonly Settings.Tile   Settings;
+        internal readonly Settings.Action Action;
         
         internal readonly int       Index;
         internal readonly int       ScanCode;
         internal readonly string    Symbol;
-        internal readonly Rectangle Location;
+        internal readonly Rectangle Bounds;
 
         private readonly MetaTileGrid _metaTileGrid;
 
@@ -45,6 +46,7 @@ namespace VirtualEnvironment.Launcher.Tiles
         private MetaTile(Screen screen, Settings settings, Settings.Tile tile)
         {
             Settings = tile;
+            Action = tile.Action;
 
             _metaTileGrid = MetaTileGrid.Create(settings);
 
@@ -78,7 +80,7 @@ namespace VirtualEnvironment.Launcher.Tiles
             var tileRasterRow = (int)Math.Floor((float)Index / _metaTileGrid.Columns);
             var tileStartX = tileRasterColumn * (_metaTileGrid.Size + _metaTileGrid.Gap);
             var tileStartY = tileRasterRow * (_metaTileGrid.Size + _metaTileGrid.Gap);
-            Location = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
+            Bounds = new Rectangle(tileStartX +tileMapLocation.X, tileStartY +tileMapLocation.Y, _metaTileGrid.Size, _metaTileGrid.Size);
             
             _borderColor = ColorTranslator.FromHtml(settings.BorderColor);
             _foregroundColor = ColorTranslator.FromHtml(settings.ForegroundColor);
@@ -129,7 +131,7 @@ namespace VirtualEnvironment.Launcher.Tiles
         {
             using (var rectanglePen = new Pen(new SolidBrush(_borderColor)))
                 Utilities.Graphics.DrawRectangleRounded(graphics, rectanglePen,
-                        new Rectangle(Location.X, Location.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
+                        new Rectangle(Bounds.X, Bounds.Y, _metaTileGrid.Size - 1, _metaTileGrid.Size - 1), _metaTileGrid.Radius);
 
             try
             {
@@ -143,21 +145,21 @@ namespace VirtualEnvironment.Launcher.Tiles
             }
            
             if (_iconImage != null)
-                graphics.DrawImage(_iconImage, Location.X + (_metaTileGrid.Size /2) -(_iconImage.Width /2),
-                        Location.Y + Math.Max((_iconSpace /2) -(_iconImage.Height /2), _metaTileGrid.Padding));
+                graphics.DrawImage(_iconImage, Bounds.X + (_metaTileGrid.Size /2) -(_iconImage.Width /2),
+                        Bounds.Y + Math.Max((_iconSpace /2) -(_iconImage.Height /2), _metaTileGrid.Padding));
 
             var stringFormat = new StringFormat();
             stringFormat.Alignment = StringAlignment.Center;
             stringFormat.LineAlignment = StringAlignment.Center;
 
-            var titleRectangle = new Rectangle(Location.X + _metaTileGrid.Padding, Location.Y + _metaTileGrid.Size -_metaTileGrid.Padding -_textMeasure.Height,
+            var titleRectangle = new Rectangle(Bounds.X + _metaTileGrid.Padding, Bounds.Y + _metaTileGrid.Size -_metaTileGrid.Padding -_textMeasure.Height,
                     _metaTileGrid.Size - (2 * _metaTileGrid.Padding), _textMeasure.Height);
             using (var foregroundColorBrush = new SolidBrush(_foregroundColor))
                 graphics.DrawString(Settings.Title, _textFont, foregroundColorBrush, titleRectangle, stringFormat);
 
             using (var highlightColorBrush = new SolidBrush(_highlightColor))
                 graphics.DrawString(Symbol.ToUpper(), _textFont, highlightColorBrush,
-                        new Point(Location.X + (_metaTileGrid.Padding /2), Location.Y + (_metaTileGrid.Padding /2)));
+                        new Point(Bounds.X + (_metaTileGrid.Padding /2), Bounds.Y + (_metaTileGrid.Padding /2)));
         }
 
         public void Dispose()

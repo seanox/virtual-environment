@@ -65,16 +65,16 @@ namespace VirtualEnvironment.Launcher.Tiles
         internal MetaTile Locate(string symbol)
         {
             return Array.Find(_metaTiles,
-                metaTile => "" + metaTile.Symbol   == symbol);
+                metaTile => "" + metaTile.Symbol == symbol);
         }
         
         internal MetaTile Locate(Point point)
         {
             return Array.Find(_metaTiles, metaTile =>
-                    point.X >= metaTile.Location.Left
-                            && point.X <= metaTile.Location.Right 
-                            && point.Y >= metaTile.Location.Top
-                            && point.Y <= metaTile.Location.Bottom);
+                    point.X >= metaTile.Bounds.Left
+                            && point.X <= metaTile.Bounds.Right 
+                            && point.Y >= metaTile.Bounds.Top
+                            && point.Y <= metaTile.Bounds.Bottom);
         }
 
         internal void Select(Graphics graphics, MetaTile metaTile, bool force = false)
@@ -83,9 +83,9 @@ namespace VirtualEnvironment.Launcher.Tiles
                     || metaTile == null)
                 return;
             if (_selection != null)
-                graphics.DrawImage(_passiveBorderImage, new Point(_selection.Location.X, _selection.Location.Y));
+                graphics.DrawImage(_passiveBorderImage, new Point(_selection.Bounds.X, _selection.Bounds.Y));
             _selection = metaTile;
-            graphics.DrawImage(_activeBorderImage, new Point(_selection.Location.X, _selection.Location.Y));
+            graphics.DrawImage(_activeBorderImage, new Point(_selection.Bounds.X, _selection.Bounds.Y));
         }
 
         private static Rectangle ImageCenter(Rectangle rectangle, Image image)

@@ -6,6 +6,20 @@ BF: Launcher: Optimization and correction of system event handling
 CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)
 CR: Launcher: Inversion of navigation with Shift has been removed
     The functionality provided no practical value.
+CR: Launcher: Refactoring for logical separation of tile and action
+    IMPORTANT: The structure of the tiles in settings.xml changes in that the
+    action now has its own dedicated section:
+    <tile>
+      <index></index>
+      <title></title>
+      <icon></icon>
+      <action>
+        <destination></destination>
+        <arguments></arguments>
+        <workingDirectory></workingDirectory>
+        <environment></environment>
+      </action>
+    </tile>
 
 1.2.0 20250701
 BF: Launcher: Correction when using custom scaling

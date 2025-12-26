@@ -208,10 +208,11 @@ namespace VirtualEnvironment.Launcher
         [XmlArrayItem("tile", typeof(Tile))]
         public Tile[] Tiles;
         
-        public class Tile : Action
+        public class Tile
         {
             private string _title;
             private string _icon;
+            private Action _action;
             
             [XmlElement("index")]
             public int Index;
@@ -236,7 +237,7 @@ namespace VirtualEnvironment.Launcher
                 {
                     var iconFile = Icon;
                     if (String.IsNullOrWhiteSpace(Icon))
-                        iconFile = Destination;
+                        iconFile = Action?.Destination;
                     else iconFile = PATTERN_ICON.Replace(iconFile, "$1");
                     return iconFile?.Trim();
                 }
@@ -254,71 +255,74 @@ namespace VirtualEnvironment.Launcher
                     return iconIndex;
                 }
             }
-        }
-    }
-
-    public class Action
-    {
-        private string _destination;
-        private string _arguments;
-        private string _workingDirectory;
-        
-        [XmlElement("destination")]
-        public string Destination
-        {
-            get => _destination;
-            set => _destination = Settings.NormalizeValue(value);
-        }
-
-        [XmlElement("arguments")]
-        public string Arguments
-        {
-            get => _arguments;
-            set => _arguments = Settings.NormalizeValue(value);
-        }
-
-        [XmlElement("workingDirectory")]
-        public string WorkingDirectory
-        {
-            get => _workingDirectory;
-            set => _workingDirectory = Settings.NormalizeValue(value);
+            
+            [XmlElement("action")]
+            public Action Action { get; set; }
         }
         
-        [XmlArray("environment")]
-        [XmlArrayItem("variable", typeof(Variable))]
-        public Variable[] Environment { get; set; }
-
-        public class Variable
+        public class Action
         {
-            private string _value;
-
-            [XmlElement("name")]
-            public string Name { get; set; }
-
-            [XmlElement("value")]
-            public string Value
+            private string _destination;
+            private string _arguments;
+            private string _workingDirectory;
+            
+            [XmlElement("destination")]
+            public string Destination
             {
-                get => _value;
-                set => _value = Settings.NormalizeValue(value);
+                get => _destination;
+                set => _destination = Settings.NormalizeValue(value);
             }
-        }
 
-        internal void Start()
-        {
-            if (String.IsNullOrWhiteSpace(Destination))
-                return;
-            using (var process = new Process())
+            [XmlElement("arguments")]
+            public string Arguments
             {
-                process.StartInfo = new ProcessStartInfo
+                get => _arguments;
+                set => _arguments = Settings.NormalizeValue(value);
+            }
+
+            [XmlElement("workingDirectory")]
+            public string WorkingDirectory
+            {
+                get => _workingDirectory;
+                set => _workingDirectory = Settings.NormalizeValue(value);
+            }
+            
+            [XmlArray("environment")]
+            [XmlArrayItem("variable", typeof(Variable))]
+            public Variable[] Environment { get; set; }
+
+            public class Variable
+            {
+                private string _value;
+
+                [XmlElement("name")]
+                public string Name { get; set; }
+
+                [XmlElement("value")]
+                public string Value
                 {
-                    WorkingDirectory = WorkingDirectory,
-                    FileName = Destination,
-                    Arguments = String.Join(" ", Arguments ?? "")
-                };
-                if (Environment != null)
-                    foreach (var variable in Environment)
-                        process.StartInfo.EnvironmentVariables[variable.Name] = variable.Value;
-                process.Start();
+                    get => _value;
+                    set => _value = Settings.NormalizeValue(value);
+                }
+            }
+
+            internal void Start()
+            {
+                if (String.IsNullOrWhiteSpace(Destination))
+                    return;
+                using (var process = new Process())
+                {
+                    process.StartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = WorkingDirectory,
+                        FileName = Destination,
+                        Arguments = String.Join(" ", Arguments ?? "")
+                    };
+                    if (Environment != null)
+                        foreach (var variable in Environment)
+                            process.StartInfo.EnvironmentVariables[variable.Name] = variable.Value;
+                    process.Start();
+                }
             }
         }
     }
