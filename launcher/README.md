@@ -136,10 +136,10 @@ Example configuration:
 ```
 
 # Changes 
-## 1.2.0 20250701  
-BF: Launcher: Correction when using custom scaling  
-CR: Platform: Optimization and corrections  
-CR: Launcher: Optimization and corrections  
-CR: Launcher: Added additional environment variables for the tile action  
+## 1.3.0 20251230  
+BF: Launcher: Optimization and correction of system event handling  
+CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)  
+CR: Launcher: Inversion of navigation with Shift has been removed  
+CR: Launcher: Refactoring for logical separation of tile and action  
 
 [Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
