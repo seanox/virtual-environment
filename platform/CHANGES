@@ -39,7 +39,7 @@ CR: Platform: Reorganization of the environment variables
 CR: Settings: Refactoring and optimization
     - New names of the sections
       SETTINGS -> ENVIRONMENT
-      FILES    -> CUSTOMIZATION
+      FILES    -> PATCHES
     - New sections
       FILESYSTEM for automatically created symlinks in the host system
       REGISTRY for temporary registry entries in the host system

@@ -382,7 +382,7 @@ namespace VirtualEnvironment.Platform
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment);
             AttachHostFilesystem(drive);
             AttachHostRegistry(drive);
-            foreach (var file in Settings.Customs)
+            foreach (var file in Settings.Patches)
                 AttachCustomizeFile(drive, file);
                             
             Messages.Push(Messages.Type.Trace, Resources.ServiceAttach, Resources.ServiceAttachText);
