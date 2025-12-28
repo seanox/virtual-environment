@@ -1,24 +1,25 @@
 <p>
   <!--
   <a href="https://github.com/seanox/process-balancer/pulls"
+    title="Open for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
   ></a>
-  --> 
+  -->
   <a href="https://github.com/seanox/process-balancer/pulls"
-      title="Development is waiting for new issues / requests / ideas"
+    title="Development is waiting for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
   ></a>
   <a href="https://github.com/seanox/process-balancer/issues"
+    title="Open for issues and feature requests"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
-  <a href="http://seanox.de/contact"
+  <a href="https://seanox.com/contact" title="Contact for questions and support"
     ><img src="https://img.shields.io/badge/support-active-green?style=for-the-badge"
   ></a>
 </p>
 
 __The tool was outsourced to a separate project. Please use
 https://github.com/seanox/process-balancer!__
-
 
 
 # Process Balancer (formerly ShiftDown)

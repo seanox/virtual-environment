@@ -13,7 +13,7 @@
     title="Open for issues and feature requests"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
-  <a href="http://seanox.de/contact" title="Contact for questions and support"
+  <a href="https://seanox.com/contact" title="Contact for questions and support"
     ><img src="https://img.shields.io/badge/support-active-green?style=for-the-badge"
   ></a>
 </p>
