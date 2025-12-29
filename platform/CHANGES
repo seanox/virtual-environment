@@ -52,7 +52,7 @@ CR: Platform: Update of platform tools
     - /Programs/Platform/launcher.exe
     - /Programs/Platform/platform.dll
     - /Programs/Platform/startup.exe
-CR: Launcher: Switch from cmd.exe to wt.exe (Windows Terminal)
+CR: Platform: Launcher Terminal switched from cmd.exe to wt.exe (Windows Terminal)
 
 3.7.0 20250000
 NT: Version 3.7.0 is skipped because a project release with this version number
