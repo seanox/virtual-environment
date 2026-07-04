@@ -91,7 +91,7 @@ __Seanox__.
 
 This software is licensed under the __Apache License, Version 2.0__.
 
-__Copyright (C) 2025 Seanox Software Solutions__
+__Copyright (C) 2026 Seanox Software Solutions__
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -161,7 +161,7 @@ contains a fully configured development setup with tools for AWS, Kubernetes,
 Terraform, Java, Python, Node.js, a customized Eclipse installation, a
 PostgreSQL database including pgvector, and additional utilities.
 
-## Download (approx. 5 GB, last update 2025-12-21)
+## Download (approx. 5 GB, last update 2026-07-04)
 - https://seanox.com/storage/master-3.7.0.7z  
 - https://seanox.com/storage/master-proxy-3.7.0.7z
 
