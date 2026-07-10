@@ -19,18 +19,18 @@
 </p>
 
 # Description
-This project provides a virtual environment based on a modular structure. It
-enables developers and users to work within a pre-configured environment that
-contains tools, programs and services without modifying the host system or
-requiring additional virtualization software.
+The workspace project provides a portable, file-based working environment with a
+modular structure for developers and users. It allows tools, applications and
+services to run within a self-contained environment using predefined paths and
+configurations, while attempting to avoid changes to the host system.
 
-The environment is stored on a virtual drive that can be attached, detached and
-moved between systems. It operates on an abstraction layer on top of Windows
-that mounts this virtual drive. All operations take place inside this file-based
-environment, which is logically separated through path and configuration
-isolation and is designed to avoid interaction with the host file system and
-registry.
-
+Stored on a virtual disk, the environment can be attached, detached and
+transferred between Windows installations on different machines. A Windows-based
+abstraction layer handles the mounting and management of this disk, allowing all
+operations to take place within the isolated workspace. Path, configuration and
+environment separation are used to maintain consistent runtime conditions and
+reduce unintended interaction with the host file system and registry.
+	
 __The project consists of the [platform](platform), the [launcher](launcher) and
 the [startup tool](startup). The platform manages virtual drives (creation,
 attachment, detachment, maintenance). The launcher provides keyboard-based
@@ -155,33 +155,32 @@ when detaching and the environment variables are needed for this.
 
 __Module integration will follow later and will be similar.__
 
-# Example Environment (Ready-to-Use Template)
-A complete, ready-to-use virtual environment is provided as a template. It
-contains a fully configured development setup with tools for AWS, Kubernetes,
-Terraform, Java, Python, Node.js, a customized Eclipse installation, a
-PostgreSQL database including pgvector, and additional utilities.
+# Example Workspace (Ready-to-Use Template)
+A complete, ready-to-use workspace is provided as a template. It contains a
+fully configured development setup with tools for AWS, Kubernetes, Terraform,
+Java, Python, Node.js, a customized Eclipse installation, a PostgreSQL database
+including pgvector, and additional utilities.
 
-## Download (approx. 5 GB, last update 2026-07-04)
-- https://seanox.com/storage/master-3.7.0.7z  
-- https://seanox.com/storage/master-proxy-3.7.0.7z
+## Download (approx. 5 GB, last update 2026-07-10)
+- https://seanox.com/storage/workspace-3.7.0.7z  
 
-### Starting the environment
+### Starting the workspace
 1. Extract the archive.
-2. Start __`master.exe B: attach`__ to mount the environment.
+2. Start __`workspace.exe B: attach`__ to mount the workspace.
 3. The launcher can be opened with the host key combination __Win + ESC__.
 4. To exit the environment, use the **Detach** button in the launcher.
 
-The environment is immediately usable after attaching. All tools and
+The workspace is immediately usable after attaching. All tools and
 configurations are already included inside the virtual drive.
 
 <img src="assets/example.gif"/>
 
-### Using the template as a base for your own environment (optional)
+### Using the template as a base for your own workspace (optional)
 
-If you want to create your own environment based on the template:
+If you want to create your own workspace based on the template:
 
-1. Rename __`master.exe`__, __`master.ini`__ and __`master.vhdx`__ to the
-   desired environment name.
+1. Rename __`workspace.exe`__, __`workspace.ini`__ and __`workspace.vhdx`__ to
+   the desired environment name.
 2. (Optional) Change the virtual disk label (disk properties).
 3. (Optional) Adjust the volume name in __`AutoRun.inf`__.
 4. Modify __`Startup.cmd`__ inside the virtual drive to start your own tools and
