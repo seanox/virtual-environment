@@ -51,17 +51,17 @@ configurations. The goal is not to provide portable applications, but to offer a
 complete, isolated environment that can be used as a single file.
 
 [PortableApps.com](https://portableapps.com) and [portapps.io](
-    https://portapps.io) can be used within the virtual environment, but the
-project does not aim to provide an application repository or an ecosystem for
-portable software.
+    https://portapps.io) can be used within the workspace, but the project does
+not aim to provide an application repository or an ecosystem for portable
+software.
 
 ## Advantages
-- Virtual drive as a single file containing the entire environment
+- Virtual drive as a single file containing the entire workspace
 - Usable from local storage, external drives or network locations
 - Single-file structure simplifies copying, transferring and sharing
 - Snapshots and versioning supported by Windows VHD/VHDX mechanisms
-- Multiple environments attachable in parallel on the same system
-- Switching between environments by attaching/detaching virtual drives
+- Multiple workspaces attachable in parallel on the same system
+- Switching between workspaces by attaching/detaching virtual drives
 - Consistent paths with freely selectable drive letters
 - Host file system and registry usage avoided by operating inside the virtual
   drive
@@ -72,12 +72,11 @@ portable software.
 # Features
 - Support for VHD and VHDX virtual drives, including optional BitLocker
   encryption
-- Commands to create, attach, detach, manage and compact the virtual environment
-- Predefined structure that makes the environment usable immediately after
+- Commands to create, attach, detach, manage and compact the workspace
+- Predefined structure that makes the workspace usable immediately after
   creation
 - Integrated launcher with keyboard-based navigation for accessing programs
-- Configuration of environment and applications through a separate key-value
-  file
+- Configuration of workspace and applications through a separate key-value file
 - Platform implemented with a small footprint and minimal resource usage
 - Operation inside the virtual drive to avoid using the host file system and
   registry
@@ -112,19 +111,19 @@ specific language governing permissions and limitations under the License.
   development only)
 
 # Downloads
-- [Seanox Virtual Environment 3.7.0](
+- [Seanox Workspace 3.7.0](
       https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip
 )  
-- [Seanox Virtual Environment 3.7.0 Update](
+- [Seanox Workspace 3.7.0 Update](
       https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip
-  ) for an existing environment
+  ) for an existing workspace
 
 # Usage
 1. Download the last release of [seanox-platform.zip](
        https://github.com/seanox/virtual-environment/releases/latest)
 2. Extract the archive to any location in the local file system.
-3. Rename __`platform.exe`__ to the name that will be used for the environment
-   and drive
+3. Rename __`platform.exe`__ to the name that will be used for the workspace and
+   drive
 
 __Then the program can be used as follows:__
 
@@ -134,22 +133,22 @@ usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]
 
 ## Example
 - `platform.exe B: create`  
-  Creates the initial environment as a VHDX virtual drive.
+  Creates the initial workspace as a VHDX virtual drive.
 - `platform.exe B: shortcuts`  
   Creates shortcut files for common actions.
-- `platform.exe B: attach` to attach the environment
-  Attaches the environment and makes it available as a virtual drive.
+- `platform.exe B: attach` to attach the workspace
+  Attaches the workspace and makes it available as a virtual drive.
 
-Configure __`Startup.cmd`__ in the root directory of the virtual environment and
-add the desired programs and services. It is recommended to use a launcher so
-that the environment variables are available to the called programs. Detach
-should also be started via the launcher if programs and services are terminated
-when detaching and the environment variables are needed for this.
+Configure __`Startup.cmd`__ in the root directory of the workspace and add the
+desired programs and services. It is recommended to use a launcher so that the
+environment variables are available to the called programs. Detach should also
+be started via the launcher if programs and services are terminated when
+detaching and the environment variables are needed for this.
 
 - `platform.exe B: detach`  
-  Detaches the environment.
+  Detaches the workspace.
 - `platform.exe B: compact`  
-  Detaches the environment.
+  Detaches the workspace.
 
 <img src="assets/usage.gif"/>
 
@@ -168,7 +167,7 @@ including pgvector, and additional utilities.
 1. Extract the archive.
 2. Start __`workspace.exe B: attach`__ to mount the workspace.
 3. The launcher can be opened with the host key combination __Win + ESC__.
-4. To exit the environment, use the **Detach** button in the launcher.
+4. To exit the workspace, use the __Detach__ button in the launcher.
 
 The workspace is immediately usable after attaching. All tools and
 configurations are already included inside the virtual drive.
@@ -180,7 +179,7 @@ configurations are already included inside the virtual drive.
 If you want to create your own workspace based on the template:
 
 1. Rename __`workspace.exe`__, __`workspace.ini`__ and __`workspace.vhdx`__ to
-   the desired environment name.
+   the desired workspace name.
 2. (Optional) Change the virtual disk label (disk properties).
 3. (Optional) Adjust the volume name in __`AutoRun.inf`__.
 4. Modify __`Startup.cmd`__ inside the virtual drive to start your own tools and
