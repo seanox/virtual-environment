@@ -21,25 +21,26 @@
 # Description
 The workspace project provides a portable, file-based working environment with a
 modular structure for developers and users. It allows tools, applications and
-services to run within a self-contained environment using predefined paths and
+services to run within a self-contained workspace using predefined paths and
 configurations, while attempting to avoid changes to the host system.
 
-Stored on a virtual disk, the environment can be attached, detached and
+Stored on a virtual disk, the workspace can be attached, detached and
 transferred between Windows installations on different machines. A Windows-based
 abstraction layer handles the mounting and management of this disk, allowing all
-operations to take place within the isolated workspace. Path, configuration and
-environment separation are used to maintain consistent runtime conditions and
-reduce unintended interaction with the host file system and registry.
+operations to take place within the logically isolated workspace. Path,
+configuration and environment separation are used to maintain consistent runtime
+conditions and reduce unintended interaction with the host file system and
+registry.
 	
 __The project consists of the [platform](platform), the [launcher](launcher) and
-the [startup tool](startup). The platform manages virtual drives (creation,
+the [startup tool](startup). The platform manages virtual disks (creation,
 attachment, detachment, maintenance). The launcher provides keyboard-based
-access to programs inside the environment, and the startup tool initializes
+access to programs inside the workspace, and the startup tool initializes
 services and applications. A [module concept](modules) for integrating external
 tools exists as a proof of concept but is not the current focus of
 development.__
 
-BitLocker-encrypted virtual drives are supported for environments where
+BitLocker-encrypted virtual disks are supported for environments where
 encryption requirements apply.
 
 __Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
@@ -48,7 +49,7 @@ __Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
 This project focuses on the virtual drive as the execution platform.
 Applications and services run inside the virtual drive with defined paths and
 configurations. The goal is not to provide portable applications, but to offer a
-complete, isolated environment that can be used as a single file.
+complete, logically isolated workspace that can be used as a single file.
 
 [PortableApps.com](https://portableapps.com) and [portapps.io](
     https://portapps.io) can be used within the workspace, but the project does
@@ -56,32 +57,33 @@ not aim to provide an application repository or an ecosystem for portable
 software.
 
 ## Advantages
-- Virtual drive as a single file containing the entire workspace
+- Virtual disk as a single file containing the entire workspace
 - Usable from local storage, external drives or network locations
 - Single-file structure simplifies copying, transferring and sharing
 - Snapshots and versioning supported by Windows VHD/VHDX mechanisms
 - Multiple workspaces attachable in parallel on the same system
-- Switching between workspaces by attaching/detaching virtual drives
+- Switching between workspaces by attaching/detaching virtual disks
 - Consistent paths with freely selectable drive letters
-- Host file system and registry usage avoided by operating inside the virtual
-  drive
-- Centralized maintenance by distributing updated virtual drive files
+- Host file system and registry usage avoided by operating inside the logically
+  isolated workspace
+- Centralized maintenance by distributing updated VHD/VHDX files
 - Identical paths and configurations for teams, enabling reproducible automation
   workflows
 
 # Features
-- Support for VHD and VHDX virtual drives, including optional BitLocker
+- Support for VHD and VHDX virtual disks, including optional BitLocker
   encryption
 - Commands to create, attach, detach, manage and compact the workspace
 - Predefined structure that makes the workspace usable immediately after
   creation
 - Integrated launcher with keyboard-based navigation for accessing programs
-- Configuration of workspace and applications through a separate key-value file
+- Configuration of the workspace and applications through a separate key-value
+  file
 - Platform implemented with a small footprint and minimal resource usage
 - Operation inside the virtual drive to avoid using the host file system and
   registry
 - Customization through configuration files and startup scripts
-- Centralized distribution by providing updated virtual drive files
+- Centralized distribution by providing updated virtual disk files
 - Consistent paths and configurations enabling reproducible automation workflows
 
 # License Terms
@@ -112,11 +114,10 @@ specific language governing permissions and limitations under the License.
 
 # Downloads
 - [Seanox Workspace 3.7.0](
-      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip
-)  
+      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
 - [Seanox Workspace 3.7.0 Update](
-      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip
-  ) for an existing workspace
+      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip)
+  for an existing workspace
 
 # Usage
 1. Download the last release of [seanox-platform.zip](
@@ -128,16 +129,26 @@ specific language governing permissions and limitations under the License.
 __Then the program can be used as follows:__
 
 ```
-usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]
+usage: platform.exe <drive>: [create|attach|detach|compact|shortcuts]
 ```
 
-## Example
-- `platform.exe B: create`  
-  Creates the initial workspace as a VHDX virtual drive.
-- `platform.exe B: shortcuts`  
-  Creates shortcut files for common actions.
-- `platform.exe B: attach` to attach the workspace
-  Attaches the workspace and makes it available as a virtual drive.
+## Examples
+
+```text
+platform.exe B: create
+```
+Creates a new workspace as a VHD/VHDX virtual disk to be used as drive __B:__.
+
+
+```text
+platform.exe B: shortcuts
+```
+Creates shortcuts for the workspace on drive __B:__.
+
+```text
+platform.exe B: attach
+```
+Attaches the workspace as drive __B:__.
 
 Configure __`Startup.cmd`__ in the root directory of the workspace and add the
 desired programs and services. It is recommended to use a launcher so that the
@@ -145,14 +156,17 @@ environment variables are available to the called programs. Detach should also
 be started via the launcher if programs and services are terminated when
 detaching and the environment variables are needed for this.
 
-- `platform.exe B: detach`  
-  Detaches the workspace.
-- `platform.exe B: compact`  
-  Detaches the workspace.
+```text
+platform.exe B: detach
+```
+Detaches the workspace from drive __B:__.
+
+```text
+platform.exe B: compact
+```
+Compacts the workspace virtual disk.
 
 <img src="assets/usage.gif"/>
-
-__Module integration will follow later and will be similar.__
 
 # Example Workspace (Ready-to-Use Template)
 A complete, ready-to-use workspace is provided as a template. It contains a
@@ -165,10 +179,24 @@ including pgvector, and additional utilities.
 
 ### Starting the workspace
 1. Extract the archive.
-2. Start __`workspace.exe B: attach`__ to mount the workspace.
-3. The launcher can be opened with the host key combination __Win + ESC__.
-4. To exit the workspace, use the __Detach__ button in the launcher.
-
+2. Creates shortcuts for the workspace on drive B:.
+   ```text
+   workspace.exe B: shortcuts
+   ```
+3. Attach and start the workspace as drive B: using either the shortcut or the
+   command line.
+   ```text
+   workspace.attach
+   ```
+   or
+   ```text
+   workspace.exe B: attach
+   ```
+4. Open the launcher with the __Win + Esc__ keyboard shortcut.
+5. To close the workspace, click __Detach__ in the launcher.
+   Applications started from the workspace are closed before drive B: is
+   detached.
+ 
 The workspace is immediately usable after attaching. All tools and
 configurations are already included inside the virtual drive.
 
