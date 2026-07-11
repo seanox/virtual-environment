@@ -187,9 +187,6 @@ including pgvector, and additional utilities.
    command line.
    ```text
    workspace.attach
-   ```
-   or
-   ```text
    workspace.exe B: attach
    ```
 4. Open the launcher with the __Win + Esc__ keyboard shortcut.
