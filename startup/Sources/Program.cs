@@ -1,4 +1,4 @@
-// Virtual Environment Startup
+// Workspace Startup
 // Starts a batch script with the same name minimized.
 // Copyright (C) 2025 Seanox Software Solutions
 //
@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace VirtualEnvironment.Startup
+namespace Workspace.Startup
 {
     internal static class Program
     {

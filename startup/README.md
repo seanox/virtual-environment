@@ -18,14 +18,14 @@ Command-line arguments are supported and passed through to the batch script.
   development only)
 
 # Download
-Startup is [part of the virtual environment](../platform) but can also be
+Startup is [part of the workspace](../platform) but can also be
 downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/releases/latest
+https://github.com/seanox/workspace/releases/latest
 
 # Changes 
 ## 1.3.0 20250701  
 BF: StartUp: Optimization and corrections  
 CR: StartUp: Optimization  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/startup/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/workspace/master/startup/CHANGES)
