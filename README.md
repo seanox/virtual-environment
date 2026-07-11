@@ -1,15 +1,15 @@
 <p>
-  <a href="https://github.com/seanox/virtual-environment/pulls"
+  <a href="https://github.com/seanox/workspace/pulls"
     title="Open for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-active-green?style=for-the-badge"
   ></a>
   <!--
-  <a href="https://github.com/seanox/virtual-environment/pulls"
+  <a href="https://github.com/seanox/workspace/pulls"
     title="Development is waiting for contributions, ideas and enhancements"
     ><img src="https://img.shields.io/badge/development-passive-blue?style=for-the-badge"
   ></a>
   -->
-  <a href="https://github.com/seanox/virtual-environment/issues"
+  <a href="https://github.com/seanox/workspace/issues"
     title="Open for issues and feature requests"
     ><img src="https://img.shields.io/badge/maintenance-active-green?style=for-the-badge"
   ></a>
@@ -114,14 +114,14 @@ specific language governing permissions and limitations under the License.
 
 # Downloads
 - [Seanox Workspace 3.7.0](
-      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
+      https://github.com/seanox/workspace/releases/download/3.7.0/seanox-platform-3.7.0.zip)  
 - [Seanox Workspace 3.7.0 Update](
-      https://github.com/seanox/virtual-environment/releases/download/3.7.0/seanox-platform-3.7.0-update.zip)
+      https://github.com/seanox/workspace/releases/download/3.7.0/seanox-platform-3.7.0-update.zip)
   for an existing workspace
 
 # Usage
 1. Download the last release of [seanox-platform.zip](
-       https://github.com/seanox/virtual-environment/releases/latest)
+       https://github.com/seanox/workspace/releases/latest)
 2. Extract the archive to any location in the local file system.
 3. Rename __`platform.exe`__ to the name that will be used for the workspace and
    drive
@@ -232,9 +232,9 @@ CR: StartUp: Optimization
 CR: Launcher: Optimization and corrections  
 CR: Launcher: Added additional environment variables for the tile action  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/main/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/workspace/main/CHANGES)
 
 # Contact
-[Issues](https://github.com/seanox/virtual-environment/issues)  
-[Requests](https://github.com/seanox/virtual-environment/pulls)  
+[Issues](https://github.com/seanox/workspace/issues)  
+[Requests](https://github.com/seanox/workspace/pulls)  
 [Mail](https://seanox.com/contact)
