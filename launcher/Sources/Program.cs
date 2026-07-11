@@ -1,4 +1,4 @@
-﻿// Program starter for the virtual environment.
+﻿// Program starter for the workspace.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -23,7 +23,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace VirtualEnvironment.Launcher
+namespace Workspace.Launcher
 {
     internal static class Program
     {
@@ -38,7 +38,7 @@ namespace VirtualEnvironment.Launcher
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Handle the Windows shutdown event, but only if the launcher is
-            // running in the context of the virtual environment.
+            // running in the context of the workspace.
             var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
             var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
             if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
@@ -116,7 +116,7 @@ namespace VirtualEnvironment.Launcher
             try
             {
                 var assembly = Assembly.LoadFrom(library);
-                var type = assembly.GetType("VirtualEnvironment.Platform.Service");
+                var type = assembly.GetType("Workspace.Platform.Service");
                 var method = type.GetMethod("Detach", BindingFlags.NonPublic | BindingFlags.Static);
                 method.Invoke(null, new object[] {platformDrive, platformDisk});
             }
@@ -219,7 +219,7 @@ namespace VirtualEnvironment.Launcher
                     if (Messages.Type.Error == message.Type)
                         MessageBox.Show(
                                 String.Join(System.Environment.NewLine, lines),
-                                "Virtual Environment Launcher",
+                                "Workspace Launcher",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
                     if (Messages.Type.Exit == message.Type)

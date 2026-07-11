@@ -1,5 +1,5 @@
-﻿// Virtual Environment Launcher
-// Program starter for the virtual environment.
+﻿// Workspace Launcher
+// Program starter for the workspace.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -26,18 +26,17 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using VirtualEnvironment.Launcher.Tiles;
+using Workspace.Launcher.Tiles;
 
-namespace VirtualEnvironment.Launcher
+namespace Workspace.Launcher
 {
     // System Tray Icon (NotifyIcon) + menu for show + exit
     // ----
-    // Omitted so that there is always a child process of the virtual
-    // environment that can start other processes in the virtual environment.
-    // In general, the launcher should run in the background as long as the
-    // virtual environment IDE is active. Therefore there is no exit function.
-    // The Launcher is terminated with the Detach of the virtual environment
-    // via Kill -- sounds hard, but that's the concept.
+    // Omitted so that there is always a child process of the workspace that can
+    // start other processes in the workspace. In general, the launcher should
+    // run in the background as long as the workspace is active. Therefore there
+    // is no exit function. The Launcher is terminated with the Detach of the
+    // workspace via Kill -- sounds hard, but that's the concept.
     
     // Global HotKey / KeyEvent 
     // ----
@@ -114,9 +113,9 @@ namespace VirtualEnvironment.Launcher
         internal Control(Settings settings, bool visible = true)
         {
             // Handle the Windows ShutdownBlockReason, but only if the launcher
-            // is running in the context of the virtual environment. It is not
-            // necessary to undo this, as the launcher ends and Windows then
-            // automatically cleans up the ShutdownBlockReason. 
+            // is running in the context of the workspace. It is not necessary
+            // to undo this, as the launcher ends and Windows then automatically
+            // cleans up the ShutdownBlockReason. 
             var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
             var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
             if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))

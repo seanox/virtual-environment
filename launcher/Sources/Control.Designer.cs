@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace VirtualEnvironment.Launcher
+namespace Workspace.Launcher
 {
     partial class Control
     {

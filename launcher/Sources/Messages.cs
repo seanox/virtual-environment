@@ -1,5 +1,5 @@
-﻿// Virtual Environment Launcher
-// Program starter for the virtual environment.
+﻿// Workspace Launcher
+// Program starter for the workspace.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -21,7 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace VirtualEnvironment.Launcher
+namespace Workspace.Launcher
 {
     internal static class Messages
     {

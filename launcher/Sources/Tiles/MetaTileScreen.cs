@@ -1,5 +1,5 @@
-﻿// Virtual Environment Launcher
-// Program starter for the virtual environment.
+﻿// Workspace Launcher
+// Program starter for the workspace.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -19,7 +19,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace VirtualEnvironment.Launcher.Tiles
+namespace Workspace.Launcher.Tiles
 {
     internal class MetaTileScreen : IDisposable
     {

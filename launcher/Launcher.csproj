@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6A26CE5A-C11C-4B6D-844A-24DF30C932F7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>VirtualEnvironment.Launcher</RootNamespace>
+    <RootNamespace>Workspace.Launcher</RootNamespace>
     <AssemblyName>Launcher</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

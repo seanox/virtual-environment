@@ -1,6 +1,6 @@
 # Launcher
-A portable program launcher designed for the Seanox Virtual Environment. It
-provides a full-screen, tile-based interface and can also be used independently.
+A portable program launcher designed for the Seanox Workspace. It provides a
+full-screen, tile-based interface and can also be used independently.
 
 <img src="Resources/animation.gif"/>
 
@@ -37,11 +37,11 @@ launcher is not visible.
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 # Download
-The launcher is [part of the virtual environment](
-    https://github.com/seanox/virtual-environment/tree/main/platform/Program%20Portables/Launcher)
+The launcher is [part of the workspace](
+    https://github.com/seanox/workspace/tree/main/platform/Program%20Portables/Launcher)
 but can also be downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/releases
+https://github.com/seanox/workspace/releases
 
 # Settings
 Configuration is stored in a file named `launcher.xml` (based on the application
@@ -142,4 +142,4 @@ CR: Platform: Switch from cmd.exe to wt.exe (Windows Terminal)
 CR: Launcher: Inversion of navigation with Shift has been removed  
 CR: Launcher: Refactoring for logical separation of tile and action  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/launcher/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/workspace/master/launcher/CHANGES)
