@@ -2,7 +2,7 @@
 // hereinafter referred to as Seanox Software Solutions or Seanox for short.
 // This software is subject to version 2 of the Apache License.
 //
-// Virtual Environment Inventory
+// Workspace Inventory
 // Scans and extracts changes in the file system and registry.
 // Copyright (C) 2025 Seanox Software Solutions
 //
@@ -24,7 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace VirtualEnvironment.Inventory
+namespace Workspace.Inventory
 {
     internal static class Paths
     {

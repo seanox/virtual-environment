@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E23F6A19-4C7D-482B-9F90-3D65C1A8A177}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>VirtualEnvironment.Inventory</RootNamespace>
+    <RootNamespace>Workspace.Inventory</RootNamespace>
     <AssemblyName>Inventory</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

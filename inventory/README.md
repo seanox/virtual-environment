@@ -31,14 +31,14 @@ software installation.
       https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) (for development only)
 
 # Download
-Inventory is [part of the virtual environment](
-    https://github.com/seanox/virtual-environment/tree/main/platform/Resources/platform/Programs/Platform)
+Inventory is [part of the workspace](
+    https://github.com/seanox/workspace/tree/main/platform/Resources/platform/Programs/Platform)
 but can also be downloaded and used separately.
 
-https://github.com/seanox/virtual-environment/releases
+https://github.com/seanox/workspace/releases
 
 # Changes 
 ## 0.0.0 00000000  
 NT: Coming soon
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/inventory/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/workspace/master/inventory/CHANGES)
