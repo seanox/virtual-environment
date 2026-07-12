@@ -1,188 +1,190 @@
-# Introduction
+# Description
 
-Since about 2010, there has been a project for a virtual environment with a
-modular structure targeting developers and users, enabling them to work in a
-fully pre-configured environment with all programs, tools, and services --
-without modifying the host environment or requiring additional dedicated
-virtualization resources.
+The workspace project provides a portable, file-based working environment with a
+modular structure for developers and users. It allows tools, applications and
+services to run within a self-contained workspace using predefined paths and
+configurations, while attempting to avoid changes to the host system.
 
-Short setup times, uniform tools with standardized configurations, consistent
-file system paths, centralized maintenance, and easy distribution and updates
-are just some of the benefits. The environment is highly customizable, can be
-quickly adapted for different projects, and can be seamlessly transferred to
-other machines to continue ongoing work.
+Stored on a virtual disk, the workspace can be attached, detached and
+transferred between Windows installations on different machines. A Windows-based
+abstraction layer handles the mounting and management of this disk, allowing all
+operations to take place within the logically isolated workspace. Path,
+configuration and environment separation are used to maintain consistent runtime
+conditions and reduce unintended interaction with the host file system and
+registry.
 
-The project includes a platform -- a tool for the initial creation, use, and
-management of the virtual environment -- and a module concept for the automatic
-integration and configuration of tools and programs from any source on the
-Internet. The module concept is a successful proof of concept envisioned as a
-possible future extension of the platform, but it is not currently the focus of
-development.
-
-
+__The project consists of the [platform](platform), the [launcher](launcher) and
+the [startup tool](startup). The platform manages virtual disks (creation,
+attachment, detachment, maintenance). The launcher provides keyboard-based
+access to programs inside the workspace, and the startup tool initializes
+services and applications. A [module concept](modules) for integrating external
+tools exists as a proof of concept but is not the current focus of
+development.__
 
 # Usage
 
-The program is initially started via the command line and serves as a central
-tool for creating, managing, and starting the platform. Although the platform is
-primarily used as a Windows application, initial control is provided through
-command line commands.
+The workspace is controlled through the platform command line application. The
+same tool is used for creating, managing and using workspaces.
 
+The command syntax is:
 
+```text
+platform.exe <drive>: [create|attach|detach|compact|shortcuts]
+```
 
-## 1. Creating a New Environment
+After renaming the application, the workspace name is used for the executable,
+configuration and virtual disk files.
 
-- Use a directory where the virtual environment will be created.
-- Copy the `platform.exe` file into this directory.
-- Rename `platform.exe` to the name of the virtual environment you want to
-  create  
-  e.g. `ren platform.exe seanox.exe`
-- Create the virtual environment for drive B:  
-  e.g., `seanox.exe B: create`
+## 1. Creating a new workspace
 
-A VHDX file is created in the current directory with the name derived from the
-platform program. The virtual drive also uses this name.
+Create or select a directory for the workspace files.
 
-The drive can be mounted temporarily -- either manually or using the platform
-program. When you open the virtual drive, a recommended directory structure is
-already present; however, it can be rearranged individually.
+Copy `platform.exe` into this directory and rename it to the desired workspace
+name.
 
-It is important to note that the platform program will run the `Startup.cmd`
-located in the root directory when the virtual environment is started. Other
-configurations may be modified as needed.
+Example:
 
+```text
+ren platform.exe workspace.exe
+```
 
+Create the workspace for drive __B:__:
 
-## 2. Creating Shortcuts for Common Tasks
+```text
+workspace.exe B: create
+```
 
-This step is optional and convenient.
+A VHD/VHDX virtual disk is created in the current directory using the name of
+the platform application. The virtual disk uses the same name.
 
-- Create shortcuts, for example:  
-  `seanox.exe B: shortcuts`
+After creation, the workspace contains a predefined directory structure. This
+structure can be extended or modified according to the requirements of the
+workspace.
 
-This command creates shortcuts in the current directory for attaching,
-detaching, and compacting the virtual environment. The file name of the platform
-application is also used _seanox.attach.lnk_, _seanox.detach.lnk_ an
-_seanox.compact.lnk_.
+When the workspace is attached, `Startup.cmd` in the root directory of the
+workspace is executed. This file initializes the workspace environment and can
+start applications or services.
 
+## 2. Creating shortcuts
 
+This step is optional.
 
-## 3. Attaching and Starting the Virtual Environment
+Create shortcuts for the workspace on drive __B:__:
 
-- Start the virtual environment  
-  e.g. `seanox.exe B: attach`
+```text
+workspace.exe B: shortcuts
+```
 
-When attaching the virtual environment, `Startup.cmd` is executed. This process
-installs, configures, and starts the environment along with its contained
-programs. It is controlled exclusively via the environment variables of the
-platform.
+The command creates shortcuts for attaching, detaching and compacting the
+workspace. The application name is used for the shortcut names.
 
+Examples:
 
+```text
+workspace.attach.lnk
+workspace.detach.lnk
+workspace.compact.lnk
+```
 
-## 4. Installation of Programs and Services
+## 3. Attaching the workspace
 
-The virtual environment is presented as a real drive with its own drive letter
-and file system. By default, the user profile and application data are
-redirected to the Settings directory in the root.
+Attach the workspace as drive __B:__:
 
-Programs can be installed in the usual manner; however, using portable versions
-is recommended and generally simpler.
+```text
+workspace.exe B: attach
+```
 
-Good sources are:
-- https://portableapps.com
-- https://portapps.io
+When the workspace is attached, `Startup.cmd` is executed. It can configure
+the workspace environment and start required applications or services.
 
-Many manufacturers also offer portable versions or portable usage of their
-software.
+Applications started through the workspace inherit the configured environment
+variables.
 
-With both attachment and detachment of the virtual environment, `Startup.cmd` is
-invoked. This enables the environment to be configured and allows programs to be
-installed, configured, started, stopped, or uninstalled -- all driven by the
-environment variables of the virtual platform.
+## 4. Using applications and services
 
+The workspace is a virtual disk with its own drive letter and file system.
+Application data and user-specific files can be stored inside the workspace.
 
+Applications can be installed normally inside the workspace. Portable versions
+can also be used if available.
 
-## 5. Stopping and Detaching the Virtual Environment
+Possible sources for portable applications include:
 
-If programs and services rely on the virtual platform’s environment variables,
-they should also be started within the virtual environment. Detachment should be
-performed in a manner that ensures all programs are properly terminated and,
-if necessary, uninstalled.
+- [PortableApps.com](https://portableapps.com)
+- [portapps.io](https://portapps.io)
 
-__How does it work?__
+The launcher integrated into the workspace provides keyboard-based access to
+applications. Applications started from the launcher inherit the environment
+variables of the workspace.
 
-When the virtual environment is attached, a child process is created that
-inherits the specific environment variables of the virtual environment as its
-context. This child process automatically executes `Startup.cmd` and launches a
-dedicated launcher, which keeps the child process continuously active. All
-programs within the virtual environment are then started via this launcher,
-ensuring they run with the defined environment context.
+Additional applications and services can be started and configured using
+`Startup.cmd`.
 
-Detachment can be initiated either via environment variables:
+## 5. Stopping and detaching the workspace
 
-`%PLATFORM_APP% %HOMEDRIVE% detach`
+Before detaching the workspace, applications and services started from the
+workspace should be closed.
 
-Or by using the platform program
+The launcher can be used to initiate the detach operation. It keeps the
+workspace environment available while applications started from it are being
+terminated.
 
-e.g. `seanox.exe B: detach`
+The workspace can also be detached using the platform command:
 
-When detaching, _Startup.cmd_ is called with the parameter 'exit' and then all
-programs launched from the virtual environment are first terminated gracefully;
-if necessary, a forced termination follows.
+```text
+workspace.exe B: detach
+```
 
-__About security__
+It can also be called from inside the workspace:
 
-__The platform is started with administrator privileges, although this
-potentially carries an increased risk, it is quite common in development and
-testing environments to run applications with administrative or elevated user
-rights. Many tools and programs require these rights in order to fully utilize
-all the necessary system functionalities. Nevertheless, the use of
-administrative privileges should always be applied consciously -- with
-appropriate security measures in place within controlled environments -- to
-minimize potential risks as much as possible without unnecessarily hindering
-operations.__
+```text
+%PLATFORM_APP% %HOMEDRIVE% detach
+```
 
+During detachment, `Startup.cmd` is called with the parameter `exit`.
+Applications started from the workspace are requested to terminate before the
+virtual disk is detached.
 
+## 6. Workspace configuration
 
-## 6. Personalization of the Virtual Environment
+Additional workspace-specific settings can be defined using the settings
+component.
 
-Even though a virtual environment can be extensively configured, there are
-scenarios where additional user, system, and environment data is required. For
-this purpose, the virtual environment incorporates an INI-based settings
-component. The INI file, located in the working directory of the virtual
-environment, defines settings for environment variables, file system access,
-registry management, and placeholder replacement within the environment. Each
-section outlines structured rules to ensure consistent behavior when attaching
-or detaching the environment.
+The settings component supports:
+- key-value definitions
+- environment variables
+- placeholders
+- file replacement based on placeholders
 
-More details and descriptions can be found in the INI file in the working
-directory of the virtual environment.
+The configuration file is stored outside the workspace and is processed each
+time the workspace is attached.
 
+Details are described in the workspace INI file.
 
+## 7. Compacting the workspace
 
-## 7. Compacting the Virtual Environment
+The workspace uses a dynamically sized virtual disk. The file grows during use
+but does not automatically release unused space.
 
-The virtual environment utilizes a virtual disk with a dynamic size. During use,
-this file will grow, but it will not be automatically compacted. However, the
-size of the virtual hard disk can be optimized manually.
+To compact the virtual disk:
 
-- Stop and detach the virtual environment.
-- Initiate the optimization process  
-  e.g. `seanox.exe B: compact`
+1. Detach the workspace.
+2. Run:
 
-For optimization, the virtual disk is attached without executing _Startup.cmd_.
-If a temp directory exists in the root directory, it is emptied. Subsequently,
-the virtual disk is compacted by eliminating unused space.
+   ```text
+   workspace.exe B: compact
+   ```
 
+During this process, the virtual disk is attached without executing
+`Startup.cmd`.
 
+If a temporary directory exists in the workspace root, its contents are removed
+before the virtual disk is compacted.
 
-## 8. Standard and Error Output
+## 8. Logging
 
-The user interface is minimalistic, reflecting a novel approach. Due to limited
-space for extended explanations, a log file is generated. This log file contains
-both error outputs and extended trace outputs, which assist in diagnostics.
-
-
+The user interface provides only basic output. Additional information is written
+to log files for troubleshooting and diagnostics.
 
 ## 9. Tips
 
@@ -193,6 +195,3 @@ erroneous error messages from Windows File Explorer when mounting virtual disks.
   - Use AutoPlay for all media and devices: __Off__
   - Choose AutoPlay defaults
     - Removable drive: __Take no action__
-
-
-__That's it -- have fun with it!__
