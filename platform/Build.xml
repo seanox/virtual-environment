@@ -117,6 +117,8 @@
   </target>
 
   <target name="release" depends="changes">
+    <ant dir="..\inventory" antfile="build.xml" target="release"
+        useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\launcher" antfile="build.xml" target="release"
         useNativeBasedir="false" inheritAll="false" inheritrefs="false"/>
     <ant dir="..\startup" antfile="build.xml" target="release"
@@ -200,21 +202,27 @@ ${line.separator}${workspace.target.release}/error.log">
       <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>
     </copy>
     <echo file="${workspace.target.update}/readme.txt_${release.version}">
-      The update is intended to help with the manual update of an existing
-      environment. It contains all new file structures and files. The updated files
-      end with the version number so that no existing files are overwritten.
+      The update package is intended to assist with manually updating an
+      existing workspace. It contains all updates and additions required for the
+      new version.
+
+      Existing files are not overwritten. Modified or added files are provided
+      with the version number appended to the file name, allowing you to review,
+      compare, and selectively apply the changes.
 
       Recommended Approach
       ----
-      - Attach virtual disk manually
-      - Unpack the update to the root directory of the virtual disk
-      - Check all new files (with the version number in the file extension)
-      - Activate what you need, delete what you don't need
-      - Merge the changes if necessary in the configuration files and scripts
-      - Replace the platform.exe outside of the virtual disk
-      - Detach virtual disk manually
 
-      That's it...
+      - Attach the virtual disk manually.
+      - Extract the update package into the root directory of the virtual disk.
+      - Review all updated or added files marked with the version number.
+      - Activate the changes you need and remove files that are not required.
+      - Merge changes manually where necessary, especially in configuration
+        files and scripts.
+      - Replace the external `platform.exe` with the updated version.
+      - Detach the virtual disk manually.
+
+      The workspace update is complete.
     </echo>
     <touch datetime="${release.date}" pattern="yyyyMMdd">
       <fileset dir="${workspace.target.update}" includes="**"/>
