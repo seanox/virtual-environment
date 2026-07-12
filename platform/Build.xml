@@ -201,7 +201,7 @@ ${line.separator}${workspace.target.release}/error.log">
       <fileset casesensitive="false" dir="${workspace.resources}/platform" includes="**"/>
       <regexpmapper from="(.*\..*)" to="\1_${release.version}"/>
     </copy>
-    <echo file="${workspace.target.update}/readme.txt_${release.version}">
+    <echo file="${workspace.target.update}/readme.md_${release.version}">
       The update package is intended to assist with manually updating an
       existing workspace. It contains all updates and additions required for the
       new version.
@@ -210,9 +210,7 @@ ${line.separator}${workspace.target.release}/error.log">
       with the version number appended to the file name, allowing you to review,
       compare, and selectively apply the changes.
 
-      Recommended Approach
-      ----
-
+      __Recommended Approach__
       - Attach the virtual disk manually.
       - Extract the update package into the root directory of the virtual disk.
       - Review all updated or added files marked with the version number.
@@ -224,6 +222,8 @@ ${line.separator}${workspace.target.release}/error.log">
 
       The workspace update is complete.
     </echo>
+    <replaceregexp file="${workspace.target.update}/readme.md_${release.version}"
+        match="^[ \t]+" replace="" flags="gm"/>    
     <touch datetime="${release.date}" pattern="yyyyMMdd">
       <fileset dir="${workspace.target.update}" includes="**"/>
     </touch>
