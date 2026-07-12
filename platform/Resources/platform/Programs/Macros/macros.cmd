@@ -18,7 +18,7 @@ IF NOT [%1] == [] (
 
 SETLOCAL ENABLEEXTENSIONS
 
-ECHO Virtual Environment Macros [Version 1.0.0 20230125]
+ECHO Workspace Macros [Version 1.0.0 20230125]
 ECHO Copyright (C) 2023 Seanox Software Solutions
 ECHO Custom command line extensions
 ECHO.
