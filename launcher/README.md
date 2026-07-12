@@ -1,34 +1,33 @@
 # Launcher
-A portable program launcher designed for the Seanox Workspace. It provides a
-full-screen, tile-based interface and can also be used independently.
+A portable program launcher for the Seanox Workspace. It provides a full-screen
+tile-based interface and can also run independently.
 
 <img src="Resources/animation.gif"/>
 
-The launcher is optimized for keyboard-based operation. Programs can be started
-with a small number of key presses, including via a global hotkey when the
-launcher is not visible.
+The launcher is optimized for keyboard operation and supports mouse input.
+Programs can be started using tile-specific hotkeys or a global hotkey that
+shows or hides the launcher.
 
 # Features
-- __Full-screen overlay interface__  
+- __Full-screen overlay interface__
   Displayed on the primary screen.
-- __Tile-based user interface__  
+- __Tile-based interface__
   Up to 40 configurable tiles.
-- __Global hotkey__  
+- __Global hotkey__
   Shows or hides the launcher.
-- __Hotkeys for tiles and programs__  
-  Keyboard-optimized access, including support for international keyboard
-  layouts.
-- __Automatic settings reload__  
-  Configuration changes are applied immediately.
-- __Environment variable support__  
-  Text-based configuration values can reference environment variables.
-- __Configurable visual appearance__  
-  Colors, opacity, background image, and grid appearance can be adjusted.
-- __No taskbar or system tray integration__  
-  The launcher runs in the background without adding icons to the shell.  
-  Termination can be configured via a tile.
-- __Portable application__  
-  No installation required.
+- __Tile and program hotkeys__
+  Keyboard access to configured entries with support for international keyboard layouts.
+- __Automatic settings reload__
+  Configuration changes are applied without restarting the launcher.
+- __Environment variable support__
+  Configuration values can reference environment variables.
+- __Configurable appearance__
+  Colors, opacity, background image, and grid settings can be configured.
+- __No taskbar or system tray integration__
+  The launcher runs without adding icons to the Windows shell.
+  Termination can be configured through a tile.
+- __Portable application__
+  Runs without installation.
 
 # System Requirement
 - Microsoft Windows 10 or higher
