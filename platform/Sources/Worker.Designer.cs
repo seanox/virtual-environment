@@ -1,4 +1,4 @@
-﻿namespace VirtualEnvironment.Platform
+﻿namespace Workspace.Platform
 {
     partial class Worker
     {

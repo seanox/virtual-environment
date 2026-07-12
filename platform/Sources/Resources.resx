@@ -122,7 +122,7 @@
     <value>{0} [A-Z]: [create|attach|detach|...]</value>
   </data>
   <data name="ApplicationVersion" xml:space="preserve">
-    <value>Seanox Virtual Environment [{0} {1}]</value>
+    <value>Seanox Workspace [{0} {1}]</value>
   </data>
   <data name="ApplicationUnexpectedErrorOccurred" xml:space="preserve">
     <value>Unexpected error occurred</value>
@@ -194,13 +194,13 @@
   </data>
 
   <data name="ServiceAttach" xml:space="preserve">
-    <value>Attaching virtual environment</value>
+    <value>Attaching workspace</value>
   </data>
   <data name="ServiceAttachFailed" xml:space="preserve">
     <value>Virtual environment attachment failed</value>
   </data>
   <data name="ServiceAttachEnvironment" xml:space="preserve">
-    <value>Configuring virtual environment</value>
+    <value>Configuring workspace</value>
   </data>
   <data name="ServiceAttachCustomizeFiles" xml:space="preserve">
     <value>Customize files</value>
@@ -223,7 +223,7 @@
   </data>
 
   <data name="ServiceCompact" xml:space="preserve">
-    <value>Compacting virtual environment</value>
+    <value>Compacting workspace</value>
   </data>
   <data name="ServiceCompactText" xml:space="preserve">
     <value>Virtual disk and file system compacted</value>
@@ -233,14 +233,14 @@
   </data>
 
   <data name="ServiceCreate" xml:space="preserve">
-    <value>Creating virtual environment</value>
+    <value>Creating workspace</value>
   </data>
   <data name="ServiceCreateText" xml:space="preserve">
     <value>Virtual disk and file system initialized</value>
   </data>
 
   <data name="ServiceDetach" xml:space="preserve">
-    <value>Detaching virtual environment</value>
+    <value>Detaching workspace</value>
   </data>
   <data name="ServiceDetachFailed" xml:space="preserve">
     <value>Virtual environment detachment failed</value>
@@ -257,7 +257,7 @@
   </data>
 
   <data name="ServiceRestore" xml:space="preserve">
-    <value>Restoring virtual environment</value>
+    <value>Restoring workspace</value>
   </data>
   <data name="ServiceRestoreText" xml:space="preserve">
     <value>Pending changes to the host system are restored</value>

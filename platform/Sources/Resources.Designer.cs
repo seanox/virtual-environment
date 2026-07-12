@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VirtualEnvironment.Platform {
+namespace Workspace.Platform {
     using System;
     
     
@@ -38,7 +38,7 @@ namespace VirtualEnvironment.Platform {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VirtualEnvironment.Platform.Sources.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Workspace.Platform.Sources.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -87,7 +87,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seanox Virtual Environment [{0} {1}].
+        ///   Looks up a localized string similar to Seanox Workspace [{0} {1}].
         /// </summary>
         internal static string ApplicationVersion {
             get {
@@ -267,7 +267,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attaching virtual environment.
+        ///   Looks up a localized string similar to Attaching workspace.
         /// </summary>
         internal static string ServiceAttach {
             get {
@@ -285,7 +285,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuring virtual environment.
+        ///   Looks up a localized string similar to Configuring workspace.
         /// </summary>
         internal static string ServiceAttachEnvironment {
             get {
@@ -348,7 +348,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compacting virtual environment.
+        ///   Looks up a localized string similar to Compacting workspace.
         /// </summary>
         internal static string ServiceCompact {
             get {
@@ -375,7 +375,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating virtual environment.
+        ///   Looks up a localized string similar to Creating workspace.
         /// </summary>
         internal static string ServiceCreate {
             get {
@@ -393,7 +393,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detaching virtual environment.
+        ///   Looks up a localized string similar to Detaching workspace.
         /// </summary>
         internal static string ServiceDetach {
             get {
@@ -439,7 +439,7 @@ namespace VirtualEnvironment.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restoring virtual environment.
+        ///   Looks up a localized string similar to Restoring workspace.
         /// </summary>
         internal static string ServiceRestore {
             get {

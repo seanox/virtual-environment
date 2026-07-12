@@ -1,16 +1,12 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
-// Virtual Environment Platform
-// Creates, starts and controls a virtual environment.
+﻿// Workspace Platform
+// Creates, starts and controls a workspace.
 // Copyright (C) 2025 Seanox Software Solutions
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy of
 // the License at
 //
-// https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -33,7 +29,7 @@ using System.Threading;
 using IWshRuntimeLibrary;
 using File = System.IO.File;
 
-namespace VirtualEnvironment.Platform
+namespace Workspace.Platform
 {
     internal static class Service
     {
@@ -575,9 +571,9 @@ namespace VirtualEnvironment.Platform
             var diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
 
             // The use of environment variables only makes sense during detach,
-            // in all other cases it becomes a problem when the environment is
-            // launched from an already existing virtual environment, as is the
-            // case during platform development.
+            // in all other cases it becomes a problem when the workspace is
+            // launched from an already existing workspace, as is the case
+            // during platform development.
 
             var SetEnvironmentVariableIfNecessary = new Action<string, string>(delegate(string name, string value)
             {
