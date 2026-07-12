@@ -31,8 +31,21 @@ operations to take place within the logically isolated workspace. Path,
 configuration and environment separation are used to maintain consistent runtime
 conditions and reduce unintended interaction with the host file system and
 registry.
+
+__Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
+    https://portapps.io)__
+
+This project focuses on the virtual drive as the execution platform.
+Applications and services run inside the virtual drive with defined paths and
+configurations. The goal is not to provide portable applications, but to offer a
+complete, logically isolated workspace that can be used as a single file.
+
+[PortableApps.com](https://portableapps.com) and [portapps.io](
+    https://portapps.io) can be used within the workspace, but the project does
+not aim to provide an application repository or an ecosystem for portable
+software.
 	
-The Workspace project consists of the [platform](platform), [launcher](
+__The Workspace project consists of the [platform](platform), [launcher](
     launcher), [startup](startup) and [inventory](inventory) components. The
 platform manages the workspace lifecycle, including virtual disk creation,
 attachment, detachment and maintenance. It creates a fully configured,
@@ -47,19 +60,6 @@ proof of concept but is not the current focus of development.__
 
 BitLocker-encrypted virtual disks are supported for environments where
 encryption requirements apply.
-
-__Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
-    https://portapps.io)__
-
-This project focuses on the virtual drive as the execution platform.
-Applications and services run inside the virtual drive with defined paths and
-configurations. The goal is not to provide portable applications, but to offer a
-complete, logically isolated workspace that can be used as a single file.
-
-[PortableApps.com](https://portableapps.com) and [portapps.io](
-    https://portapps.io) can be used within the workspace, but the project does
-not aim to provide an application repository or an ecosystem for portable
-software.
 
 ## Advantages
 - Virtual disk as a single file containing the entire workspace
