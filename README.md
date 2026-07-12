@@ -32,13 +32,18 @@ configuration and environment separation are used to maintain consistent runtime
 conditions and reduce unintended interaction with the host file system and
 registry.
 	
-__The project consists of the [platform](platform), the [launcher](launcher) and
-the [startup tool](startup). The platform manages virtual disks (creation,
-attachment, detachment, maintenance). The launcher provides keyboard-based
-access to programs inside the workspace, and the startup tool initializes
-services and applications. A [module concept](modules) for integrating external
-tools exists as a proof of concept but is not the current focus of
-development.__
+The Workspace project consists of the [platform](platform), [launcher](
+    launcher), [startup](startup) and [inventory](inventory) components. The
+platform manages the workspace lifecycle, including virtual disk creation,
+attachment, detachment and maintenance. It creates a fully configured,
+ready-to-use workspace containing the launcher, startup and inventory tools
+together with the required directory structure and configuration. The launcher
+provides keyboard-based access to workspace applications, the startup tool
+executes workspace initialization scripts, and the inventory tool analyzes file
+system and Windows registry changes to support the creation of portable
+applications. All three tools are standalone applications and can also be used
+independently. A module concept for integrating additional tools exists as a
+proof of concept but is not the current focus of development.__
 
 BitLocker-encrypted virtual disks are supported for environments where
 encryption requirements apply.
