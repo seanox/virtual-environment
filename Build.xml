@@ -72,6 +72,7 @@
     <delete dir="${workspace.release}"/>
     <mkdir dir="${workspace.release}"/>
     <copy todir="${workspace.release}">
+      <fileset dir="./inventory/Release"/>
       <fileset dir="./launcher/Release"/>
       <fileset dir="./platform/Release"/>
       <fileset dir="./startup/Release"/>
