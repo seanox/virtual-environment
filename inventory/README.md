@@ -1,28 +1,28 @@
 # Inventory
-Analyzes and extracts modifications in the file system and the Windows registry.
+Analyzes changes in the file system and the Windows registry.
 
-The tool performs comparative scans of the system drive and the registry.  
-Each scan produces hash?based data files that contain either full paths or
-aggregated hash values, depending on the configured scan depth.
+The tool performs two comparative scans of the system drive and registry. Each
+scan creates data files containing either explicit paths or aggregated hash
+values, depending on the configured scan depth.
 
-Up to the defined scan depth, all paths are written explicitly to the scan
-files. For deeper structures, a hash value is generated that represents the
-complete content of the respective subtree. The maximum usable scan depth is
-determined by the operating system’s file system.
+Within the configured depth, file and registry paths are stored directly. For
+deeper structures, a hash value represents the content of the respective
+subtree. The maximum scan depth depends on the operating system file system.
 
-A subsequent scan produces a second set of scan files for both the file system
-and the registry. By comparing the two scans, the tool identifies added and
-modified data. These files are copied verbatim into an inventory directory.
-Removed data is not recorded.
+A second scan creates another set of scan files. The tool compares both scan
+results and identifies added and modified files, directories, and registry
+entries. Removed data is not recorded.
 
-For file system copies, standard environment variables are used to normalize
-paths, ensuring independence from drive letters and user-specific directories.
-Registry modifications are stored in plain text in the file `registry.data`.
+Files detected during the comparison are copied unchanged into an inventory
+directory.
 
-The resulting data supports the creation of portable applications by making
-visible which files and registry entries are required and which components may
-need abstraction. It also improves the traceability of system changes following
-software installation.
+File system paths are normalized using standard environment variables to avoid
+dependencies on drive letters and user-specific directories. Registry changes
+are stored as plain text in registry.data.
+
+The generated inventory data can be used to identify files and registry entries
+created or modified by software installations and to determine required
+components for portable application setups.
 
 # System Requirement
 - Microsoft Windows 10 or higher
