@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Seanox Virtual Environment")]
-[assembly: AssemblyDescription("Creates, starts and controls a virtual environment.")]
+[assembly: AssemblyTitle("Seanox Workspace")]
+[assembly: AssemblyDescription("Creates, starts and controls a workspace.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Seanox Software Solutions")]
 [assembly: AssemblyProduct("Platform")]
