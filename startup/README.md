@@ -18,8 +18,9 @@ Command-line arguments are supported and passed through to the batch script.
   development only)
 
 # Download
-Startup is [part of the workspace](../platform) but can also be
-downloaded and used separately.
+Startup is [part of the workspace](
+    https://github.com/seanox/workspace/tree/master/platform/Resources/platform/Programs/Platform)
+but can also be downloaded and used separately.
 
 https://github.com/seanox/workspace/releases/latest
 
