@@ -197,10 +197,10 @@
     <value>Attaching workspace</value>
   </data>
   <data name="ServiceAttachFailed" xml:space="preserve">
-    <value>Virtual environment attachment failed</value>
+    <value>Workspace attachment failed</value>
   </data>
-  <data name="ServiceAttachEnvironment" xml:space="preserve">
-    <value>Configuring workspace</value>
+  <data name="ServiceAttachConfigureEnvironment" xml:space="preserve">
+    <value>Configuring environment</value>
   </data>
   <data name="ServiceAttachCustomizeFiles" xml:space="preserve">
     <value>Customize files</value>
@@ -243,7 +243,7 @@
     <value>Detaching workspace</value>
   </data>
   <data name="ServiceDetachFailed" xml:space="preserve">
-    <value>Virtual environment detachment failed</value>
+    <value>Workspace detachment failed</value>
   </data>
   <data name="ServiceDetachBlocked" xml:space="preserve">
     <value>Detaching is blocked by {0}

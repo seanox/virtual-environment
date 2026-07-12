@@ -242,8 +242,8 @@ namespace Workspace.Platform
                     || File.GetAttributes(targetFile).HasFlag(FileAttributes.Directory))
                 return;
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachCustomizeFiles);
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachCustomizeFiles, targetFile);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachConfigureEnvironment, Resources.ServiceAttachCustomizeFiles);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachConfigureEnvironment, Resources.ServiceAttachCustomizeFiles, targetFile);
             
             var templateFile = targetFile + "-template";
             if (!File.Exists(templateFile)
@@ -262,7 +262,7 @@ namespace Workspace.Platform
 
         private static void AttachHostFilesystem(string drive)
         {
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostFilesystem);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachConfigureEnvironment, Resources.ServiceAttachHostFilesystem);
             var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
             var storageSymLinks = Settings.Filesystem
                 .Select(path =>
@@ -272,7 +272,7 @@ namespace Workspace.Platform
                     {
                         Messages.Push(
                             Messages.Type.Trace,
-                            Resources.ServiceAttachEnvironment,
+                            Resources.ServiceAttachConfigureEnvironment,
                             Resources.ServiceAttachHostFilesystem,
                             Path.Combine(storage.FullName, path));
                         throw;
@@ -292,7 +292,7 @@ namespace Workspace.Platform
                     continue;
                 Messages.Push(
                     Messages.Type.Trace,
-                    Resources.ServiceAttachEnvironment,
+                    Resources.ServiceAttachConfigureEnvironment,
                     Resources.ServiceAttachHostFilesystem,
                     storageSymLink.ToString());
                 storageSymLink.Create();
@@ -305,7 +305,7 @@ namespace Workspace.Platform
         
         private static void AttachHostRegistry(string drive)
         {
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment, Resources.ServiceAttachHostRegistry);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachConfigureEnvironment, Resources.ServiceAttachHostRegistry);
             var storage = new DirectoryInfo(Path.Combine(drive, PLATFORM_PATH_STORAGE));
             var storageRegLinks = Settings.Registry
                 .Select(registryKey =>
@@ -315,7 +315,7 @@ namespace Workspace.Platform
                     {
                         Messages.Push(
                             Messages.Type.Trace,
-                            Resources.ServiceAttachEnvironment,
+                            Resources.ServiceAttachConfigureEnvironment,
                             Resources.ServiceAttachHostRegistry,
                             registryKey);
                         throw;
@@ -340,7 +340,7 @@ namespace Workspace.Platform
                     continue;
                 Messages.Push(
                     Messages.Type.Trace,
-                    Resources.ServiceAttachEnvironment,
+                    Resources.ServiceAttachConfigureEnvironment,
                     Resources.ServiceAttachHostRegistry,
                     storageRegLink.ToString());
                 storageRegLink.Create();
@@ -375,7 +375,7 @@ namespace Workspace.Platform
             Diskpart.CanAttachDisk(drive, diskFile);
             Diskpart.AttachDisk(drive, diskFile);
             
-            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachEnvironment);
+            Messages.Push(Messages.Type.Trace, Resources.ServiceAttachConfigureEnvironment);
             AttachHostFilesystem(drive);
             AttachHostRegistry(drive);
             foreach (var file in Settings.Patches)
@@ -571,9 +571,9 @@ namespace Workspace.Platform
             var diskFile = Path.Combine(applicationDirectory, applicationName + ".vhdx");
 
             // The use of environment variables only makes sense during detach,
-            // in all other cases it becomes a problem when the workspace is
-            // launched from an already existing workspace, as is the case
-            // during platform development.
+            // in all other cases it becomes a problem when the environment is
+            // launched from an already existing workspace, as is the
+            // case during platform development.
 
             var SetEnvironmentVariableIfNecessary = new Action<string, string>(delegate(string name, string value)
             {

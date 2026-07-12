@@ -285,16 +285,16 @@ namespace Workspace.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuring workspace.
+        ///   Looks up a localized string similar to Configuring environment.
         /// </summary>
-        internal static string ServiceAttachEnvironment {
+        internal static string ServiceAttachConfigureEnvironment {
             get {
-                return ResourceManager.GetString("ServiceAttachEnvironment", resourceCulture);
+                return ResourceManager.GetString("ServiceAttachConfigureEnvironment", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual environment attachment failed.
+        ///   Looks up a localized string similar to workspace attachment failed.
         /// </summary>
         internal static string ServiceAttachFailed {
             get {
@@ -412,7 +412,7 @@ namespace Workspace.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual environment detachment failed.
+        ///   Looks up a localized string similar to workspace detachment failed.
         /// </summary>
         internal static string ServiceDetachFailed {
             get {
