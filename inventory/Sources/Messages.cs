@@ -1,8 +1,4 @@
-﻿// LICENSE TERMS - Seanox Software Solutions is an open source project,
-// hereinafter referred to as Seanox Software Solutions or Seanox for short.
-// This software is subject to version 2 of the Apache License.
-//
-// Workspace Inventory
+﻿// Workspace Inventory
 // Scans and extracts changes in the file system and registry.
 // Copyright (C) 2025 Seanox Software Solutions
 //
