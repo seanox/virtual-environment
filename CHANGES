@@ -1,6 +1,7 @@
 3.8.0 2026xxxx
 CR: Project: Renamed to workspace
     More consistent use of the terms workspace, environment, drive, and disk.
+CR: Documentation: Consistent migration to Markdown    
 
 3.7.0 20251207
 BF: Review: Optimization and corrections
