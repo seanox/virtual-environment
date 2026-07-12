@@ -1,11 +1,23 @@
 # Platform
-Platform is a tool for the initial creation, use and management of the virtual
-environment. It also provides a module concept that can automatically download,
-configure and integrate external tools and programs into the virtual
-environment.
 
-__The module concept is implemented and usable, but no modules have been
-released yet due to limited maintenance capacity. Contributions are welcome.__
+Platform creates and manages Workspace virtual disks based on the VHD and VHDX
+formats. It provides commands to create, attach, detach and compact workspaces.
+
+When creating a workspace, Platform generates the directory structure,
+configuration and the included Workspace components (Launcher, Startup and
+Inventory).
+
+A module mechanism for integrating additional tools is implemented. No official
+modules are currently available.
+
+# Features
+- Create VHD and VHDX workspaces
+- Attach and detach workspaces
+- Compact virtual disks
+- Optional BitLocker encryption
+- Generate the Workspace directory structure
+- Create shortcuts for a workspace
+- Configuration via INI files
 
 # System Requirement
 - Microsoft Windows 10 or higher
@@ -15,42 +27,57 @@ released yet due to limited maintenance capacity. Contributions are welcome.__
   development only)
 
 # Download
-Platform is [part of the virtual environment](../platform) but can also be
-downloaded and used separately.
+Platform is [part of the workspace](..) but can also be downloaded and used
+separately.
 
-https://github.com/seanox/virtual-environment/releases/latest
+https://github.com/seanox/workspace/releases/latest
 
 # Usage
-1. Download the last release of [seanox-platform.zip](
-       https://github.com/seanox/virtual-environment/releases/latest)
+1. Download the latest release of [seanox-workspace.zip](
+       https://github.com/seanox/workspace/releases/latest)
 2. Extract the archive to any location in the local file system.
-3. Rename __`platform.exe`__ to the name that will be used for the environment
+3. Rename __`workspace.exe`__ to the name that will be used for the workspace
    and drive
 
 __Then the program can be used as follows:__
 
 ```
-usage: platform.exe A-Z: [create|attach|detach|compact|shortcuts]  `
+usage: workspace.exe <drive>: [create|attach|detach|compact|shortcuts]
 ```
 
-## Example
-- `platform.exe B: create`  
-  Creates the initial environment as a VHDX virtual drive.
-- `platform.exe B: shortcuts`  
-  Creates shortcut files for common actions.
-- `platform.exe B: attach` to attach the environment
-  Attaches the environment and makes it available as a virtual drive.
+## Examples
 
-Configure __`Startup.cmd`__ in the root directory of the virtual environment and
-add the desired programs and services. It is recommended to use a launcher so
-that the environment variables are available to the called programs. Detach
-should also be started via the launcher if programs and services are terminated
-when detaching and the environment variables are needed for this.
+```text
+workspace.exe B: create
+```
+Creates a new workspace as a VHD/VHDX virtual disk to be used as drive __B:__.
 
-- `platform.exe B: detach`  
-  Detaches the environment.
-- `platform.exe B: compact`  
-  Detaches the environment.
+
+```text
+workspace.exe B: shortcuts
+```
+Creates shortcuts for the workspace on drive __B:__.
+
+```text
+workspace.exe B: attach
+```
+Attaches the workspace as drive __B:__.
+
+Configure __`Startup.cmd`__ in the root directory of the workspace and add the
+desired programs and services. It is recommended to use a launcher so that the
+environment variables are available to the called programs. Detach should also
+be started via the launcher if programs and services are terminated when
+detaching and the environment variables are needed for this.
+
+```text
+workspace.exe B: detach
+```
+Detaches the workspace from drive __B:__.
+
+```text
+workspace.exe B: compact
+```
+Compacts the workspace virtual disk.
 
 <img src="../assets/usage.gif"/>
 
@@ -64,4 +91,4 @@ BF: Platform: Names of environment variables are case-sensitive
 CR: Platform: Omission of the steps recorder (deprecated by Microsoft)  
 CR: Platform: Simplification of the terminal action  
 
-[Read more](https://raw.githubusercontent.com/seanox/virtual-environment/master/platform/CHANGES)
+[Read more](https://raw.githubusercontent.com/seanox/workspace/master/platform/CHANGES)

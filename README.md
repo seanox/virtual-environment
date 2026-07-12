@@ -21,8 +21,8 @@
 # Description
 The workspace project provides a portable, file-based working environment with a
 modular structure for developers and users. It allows tools, applications and
-services to run within a self-contained workspace using predefined paths and
-configurations, while attempting to avoid changes to the host system.
+services to run within a workspace using predefined paths and configurations,
+while attempting to avoid changes to the host system.
 
 Stored on a virtual disk, the workspace can be attached, detached and
 transferred between Windows installations on different machines. A Windows-based
@@ -37,8 +37,8 @@ __Difference to [PortableApps.com](https://portableapps.com) and [portapps.io](
 
 This project focuses on the virtual drive as the execution platform.
 Applications and services run inside the virtual drive with defined paths and
-configurations. The goal is not to provide portable applications, but to offer a
-complete, logically isolated workspace that can be used as a single file.
+configurations. The goal is not to provide portable applications, but to provide
+a logically isolated workspace stored as a single file.
 
 [PortableApps.com](https://portableapps.com) and [portapps.io](
     https://portapps.io) can be used within the workspace, but the project does
@@ -48,15 +48,15 @@ software.
 __The Workspace project consists of the [platform](platform), [launcher](
     launcher), [startup](startup) and [inventory](inventory) components. The
 platform manages the workspace lifecycle, including virtual disk creation,
-attachment, detachment and maintenance. It creates a fully configured,
-ready-to-use workspace containing the launcher, startup and inventory tools
-together with the required directory structure and configuration. The launcher
-provides keyboard-based access to workspace applications, the startup tool
-executes workspace initialization scripts, and the inventory tool analyzes file
-system and Windows registry changes to support the creation of portable
-applications. All three tools are standalone applications and can also be used
-independently. A module concept for integrating additional tools exists as a
-proof of concept but is not the current focus of development.__
+attachment, detachment and maintenance. It creates a configured, ready-to-use
+workspace containing the launcher, startup and inventory tools, including the
+required directory structure and configuration. The launcher provides
+keyboard-optimized access to workspace applications, the startup tool executes
+workspace initialization scripts, and the inventory tool analyzes file system
+and Windows registry changes to support the creation of portable applications.
+All three tools are standalone applications and can also be used independently.
+A module concept for integrating additional tools exists as a proof of concept
+but is not the current focus of development.__
 
 BitLocker-encrypted virtual disks are supported for environments where
 encryption requirements apply.
@@ -69,11 +69,9 @@ encryption requirements apply.
 - Multiple workspaces attachable in parallel on the same system
 - Switching between workspaces by attaching/detaching virtual disks
 - Consistent paths with freely selectable drive letters
-- Host file system and registry usage avoided by operating inside the logically
-  isolated workspace
+- Host file system and registry usage reduced by operating inside the workspace 
 - Centralized maintenance by distributing updated VHD/VHDX files
-- Identical paths and configurations for teams, enabling reproducible automation
-  workflows
+- Identical paths and configurations enable reproducible automation workflows
 
 # Features
 - Support for VHD and VHDX virtual disks, including optional BitLocker
@@ -84,8 +82,8 @@ encryption requirements apply.
 - Integrated launcher with keyboard-based navigation for accessing programs
 - Configuration of the workspace and applications through a separate key-value
   file
-- Platform implemented with a small footprint and minimal resource usage
-- Operation inside the virtual drive to avoid using the host file system and
+- Platform implemented with low resource usage
+- Operation inside the virtual drive to reduce usage of the host file system and
   registry
 - Customization through configuration files and startup scripts
 - Centralized distribution by providing updated virtual disk files
@@ -125,7 +123,7 @@ specific language governing permissions and limitations under the License.
   for an existing workspace
 
 # Usage
-1. Download the last release of [seanox-platform.zip](
+1. Download the latest release of [seanox-platform.zip](
        https://github.com/seanox/workspace/releases/latest)
 2. Extract the archive to any location in the local file system.
 3. Rename __`platform.exe`__ to the name that will be used for the workspace and
@@ -174,17 +172,17 @@ Compacts the workspace virtual disk.
 <img src="assets/usage.gif"/>
 
 # Example Workspace (Ready-to-Use Template)
-A complete, ready-to-use workspace is provided as a template. It contains a
-fully configured development setup with tools for AWS, Kubernetes, Terraform,
-Java, Python, Node.js, a customized Eclipse installation, a PostgreSQL database
-including pgvector, and additional utilities.
+A ready-to-use workspace is provided as a template. It contains a configured
+development setup with tools for AWS, Kubernetes, Terraform, Java, Python,
+Node.js, a customized Eclipse installation, a PostgreSQL database including
+pgvector, and additional utilities.
 
 ## Download (approx. 5 GB, last update 2026-07-10)
 - https://seanox.com/storage/workspace-3.7.0.7z  
 
 ### Starting the workspace
 1. Extract the archive.
-2. Creates shortcuts for the workspace on drive B:.
+2. Create shortcuts for the workspace on drive B:.
    ```text
    workspace.exe B: shortcuts
    ```
@@ -199,8 +197,8 @@ including pgvector, and additional utilities.
    Applications started from the workspace are closed before drive B: is
    detached.
  
-The workspace is immediately usable after attaching. All tools and
-configurations are already included inside the virtual drive.
+The workspace can be used directly after attaching. All required directory
+structures, configurations and tools are included inside the virtual drive.
 
 <img src="assets/example.gif"/>
 

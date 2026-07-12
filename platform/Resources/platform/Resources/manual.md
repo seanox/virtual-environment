@@ -2,8 +2,8 @@
 
 The workspace project provides a portable, file-based working environment with a
 modular structure for developers and users. It allows tools, applications and
-services to run within a self-contained workspace using predefined paths and
-configurations, while attempting to avoid changes to the host system.
+services to run within a workspace using predefined paths and configurations,
+while attempting to avoid changes to the host system.
 
 Stored on a virtual disk, the workspace can be attached, detached and
 transferred between Windows installations on different machines. A Windows-based
@@ -13,13 +13,19 @@ configuration and environment separation are used to maintain consistent runtime
 conditions and reduce unintended interaction with the host file system and
 registry.
 
-__The project consists of the [platform](platform), the [launcher](launcher) and
-the [startup tool](startup). The platform manages virtual disks (creation,
-attachment, detachment, maintenance). The launcher provides keyboard-based
-access to programs inside the workspace, and the startup tool initializes
-services and applications. A [module concept](modules) for integrating external
-tools exists as a proof of concept but is not the current focus of
-development.__
+__The Workspace project consists of the platform, launcher, startup and
+inventory components. The platform manages the workspace lifecycle, including
+virtual disk creation, attachment, detachment and maintenance. It creates a
+configured, ready-to-use workspace containing the launcher, startup and
+inventory tools, including the required directory structure and configuration.
+The launcher provides keyboard-optimized access to workspace applications, the
+startup tool executes workspace initialization scripts, and the inventory tool
+analyzes file system and Windows registry changes to support the creation of
+portable applications. All three tools are standalone applications and can also
+be used independently.
+
+BitLocker-encrypted virtual disks are supported for environments where
+encryption requirements apply.
 
 # Usage
 
@@ -29,7 +35,7 @@ same tool is used for creating, managing and using workspaces.
 The command syntax is:
 
 ```text
-platform.exe <drive>: [create|attach|detach|compact|shortcuts]
+workspace.exe <drive>: [create|attach|detach|compact|shortcuts]
 ```
 
 After renaming the application, the workspace name is used for the executable,
@@ -39,19 +45,19 @@ configuration and virtual disk files.
 
 Create or select a directory for the workspace files.
 
-Copy `platform.exe` into this directory and rename it to the desired workspace
-name.
+Copy `workspace.exe` into this directory and rename it to the desired
+workspace name.
 
 Example:
 
 ```text
-ren platform.exe workspace.exe
+ren workspace.exe example.exe
 ```
 
-Create the workspace for drive __B:__:
+Create the workspace named _example_ for drive __B:__:
 
 ```text
-workspace.exe B: create
+example.exe B: create
 ```
 
 A VHD/VHDX virtual disk is created in the current directory using the name of
@@ -72,7 +78,7 @@ This step is optional.
 Create shortcuts for the workspace on drive __B:__:
 
 ```text
-workspace.exe B: shortcuts
+example.exe B: shortcuts
 ```
 
 The command creates shortcuts for attaching, detaching and compacting the
@@ -81,9 +87,9 @@ workspace. The application name is used for the shortcut names.
 Examples:
 
 ```text
-workspace.attach.lnk
-workspace.detach.lnk
-workspace.compact.lnk
+example.attach.lnk
+example.detach.lnk
+example.compact.lnk
 ```
 
 ## 3. Attaching the workspace
@@ -91,7 +97,7 @@ workspace.compact.lnk
 Attach the workspace as drive __B:__:
 
 ```text
-workspace.exe B: attach
+example.exe B: attach
 ```
 
 When the workspace is attached, `Startup.cmd` is executed. It can configure
@@ -132,7 +138,7 @@ terminated.
 The workspace can also be detached using the platform command:
 
 ```text
-workspace.exe B: detach
+example.exe B: detach
 ```
 
 It can also be called from inside the workspace:
@@ -172,7 +178,7 @@ To compact the virtual disk:
 2. Run:
 
    ```text
-   workspace.exe B: compact
+   example.exe B: compact
    ```
 
 During this process, the virtual disk is attached without executing
