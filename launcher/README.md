@@ -38,7 +38,7 @@ launcher is not visible.
 
 # Download
 The launcher is [part of the workspace](
-    https://github.com/seanox/workspace/tree/main/platform/Program%20Portables/Launcher)
+    https://github.com/seanox/workspace/tree/master/platform/Resources/platform/Programs/Platform)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/workspace/releases
