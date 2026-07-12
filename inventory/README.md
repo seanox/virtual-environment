@@ -32,7 +32,7 @@ software installation.
 
 # Download
 Inventory is [part of the workspace](
-    https://github.com/seanox/workspace/tree/main/platform/Resources/platform/Programs/Platform)
+    https://github.com/seanox/workspace/tree/master/platform/Resources/platform/Programs/Platform)
 but can also be downloaded and used separately.
 
 https://github.com/seanox/workspace/releases
