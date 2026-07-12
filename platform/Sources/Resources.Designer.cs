@@ -285,7 +285,7 @@ namespace Workspace.Platform {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configuring environment.
+        ///   Looks up a localized string similar to Configuring workspace.
         /// </summary>
         internal static string ServiceAttachConfigureEnvironment {
             get {
