@@ -119,7 +119,7 @@ namespace Workspace.Launcher
             var applicationDrive = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location).Substring(0, 2);
             var platformDrive = Environment.GetEnvironmentVariable("PLATFORM_HOMEDRIVE");
             if (string.Equals(applicationDrive, platformDrive, StringComparison.OrdinalIgnoreCase))
-                ShutdownBlockReasonCreate(Handle, "Virtual environment must be shut down.");
+                ShutdownBlockReasonCreate(Handle, "Workspace must be shut down.");
             
             _settings = settings;
             _visible  = visible;
