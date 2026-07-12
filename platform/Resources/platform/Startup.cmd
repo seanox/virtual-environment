@@ -1,14 +1,14 @@
 @ECHO OFF
 
-REM Environment termination
+REM Workspace termination
 REM ----
 IF "%1" == "exit" (
 
-    REM All the commands required to unmount the virtual environment are
-    REM inserted here. In particular, stop all temporary services and remove
-    REM them from the system. The environment itself will then gently or, if
-    REM unsuccessful, hard terminate all programs that were started from the
-    REM virtual drive and are still running.
+    REM All the commands required to unmount the workspace are inserted here. In
+    REM particular, stop all temporary services and remove them from the system.
+    REM The workspace itself will then gently or, if unsuccessful, hard
+    REM terminate all programs that were started from the virtual drive and are
+    REM still running.
 
 REM ---- Launcher
 
@@ -31,8 +31,9 @@ REM ---- Custom
 
 
 
+SETLOCAL EnableDelayedExpansion
 
-REM Environment configuration
+REM Workspace configuration
 REM ----
 
 SET HOST_APPDATA=%APPDATA%
@@ -45,11 +46,11 @@ SET HOST_TMP=%TMP%
 SET HOST_USERPROFILE=%USERPROFILE%
 
 REM Following environment variables are set at startup:
-REM - PLATFORM_NAME         Name of the environment, derived from the virtual disk
+REM - PLATFORM_NAME         Name of the workspace, derived from the virtual disk
 REM - PLATFORM_HOME         Home directory of the virtual disk  
 REM - PLATFORM_DISK         Path of the virtual disc
-REM - PLATFORM_APP          Path from the environment startup program 
-REM - PLATFORM_HOMEDRIVE    Root directory of the started virtual environment
+REM - PLATFORM_APP          Path from the workspace startup program 
+REM - PLATFORM_HOMEDRIVE    Root directory of the started workspace
 
 SET PLATFORM_HOMEPATH=\Documents
 SET PLATFORM_USERPROFILE=%PLATFORM_HOMEDRIVE%\Settings
@@ -96,7 +97,7 @@ REM INSERT COMMONS
 
 
 
-REM Environment preparation
+REM Workspace preparation
 REM ----
 
 REM Programs and service are configured and initialized here, but not started.
@@ -108,17 +109,17 @@ REM INSERT ATTACH
 
 
 
-REM Environment starting
+REM Workspace starting
 REM ----
 
 REM Programs and services are finally started here.
 REM It is important that the programs start in such a way that the startup
-REM script does not block, because the startup program of the virtual
-REM environment waits for the end of the startup script.
+REM script does not block, because the startup program of the workspace waits
+REM for the end of the startup script.
 
 REM Basically, a launcher or start menu should be started so that the programs
-REM can later use the virtual environment and the required environment
-REM variables. This is also important so that detaching works properly.
+REM can later use the workspace and the required environment variables. This is
+REM also important so that detaching works properly.
 
 REM ---- Launcher (to keep the environment alive)
 pushd "%APPSPATH%\Platform"
@@ -127,3 +128,5 @@ popd
 
 REM Placeholder for automatic module integration
 REM INSERT STARTUP
+
+ENDLOCAL
